@@ -604,7 +604,7 @@ namespace OpenNos.GameObject
 
                                 break;
                         }
-                        if (map == null || npc.EffectActivated)
+                        if (map == null || !npc.EffectActivated)
                         {
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHIP_NOTARRIVED"), 0));
                             return;

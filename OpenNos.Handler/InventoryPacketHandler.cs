@@ -862,15 +862,15 @@ namespace OpenNos.Handler
                         return;
 
                     case (byte) EquipmentType.Armor:
-                        Session.Character.Armor = null;
+                        Session.Character.Inventory.Armor = null;
                         break;
 
                     case (byte) EquipmentType.MainWeapon:
-                        Session.Character.WeaponPrimary = null;
+                        Session.Character.Inventory.PrimaryWeapon = null;
                         break;
 
                     case (byte) EquipmentType.SecondaryWeapon:
-                        Session.Character.WeaponSecondary = null;
+                        Session.Character.Inventory.SecondaryWeapon = null;
                         break;
                 }
                 Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != inventory.ItemVNum);

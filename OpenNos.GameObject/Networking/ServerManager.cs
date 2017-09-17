@@ -27,6 +27,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Channels;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenNos.GameObject.Event;
@@ -1466,8 +1467,11 @@ namespace OpenNos.GameObject
 
         public void SaveAll()
         {
-            List<ClientSession> sessions = Sessions.Where(c => c.IsConnected).ToList();
-            sessions.ForEach(s => s.Character?.Save());
+            // AFTER
+            Parallel.ForEach(Sessions.Where(s => s.HasSelectedCharacter && s.IsConnected), session =>
+            {
+                session.Character?.Save();
+            });
             DAOFactory.BazaarItemDAO.RemoveOutDated();
         }
 
@@ -1555,6 +1559,10 @@ namespace OpenNos.GameObject
                 return;
             }
             MapCell pos = map.Map.GetRandomPosition();
+            if (pos == null)
+            {
+                return;
+            }
             ChangeMapInstance(session.Character.CharacterId, guid, pos.X, pos.Y);
         }
 
@@ -1673,11 +1681,9 @@ namespace OpenNos.GameObject
 
             Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x => { BotProcess(); });
 
-            Observable.Interval(TimeSpan.FromSeconds(90)).Subscribe(x => { MailProcess(); });
-
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { RemoveItemProcess(); });
 
-            EventHelper.Instance.RunEvent(new EventContainer(Instance.GetMapInstance(Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
+            EventHelper.Instance.RunEvent(new EventContainer(Instance.GetMapInstance(Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, false));
             foreach (Schedule schedule in Schedules)
             {
                 Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedule.Time).TotalSeconds), TimeSpan.FromDays(1)).Subscribe(e =>
@@ -1691,6 +1697,7 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.FamilyRefresh += OnFamilyRefresh;
             CommunicationServiceClient.Instance.RelationRefresh += OnRelationRefresh;
             CommunicationServiceClient.Instance.BazaarRefresh += OnBazaarRefresh;
+            CommunicationServiceClient.Instance.MailRefresh += OnMailRefresh;
             CommunicationServiceClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
             CommunicationServiceClient.Instance.ShutdownEvent += OnShutdown;
             _lastGroupId = 1;
@@ -1896,18 +1903,11 @@ namespace OpenNos.GameObject
             });
         }
 
-
-        private void MailProcess()
+        private void OnMailRefresh(object sender, EventArgs e)
         {
-            try
-            {
-                Mails = DAOFactory.MailDAO.LoadAll().ToList();
-                Parallel.ForEach(Sessions.Where(c => c.IsConnected), session => session.Character?.RefreshMail());
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
+            long accountId = (long)sender;
+            ClientSession session = Sessions.FirstOrDefault(s => s.Account.AccountId == accountId);
+            session?.Character.RefreshMail();
         }
 
         private void OnBazaarRefresh(object sender, EventArgs e)

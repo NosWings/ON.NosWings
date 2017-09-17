@@ -239,6 +239,16 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                 {
+                    if (DAOFactory.MailDAO.LoadById(mail.MailId) == null)
+                    {
+                        if (Session.Character.MailList.ContainsKey(giftId))
+                        {
+                            Session.Character.MailList.Remove(giftId);
+                        }
+                        ServerManager.Instance.Mails.Remove(mail);
+                        Session.SendPacket("parcel 5 1 0");
+                        return;
+                    }
                     ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
                     if (newInv == null)
                     {
@@ -249,8 +259,18 @@ namespace OpenNos.Handler
                         WearableInstance wearable = newInv as WearableInstance;
                         wearable?.SetRarityPoint();
                     }
+                    GeneralLogDTO log = new GeneralLogDTO
+                    {
+                        LogType = "CLAIM_GIFT",
+                        LogData = $"CLAIM GIFT {giftId}",
+                        IpAddress = Session.IpAddress,
+                        Timestamp = DateTime.Now,
+                    };
+                    DAOFactory.GeneralLogDAO.Insert(log);
+
                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
 
+                    ServerManager.Instance.Mails.Remove(mail);
                     if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                     {
                         DAOFactory.MailDAO.DeleteById(mail.MailId);
@@ -1102,11 +1122,6 @@ namespace OpenNos.Handler
 
             Session.CurrentMapInstance = Session.Character.MapInstance;
 
-            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4 || m.MapTypeId == (short)MapTypeEnum.Act42))
-            {
-                Session.Character.ConnectAct4();
-            }
-
             if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType == "Connection") < 2)
             {
                 Session.SendPacket("scene 40");
@@ -1240,6 +1255,10 @@ namespace OpenNos.Handler
             {
                 Session.Character.AddStaticBuff(sb);
             }
+            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4 || m.MapTypeId == (short)MapTypeEnum.Act42))
+            {
+                Session.Character.ConnectAct4();
+            }
         }
 
         /// <summary>
@@ -1248,18 +1267,19 @@ namespace OpenNos.Handler
         /// <param name="walkPacket"></param>
         public void Walk(WalkPacket walkPacket)
         {
-            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-            double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
-
-            if (!Session.HasCurrentMapInstance || Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) || Session.Character.IsChangingMapInstance ||
+            if (Session?.Character == null || !Session.HasCurrentMapInstance || Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) ||
+                Session.Character.IsChangingMapInstance ||
                 Session.Character.HasShopOpened)
             {
                 return;
             }
+            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+            double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
+            int distance = Map.GetDistance(new MapCell {X = Session.Character.PositionX, Y = Session.Character.PositionY}, new MapCell {X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate});
+
             if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
             {
-                if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || Session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance)
+                if (Session.Character.MapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance || Session.Character.MapInstance?.MapInstanceType == MapInstanceType.Act4Instance)
                 {
                     Session.Character.MapX = walkPacket.XCoordinate;
                     Session.Character.MapY = walkPacket.YCoordinate;
@@ -1273,17 +1293,21 @@ namespace OpenNos.Handler
                 }, Session.CurrentMapInstance.Map.Grid);
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                 Session.SendPacket(Session.Character.GenerateCond());
-                Session.Character.LastMove = DateTime.Now;
-
-                Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList().ForEach(e =>
+                if (Session.Character != null)
                 {
-                    e.Events.ForEach(evt => EventHelper.Instance.RunEvent(evt));
-                });
-                Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY));
+                    Session.Character.LastMove = DateTime.Now;
+
+                    Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s != null && s.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList()
+                        .ForEach(e =>
+                        {
+                            e?.Events?.ToList().ForEach(evt => EventHelper.Instance?.RunEvent(evt));
+                        });
+                    Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s != null && s.InZone(Session.Character.PositionX, Session.Character.PositionY));
+                }
 
                 Session.CurrentMapInstance?.OnMoveOnMapEvents?.ForEach(e =>
                 {
-                    EventHelper.Instance.RunEvent(e);
+                    EventHelper.Instance?.RunEvent(e);
                 });
                 Session.CurrentMapInstance?.OnMoveOnMapEvents?.RemoveAll(s => s != null);
             }

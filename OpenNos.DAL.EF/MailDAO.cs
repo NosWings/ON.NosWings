@@ -36,11 +36,12 @@ namespace OpenNos.DAL.EF
                 {
                     Mail mail = context.Mail.First(i => i.MailId.Equals(mailId));
 
-                    if (mail != null)
+                    if (mail == null)
                     {
-                        context.Mail.Remove(mail);
-                        context.SaveChanges();
+                        return DeleteResult.Deleted;
                     }
+                    context.Mail.Remove(mail);
+                    context.SaveChanges();
 
                     return DeleteResult.Deleted;
                 }
@@ -76,6 +77,17 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
                 return SaveResult.Error;
+            }
+        }
+
+        public IEnumerable<MailDTO> LoadByCharacterId(long characterId)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                foreach (Mail mail in context.Mail.Where(s => !s.IsSenderCopy && s.ReceiverId == characterId))
+                {
+                    yield return _mapper.Map<MailDTO>(mail);
+                }
             }
         }
 

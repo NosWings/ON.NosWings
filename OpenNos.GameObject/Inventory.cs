@@ -48,6 +48,12 @@ namespace OpenNos.GameObject
 
         private Character Owner { get; }
 
+        public WearableInstance PrimaryWeapon { get; set; }
+
+        public WearableInstance SecondaryWeapon { get; set; }
+
+        public WearableInstance Armor { get; set; }
+
         #endregion
 
         #region Methods
@@ -168,6 +174,10 @@ namespace OpenNos.GameObject
             newItem.Rare = Rare;
             newItem.Upgrade = Upgrade;
             newItem.Design = Design;
+            if (newItem.Rare != 0 && newItem is WearableInstance wearable)
+            {
+                wearable.SetRarityPoint();
+            }
             return AddToInventory(newItem, type);
         }
 

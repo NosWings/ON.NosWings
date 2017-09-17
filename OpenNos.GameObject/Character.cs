@@ -413,12 +413,6 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; set; }
 
-        public WearableInstance WeaponPrimary { get; set; }
-
-        public WearableInstance WeaponSecondary { get; set; }
-
-        public WearableInstance Armor { get; set; }
-
         public IDisposable Life { get; set; }
 
         #endregion
@@ -1186,9 +1180,9 @@ namespace OpenNos.GameObject
 
             #region Get Weapon Stats
 
-            if (WeaponPrimary != null)
+            if (Inventory.PrimaryWeapon != null)
             {
-                mainUpgrade += WeaponPrimary.Upgrade;
+                mainUpgrade += Inventory.PrimaryWeapon.Upgrade;
             }
 
             mainMinDmg += MinHit;
@@ -1197,9 +1191,9 @@ namespace OpenNos.GameObject
             mainCritChance += HitCriticalRate;
             mainCritHit += HitCritical;
 
-            if (WeaponSecondary != null)
+            if (Inventory.SecondaryWeapon != null)
             {
-                secUpgrade += WeaponSecondary.Upgrade;
+                secUpgrade += Inventory.SecondaryWeapon.Upgrade;
             }
 
             secMinDmg += MinDistance;
@@ -1211,7 +1205,7 @@ namespace OpenNos.GameObject
             #endregion
 
 
-            skill.BCards?.ToList().ForEach(s => SkillBcards.Add(s));
+            skill?.BCards?.ToList().ForEach(s => SkillBcards.Add(s));
             #region Switch skill.Type
 
             int boost, boostpercentage;
@@ -1800,6 +1794,7 @@ namespace OpenNos.GameObject
                 monsterToAttack.CurrentMp = 0;
                 monsterToAttack.Death = DateTime.Now;
                 monsterToAttack.LastMove = DateTime.Now;
+                monsterToAttack.Buff.Clear();
             }
             else
             {
@@ -2319,10 +2314,9 @@ namespace OpenNos.GameObject
                                 if (dropOwner.HasValue)
                                 {
                                     group.Characters.ToList()
-                                        .ForEach(s => s.SendPacket(
-                                            s.Character.GenerateSay(
-                                                string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop.ItemVNum).Name,
-                                                    group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop.Amount), 10)));
+                                        .ForEach(s => s.SendPacket(s.Character.GenerateSay(
+                                            string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop.ItemVNum).Name,
+                                                group.Characters.Single(c => c.Character.CharacterId == dropOwner).Character.Name, drop.Amount), 10)));
                                 }
                             }
                             else
@@ -2575,7 +2569,7 @@ namespace OpenNos.GameObject
 
         private string GenerateParcel(MailDTO mail)
         {
-            return mail.AttachmentVNum != null ? $"parcel 1 1 {MailList.First(s => s.Value.MailId == mail.MailId).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.AttachmentVNum} {mail.AttachmentAmount} {(byte)ServerManager.Instance.GetItem((short)mail.AttachmentVNum).Type}" : string.Empty;
+            return mail.AttachmentVNum != null ? $"parcel 1 1 {MailList.First(s => s.Value.MailId == mail.MailId).Key} {(mail.Title == "NosWings" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.AttachmentVNum} {mail.AttachmentAmount} {(byte)ServerManager.Instance.GetItem((short)mail.AttachmentVNum).Type}" : string.Empty;
         }
 
         public string GeneratePidx(bool isLeaveGroup = false)
@@ -2694,9 +2688,9 @@ namespace OpenNos.GameObject
 
             #region Get Weapon Stats
 
-            if (WeaponPrimary != null)
+            if (Inventory.PrimaryWeapon != null)
             {
-                mainUpgrade += WeaponPrimary.Upgrade;
+                mainUpgrade += Inventory.PrimaryWeapon.Upgrade;
             }
 
             mainMinDmg += MinHit;
@@ -2705,9 +2699,9 @@ namespace OpenNos.GameObject
             mainCritChance += HitCriticalRate;
             mainCritHit += HitCritical;
 
-            if (WeaponSecondary != null)
+            if (Inventory.SecondaryWeapon != null)
             {
-                secUpgrade += WeaponSecondary.Upgrade;
+                secUpgrade += Inventory.SecondaryWeapon.Upgrade;
             }
 
             secMinDmg += MinDistance;
@@ -2716,23 +2710,23 @@ namespace OpenNos.GameObject
             secCritChance += DistanceCriticalRate;
             secCritHit += DistanceCritical;
 
-            if (target.Armor != null)
+            if (target.Inventory.Armor != null)
             {
-                enemydeflevel += target.Armor.Upgrade;
+                enemydeflevel += target.Inventory.Armor.Upgrade;
             }
 
             #endregion
 
             #region Switch skill.Type
 
-            int boost, boostpercentage;
-            int enemyboost, enemyboostpercentage;
+            int boost;
+            int enemyboostpercentage;
 
-            boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased)[0]
-                            - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageDecreased)[0];
+            int boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased)[0]
+                                  - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageDecreased)[0];
 
-            enemyboost = target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllIncreased)[0]
-                       - target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllDecreased)[0];
+            int enemyboost = target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllIncreased)[0]
+                             - target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllDecreased)[0];
 
             switch (skill.Type)
             {
@@ -3413,15 +3407,15 @@ namespace OpenNos.GameObject
             bool isPvpSecondary = false;
             bool isPvpArmor = false;
 
-            if (WeaponPrimary?.Item.Name.Contains(": ") == true)
+            if (Inventory.PrimaryWeapon?.Item.Name.Contains(": ") == true)
             {
                 isPvpPrimary = true;
             }
-            if (WeaponSecondary?.Item.Name.Contains(": ") == true)
+            if (Inventory.SecondaryWeapon?.Item.Name.Contains(": ") == true)
             {
                 isPvpSecondary = true;
             }
-            if (Armor?.Item.Name.Contains(": ") == true)
+            if (Inventory.Armor?.Item.Name.Contains(": ") == true)
             {
                 isPvpArmor = true;
             }
@@ -3429,7 +3423,7 @@ namespace OpenNos.GameObject
             // tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph
             // talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary
             // ispvparmor herolvl desc
-            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter?.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(WeaponPrimary != null ? 1 : 0)} {WeaponPrimary?.Rare ?? 0} {WeaponPrimary?.Upgrade ?? 0} {(WeaponSecondary != null ? 1 : 0)} {WeaponSecondary?.Rare ?? 0} {WeaponSecondary?.Upgrade ?? 0} {(Armor != null ? 1 : 0)} {Armor?.Rare ?? 0} {Armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPvpPrimary ? 1 : 0)} {(isPvpSecondary ? 1 : 0)} {(isPvpArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) || Biography == null ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
+            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter?.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(Inventory.PrimaryWeapon != null ? 1 : 0)} {Inventory.PrimaryWeapon?.Rare ?? 0} {Inventory.PrimaryWeapon?.Upgrade ?? 0} {(Inventory.SecondaryWeapon != null ? 1 : 0)} {Inventory.SecondaryWeapon?.Rare ?? 0} {Inventory.SecondaryWeapon?.Upgrade ?? 0} {(Inventory.Armor != null ? 1 : 0)} {Inventory.Armor?.Rare ?? 0} {Inventory.Armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPvpPrimary ? 1 : 0)} {(isPvpSecondary ? 1 : 0)} {(isPvpArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) || Biography == null ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
         }
 
         public string GenerateRest()
@@ -3506,7 +3500,7 @@ namespace OpenNos.GameObject
 
         public string GenerateSki()
         {
-            List<CharacterSkill> characterSkills = UseSp ? SkillsSp.Values.OrderBy(s => s.Skill.LevelMinimum).ToList() : Skills.Values.OrderBy(s => s.Skill.LevelMinimum).ToList();
+            List<CharacterSkill> characterSkills = UseSp ? SkillsSp.Values.OrderBy(s => s.Skill.CastId).ToList() : Skills.Values.OrderBy(s => s.Skill.CastId).ToList();
             string skibase = string.Empty;
             if (!UseSp)
             {
@@ -3554,37 +3548,27 @@ namespace OpenNos.GameObject
                             {
                                 if (inv is WearableInstance wearableInstance)
                                 {
-                                    if (wearableInstance.EquipmentOptions != null)
+                                    switch (wearableInstance.Slot)
                                     {
-                                        switch (wearableInstance.Item.ItemType)
-                                        {
-                                            case ItemType.Armor:
-                                            case ItemType.Weapon:
-                                                switch (wearableInstance.Slot)
-                                                {
-                                                    case (byte)EquipmentType.Armor:
-                                                        Armor = wearableInstance;
-                                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                                        break;
-                                                    case (byte)EquipmentType.MainWeapon:
-                                                        WeaponPrimary = wearableInstance;
-                                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                                        break;
-                                                    case (byte)EquipmentType.SecondaryWeapon:
-                                                        WeaponSecondary = wearableInstance;
-                                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                                        break;
-                                                }
-                                                break;
-                                            case ItemType.Jewelery:
-                                                if (wearableInstance.Slot == (short)EquipmentType.Bracelet || wearableInstance.Slot == (short)EquipmentType.Ring || wearableInstance.Slot == (short)EquipmentType.Amulet)
-                                                {
-                                                    EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                                }
-                                                break;
-                                        }
-
+                                        case (byte) EquipmentType.MainWeapon:
+                                            Inventory.PrimaryWeapon = wearableInstance;
+                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                            break;
+                                        case (byte) EquipmentType.SecondaryWeapon:
+                                            Inventory.SecondaryWeapon = wearableInstance;
+                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                            break;
+                                        case (byte) EquipmentType.Armor:
+                                            Inventory.Armor = wearableInstance;
+                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                            break;
+                                        case (byte)EquipmentType.Bracelet:
+                                        case (byte)EquipmentType.Necklace:
+                                        case (byte)EquipmentType.Ring:
+                                            EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                            break;
                                     }
+                                    
                                     inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
                                 }
                             }
@@ -3875,37 +3859,37 @@ namespace OpenNos.GameObject
             }
 
             // TODO: add base stats
-            if (WeaponPrimary != null)
+            if (Inventory.PrimaryWeapon != null)
             {
-                weaponUpgrade = WeaponPrimary.Upgrade;
-                MinHit += WeaponPrimary.DamageMinimum + WeaponPrimary.Item.DamageMinimum;
-                MaxHit += WeaponPrimary.DamageMaximum + WeaponPrimary.Item.DamageMaximum;
-                HitRate += WeaponPrimary.HitRate + WeaponPrimary.Item.HitRate;
-                HitCriticalRate += WeaponPrimary.CriticalLuckRate + WeaponPrimary.Item.CriticalLuckRate;
-                HitCritical += WeaponPrimary.CriticalRate + WeaponPrimary.Item.CriticalRate;
+                weaponUpgrade = Inventory.PrimaryWeapon.Upgrade;
+                MinHit += Inventory.PrimaryWeapon.DamageMinimum + Inventory.PrimaryWeapon.Item.DamageMinimum;
+                MaxHit += Inventory.PrimaryWeapon.DamageMaximum + Inventory.PrimaryWeapon.Item.DamageMaximum;
+                HitRate += Inventory.PrimaryWeapon.HitRate + Inventory.PrimaryWeapon.Item.HitRate;
+                HitCriticalRate += Inventory.PrimaryWeapon.CriticalLuckRate + Inventory.PrimaryWeapon.Item.CriticalLuckRate;
+                HitCritical += Inventory.PrimaryWeapon.CriticalRate + Inventory.PrimaryWeapon.Item.CriticalRate;
 
                 // maxhp-mp
             }
 
-            if (WeaponSecondary != null)
+            if (Inventory.SecondaryWeapon != null)
             {
-                secondaryUpgrade = WeaponSecondary.Upgrade;
-                MinDistance += WeaponSecondary.DamageMinimum + WeaponSecondary.Item.DamageMinimum;
-                MaxDistance += WeaponSecondary.DamageMaximum + WeaponSecondary.Item.DamageMaximum;
-                DistanceRate += WeaponSecondary.HitRate + WeaponSecondary.Item.HitRate;
-                DistanceCriticalRate += WeaponSecondary.CriticalLuckRate + WeaponSecondary.Item.CriticalLuckRate;
-                DistanceCritical += WeaponSecondary.CriticalRate + WeaponSecondary.Item.CriticalRate;
+                secondaryUpgrade = Inventory.SecondaryWeapon.Upgrade;
+                MinDistance += Inventory.SecondaryWeapon.DamageMinimum + Inventory.SecondaryWeapon.Item.DamageMinimum;
+                MaxDistance += Inventory.SecondaryWeapon.DamageMaximum + Inventory.SecondaryWeapon.Item.DamageMaximum;
+                DistanceRate += Inventory.SecondaryWeapon.HitRate + Inventory.SecondaryWeapon.Item.HitRate;
+                DistanceCriticalRate += Inventory.SecondaryWeapon.CriticalLuckRate + Inventory.SecondaryWeapon.Item.CriticalLuckRate;
+                DistanceCritical += Inventory.SecondaryWeapon.CriticalRate + Inventory.SecondaryWeapon.Item.CriticalRate;
 
                 // maxhp-mp
             }
-            if (Armor != null)
+            if (Inventory.Armor != null)
             {
-                armorUpgrade = Armor.Upgrade;
-                Defence += Armor.CloseDefence + Armor.Item.CloseDefence;
-                DistanceDefence += Armor.DistanceDefence + Armor.Item.DistanceDefence;
-                MagicalDefence += Armor.MagicDefence + Armor.Item.MagicDefence;
-                DefenceRate += Armor.DefenceDodge + Armor.Item.DefenceDodge;
-                DistanceDefenceRate += Armor.DistanceDefenceDodge + Armor.Item.DistanceDefenceDodge;
+                armorUpgrade = Inventory.Armor.Upgrade;
+                Defence += Inventory.Armor.CloseDefence + Inventory.Armor.Item.CloseDefence;
+                DistanceDefence += Inventory.Armor.DistanceDefence + Inventory.Armor.Item.DistanceDefence;
+                MagicalDefence += Inventory.Armor.MagicDefence + Inventory.Armor.Item.MagicDefence;
+                DefenceRate += Inventory.Armor.DefenceDodge + Inventory.Armor.Item.DefenceDodge;
+                DistanceDefenceRate += Inventory.Armor.DistanceDefenceDodge + Inventory.Armor.Item.DistanceDefenceDodge;
             }
 
             WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
@@ -4229,7 +4213,7 @@ namespace OpenNos.GameObject
             return Reput <= 5000000 ? 26 : 27;
         }
 
-        public void GiftAdd(short itemVNum, byte amount, byte rare = 0, short design = 0, byte upgrade = 0)
+        public void GiftAdd(short itemVNum, byte amount, short design = 0, byte upgrade = 0, sbyte rare = 0)
         {
             //TODO add the rare support
             if (Inventory == null)
@@ -4643,7 +4627,7 @@ namespace OpenNos.GameObject
             int j = 0;
             try
             {
-                List<MailDTO> mails = ServerManager.Instance.Mails.Where(s => s.ReceiverId == CharacterId && !s.IsSenderCopy && MailList.All(m => m.Value.MailId != s.MailId)).Take(50).ToList();
+                List<MailDTO> mails = DAOFactory.MailDAO.LoadByCharacterId(CharacterId).Where(s => MailList.All(m => m.Value.MailId != s.MailId)).Take(50).ToList();
                 for (int x = 0; x < mails.Count; x++)
                 {
                     MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mails.ElementAt(x));

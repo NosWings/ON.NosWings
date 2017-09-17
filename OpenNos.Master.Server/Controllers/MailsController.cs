@@ -4,12 +4,12 @@ using OpenNos.Domain;
 
 namespace OpenNos.Master.Server.Controllers
 {
-    public class SessionController : ApiController
+    public class MailsController : ApiController
     {
         // GET /stats 
-        public void Delete(long accountId)
+        public void Get(long accountId)
         {
-            CommunicationServiceClient.Instance.KickSession(accountId, null);
+            CommunicationServiceClient.Instance.UpdateMails(accountId);
         }
     }
 }

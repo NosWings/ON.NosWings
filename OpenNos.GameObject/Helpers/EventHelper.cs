@@ -18,6 +18,7 @@ using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Event.ARENA;
 using OpenNos.PathFinder;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -144,11 +145,11 @@ namespace OpenNos.GameObject.Helpers
                 #region MapInstanceEvent
 
                 case EventActionType.REGISTEREVENT:
-                    Tuple<string, List<EventContainer>> even = (Tuple<string, List<EventContainer>>)evt.Parameter;
+                    Tuple<string, ConcurrentBag<EventContainer>> even = (Tuple<string, ConcurrentBag<EventContainer>>)evt.Parameter;
                     switch (even.Item1)
                     {
                         case "OnCharacterDiscoveringMap":
-                            even.Item2.ForEach(s => evt.MapInstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(s, new List<long>())));
+                            even.Item2.ToList().ForEach(s => evt.MapInstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(s, new List<long>())));
                             break;
 
                         case "OnMoveOnMap":
@@ -160,7 +161,7 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case "OnLockerOpen":
-                            even.Item2.ForEach(s=>evt.MapInstance.InstanceBag.UnlockEvents.Add(s));
+                            even.Item2.ToList().ForEach(s => evt.MapInstance.InstanceBag.UnlockEvents.Add(s));
                             break;
                     }
                     break;
@@ -208,20 +209,20 @@ namespace OpenNos.GameObject.Helpers
                 case EventActionType.CONTROLEMONSTERINRANGE:
                     if (monster != null)
                     {
-                        Tuple<short, byte, List<EventContainer>> evnt = (Tuple<short, byte, List<EventContainer>>)evt.Parameter;
+                        Tuple<short, byte, ConcurrentBag<EventContainer>> evnt = (Tuple<short, byte, ConcurrentBag<EventContainer>>)evt.Parameter;
                         List<MapMonster> mapMonsters = evt.MapInstance.GetListMonsterInRange(monster.MapX, monster.MapY, evnt.Item2);
                         if (evnt.Item1 != 0)
                         {
                             mapMonsters.RemoveAll(s => s.MonsterVNum != evnt.Item1);
                         }
-                        mapMonsters.ForEach(s => evnt.Item3.ForEach(e => RunEvent(e, monster: s)));
+                        mapMonsters.ForEach(s => evnt.Item3.ToList().ForEach(e => RunEvent(e, monster: s)));
                     }
                     break;
 
                 case EventActionType.ONTARGET:
                     if (monster?.MoveEvent != null && monster.MoveEvent.InZone(monster.MapX, monster.MapY))
                     {
-                        ((List<EventContainer>)evt.Parameter).ForEach(s => RunEvent(s, monster: monster));
+                        ((ConcurrentBag<EventContainer>)evt.Parameter).ToList().ForEach(s => RunEvent(s, monster: monster));
                     }
                     break;
 
@@ -333,7 +334,7 @@ namespace OpenNos.GameObject.Helpers
                                                     rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
                                                 }
                                                 //TODO add random rarity for some object
-                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, rare, gift.Design);
+                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                             }
                                         }
                                     }
@@ -472,7 +473,7 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.SPAWNMONSTERS:
-                    evt.MapInstance.SummonMonsters((List<MonsterToSummon>)evt.Parameter);
+                    evt.MapInstance.SummonMonsters(((ConcurrentBag<MonsterToSummon>)evt.Parameter).ToList());
                     break;
                 case EventActionType.REFRESHRAIDGOAL:
                     ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();

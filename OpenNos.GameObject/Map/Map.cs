@@ -72,11 +72,13 @@ namespace OpenNos.GameObject
 
         public byte[] Data { get; set; }
 
-        public RespawnMapTypeDTO DefaultRespawn { get; private set; }
+        public RespawnMapTypeDTO DefaultRespawn { get; }
 
-        public RespawnMapTypeDTO DefaultReturn { get; private set; }
+        public RespawnMapTypeDTO DefaultReturn { get; }
 
-        public GridPos[,] Grid { get; set; }
+        public GridPos[,] Grid { get; private set; }
+        
+        private ConcurrentBag<MapCell> Cells { get; set; }
 
         public short MapId { get; set; }
 
@@ -121,7 +123,7 @@ namespace OpenNos.GameObject
             return summonParameters;
         }
 
-        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, List<EventContainer> deathEvents, bool isMate, bool isProtected)
+        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, ConcurrentBag<EventContainer> deathEvents, bool isMate, bool isProtected)
         {
             List<NpcToSummon> summonParameters = new List<NpcToSummon>();
             for (int i = 0; i < amount; i++)
@@ -134,16 +136,19 @@ namespace OpenNos.GameObject
 
         public MapCell GetRandomPosition()
         {
-            ConcurrentBag<MapCell> cells = new ConcurrentBag<MapCell>();
+            if (Cells != null)
+            {
+                return Cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
+            }
+            Cells = new ConcurrentBag<MapCell>();
             Parallel.For(0, YLength, y => Parallel.For(0, XLength, x =>
             {
                 if (!IsBlockedZone(x, y))
                 {
-                    cells.Add(new MapCell { X = (short)x, Y = (short)y });
+                    Cells.Add(new MapCell {X = (short) x, Y = (short) y});
                 }
             }));
-
-            return cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
+            return Cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
         }
 
         public bool IsBlockedZone(int x, int y)

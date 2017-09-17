@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public void ApplyBCards(object session)
+        public void ApplyBCards(object session, object caster = null)
         {
             switch ((BCardType.CardType)Type)
             {
@@ -45,9 +45,10 @@ namespace OpenNos.GameObject
                     {
                         if (ServerManager.Instance.RandomNumber() < FirstData)
                         {
-                            MapMonster monster = session as MapMonster;
-                            // TO DO : 1 --> Character Lvl
-                            monster?.AddBuff(new Buff(SecondData, 1));
+                            if (session is MapMonster monster)
+                            {
+                                monster.AddBuff(!(caster is Character character) ? new Buff(SecondData, 1) : new Buff(SecondData, character.Level));
+                            }
                         }
                     }
                     else if (session.GetType() == typeof(MapNpc))
@@ -76,15 +77,13 @@ namespace OpenNos.GameObject
                     }
                     else if (session.GetType() == typeof(MapMonster))
                     {
-                        MapMonster monster = session as MapMonster;
+                        if (!(session is MapMonster monster))
+                        {
+                            return;
+                        }
                         ConcurrentBag<MonsterToSummon> summonParameters = new ConcurrentBag<MonsterToSummon>();
                         for (int i = 0; i < FirstData; i++)
                         {
-                            if (monster == null)
-                            {
-                                continue;
-                            }
-
                             short x, y;
                             if (SubType == 11)
                             {
@@ -107,7 +106,7 @@ namespace OpenNos.GameObject
                                         EventHelper.Instance.RunEvent(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     break;
                                 default:
-                                    if (!monster.OnDeathEvents.Any(s => s.EventActionType == EventActionType.SPAWNMONSTERS))
+                                    if (monster.OnDeathEvents.All(s => s.EventActionType != EventActionType.SPAWNMONSTERS))
                                     {
                                         monster.OnDeathEvents.Add(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     }
@@ -237,6 +236,68 @@ namespace OpenNos.GameObject
                     break;
 
                 case BCardType.CardType.Capture:
+                    if (session.GetType() == typeof(MapMonster))
+                    {
+                        if (caster is Character)
+                        {
+                            MapMonster monster = session as MapMonster;
+                            Character character = caster as Character;
+                            if (monster != null && character != null)
+                            {
+                                if (monster.Monster.RaceType == 1 && (character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || character.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
+                                {
+                                    if (monster.Monster.Level < character.Level)
+                                    {
+                                        if (monster.CurrentHp < (monster.Monster.MaxHP / 2))
+                                        {
+                                            if (character.MaxMateCount == character.Mates.Count())
+                                            {
+                                                // Algo  
+                                                int capturerate = ((character.Level / monster.Monster.Level) / (monster.CurrentHp / monster.Monster.MaxHP) * 3);
+                                                if (ServerManager.Instance.RandomNumber() <= capturerate)
+                                                {
+                                                    Mate currentmate = character.Mates.FirstOrDefault(m => m.IsTeamMember == true);
+                                                    if (currentmate != null)
+                                                    {
+                                                        currentmate.IsTeamMember = false;
+                                                        character.Session.CurrentMapInstance.Broadcast(currentmate.GenerateOut());
+                                                    }
+                                                    monster.MapInstance.DespawnMonster(monster);
+                                                    NpcMonster mateNpc = ServerManager.Instance.GetNpc(monster.Monster.NpcMonsterVNum);
+                                                    byte lvl = 0;
+                                                    lvl += monster.Monster.Level;
+                                                    lvl -= 10;
+                                                    if (lvl <= 0)
+                                                    {
+                                                        lvl = 1;
+                                                    }
+                                                    Mate mate = new Mate(character, mateNpc, lvl, MateType.Pet);
+                                                    character.Mates.Add(mate);
+                                                    mate.IsTeamMember = true;
+                                                    character.Session.SendPacket($"ctl 2 {mate.PetId} 3");
+                                                    character.MapInstance.Broadcast(mate.GenerateIn());
+                                                    character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 0));
+                                                    character.Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                                                    character.Session.SendPackets(character.GenerateScP());
+                                                    character.Session.SendPackets(character.GenerateScN());
+                                                    character.Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                                                    character.Session.SendPackets(character.GenerateScP());
+                                                    character.Session.SendPackets(character.GenerateScN());
+                                                    character.Session.SendPacket(character.GeneratePinit());
+                                                    character.Session.SendPackets(character.GeneratePst());
+                                                }
+                                                else { character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CAPTURE_FAILED"), 0)); }
+                                            }
+                                            else { character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_MATES_COUNT"), 0)); }
+                                        }
+                                        else { character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MONSTER_MUST_BE_LOW_HP"), 0)); }
+                                    }
+                                    else { character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MONSTER_LVL_MUST_BE_LESS"), 0)); }
+                                }
+                                else { character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MONSTER_CANNOT_BE_CAPTURED"), 0)); }
+                            }
+                        }
+                    }
                     break;
 
                 case BCardType.CardType.SpecialDamageAndExplosions:

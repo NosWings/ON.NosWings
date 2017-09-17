@@ -119,7 +119,7 @@ namespace OpenNos.Master.Library.Interface
         /// </summary>
         /// <param name="accountId">Id of the Account to register</param>
         /// <param name="sessionId">Id of the Session to register</param>
-        void RegisterAccountLogin(long accountId, long sessionId);
+        void RegisterAccountLogin(long accountId, long sessionId, string accountName);
 
         /// <summary>
         /// Updates the Relations on the given WorldGroup
@@ -127,6 +127,13 @@ namespace OpenNos.Master.Library.Interface
         /// <param name="worldGroup">WorldGroup the Relations should be updated on</param>
         /// <param name="relationId">Id of the Relation that should be updated</param>
         void UpdateRelation(string worldGroup, long relationId);
+
+
+        /// <summary>
+        /// Updates the mails on the given Character Id
+        /// </summary>
+        /// <param name="accountId"></param>
+        void UpdateMails(long accountId);
 
         /// <summary>
         /// Shutdown given WorldGroup or WorldServer

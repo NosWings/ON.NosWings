@@ -692,11 +692,11 @@ namespace OpenNos.GameObject.Helpers
             int increment2 = 9120;
             int increment3 = 360;
 
-            _heroXpData = new double[256];
-            _heroXpData[0] = 949560;
-            for (int lvl = 1; lvl < 50; lvl++)
+            HeroXpData = new double[256];
+            HeroXpData[0] = 949560;
+            for (int lvl = 1; lvl < HeroXpData.Length; lvl++)
             {
-                _heroXpData[lvl] = _heroXpData[lvl - 1] + increment;
+                HeroXpData[lvl] = HeroXpData[lvl - 1] + increment;
                 increment2 += increment3;
                 increment = increment + increment2;
                 index++;
