@@ -4227,12 +4227,13 @@ namespace OpenNos.GameObject
             }
             lock (Inventory)
             {
-                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, CharacterId, amount, rare);
+                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, CharacterId, amount);
                 if (newItem == null)
                 {
                     return;
                 }
                 newItem.Design = design;
+                newItem.Rare = rare;
                 if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
                 {
                     ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
