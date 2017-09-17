@@ -80,7 +80,7 @@ namespace OpenNos.GameObject
                     }
                     if (!inv.IsBound)
                     {
-                        if (inv.ItemVNum >= 4046 && inv.ItemVNum <= 4055) /* Can't do another way as it is not an EquipmentType */
+                        if (inv.Item.Effect == 790)
                         {
                             inv.BoundCharacterId = session.Character.CharacterId;
                         }
