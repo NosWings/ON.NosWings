@@ -3638,6 +3638,19 @@ namespace OpenNos.Import.Console
                                         item.EffectValue = item.VNum + 2152; 
                                         break;
 
+                                    case 4046:
+                                    case 4047:
+                                    case 4048:
+                                    case 4049:
+                                    case 4050:
+                                    case 4051:
+                                    case 4052:
+                                    case 4053:
+                                    case 4054:
+                                    case 4055:
+                                        item.Effect = 790;
+                                        break;
+
                                     default:
                                         if (item.VNum > 5891 && item.VNum < 5900 || item.VNum > 9100 && item.VNum < 9109)
                                         {
