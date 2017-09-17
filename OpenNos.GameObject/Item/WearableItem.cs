@@ -74,12 +74,16 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    if (ItemValidTime > 0 && inv.IsBound)
+                    if (ItemValidTime > 0 && !inv.IsBound)
                     {
                         inv.ItemDeleteTime = DateTime.Now.AddSeconds(ItemValidTime);
                     }
                     if (!inv.IsBound)
                     {
+                        if (inv.ItemVNum >= 4046 && inv.ItemVNum <= 4055) /* Can't do another way as it is not an EquipmentType */
+                        {
+                            inv.BoundCharacterId = session.Character.CharacterId;
+                        }
                         if (!delay && (EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80) || EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit || EquipmentSlot == EquipmentType.WeaponSkin))
                         {
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
