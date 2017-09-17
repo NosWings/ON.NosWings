@@ -2248,6 +2248,13 @@ namespace OpenNos.GameObject
                 }
                 monsterToAttack.RunDeathEvent();
 
+                if (monsterToAttack.MapInstance.Map.MapId == 1)
+                {
+                    // NOSVILLE DISABLE DROPS
+                    return;
+                }
+
+
                 Random random = new Random(DateTime.Now.Millisecond & monsterToAttack.MapMonsterId);
 
                 // owner set
@@ -2348,7 +2355,7 @@ namespace OpenNos.GameObject
                 gold = gold > maxGold ? (int)maxGold : gold;
                 double randChance = ServerManager.Instance.RandomNumber() * random.NextDouble();
 
-                if (gold > 0 && randChance <= (int) (ServerManager.Instance.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)) &&
+                if (gold > 0 && randChance <= ServerManager.Instance.GoldDropRate &&
                     Session.CurrentMapInstance?.MapInstanceType != MapInstanceType.LodInstance)
                 {
                     DropDTO drop2 = new DropDTO
