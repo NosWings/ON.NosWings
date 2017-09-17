@@ -370,13 +370,13 @@ namespace OpenNos.Handler
                     Session.Character.SpAdditionPoint += Session.Character.SpPoint;
                     Session.Character.SpPoint = 10000;
                 }
-                if (Session.Character.Hp > Session.Character.HPLoad())
+                if (Session.Character.Hp > Session.Character.HpLoad())
                 {
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
+                    Session.Character.Hp = (int)Session.Character.HpLoad();
                 }
-                if (Session.Character.Mp > Session.Character.MPLoad())
+                if (Session.Character.Mp > Session.Character.MpLoad())
                 {
-                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                    Session.Character.Mp = (int)Session.Character.MpLoad();
                 }
                 Session.Character.Respawns = DAOFactory.RespawnDAO.LoadByCharacter(Session.Character.CharacterId).ToList();
                 Session.Character.StaticBonusList = DAOFactory.StaticBonusDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();

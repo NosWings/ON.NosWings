@@ -62,7 +62,7 @@ namespace OpenNos.GameObject
                 }
                 session.Character.Hp += session.Character.FoodHp;
                 session.Character.Mp += session.Character.FoodMp;
-                if (session.Character.FoodHp > 0 && session.Character.FoodHp > 0 && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
+                if (session.Character.FoodHp > 0 && session.Character.FoodHp > 0 && (session.Character.Hp < session.Character.HpLoad() || session.Character.Mp < session.Character.MpLoad()))
                 {
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRc(session.Character.FoodHp));
                 }

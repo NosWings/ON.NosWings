@@ -40,7 +40,7 @@ namespace OpenNos.GameObject
             switch (Effect)
             {
                 default:
-                    if (session.Character.Hp == session.Character.HPLoad() && session.Character.Mp == session.Character.MPLoad())
+                    if (session.Character.Hp == session.Character.HpLoad() && session.Character.Mp == session.Character.MpLoad())
                     {
                         return;
                     }
@@ -49,23 +49,23 @@ namespace OpenNos.GameObject
                         return;
                     }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                    if ((int)session.Character.HPLoad() - session.Character.Hp < Hp)
+                    if ((int)session.Character.HpLoad() - session.Character.Hp < Hp)
                     {
-                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HpLoad() - session.Character.Hp));
                     }
-                    else if ((int)session.Character.HPLoad() - session.Character.Hp > Hp)
+                    else if ((int)session.Character.HpLoad() - session.Character.Hp > Hp)
                     {
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc(Hp));
                     }
                     session.Character.Mp += Mp;
                     session.Character.Hp += Hp;
-                    if (session.Character.Mp > session.Character.MPLoad())
+                    if (session.Character.Mp > session.Character.MpLoad())
                     {
-                        session.Character.Mp = (int)session.Character.MPLoad();
+                        session.Character.Mp = (int)session.Character.MpLoad();
                     }
-                    if (session.Character.Hp > session.Character.HPLoad())
+                    if (session.Character.Hp > session.Character.HpLoad())
                     {
-                        session.Character.Hp = (int)session.Character.HPLoad();
+                        session.Character.Hp = (int)session.Character.HpLoad();
                     }
                     if (session.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance || session.CurrentMapInstance?.IsPVP == true)
                     {
@@ -76,18 +76,18 @@ namespace OpenNos.GameObject
                     }
                     if (inv.ItemVNum == 1242 || inv.ItemVNum == 5582)
                     {
-                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
-                        session.Character.Hp = (int)session.Character.HPLoad();
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HpLoad() - session.Character.Hp));
+                        session.Character.Hp = (int)session.Character.HpLoad();
                     }
                     else if (inv.ItemVNum == 1243 || inv.ItemVNum == 5583)
                     {
-                        session.Character.Mp = (int)session.Character.MPLoad();
+                        session.Character.Mp = (int)session.Character.MpLoad();
                     }
                     else if (inv.ItemVNum == 1244 || inv.ItemVNum == 5584)
                     {
-                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
-                        session.Character.Hp = (int)session.Character.HPLoad();
-                        session.Character.Mp = (int)session.Character.MPLoad();
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HpLoad() - session.Character.Hp));
+                        session.Character.Hp = (int)session.Character.HpLoad();
+                        session.Character.Mp = (int)session.Character.MpLoad();
                     }
                     session.SendPacket(session.Character.GenerateStat());
                     break;

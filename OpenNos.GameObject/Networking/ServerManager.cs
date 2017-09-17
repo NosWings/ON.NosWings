@@ -278,8 +278,8 @@ namespace OpenNos.GameObject
                             arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaM(2));
                         });
 
-                        session.Character.Hp = (int)session.Character.HPLoad();
-                        session.Character.Mp = (int)session.Character.MPLoad();
+                        session.Character.Hp = (int)session.Character.HpLoad();
+                        session.Character.Mp = (int)session.Character.MpLoad();
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
                         session.SendPacket(session.Character.GenerateStat());
                     }
@@ -575,7 +575,7 @@ namespace OpenNos.GameObject
 
                     if (mapInstanceId == session.Character.Family?.Act4Raid?.MapInstanceId || mapInstanceId == session.Character.Family?.Act4RaidBossMap?.MapInstanceId)
                     {
-                        session.SendPacket(session.Character.GenerateDG());
+                        session.SendPacket(session.Character.GenerateDg());
                     }
                 }
                 session.SendPacket(session.CurrentMapInstance.GenerateMapDesignObjects());
@@ -1427,8 +1427,8 @@ namespace OpenNos.GameObject
             {
                 case MapInstanceType.TimeSpaceInstance:
                 case MapInstanceType.RaidInstance:
-                    session.Character.Hp = (int) session.Character.HPLoad();
-                    session.Character.Mp = (int) session.Character.MPLoad();
+                    session.Character.Hp = (int) session.Character.HpLoad();
+                    session.Character.Mp = (int) session.Character.MpLoad();
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRevive());
                     session.SendPacket(session.Character.GenerateStat());
                     break;

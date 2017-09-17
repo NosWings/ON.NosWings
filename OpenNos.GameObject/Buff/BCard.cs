@@ -204,18 +204,18 @@ namespace OpenNos.GameObject
                                     }
                                 }
                                 sess.Session?.CurrentMapInstance?.Broadcast(sess.GenerateRc(heal));
-                                if (sess.Hp + heal < sess.HPLoad())
+                                if (sess.Hp + heal < sess.HpLoad())
                                 {
                                     sess.Hp += heal;
                                     change = true;
                                 }
                                 else
                                 {
-                                    if (sess.Hp != (int)sess.HPLoad())
+                                    if (sess.Hp != (int)sess.HpLoad())
                                     {
                                         change = true;
                                     }
-                                    sess.Hp = (int)sess.HPLoad();
+                                    sess.Hp = (int)sess.HpLoad();
                                 }
                                 if (change)
                                 {

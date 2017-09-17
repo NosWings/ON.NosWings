@@ -247,7 +247,7 @@ namespace OpenNos.Handler
                 return;
             }
             SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
-            Session.SendPacket(Session.Character.GenerateRCSList(csListPacket));
+            Session.SendPacket(Session.Character.GenerateRcsList(csListPacket));
         }
 
         /// <summary>

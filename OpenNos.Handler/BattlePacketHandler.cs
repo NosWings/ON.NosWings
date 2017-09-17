@@ -257,14 +257,14 @@ namespace OpenNos.Handler
                 }
                 int hitmode = 0;
                 bool onyxWings = false;
-                int damage = hitRequest.Session.Character.GeneratePVPDamage(target.Character, hitRequest.Skill, ref hitmode, ref onyxWings);
+                int damage = hitRequest.Session.Character.GeneratePvpDamage(target.Character, hitRequest.Skill, ref hitmode, ref onyxWings);
 
                 if (target.Character.HasGodMode)
                 {
                     damage = 0;
                     hitmode = 1;
                 }
-                else if (target.Character.LastPVPRevive > DateTime.Now.AddSeconds(-10) || hitRequest.Session.Character.LastPVPRevive > DateTime.Now.AddSeconds(-10))
+                else if (target.Character.LastPvpRevive > DateTime.Now.AddSeconds(-10) || hitRequest.Session.Character.LastPvpRevive > DateTime.Now.AddSeconds(-10))
                 {
                     damage = 0;
                     hitmode = 1;
@@ -363,8 +363,8 @@ namespace OpenNos.Handler
                             });
                             Observable.Timer(TimeSpan.FromMilliseconds(30000)).Subscribe(o =>
                             {
-                                target.Character.Hp = (int)target.Character.HPLoad();
-                                target.Character.Mp = (int)target.Character.MPLoad();
+                                target.Character.Hp = (int)target.Character.HpLoad();
+                                target.Character.Mp = (int)target.Character.MpLoad();
                                 short x = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));
                                 short y = (short)(42 + ServerManager.Instance.RandomNumber(-2, 3));
                                 MapInstance citadel = ServerManager.Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == (target.Character.Faction == FactionType.Angel ? 130 : 131));
@@ -393,8 +393,8 @@ namespace OpenNos.Handler
                                 target.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_FROZEN"), target?.Character?.Name), 0));
                                 Task.Run(() =>
                                 {
-                                    target.Character.Hp = (int)target.Character.HPLoad();
-                                    target.Character.Mp = (int)target.Character.MPLoad();
+                                    target.Character.Hp = (int)target.Character.HpLoad();
+                                    target.Character.Mp = (int)target.Character.MpLoad();
                                     target.SendPacket(target?.Character?.GenerateStat());
                                     target.Character.NoMove = true;
                                     target.Character.NoAttack = true;
@@ -422,13 +422,13 @@ namespace OpenNos.Handler
                     case TargetHitType.SingleTargetHit:
                         {
                             // Target Hit
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HpLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
                             break;
                         }
                     case TargetHitType.SingleTargetHitCombo:
                         {
                             // Taget Hit Combo
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.SkillCombo.Animation} {hitRequest.SkillCombo.Effect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.SkillCombo.Animation} {hitRequest.SkillCombo.Effect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HpLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
                             break;
                         }
                     case TargetHitType.SingleAOETargetHit:
@@ -450,9 +450,9 @@ namespace OpenNos.Handler
                             }
                             if (hitRequest.ShowTargetHitAnimation)
                             {
-                                hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} 0 0 {(isAlive ? 1 : 0)} {(int)((double)target.Character.Hp / target.Character.HPLoad() * 100)} 0 0 {hitRequest.Skill.SkillType - 1}");
+                                hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} 0 0 {(isAlive ? 1 : 0)} {(int)((double)target.Character.Hp / target.Character.HpLoad() * 100)} 0 0 {hitRequest.Skill.SkillType - 1}");
                             }
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HpLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
                             break;
                         }
                     case TargetHitType.AOETargetHit:
@@ -472,19 +472,19 @@ namespace OpenNos.Handler
                                     hitmode = 5;
                                     break;
                             }
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HpLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
                             break;
                         }
                     case TargetHitType.ZoneHit:
                         {
                             // ZoneEvent HIT
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.MapX} {hitRequest.MapY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} 5 {hitRequest.Skill.SkillType - 1}");
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.MapX} {hitRequest.MapY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HpLoad() * 100)} {damage} 5 {hitRequest.Skill.SkillType - 1}");
                             break;
                         }
                     case TargetHitType.SpecialZoneHit:
                         {
                             // Special ZoneEvent hit
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} 0 {hitRequest.Skill.SkillType - 1}");
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(isAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HpLoad() * 100)} {damage} 0 {hitRequest.Skill.SkillType - 1}");
                             break;
                         }
                 }
@@ -545,7 +545,7 @@ namespace OpenNos.Handler
                         }
                         if (Session.HasCurrentMapInstance)
                         {
-                            Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad() * 100)} 0 -2 {ski.Skill.SkillType - 1}");
+                            Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HpLoad() * 100)} 0 -2 {ski.Skill.SkillType - 1}");
                             if (ski.Skill.TargetRange != 0 && Session.HasCurrentMapInstance)
                             {
                                 foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange)))
@@ -599,14 +599,14 @@ namespace OpenNos.Handler
                     else if (ski.Skill.TargetType == 2 && ski.Skill.HitType == 0)
                     {
                         Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
-                        Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad() * 100)} 0 -1 {ski.Skill.SkillType - 1}");
+                        Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HpLoad() * 100)} 0 -1 {ski.Skill.SkillType - 1}");
                         ClientSession target = ServerManager.Instance.GetSessionByCharacterId(targetId) ?? Session;
                         ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(target.Character));
                     }
                     else if (ski.Skill.TargetType == 1 && ski.Skill.HitType != 1)
                     {
                         Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
-                        Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad() * 100)} 0 -1 {ski.Skill.SkillType - 1}");
+                        Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HpLoad() * 100)} 0 -1 {ski.Skill.SkillType - 1}");
                         switch (ski.Skill.HitType)
                         {
                             case 2:

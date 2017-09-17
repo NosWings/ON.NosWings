@@ -157,7 +157,7 @@ namespace OpenNos.Handler
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
                                 }
-                                else if (Session.Character.GetCP() < skillinfo.CPCost)
+                                else if (Session.Character.GetCp() < skillinfo.CPCost)
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_CP"), 0));
                                 }

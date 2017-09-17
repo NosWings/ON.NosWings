@@ -785,8 +785,8 @@ namespace OpenNos.Handler
                             else
                             {
                                 Session.Character.Inventory.RemoveItemAmount(saver);
-                                Session.Character.Hp = (int)Session.Character.HPLoad();
-                                Session.Character.Mp = (int)Session.Character.MPLoad();
+                                Session.Character.Hp = (int)Session.Character.HpLoad();
+                                Session.Character.Mp = (int)Session.Character.MpLoad();
                                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateRevive());
                                 Session.SendPacket(Session.Character.GenerateStat());
                             }
@@ -805,13 +805,13 @@ namespace OpenNos.Handler
                                 {
                                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
                                     Session.Character.Inventory.RemoveItemAmount(seed, 10);
-                                    Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
-                                    Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
+                                    Session.Character.Hp = (int)(Session.Character.HpLoad() / 2);
+                                    Session.Character.Mp = (int)(Session.Character.MpLoad() / 2);
                                 }
                                 else
                                 {
-                                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                                    Session.Character.Hp = (int)Session.Character.HpLoad();
+                                    Session.Character.Mp = (int)Session.Character.MpLoad();
                                 }
                                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateTp());
                                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateRevive());
@@ -828,14 +828,14 @@ namespace OpenNos.Handler
                 case 2:
                     if (Session.Character.Gold >= 100)
                     {
-                        Session.Character.Hp = (int)Session.Character.HPLoad();
-                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                        Session.Character.Hp = (int)Session.Character.HpLoad();
+                        Session.Character.Mp = (int)Session.Character.MpLoad();
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateTp());
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateRevive());
                         Session.SendPacket(Session.Character.GenerateStat());
                         Session.Character.Gold -= 100;
                         Session.SendPacket(Session.Character.GenerateGold());
-                        Session.Character.LastPVPRevive = DateTime.Now;
+                        Session.Character.LastPvpRevive = DateTime.Now;
                     }
                     else
                     {
@@ -1218,7 +1218,7 @@ namespace OpenNos.Handler
             Session.SendPacket(flinit);
             Session.SendPacket(kdlinit);
 
-            Session.Character.LastPVPRevive = DateTime.Now;
+            Session.Character.LastPvpRevive = DateTime.Now;
 
             long? familyId = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(Session.Character.CharacterId)?.FamilyId;
             if (familyId != null)

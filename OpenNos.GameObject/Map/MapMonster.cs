@@ -1248,8 +1248,8 @@ namespace OpenNos.GameObject
                 MapInstance.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
                 MapInstance.Broadcast(npcMonsterSkill != null
-                    ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int) (targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0"
-                    : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int) (targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0");
+                    ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int) (targetSession.Character.Hp / targetSession.Character.HpLoad() * 100)} {damage} {hitmode} 0"
+                    : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int) (targetSession.Character.Hp / targetSession.Character.HpLoad() * 100)} {damage} {hitmode} 0");
                 npcMonsterSkill?.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(targetSession.Character));
                 LastSkill = DateTime.Now;
                 if (targetSession.Character.Hp <= 0)
@@ -1284,7 +1284,7 @@ namespace OpenNos.GameObject
                 characterInRange.GetDamage(damage);
                 MapInstance.Broadcast(null, characterInRange.GenerateStat(), ReceiverType.OnlySomeone, "", characterInRange.CharacterId);
                 MapInstance.Broadcast(
-                    $"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} {(int) (characterInRange.Hp / characterInRange.HPLoad() * 100)} {damage} {hitmode} 0");
+                    $"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} {(int) (characterInRange.Hp / characterInRange.HpLoad() * 100)} {damage} {hitmode} 0");
                 if (characterInRange.Hp > 0)
                 {
                     continue;
