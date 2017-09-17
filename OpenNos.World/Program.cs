@@ -104,7 +104,7 @@ namespace OpenNos.World
             // TODO: initialize ClientLinkManager initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();
             string ip = ConfigurationManager.AppSettings["IPADDRESS"];
-            if (bool.TryParse(ConfigurationManager.AppSettings["AutoReboot"], out bool autoreboot))
+            if (!bool.TryParse(ConfigurationManager.AppSettings["AutoReboot"], out bool autoreboot))
             {
                 autoreboot = false;
             }
