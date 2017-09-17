@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
         #region Members
 
         private Random _random;
-        private Item item;
+        private Item _item;
 
         #endregion
 
@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return item ?? (item = ServerManager.Instance.GetItem(ItemVNum));
+                return _item ?? (_item = ServerManager.Instance.GetItem(ItemVNum));
             }
         }
 

@@ -58,7 +58,7 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case EventType.LOD:
-                            LOD.GenerateLod();
+                            Lod.GenerateLod();
                             break;
 
                         case EventType.MINILANDREFRESHEVENT:
@@ -72,7 +72,7 @@ namespace OpenNos.GameObject.Helpers
                             ArenaEvent.GenerateTalentArena();
                             break;
                         case EventType.LODDH:
-                            LOD.GenerateLod(35);
+                            Lod.GenerateLod(35);
                             break;
 
                         case EventType.ICEBREAKER:

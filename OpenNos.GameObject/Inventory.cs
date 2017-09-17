@@ -36,9 +36,9 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public Inventory(Character Character)
+        public Inventory(Character character)
         {
-            Owner = Character;
+            Owner = character;
             _random = new Random();
         }
 
@@ -164,16 +164,16 @@ namespace OpenNos.GameObject
             return invcopy;
         }
 
-        public List<ItemInstance> AddNewToInventory(short vnum, byte amount = 1, InventoryType? type = null, sbyte Rare = 0, byte Upgrade = 0, byte Design = 0)
+        public List<ItemInstance> AddNewToInventory(short vnum, byte amount = 1, InventoryType? type = null, sbyte rare = 0, byte upgrade = 0, byte design = 0)
         {
             if (Owner == null)
             {
                 return new List<ItemInstance>();
             }
             ItemInstance newItem = InstantiateItemInstance(vnum, Owner.CharacterId, amount);
-            newItem.Rare = Rare;
-            newItem.Upgrade = Upgrade;
-            newItem.Design = Design;
+            newItem.Rare = rare;
+            newItem.Upgrade = upgrade;
+            newItem.Design = design;
             if (newItem.Rare != 0 && newItem is WearableInstance wearable)
             {
                 wearable.SetRarityPoint();
@@ -334,19 +334,19 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void DepositItem(InventoryType inventory, byte slot, byte amount, byte NewSlot, ref ItemInstance item, ref ItemInstance itemdest, bool PartnerBackpack)
+        public void DepositItem(InventoryType inventory, byte slot, byte amount, byte newSlot, ref ItemInstance item, ref ItemInstance itemdest, bool partnerBackpack)
         {
             if (item == null || amount > item.Amount || amount <= 0)
             {
                 return;
             }
-            MoveItem(inventory, PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, slot, amount, NewSlot, out item, out itemdest);
+            MoveItem(inventory, partnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, slot, amount, newSlot, out item, out itemdest);
             Owner.Session.SendPacket(item != null ? item.GenerateInventoryAdd()
                 : UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
 
             if (itemdest != null)
             {
-                Owner.Session.SendPacket(PartnerBackpack ? itemdest.GeneratePStash() : itemdest.GenerateStash());
+                Owner.Session.SendPacket(partnerBackpack ? itemdest.GeneratePStash() : itemdest.GenerateStash());
             }
         }
 

@@ -27,7 +27,6 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Channels;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenNos.GameObject.Event;
@@ -40,21 +39,21 @@ namespace OpenNos.GameObject
 
         public bool ShutdownStop;
 
-        private static readonly List<Item> _items = new List<Item>();
+        private static readonly List<Item> Items = new List<Item>();
 
-        private static readonly ConcurrentDictionary<Guid, MapInstance> _mapinstances = new ConcurrentDictionary<Guid, MapInstance>();
+        private static readonly ConcurrentDictionary<Guid, MapInstance> Mapinstances = new ConcurrentDictionary<Guid, MapInstance>();
 
-        private static readonly List<Map> _maps = new List<Map>();
+        private static readonly List<Map> Maps = new List<Map>();
 
-        private static readonly List<NpcMonster> _npcs = new List<NpcMonster>();
+        private static readonly List<NpcMonster> Npcs = new List<NpcMonster>();
 
-        private static readonly List<Skill> _skills = new List<Skill>();
+        private static readonly List<Skill> Skills = new List<Skill>();
 
-        private static readonly ThreadLocal<Random> random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
+        private static readonly ThreadLocal<Random> Random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref _seed)));
 
         private static ServerManager _instance;
 
-        private static int seed = Environment.TickCount;
+        private static int _seed = Environment.TickCount;
 
         private bool _disposed;
 
@@ -81,7 +80,7 @@ namespace OpenNos.GameObject
         private ConcurrentDictionary<int, List<TeleporterDTO>> _teleporters;
 
 
-        private bool inRelationRefreshMode;
+        private bool _inRelationRefreshMode;
 
         #endregion
 
@@ -151,7 +150,7 @@ namespace OpenNos.GameObject
 
         public byte MaxLevel { get; set; }
 
-        public byte MaxSPLevel { get; set; }
+        public byte MaxSpLevel { get; set; }
 
         public List<PenaltyLogDTO> PenaltyLogs { get; set; }
 
@@ -171,7 +170,7 @@ namespace OpenNos.GameObject
 
         public Guid WorldId { get; private set; }
 
-        public int XPRate { get; set; }
+        public int XpRate { get; set; }
 
         public List<Card> Cards { get; set; }
 
@@ -210,7 +209,7 @@ namespace OpenNos.GameObject
             GroupsThreadSafe[group.GroupId] = group;
         }
 
-        public void AskPVPRevive(long characterId)
+        public void AskPvpRevive(long characterId)
         {
             ClientSession session = GetSessionByCharacterId(characterId);
             if (session == null || !session.HasSelectedCharacter)
@@ -489,7 +488,7 @@ namespace OpenNos.GameObject
             }
             try
             {
-                KeyValuePair<Guid, MapInstance> unused = _mapinstances.First(x => x.Key == session.Character.MapInstanceId);
+                KeyValuePair<Guid, MapInstance> unused = Mapinstances.First(x => x.Key == session.Character.MapInstanceId);
             }
             catch
             {
@@ -723,7 +722,7 @@ namespace OpenNos.GameObject
 
         public MapInstance GenerateMapInstance(short mapId, MapInstanceType type, InstanceBag mapclock)
         {
-            Map map = _maps.FirstOrDefault(m => m.MapId.Equals(mapId));
+            Map map = Maps.FirstOrDefault(m => m.MapId.Equals(mapId));
             if (map == null)
             {
                 return null;
@@ -741,20 +740,20 @@ namespace OpenNos.GameObject
             Parallel.ForEach(mapInstance.Npcs, mapNpc =>
             {
                 mapNpc.MapInstance = mapInstance;
-                mapInstance.AddNPC(mapNpc);
+                mapInstance.AddNpc(mapNpc);
             });
-            _mapinstances.TryAdd(guid, mapInstance);
+            Mapinstances.TryAdd(guid, mapInstance);
             return mapInstance;
         }
 
         public IEnumerable<Skill> GetAllSkill()
         {
-            return _skills;
+            return Skills;
         }
 
-        public Guid GetBaseMapInstanceIdByMapId(short MapId)
+        public Guid GetBaseMapInstanceIdByMapId(short mapId)
         {
-            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == MapId && s.Value.MapInstanceType == MapInstanceType.BaseMapInstance).Key;
+            return Mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == mapId && s.Value.MapInstanceType == MapInstanceType.BaseMapInstance).Key;
         }
 
         public List<DropDTO> GetDropsByMonsterVNum(short monsterVNum)
@@ -769,17 +768,17 @@ namespace OpenNos.GameObject
 
         public Item GetItem(short vnum)
         {
-            return _items.FirstOrDefault(m => m.VNum.Equals(vnum));
+            return Items.FirstOrDefault(m => m.VNum.Equals(vnum));
         }
 
         public MapInstance GetMapInstance(Guid id)
         {
-            return _mapinstances.ContainsKey(id) ? _mapinstances[id] : null;
+            return Mapinstances.ContainsKey(id) ? Mapinstances[id] : null;
         }
 
         public IEnumerable<MapInstance> GetMapInstancesByMapInstanceType(MapInstanceType type)
         {
-            return _mapinstances.Values.Where(s => s.MapInstanceType == type);
+            return Mapinstances.Values.Where(s => s.MapInstanceType == type);
         }
 
         public long GetNextGroupId()
@@ -791,7 +790,7 @@ namespace OpenNos.GameObject
 
         public NpcMonster GetNpc(short npcVNum)
         {
-            return _npcs.FirstOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
+            return Npcs.FirstOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
         }
 
         public T GetProperty<T>(string charName, string property)
@@ -831,7 +830,7 @@ namespace OpenNos.GameObject
 
         public Skill GetSkill(short skillVNum)
         {
-            return _skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
+            return Skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
         }
 
         public T GetUserMethod<T>(long characterId, string methodName)
@@ -924,7 +923,7 @@ namespace OpenNos.GameObject
         public void Initialize()
         {
             // parse rates
-            XPRate = int.Parse(ConfigurationManager.AppSettings["RateXp"]);
+            XpRate = int.Parse(ConfigurationManager.AppSettings["RateXp"]);
             HeroXpRate = int.Parse(ConfigurationManager.AppSettings["RateXpHero"]);
             FairyXpRate = int.Parse(ConfigurationManager.AppSettings["RateXpFairy"]);
             ReputRate = int.Parse(ConfigurationManager.AppSettings["RateReput"]);
@@ -934,7 +933,7 @@ namespace OpenNos.GameObject
             GoldRate = int.Parse(ConfigurationManager.AppSettings["RateGold"]);
             MaxLevel = byte.Parse(ConfigurationManager.AppSettings["MaxLevel"]);
             MaxJobLevel = byte.Parse(ConfigurationManager.AppSettings["MaxJobLevel"]);
-            MaxSPLevel = byte.Parse(ConfigurationManager.AppSettings["MaxSPLevel"]);
+            MaxSpLevel = byte.Parse(ConfigurationManager.AppSettings["MaxSPLevel"]);
             MaxHeroLevel = byte.Parse(ConfigurationManager.AppSettings["MaxHeroLevel"]);
             HeroicStartLevel = byte.Parse(ConfigurationManager.AppSettings["HeroicStartLevel"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
@@ -1046,8 +1045,8 @@ namespace OpenNos.GameObject
                         break;
                 }
             });
-            _items.AddRange(item.Select(s => s.Value));
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_LOADED"), _items.Count));
+            Items.AddRange(item.Select(s => s.Value));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_LOADED"), Items.Count));
 
             // intialize monsterdrops
             _monsterDrops = new ConcurrentDictionary<short, List<DropDTO>>();
@@ -1088,8 +1087,8 @@ namespace OpenNos.GameObject
                 }
                 DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npcMonster.NpcMonsterVNum).ToList().ForEach(s => npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard)s));
             });
-            _npcs.AddRange(npcMonsters.Select(s => s.Value));
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
+            Npcs.AddRange(npcMonsters.Select(s => s.Value));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), Npcs.Count));
 
             // intialize recipes
             _recipes = new ConcurrentDictionary<int, List<Recipe>>();
@@ -1132,20 +1131,20 @@ namespace OpenNos.GameObject
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_LOADED"), _teleporters.Sum(i => i.Value.Count)));
 
             // initialize skills
-            ConcurrentDictionary<short, Skill> _skill = new ConcurrentDictionary<short, Skill>();
-            Parallel.ForEach(DAOFactory.SkillDAO.LoadAll(), skill =>
+            ConcurrentDictionary<short, Skill> skill = new ConcurrentDictionary<short, Skill>();
+            Parallel.ForEach(DAOFactory.SkillDAO.LoadAll(), skillItem =>
             {
-                if (!(skill is Skill skillObj))
+                if (!(skillItem is Skill skillObj))
                 {
                     return;
                 }
                 skillObj.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skillObj.SkillVNum).ToList());
                 skillObj.BCards = new ConcurrentBag<BCard>();
                 DAOFactory.BCardDAO.LoadBySkillVNum(skillObj.SkillVNum).ToList().ForEach(o => skillObj.BCards.Add((BCard)o));
-                _skill[skillObj.SkillVNum] = skillObj;
+                skill[skillObj.SkillVNum] = skillObj;
             });
-            _skills.AddRange(_skill.Select(s => s.Value));
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
+            Skills.AddRange(skill.Select(s => s.Value));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), Skills.Count));
 
             // initialize buffs
             Cards = new List<Card>();
@@ -1158,7 +1157,7 @@ namespace OpenNos.GameObject
             }
 
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), _skills.Count));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), Skills.Count));
 
             // intialize mapnpcs
             _mapNpcs = new ConcurrentDictionary<short, List<MapNpc>>();
@@ -1173,7 +1172,7 @@ namespace OpenNos.GameObject
                 int i = 0;
                 int monstercount = 0;
                 OrderablePartitioner<MapDTO> mapPartitioner = Partitioner.Create(DAOFactory.MapDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
-                ConcurrentDictionary<short, Map> _mapList = new ConcurrentDictionary<short, Map>();
+                ConcurrentDictionary<short, Map> mapList = new ConcurrentDictionary<short, Map>();
                 Parallel.ForEach(mapPartitioner, new ParallelOptions { MaxDegreeOfParallelism = 8 }, map =>
                 {
                     Guid guid = Guid.NewGuid();
@@ -1181,9 +1180,9 @@ namespace OpenNos.GameObject
                     {
                         Music = map.Music
                     };
-                    _mapList[map.MapId] = mapinfo;
+                    mapList[map.MapId] = mapinfo;
                     MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance, new InstanceBag());
-                    _mapinstances.TryAdd(guid, newMap);
+                    Mapinstances.TryAdd(guid, newMap);
 
                     Task.Run(() => newMap.LoadPortals());
                     newMap.LoadNpcs();
@@ -1192,7 +1191,7 @@ namespace OpenNos.GameObject
                     Parallel.ForEach(newMap.Npcs, mapNpc =>
                     {
                         mapNpc.MapInstance = newMap;
-                        newMap.AddNPC(mapNpc);
+                        newMap.AddNpc(mapNpc);
                     });
                     Parallel.ForEach(newMap.Monsters, mapMonster =>
                     {
@@ -1202,7 +1201,7 @@ namespace OpenNos.GameObject
                     monstercount += newMap.Monsters.Count;
                     i++;
                 });
-                _maps.AddRange(_mapList.Select(s => s.Value));
+                Maps.AddRange(mapList.Select(s => s.Value));
                 if (i != 0)
                 {
                     Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_LOADED"), i));
@@ -1224,7 +1223,7 @@ namespace OpenNos.GameObject
                 {
                     Logger.Log.Info("[ARENA] Arena Map Loaded");
                     ArenaInstance = GenerateMapInstance(2006, MapInstanceType.ArenaInstance, new InstanceBag());
-                    ArenaInstance.IsPVP = true;
+                    ArenaInstance.IsPvp = true;
                     ArenaInstance.Portals.Add(new Portal
                     {
                         DestinationMapId = 1,
@@ -1239,7 +1238,7 @@ namespace OpenNos.GameObject
                 {
                     Logger.Log.Info("[ARENA] Family Arena Map Loaded");
                     FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.ArenaInstance, new InstanceBag());
-                    FamilyArenaInstance.IsPVP = true;
+                    FamilyArenaInstance.IsPvp = true;
                     ArenaInstance.Portals.Add(new Portal
                     {
                         DestinationMapId = 1,
@@ -1261,7 +1260,7 @@ namespace OpenNos.GameObject
                 {
                     Act4Maps = new List<MapInstance>();
                 }
-                foreach (Map m in _maps.Where(s => s.MapTypes.Any(o => o.MapTypeId == (short)MapTypeEnum.Act4 || o.MapTypeId == (short)MapTypeEnum.Act42)))
+                foreach (Map m in Maps.Where(s => s.MapTypes.Any(o => o.MapTypeId == (short)MapTypeEnum.Act4 || o.MapTypeId == (short)MapTypeEnum.Act42)))
                 {
                     MapInstance act4Map = GenerateMapInstance(m.MapId, MapInstanceType.Act4Instance, new InstanceBag());
                     if (act4Map.Map.MapId == 153)
@@ -1302,7 +1301,7 @@ namespace OpenNos.GameObject
                             portal.SourceY = 186;
                         }
                     }
-                    act4Map.IsPVP = true;
+                    act4Map.IsPvp = true;
                     Act4Maps.Add(act4Map);
                 }
 
@@ -1385,7 +1384,7 @@ namespace OpenNos.GameObject
 
         public int RandomNumber(int min = 0, int max = 100)
         {
-            return random.Value.Next(min, max);
+            return Random.Value.Next(min, max);
         }
 
         public void RefreshRanking()
@@ -1397,20 +1396,20 @@ namespace OpenNos.GameObject
 
         public void RelationRefresh(long relationId)
         {
-            inRelationRefreshMode = true;
+            _inRelationRefreshMode = true;
             CommunicationServiceClient.Instance.UpdateRelation(ServerGroup, relationId);
-            SpinWait.SpinUntil(() => !inRelationRefreshMode);
+            SpinWait.SpinUntil(() => !_inRelationRefreshMode);
         }
 
         public void RemoveMapInstance(Guid mapId)
         {
-            KeyValuePair<Guid, MapInstance> map = _mapinstances.FirstOrDefault(s => s.Key == mapId);
+            KeyValuePair<Guid, MapInstance> map = Mapinstances.FirstOrDefault(s => s.Key == mapId);
             if (map.Equals(default(KeyValuePair<Guid, MapInstance>)))
             {
                 return;
             }
             map.Value.Dispose();
-            ((IDictionary)_mapinstances).Remove(map.Key);
+            ((IDictionary)Mapinstances).Remove(map.Key);
         }
 
         // Map
@@ -1756,7 +1755,7 @@ namespace OpenNos.GameObject
             Act4RaidType CreateRaid(FactionType faction)
             {
                 IEnumerable<MapInstance> maps = Instance.GetMapInstancesByMapInstanceType(MapInstanceType.Act4Instance);
-                Act4RaidType raid = (Act4RaidType) random.Value.Next(0, 5);
+                Act4RaidType raid = (Act4RaidType) Random.Value.Next(0, 5);
                 //MapInstance middleAct4Map = maps?.FirstOrDefault(s => s.Map.MapId == );
                 return raid;
             }
@@ -1848,9 +1847,9 @@ namespace OpenNos.GameObject
             // TODO: Parallelization of family load
             FamilyList = new List<Family>();
             ConcurrentDictionary<long, Family> families = new ConcurrentDictionary<long, Family>();
-            Parallel.ForEach(DAOFactory.FamilyDAO.LoadAll(), familyDTO =>
+            Parallel.ForEach(DAOFactory.FamilyDAO.LoadAll(), familyDto =>
             {
-                Family family = (Family)familyDTO;
+                Family family = (Family)familyDto;
                 family.FamilyCharacters = new List<FamilyCharacter>();
                 foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(family.FamilyId).ToList())
                 {
@@ -1875,7 +1874,7 @@ namespace OpenNos.GameObject
         private void LoadScriptedInstances()
         {
             Raids = new List<ScriptedInstance>();
-            Parallel.ForEach(_mapinstances, map =>
+            Parallel.ForEach(Mapinstances, map =>
             {
                 foreach (ScriptedInstanceDTO scriptedInstanceDto in DAOFactory.ScriptedInstanceDAO.LoadByMap(map.Value.Map.MapId).ToList())
                 {
@@ -2157,7 +2156,7 @@ namespace OpenNos.GameObject
 
         private void OnRelationRefresh(object sender, EventArgs e)
         {
-            inRelationRefreshMode = true;
+            _inRelationRefreshMode = true;
             long relId = (long)sender;
             lock (CharacterRelations)
             {
@@ -2178,7 +2177,7 @@ namespace OpenNos.GameObject
                     CharacterRelations.Remove(rel);
                 }
             }
-            inRelationRefreshMode = false;
+            _inRelationRefreshMode = false;
         }
 
         private void OnSessionKicked(object sender, EventArgs e)

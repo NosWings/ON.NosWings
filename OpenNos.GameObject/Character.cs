@@ -3358,7 +3358,7 @@ namespace OpenNos.GameObject
             return $"rc 1 {CharacterId} {characterHealth} 0";
         }
 
-        public string GenerateRcsList(CSListPacket packet)
+        public string GenerateRcsList(CsListPacket packet)
         {
             string list = string.Empty;
             BazaarItemLink[] billist = new BazaarItemLink[ServerManager.Instance.BazaarList.Count + 20];
@@ -4062,7 +4062,7 @@ namespace OpenNos.GameObject
 
         public void GetXp(long val)
         {
-            LevelXp += val * ServerManager.Instance.XPRate * (int)(1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D);
+            LevelXp += val * ServerManager.Instance.XpRate * (int)(1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D);
             GenerateLevelXpLevelUp();
         }
 
@@ -5243,7 +5243,7 @@ namespace OpenNos.GameObject
             }
             if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < ServerManager.Instance.MaxJobLevel)
             {
-                if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSPLevel && SpInstance.SpLevel > 19)
+                if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSpLevel && SpInstance.SpLevel > 19)
                 {
                     JobLevelXp += (int) (GetJxp(monsterinfo, grp) / 2D * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D));
                 }
@@ -5252,7 +5252,7 @@ namespace OpenNos.GameObject
                     JobLevelXp += (int) (GetJxp(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D));
                 }
             }
-            if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSPLevel)
+            if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSpLevel)
             {
                 int multiplier = SpInstance.SpLevel < 10 ? 10 : SpInstance.SpLevel < 19 ? 5 : 1;
                 SpInstance.XP += (int) (GetJxp(monsterinfo, grp) * (multiplier + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D));
@@ -5401,9 +5401,9 @@ namespace OpenNos.GameObject
                 t = SpxpLoad();
                 Session.SendPacket(GenerateStat());
                 Session.SendPacket(GenerateLevelUp());
-                if (SpInstance.SpLevel >= ServerManager.Instance.MaxSPLevel)
+                if (SpInstance.SpLevel >= ServerManager.Instance.MaxSpLevel)
                 {
-                    SpInstance.SpLevel = ServerManager.Instance.MaxSPLevel;
+                    SpInstance.SpLevel = ServerManager.Instance.MaxSpLevel;
                     SpInstance.XP = 0;
                 }
                 LearnSpSkill();
@@ -5508,7 +5508,7 @@ namespace OpenNos.GameObject
                 partyPenalty = 12f / partySize / levelSum;
             }
 
-            int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.Instance.XPRate * MapInstance.XpRate);
+            int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.Instance.XpRate * MapInstance.XpRate);
 
             // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
             if (partySize > 1 && group != null)
@@ -5534,7 +5534,7 @@ namespace OpenNos.GameObject
 
             long xpcalculation = levelDifference < 5 ? monster.XP : monster.XP / 3 * 2;
 
-            long xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.Instance.XPRate * MapInstance.XpRate);
+            long xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.Instance.XpRate * MapInstance.XpRate);
 
             // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal
             // to 4

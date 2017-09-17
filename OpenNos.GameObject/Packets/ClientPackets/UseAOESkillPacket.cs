@@ -5,7 +5,7 @@ using OpenNos.Core;
 namespace OpenNos.GameObject
 {
     [PacketHeader("u_as")]
-    public class UseAOESkillPacket : PacketDefinition
+    public class UseAoeSkillPacket : PacketDefinition
     {
         #region Properties        
 

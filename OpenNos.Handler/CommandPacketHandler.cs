@@ -356,7 +356,7 @@ namespace OpenNos.Handler
         ///     $BlockPM Command
         /// </summary>
         /// <param name="blockPmPacket"></param>
-        public void BlockPm(BlockPMPacket blockPmPacket)
+        public void BlockPm(BlockPmPacket blockPmPacket)
         {
             LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, blockPmPacket, Session.IpAddress);
             if (!Session.Character.GmPvtBlock)
@@ -912,7 +912,7 @@ namespace OpenNos.Handler
                     {
                         amount = createItemPacket.Design.Value > 99 ? (byte) 99 : createItemPacket.Design.Value;
                     }
-                    ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, Rare: rare, Upgrade: upgrade, Design: design).FirstOrDefault();
+                    ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, rare: rare, upgrade: upgrade, design: design).FirstOrDefault();
                     if (inv != null)
                     {
                         WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
@@ -1445,10 +1445,10 @@ namespace OpenNos.Handler
         ///     $MapPVP Command
         /// </summary>
         /// <param name="mapPvpPacket"></param>
-        public void MapPVP(MapPVPPacket mapPvpPacket)
+        public void MapPVP(MapPvpPacket mapPvpPacket)
         {
             LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, mapPvpPacket, Session.IpAddress);
-            Session.CurrentMapInstance.IsPVP = !Session.CurrentMapInstance.IsPVP;
+            Session.CurrentMapInstance.IsPvp = !Session.CurrentMapInstance.IsPvp;
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
@@ -1881,7 +1881,7 @@ namespace OpenNos.Handler
         ///     $SPRefill Command
         /// </summary>
         /// <param name="sprefillPacket"></param>
-        public void SpRefill(SPRefillPacket sprefillPacket)
+        public void SpRefill(SpRefillPacket sprefillPacket)
         {
             LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, sprefillPacket, Session.IpAddress);
             Session.Character.SpPoint = 10000;
@@ -1921,7 +1921,7 @@ namespace OpenNos.Handler
         public void Stat(StatCommandPacket statCommandPacket)
         {
             LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, statCommandPacket, Session.IpAddress);
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("XP_RATE_NOW")}: {ServerManager.Instance.XPRate} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("XP_RATE_NOW")}: {ServerManager.Instance.XpRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("DROP_RATE_NOW")}: {ServerManager.Instance.DropRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_RATE_NOW")}: {ServerManager.Instance.GoldRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_DROPRATE_NOW")}: {ServerManager.Instance.GoldDropRate} ", 13));
@@ -2007,7 +2007,7 @@ namespace OpenNos.Handler
         ///     $SummonNPC Command
         /// </summary>
         /// <param name="summonNpcPacket"></param>
-        public void SummonNPC(SummonNPCPacket summonNpcPacket)
+        public void SummonNPC(SummonNpcPacket summonNpcPacket)
         {
             // TODO: Fix it, doesn't work!
             if (summonNpcPacket != null)
@@ -2058,13 +2058,13 @@ namespace OpenNos.Handler
                         MapNpcId = Session.CurrentMapInstance.GetNextMonsterId()
                     };
                     monster.Initialize(Session.CurrentMapInstance);
-                    Session.CurrentMapInstance.AddNPC(monster);
+                    Session.CurrentMapInstance.AddNpc(monster);
                     Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
                 }
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay(SummonNPCPacket.ReturnHelp(), 10));
+                Session.SendPacket(Session.Character.GenerateSay(SummonNpcPacket.ReturnHelp(), 10));
             }
         }
 
@@ -2396,7 +2396,7 @@ namespace OpenNos.Handler
                 if (xpRatePacket.Value <= 1000)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, xpRatePacket, Session.IpAddress);
-                    ServerManager.Instance.XPRate = xpRatePacket.Value;
+                    ServerManager.Instance.XpRate = xpRatePacket.Value;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("XP_RATE_CHANGED"), 0));
                 }
                 else

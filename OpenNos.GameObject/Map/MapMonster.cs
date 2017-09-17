@@ -363,7 +363,7 @@ namespace OpenNos.GameObject
             int playerMorale = targetCharacter.Level + targetCharacter.GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleIncreased)[0]
                                                      - targetCharacter.GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleDecreased)[0];
 
-            int Morale = Monster.Level + GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleIncreased)[0]
+            int morale = Monster.Level + GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleIncreased)[0]
                                        - GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleDecreased)[0];
 
             if (targetCharacter.Inventory.Armor != null)
@@ -514,7 +514,7 @@ namespace OpenNos.GameObject
             #region Base Damage
 
             int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg, mainMaxDmg + 1);
-            baseDamage += Morale - playerMorale;
+            baseDamage += morale - playerMorale;
 
             switch (mainUpgrade)
             {

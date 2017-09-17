@@ -226,21 +226,21 @@ namespace OpenNos.Handler
         /// c_blist packet
         /// </summary>
         /// <param name="cbListPacket"></param>
-        public void RefreshBazarList(CBListPacket cbListPacket)
+        public void RefreshBazarList(CbListPacket cbListPacket)
         {
             if (ServerManager.Instance.InShutdown)
             {
                 return;
             }
             SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
-            Session.SendPacket(UserInterfaceHelper.Instance.GenerateRCBList(cbListPacket));
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateRcbList(cbListPacket));
         }
 
         /// <summary>
         /// c_slist packet
         /// </summary>
         /// <param name="csListPacket"></param>
-        public void RefreshPersonalBazarList(CSListPacket csListPacket)
+        public void RefreshPersonalBazarList(CsListPacket csListPacket)
         {
             if (ServerManager.Instance.InShutdown)
             {

@@ -49,11 +49,11 @@ namespace OpenNos.GameObject
 
         public override ItemInstance GetItemInstance()
         {
-            if (_itemInstance == null && OwnerId != null)
+            if (ItemInstance == null && OwnerId != null)
             {
-                _itemInstance = Inventory.InstantiateItemInstance(ItemVNum, OwnerId.Value, Amount);
+                ItemInstance = Inventory.InstantiateItemInstance(ItemVNum, OwnerId.Value, Amount);
             }
-            return _itemInstance;
+            return ItemInstance;
         }
 
         public void Rarify(ClientSession session)

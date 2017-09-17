@@ -104,7 +104,7 @@ namespace OpenNos.GameObject.Event
                     Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_WARN"), 0));
                     Thread.Sleep(1000);
                     Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_START"), 0));
-                    Map.IsPVP = true;
+                    Map.IsPvp = true;
                     while (Map.Sessions.Count() > 1 || AlreadyFrozenPlayers.Count() != Map.Sessions.Count())
                     {
                         Thread.Sleep(1000);

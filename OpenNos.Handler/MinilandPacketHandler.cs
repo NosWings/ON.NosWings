@@ -357,7 +357,7 @@ namespace OpenNos.Handler
         /// mledit packet
         /// </summary>
         /// <param name="mlEditPacket"></param>
-        public void MinilandEdit(MLEditPacket mlEditPacket)
+        public void MinilandEdit(MlEditPacket mlEditPacket)
         {
             switch (mlEditPacket.Type)
             {

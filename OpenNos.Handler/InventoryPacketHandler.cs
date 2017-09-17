@@ -53,7 +53,7 @@ namespace OpenNos.Handler
         /// b_i packet
         /// </summary>
         /// <param name="bIPacket"></param>
-        public void AskToDelete(BIPacket bIPacket)
+        public void AskToDelete(BiPacket bIPacket)
         {
             switch (bIPacket.Option)
             {
@@ -1045,7 +1045,7 @@ namespace OpenNos.Handler
 
             if (spTransformPacket.Type == 10)
             {
-                short specialistDamage = spTransformPacket.SpecialistDamage, specialistDefense = spTransformPacket.SpecialistDefense, specialistElement = spTransformPacket.SpecialistElement, specialistHealpoints = spTransformPacket.SpecialistHP;
+                short specialistDamage = spTransformPacket.SpecialistDamage, specialistDefense = spTransformPacket.SpecialistDefense, specialistElement = spTransformPacket.SpecialistElement, specialistHealpoints = spTransformPacket.SpecialistHp;
                 int transportId = spTransformPacket.TransportId;
                 if (!Session.Character.UseSp || specialistInstance == null || transportId != specialistInstance.TransportId)
                 {
@@ -1792,7 +1792,7 @@ namespace OpenNos.Handler
                         {
                             if (specialist.Item.EquipmentSlot == EquipmentType.Sp)
                             {
-                                specialist.PerfectSP();
+                                specialist.PerfectSp();
                             }
                         }
                         else

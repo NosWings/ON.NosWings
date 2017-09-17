@@ -82,7 +82,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
             if ((DateTime.Now - session.Character.LastPotion).TotalMilliseconds < 750)
             {

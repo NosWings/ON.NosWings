@@ -167,7 +167,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool IsArenaPVPable(int x, int y)
+        public bool IsArenaPvPable(int x, int y)
         {
             try
             {
@@ -185,16 +185,16 @@ namespace OpenNos.GameObject
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
         {
-            short MinX = (short)(-xpoint + firstX);
-            short MaxX = (short)(xpoint + firstX);
+            short minX = (short)(-xpoint + firstX);
+            short maxX = (short)(xpoint + firstX);
 
-            short MinY = (short)(-ypoint + firstY);
-            short MaxY = (short)(ypoint + firstY);
+            short minY = (short)(-ypoint + firstY);
+            short maxY = (short)(ypoint + firstY);
 
             List<MapCell> cells = new List<MapCell>();
-            for (short y = MinY; y <= MaxY; y++)
+            for (short y = minY; y <= maxY; y++)
             {
-                for (short x = MinX; x <= MaxX; x++)
+                for (short x = minX; x <= maxX; x++)
                 {
                     if (x != firstX || y != firstY)
                     {

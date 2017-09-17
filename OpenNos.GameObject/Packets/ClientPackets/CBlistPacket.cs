@@ -6,7 +6,7 @@ using OpenNos.Domain;
 namespace OpenNos.GameObject
 {
     [PacketHeader("c_blist")]
-    public class CBListPacket : PacketDefinition
+    public class CbListPacket : PacketDefinition
     {
         #region Properties
   

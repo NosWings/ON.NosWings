@@ -84,7 +84,7 @@ namespace OpenNos.GameObject
                                     {
                                         continue;
                                     }
-                                    newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, Rare: box.Rare, Upgrade: rollitem.ItemGeneratedUpgrade);
+                                    newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, rare: box.Rare, upgrade: rollitem.ItemGeneratedUpgrade);
                                     if (!newInv.Any())
                                     {
                                         continue;

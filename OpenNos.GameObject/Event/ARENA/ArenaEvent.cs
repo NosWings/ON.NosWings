@@ -333,7 +333,7 @@ namespace OpenNos.GameObject.Event.ARENA
 
                                     if (tm != null && tm2 != null)
                                     {
-                                        map.IsPVP = false;
+                                        map.IsPvp = false;
                                         arenaTeam.Where(at => at.LastSummoned != null).ToList().ForEach(at =>
                                         {
                                             at.LastSummoned = null;
@@ -374,7 +374,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                         tm2.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Call));
 
                                         map.Broadcast("ta_s");
-                                        Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(start4 => { map.IsPVP = true; });
+                                        Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(start4 => { map.IsPvp = true; });
                                     }
                                     else
                                     {

@@ -249,7 +249,7 @@ namespace OpenNos.Handler
                         Session.SendPacket("parcel 5 1 0");
                         return;
                     }
-                    ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
+                    ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, upgrade: mail.AttachmentUpgrade, rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
                     if (newInv == null)
                     {
                         return;
@@ -1129,7 +1129,7 @@ namespace OpenNos.Handler
             if (ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
             {
                 Session.SendPacket(Session.Character.GenerateSay("----------[NosWings : Reborn]----------", 10));
-                Session.SendPacket(Session.Character.GenerateSay($"Xp : {ServerManager.Instance.XPRate}", 11));
+                Session.SendPacket(Session.Character.GenerateSay($"Xp : {ServerManager.Instance.XpRate}", 11));
                 Session.SendPacket(Session.Character.GenerateSay($"Drop : {ServerManager.Instance.DropRate}", 11));
                 Session.SendPacket(Session.Character.GenerateSay($"Or : {ServerManager.Instance.GoldRate}", 11));
                 Session.SendPacket(Session.Character.GenerateSay($"XpFée : {ServerManager.Instance.FairyXpRate}", 11));

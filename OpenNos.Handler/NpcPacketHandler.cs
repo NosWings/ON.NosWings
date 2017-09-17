@@ -307,7 +307,7 @@ namespace OpenNos.Handler
                                     }
                                 }
 
-                                List<ItemInstance> newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount, Rare: rare, Upgrade: item.Upgrade, Design: item.Color);
+                                List<ItemInstance> newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount, rare: rare, upgrade: item.Upgrade, design: item.Color);
                                 if (!newItem.Any())
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE")));

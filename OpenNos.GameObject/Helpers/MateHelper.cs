@@ -13,7 +13,7 @@ namespace OpenNos.GameObject.Helpers
 
         public MateHelper()
         {
-            LoadXPData();
+            LoadXpData();
         }
 
         #endregion
@@ -26,7 +26,7 @@ namespace OpenNos.GameObject.Helpers
 
         #region Methods
 
-        private void LoadXPData()
+        private void LoadXpData()
         {
             // Load XpData
             XpData = new double[256];

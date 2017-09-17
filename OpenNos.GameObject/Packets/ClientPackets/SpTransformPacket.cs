@@ -24,7 +24,7 @@ namespace OpenNos.GameObject.Packets.ClientPackets
         public short SpecialistElement { get; set; }
 
         [PacketIndex(7)]
-        public short SpecialistHP { get; set; }
+        public short SpecialistHp { get; set; }
 
         #endregion
     }

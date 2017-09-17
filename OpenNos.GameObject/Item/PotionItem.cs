@@ -30,7 +30,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
             if ((DateTime.Now - session.Character.LastPotion).TotalMilliseconds < 750)
             {
@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.Hp = (int)session.Character.HpLoad();
                     }
-                    if (session.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance || session.CurrentMapInstance?.IsPVP == true)
+                    if (session.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance || session.CurrentMapInstance?.IsPvp == true)
                     {
                         if (inv.ItemVNum == 1242 || inv.ItemVNum == 5582 || inv.ItemVNum == 1243 || inv.ItemVNum == 5583 || inv.ItemVNum == 1244 || inv.ItemVNum == 5584)
                         {

@@ -190,7 +190,7 @@ namespace OpenNos.Handler
         /// u_as packet
         /// </summary>
         /// <param name="useAoeSkillPacket"></param>
-        public void UseZonesSkill(UseAOESkillPacket useAoeSkillPacket)
+        public void UseZonesSkill(UseAoeSkillPacket useAoeSkillPacket)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted() && penalty != null)
@@ -237,7 +237,7 @@ namespace OpenNos.Handler
                 switch (target.CurrentMapInstance.MapInstanceType)
                 {
                     case MapInstanceType.ArenaInstance:
-                        if (!target.Character.MapInstance.Map.IsArenaPVPable(target.Character.PositionX, target.Character.PositionY) || !Session.Character.MapInstance.Map.IsArenaPVPable(Session.Character.PositionX, Session.Character.PositionY))
+                        if (!target.Character.MapInstance.Map.IsArenaPvPable(target.Character.PositionX, target.Character.PositionY) || !Session.Character.MapInstance.Map.IsArenaPvPable(Session.Character.PositionX, Session.Character.PositionY))
                         {
                             Session.SendPacket("cancel 2 0");
                             return;
@@ -412,7 +412,7 @@ namespace OpenNos.Handler
                             target.Character.TalentLose += 1;
                             Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o =>
                             {
-                                ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
+                                ServerManager.Instance.AskPvpRevive(target.Character.CharacterId);
                             });
                             break;
                     }
@@ -561,7 +561,7 @@ namespace OpenNos.Handler
                                             PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
                                         }
                                     }
-                                    else if (Session.CurrentMapInstance?.IsPVP == true)
+                                    else if (Session.CurrentMapInstance?.IsPvp == true)
                                     {
                                         ConcurrentBag<ArenaTeamMember> team = null;
                                         if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
@@ -687,7 +687,7 @@ namespace OpenNos.Handler
                                             int count = 0;
                                             foreach (ClientSession character in playersInAoeRange)
                                             {
-                                                if (Session.CurrentMapInstance == null || !Session.CurrentMapInstance.IsPVP)
+                                                if (Session.CurrentMapInstance == null || !Session.CurrentMapInstance.IsPvp)
                                                 {
                                                     continue;
                                                 }
@@ -723,7 +723,7 @@ namespace OpenNos.Handler
 
                                             // hit the targetted monster
 
-                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
+                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPvp)
                                             {
                                                 ConcurrentBag<ArenaTeamMember> team = null;
                                                 if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
@@ -748,7 +748,7 @@ namespace OpenNos.Handler
                                             //hit all other monsters
                                             foreach (ClientSession character in playersInAoeRange)
                                             {
-                                                if (!Session.CurrentMapInstance.IsPVP)
+                                                if (!Session.CurrentMapInstance.IsPvp)
                                                 {
                                                     continue;
                                                 }
@@ -778,7 +778,7 @@ namespace OpenNos.Handler
                                             {
                                                 ski.Hit = 0;
                                             }
-                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
+                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPvp)
                                             {
                                                 if (Session.CurrentMapInstance.MapInstanceId != ServerManager.Instance.FamilyArenaInstance.MapInstanceId)
                                                 {
@@ -823,7 +823,7 @@ namespace OpenNos.Handler
                                         }
                                         else
                                         {
-                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
+                                            if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPvp)
                                             {
                                                 ConcurrentBag<ArenaTeamMember> team = null;
                                                 if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
@@ -1042,7 +1042,7 @@ namespace OpenNos.Handler
                         }
                         foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(x, y, characterSkill.Skill.TargetRange)))
                         {
-                            if (Session.CurrentMapInstance == null || !Session.CurrentMapInstance.IsPVP)
+                            if (Session.CurrentMapInstance == null || !Session.CurrentMapInstance.IsPvp)
                             {
                                 continue;
                             }

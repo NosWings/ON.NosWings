@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
 
         private Dictionary<int, MapInstance> _mapinstancedictionary = new Dictionary<int, MapInstance>();
 
-        private IDisposable obs;
+        private IDisposable _obs;
 
         #endregion
 
@@ -120,9 +120,9 @@ namespace OpenNos.GameObject
                 bonusitems += $"{(i == 0 ? "" : " ")}{(gift == null ? "-1.0" : $"{gift.VNum}.{gift.Amount}")}";
             }
             // TODO FINISH THIS
-            const int WinnerScore = 0;
-            const string Winner = "";
-            return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} {RequieredItems.Sum(s => s.Amount)} {drawgift} {specialitems} {bonusitems} {WinnerScore}.{(WinnerScore > 0 ? Winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
+            const int winnerScore = 0;
+            const string winner = "";
+            return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} {RequieredItems.Sum(s => s.Amount)} {drawgift} {specialitems} {bonusitems} {winnerScore}.{(winnerScore > 0 ? winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
         }
 
         public string GenerateWp()
@@ -172,9 +172,9 @@ namespace OpenNos.GameObject
                 {
                     foreach (XmlNode node in def.SelectSingleNode("DrawItems")?.ChildNodes)
                     {
-                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool IsRandomRare);
+                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool isRandomRare);
                         short.TryParse(node.Attributes["Design"]?.Value, out short design);
-                        DrawItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, IsRandomRare));
+                        DrawItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, isRandomRare));
                     }
                 }
                 if (def.SelectSingleNode("SpecialItems")?.ChildNodes != null)
@@ -182,17 +182,17 @@ namespace OpenNos.GameObject
                     foreach (XmlNode node in def.SelectSingleNode("SpecialItems")?.ChildNodes)
                     {
                         short.TryParse(node.Attributes["Design"]?.Value, out short design);
-                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool IsRandomRare);
-                        SpecialItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, IsRandomRare));
+                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool isRandomRare);
+                        SpecialItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, isRandomRare));
                     }
                 }
                 if (def.SelectSingleNode("GiftItems")?.ChildNodes != null)
                 {
                     foreach (XmlNode node in def.SelectSingleNode("GiftItems")?.ChildNodes)
                     {
-                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool IsRandomRare);
+                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool isRandomRare);
                         short.TryParse(node.Attributes["Design"]?.Value, out short design);
-                        GiftItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, IsRandomRare));
+                        GiftItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, isRandomRare));
                     }
                 }
             }
@@ -244,19 +244,19 @@ namespace OpenNos.GameObject
                     _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
                     Dispose();
                 });
-            obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
+            _obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
             {
                 if (_instancebag.Lives - _instancebag.DeadList.Count() < 0)
                 {
                     _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)3)));
                     Dispose();
-                    obs.Dispose();
+                    _obs.Dispose();
                 }
                 if (_instancebag.Clock.DeciSecondRemaining <= 0)
                 {
                     _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
                     Dispose();
-                    obs.Dispose();
+                    _obs.Dispose();
                 }
             });
             GenerateEvent(instanceEvents, FirstMap);
@@ -347,8 +347,8 @@ namespace OpenNos.GameObject
                         break;
 
                     case "Wave":
-                        byte.TryParse(mapevent?.Attributes["Offset"]?.Value, out byte Offset);
-                        evts.Add(new EventContainer(mapinstance, EventActionType.REGISTERWAVE, new EventWave(byte.Parse(mapevent?.Attributes["Delay"]?.Value), GenerateEvent(mapevent, mapinstance), Offset)));
+                        byte.TryParse(mapevent?.Attributes["Offset"]?.Value, out byte offset);
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REGISTERWAVE, new EventWave(byte.Parse(mapevent?.Attributes["Delay"]?.Value), GenerateEvent(mapevent, mapinstance), offset)));
                         break;
 
                     case "SetMonsterLockers":

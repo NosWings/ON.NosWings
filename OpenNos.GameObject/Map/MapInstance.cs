@@ -99,7 +99,7 @@ namespace OpenNos.GameObject
 
         public bool IsDancing { get; set; }
 
-        public bool IsPVP { get; set; }
+        public bool IsPvp { get; set; }
 
         public bool IsSleeping
         {
@@ -180,7 +180,7 @@ namespace OpenNos.GameObject
             _monsters[monster.MapMonsterId] = monster;
         }
 
-        public void AddNPC(MapNpc monster)
+        public void AddNpc(MapNpc monster)
         {
             _npcs[monster.MapNpcId] = monster;
         }
@@ -245,7 +245,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private IEnumerable<string> GenerateNPCShopOnMap()
+        private IEnumerable<string> GenerateNpcShopOnMap()
         {
             return (from npc in Npcs where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
         }
@@ -285,7 +285,7 @@ namespace OpenNos.GameObject
                 }
             });
             Npcs.ForEach(s => packets.Add(s.GenerateIn()));
-            packets.AddRange(GenerateNPCShopOnMap());
+            packets.AddRange(GenerateNpcShopOnMap());
             Parallel.ForEach(DroppedList.Select(s => s.Value), session => packets.Add(session.GenerateIn()));
             Buttons.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateUserShops());
@@ -633,7 +633,7 @@ namespace OpenNos.GameObject
                     IsProtected = mon.IsProtected
                 };
                 npc.Initialize(this);
-                AddNPC(npc);
+                AddNpc(npc);
                 Broadcast(npc.GenerateIn());
             }
         }

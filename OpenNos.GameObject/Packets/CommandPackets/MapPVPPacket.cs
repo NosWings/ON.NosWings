@@ -6,7 +6,7 @@ using OpenNos.Domain;
 namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$MapPVP", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
-    public class MapPVPPacket : PacketDefinition
+    public class MapPvpPacket : PacketDefinition
     {
         public static string ReturnHelp()
         {
