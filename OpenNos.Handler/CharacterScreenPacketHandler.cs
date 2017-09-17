@@ -144,9 +144,9 @@ namespace OpenNos.Handler
                     DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
 
                     Inventory startupInventory = new Inventory((Character) newCharacter);
-                    startupInventory.AddNewToInventory(1, 1, InventoryType.Wear);
-                    startupInventory.AddNewToInventory(8, 1, InventoryType.Wear);
-                    startupInventory.AddNewToInventory(12, 1, InventoryType.Wear);
+                    startupInventory.AddNewToInventory(1, 1, InventoryType.Wear, 5, 5);
+                    startupInventory.AddNewToInventory(8, 1, InventoryType.Wear, 5, 5);
+                    startupInventory.AddNewToInventory(12, 1, InventoryType.Wear, 5, 5);
                     startupInventory.AddNewToInventory(2024, 10, InventoryType.Etc);
                     startupInventory.AddNewToInventory(2081, 1, InventoryType.Etc);
                     startupInventory.AddNewToInventory(1907, 1, InventoryType.Main);
