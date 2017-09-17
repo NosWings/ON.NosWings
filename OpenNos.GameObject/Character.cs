@@ -5239,7 +5239,7 @@ namespace OpenNos.GameObject
             {
                 LevelXp += xp;
             }
-            foreach (var mate in Mates.Where(x => x.IsTeamMember))
+            foreach (Mate mate in Mates.Where(x => x.IsTeamMember))
             {
                 mate.GenerateXp(xp);
             }
@@ -5477,14 +5477,13 @@ namespace OpenNos.GameObject
 
             if (group != null)
             {
-                int levelSum = group.Characters.Sum(g => g.Character.Level);
+                int levelSum = group.Characters.Sum(g => g.Character.HeroLevel);
                 partySize = group.CharacterCount;
                 partyPenalty = 12f / partySize / levelSum;
             }
 
             int heroXp = (int)Math.Round(monster.HeroXp * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.Instance.HeroXpRate * MapInstance.XpRate);
 
-            // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
             if (partySize > 1 && group != null)
             {
                 heroXp = (int)Math.Round(heroXp / (HeroLevel * partyPenalty));
