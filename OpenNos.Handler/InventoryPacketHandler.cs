@@ -27,6 +27,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using OpenNos.Data;
 using OpenNos.DAL;
+using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.Handler
 {
@@ -657,8 +658,9 @@ namespace OpenNos.Handler
                         {
                             Session.SendPacket(Session.Character.GenerateIcon(1, 1, 1046));
                         }
-                        Session.Character.Gold += droppedGold.GoldAmount;
-                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {droppedGold.GoldAmount}", 12));
+                        int goldDropped = (int)(droppedGold.GoldAmount * (1 + (Session.Character.GetBuff(CardType.Item, (byte)AdditionalTypes.Item.IncreaseEarnedGold)[0] / 100D)));
+                        Session.Character.Gold += goldDropped;
+                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {goldDropped}", 12));
                     }
                     else
                     {
