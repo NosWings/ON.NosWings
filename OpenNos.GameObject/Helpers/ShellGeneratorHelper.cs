@@ -770,11 +770,11 @@ namespace OpenNos.GameObject.Helpers
                     break;
                 case 10:
                     factor = new List<int> {1, 43, 85, 127};
-                    w = factor[_rand.Next(factor.Count)] + shellRarity;
+                    w = factor[_rand.Next(factor.Count)] + 7 * letterMultiplier - 8 + shellRarity;
                     break;
                 case 11:
                     factor = new List<int> {8, 50, 92, 134};
-                    w = factor[_rand.Next(factor.Count)] + shellRarity;
+                    w = factor[_rand.Next(factor.Count)] + 7 * letterMultiplier - 8 + shellRarity;
                     break;
                 default:
                     throw new Exception("Incorrect shellType");

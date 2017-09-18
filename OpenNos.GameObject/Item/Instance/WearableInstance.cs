@@ -558,7 +558,7 @@ namespace OpenNos.GameObject
                         if (Item.IsHeroic)
                         {
                             EquipmentOptions.Clear();
-                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(11, Rare, Item.LevelMinimum));
+                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(10, Rare, Item.LevelMinimum));
                         }
                         for (int i = 0; i < point; i++)
                         {
