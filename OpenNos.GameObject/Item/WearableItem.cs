@@ -79,16 +79,13 @@ namespace OpenNos.GameObject
                         inv.ItemDeleteTime = DateTime.Now.AddSeconds(ItemValidTime);
                     }
 
-                    if (inv.Item.Effect >= 791 && inv.Item.Effect <= 795)
-                    {
-                    }
-
                     if (!inv.IsBound)
                     {
                         if (inv.Item.Effect == 790)
                         {
                             inv.BoundCharacterId = session.Character.CharacterId;
                         }
+
                         if (!delay && (EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80) || EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit || EquipmentSlot == EquipmentType.WeaponSkin))
                         {
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
@@ -278,7 +275,6 @@ namespace OpenNos.GameObject
                                 break;
                             case EquipmentType.Amulet:
                                 session.SendPacket(session.Character.GenerateEff(39));
-                                inv.BoundCharacterId = session.Character.CharacterId;
                                 break;
                         }
                     }

@@ -502,6 +502,21 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop && session != null)
                 {
+                    if (protection == RarifyProtection.BlueAmulet || protection == RarifyProtection.RedAmulet)
+                    {
+                        WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                        Console.WriteLine(amulet.DurabilityPoint);
+                        amulet.DurabilityPoint -= 1;
+                        if (amulet.DurabilityPoint <= 0)
+                        {
+                            session.Character.DeleteItemByItemInstanceId(amulet.Id);
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
+                            session.SendPacket(session.Character.GenerateEquipment());
+                        }
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("AMULET_FAIL_SAVED"), 11));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("AMULET_FAIL_SAVED"), 0));
+                        return;
+                    }
                     if (protection == RarifyProtection.None)
                     {
                         session.Character.DeleteItemByItemInstanceId(Id);

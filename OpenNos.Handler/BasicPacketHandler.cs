@@ -240,7 +240,7 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                 {
-                    ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
+                    ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, upgrade: mail.AttachmentUpgrade, rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
                     if (newInv == null)
                     {
                         return;
