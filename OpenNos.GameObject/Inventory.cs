@@ -83,7 +83,8 @@ namespace OpenNos.GameObject
                         new WearableInstance
                         {
                             ItemVNum = vnum,
-                            Amount = amount
+                            Amount = amount,
+                            DurabilityPoint = newItem.Item.EffectValue
                         };
                         break;
                 }

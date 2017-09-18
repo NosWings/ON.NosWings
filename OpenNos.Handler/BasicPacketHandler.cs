@@ -240,7 +240,7 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                 {
-                    ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
+                    ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, upgrade: mail.AttachmentUpgrade, rare: (sbyte)mail.AttachmentRarity).FirstOrDefault();
                     if (newInv == null)
                     {
                         return;
@@ -605,7 +605,7 @@ namespace OpenNos.Handler
                         }
                         return;
                     case MapInstanceType.RaidInstance:
-                        ClientSession leader = Session?.Character?.Group?.Characters?.ElementAt(0);
+                        ClientSession leader = Session?.Character?.Group?.Characters?.OrderBy(s => s.Character.LastGroupJoin).ElementAt(0);
                         if (leader != null)
                         {
                             if (Session.Character.CharacterId != leader.Character.CharacterId)

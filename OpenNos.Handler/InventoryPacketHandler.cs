@@ -1673,24 +1673,22 @@ namespace OpenNos.Handler
                         {
                             RarifyMode mode = RarifyMode.Normal;
                             RarifyProtection protection = RarifyProtection.None;
-                            /*
                             WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                             if (amulet != null)
                             {
-                                if (amulet.ItemVNum == 282)
+                                if (amulet.Item.Effect == 792)
                                 {
                                     protection = RarifyProtection.BlueAmulet;
                                 }
-                                else if (amulet.ItemVNum == 283)
+                                else if (amulet.Item.Effect == 791)
                                 {
                                     protection = RarifyProtection.RedAmulet;
                                 }
-                                if (amulet.ItemVNum == 259 || amulet.ItemVNum == 4263 && inventory.Item.IsHeroic)
+                                if (amulet.Item.Effect == 796 && inventory.Item.IsHeroic)
                                 {
                                     mode = RarifyMode.Success;
                                 }
                             }
-                            */
                             inventory.RarifyItem(Session, mode, protection);
                         }
                         Session.SendPacket("shop_end 1");
