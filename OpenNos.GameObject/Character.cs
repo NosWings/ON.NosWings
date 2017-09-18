@@ -5271,7 +5271,7 @@ namespace OpenNos.GameObject
             {
                 if (fairy.ElementRate + fairy.Item.ElementRate < fairy.Item.MaxElementRate && Level <= monsterinfo.Level + 15 && Level >= monsterinfo.Level - 15)
                 {
-                    fairy.XP += ServerManager.Instance.FairyXpRate * (int)(1 + GetBuff(CardType.FairyXPIncrease, (byte)AdditionalTypes.FairyXPIncrease.IncreaseFairyXPPoints)[0] / 100D);
+                    fairy.XP += (int)(ServerManager.Instance.FairyXpRate * (1 + GetBuff(CardType.FairyXPIncrease, (byte)AdditionalTypes.FairyXPIncrease.IncreaseFairyXPPoints)[0] / 100D));
                 }
                 GenerateFairyXpLevelUp();
             }
