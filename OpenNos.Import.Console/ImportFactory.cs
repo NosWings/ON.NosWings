@@ -3180,6 +3180,31 @@ namespace OpenNos.Import.Console
                                             item.EffectValue = 4294;
                                             break;
 
+                                        case 282: // Red amulet
+                                            item.Effect = 791;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 283: // Blue amulet
+                                            item.Effect = 792;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 284: // Reinforcement amulet
+                                            item.Effect = 793;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 4264: // Heroic
+                                            item.Effect = 794;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 4262: // Random heroic
+                                            item.Effect = 795;
+                                            item.EffectValue = 3;
+                                            break;
+
                                         default:
                                             item.EffectValue = Convert.ToInt16(currentLine[7]);
                                             break;
