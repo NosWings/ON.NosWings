@@ -168,11 +168,12 @@ namespace OpenNos.GameObject.Helpers
                 case EventActionType.REGISTERWAVE:
                     evt.MapInstance.WaveEvents.Add((EventWave)evt.Parameter);
                     break;
+
                 case EventActionType.SETAREAENTRY:
                     ZoneEvent even2 = (ZoneEvent)evt.Parameter;
                     evt.MapInstance.OnAreaEntryEvents.Add(even2);
-
                     break;
+
                 case EventActionType.REMOVEMONSTERLOCKER:
                     if (evt.MapInstance.InstanceBag.MonsterLocker.Current > 0)
                     {
@@ -252,6 +253,7 @@ namespace OpenNos.GameObject.Helpers
                     evt.MapInstance.InstanceBag.ButtonLocker.Current = Convert.ToByte(evt.Parameter);
                     evt.MapInstance.InstanceBag.ButtonLocker.Initial = Convert.ToByte(evt.Parameter);
                     break;
+
                 case EventActionType.SCRIPTEND:
                     switch (evt.MapInstance.MapInstanceType)
                     {
