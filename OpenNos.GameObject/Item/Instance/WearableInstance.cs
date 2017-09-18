@@ -558,8 +558,9 @@ namespace OpenNos.GameObject
                         if (Item.IsHeroic)
                         {
                             EquipmentOptions.Clear();
-                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(10, Rare, Item.LevelMinimum));
-                        }
+                            int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
+                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(10, Rare == 8 ? 7 : Rare, shellLevel));
+                            }
                         for (int i = 0; i < point; i++)
                         {
                             int rndn = ServerManager.Instance.RandomNumber(0, 3);
@@ -599,8 +600,9 @@ namespace OpenNos.GameObject
                         if (Item.IsHeroic)
                         {
                             EquipmentOptions.Clear();
-                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(11, Rare, Item.LevelMinimum));
-                        }
+                            int shellLevel = Item.LevelMinimum == 28 ? 102 : 107;
+                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(11, Rare == 8 ? 7 : Rare, shellLevel));
+                            }
                             for (int i = 0; i < point; i++)
                         {
                             int rndn = ServerManager.Instance.RandomNumber(0, 3);

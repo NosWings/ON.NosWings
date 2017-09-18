@@ -721,12 +721,7 @@ namespace OpenNos.GameObject.Helpers
             int letterMultiplier = 1;
             List<EquipmentOptionDTO> shellOptions = new List<EquipmentOptionDTO>();
             List<object> optionsAlreadyOn = new List<object>();
-
-            if (shellLevel < 30)
-            {
-                shellLevel = 30;
-            }
-
+            
             if (shellType < 8)
             {
                 letterMultiplier = shellLevel <= 70 ? 1 : shellLevel <= 80 ? 3 : shellLevel <= 90 ? 5 : 1;
@@ -777,7 +772,7 @@ namespace OpenNos.GameObject.Helpers
                     w = factor[_rand.Next(factor.Count)] + 7 * letterMultiplier - 8 + shellRarity;
                     break;
                 default:
-                    throw new Exception("Incorrect shellType");
+                    return null;
             }
 
             if (!ShellType.ContainsKey(w))
