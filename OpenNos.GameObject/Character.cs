@@ -5172,7 +5172,7 @@ namespace OpenNos.GameObject
             foreach (object suit in Enum.GetValues(typeof(EquipmentType)))
             {
                 WearableInstance item = Inventory.LoadBySlotAndType<WearableInstance>((byte)suit, InventoryType.Wear);
-                if (item == null || item.DurabilityPoint <= 0 || item.Item.EffectValue == 3)
+                if (item == null || item.DurabilityPoint <= 0 || item.Item.EquipmentSlot == EquipmentType.Amulet)
                 {
                     continue;
                 }
