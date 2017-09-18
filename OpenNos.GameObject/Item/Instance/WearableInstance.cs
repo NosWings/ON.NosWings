@@ -540,6 +540,11 @@ namespace OpenNos.GameObject
                     DamageMaximum = 0;
                     if (Rare >= 0)
                     {
+                        if (Item.IsHeroic)
+                        {
+                            EquipmentOptions.Clear();
+                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(11, Rare, Item.LevelMinimum));
+                        }
                         for (int i = 0; i < point; i++)
                         {
                             int rndn = ServerManager.Instance.RandomNumber(0, 3);
@@ -576,7 +581,12 @@ namespace OpenNos.GameObject
                     CloseDefence = 0;
                     if (Rare >= 0)
                     {
-                        for (int i = 0; i < point; i++)
+                        if (Item.IsHeroic)
+                        {
+                            EquipmentOptions.Clear();
+                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(11, Rare, Item.LevelMinimum));
+                        }
+                            for (int i = 0; i < point; i++)
                         {
                             int rndn = ServerManager.Instance.RandomNumber(0, 3);
                             if (rndn == 0)

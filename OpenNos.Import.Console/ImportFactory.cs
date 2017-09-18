@@ -944,26 +944,53 @@ namespace OpenNos.Import.Console
 
             // basicMpLoad
             int baseMp = 10;
-            int MPbasup = 7;
+            int MPbasup = 5;
+            int mpInfo = 0;
+            int secondMpInfo = 0;
+            bool isStable = true;
+            bool onlyOne = true;
             for (int i = 0; i < 100; i++)
             {
                 basicMp[i] = baseMp;
-                MPbasup++;
-                baseMp += MPbasup;
-
-                if (i == 37)
+                if (i == 0)
+                { continue; }
+                else if (i == 1)
                 {
-                    // need info
-                    /*baseMp = 1765;
-                    MPbasup = 65;*/
-                }
-                if (i < 41)
-                {
+                    baseMp += MPbasup;
                     continue;
                 }
-                if (((99 - i) % 8) == 0)
+                if (i % 10 == 1)
+                {
+                    /*Special up*/
+                    continue;
+                }
+                if (isStable)
+                {
+                    mpInfo++;
+                    baseMp += MPbasup;
+                    if (mpInfo % 3 != 0)
+                    {
+                        isStable = false;
+                    }
+                }
+                else
                 {
                     MPbasup++;
+                    if (onlyOne)
+                    {
+                        isStable = true;
+                        onlyOne = false;
+                    }
+                    else
+                    {
+                        secondMpInfo++;
+                        if(secondMpInfo % 3 == 0)
+                        {
+                            onlyOne = true;
+                            isStable = true;
+                        }
+                    }
+                    baseMp += MPbasup;
                 }
             }
 

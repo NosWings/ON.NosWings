@@ -380,7 +380,7 @@ namespace OpenNos.GameObject
                 {
                     return 59;
                 }
-                return (byte) (_speed + bonusSpeed);
+                return (byte)(_speed + bonusSpeed);
             }
 
             set
@@ -700,7 +700,7 @@ namespace OpenNos.GameObject
                         Session.HealthStop = false;
                         return;
                     }
-                    
+
                     if (LastDefence.AddSeconds(4) <= DateTime.Now && LastSkillUse.AddSeconds(2) <= DateTime.Now && Hp > 0)
                     {
                         int x = 1;
@@ -2358,8 +2358,8 @@ namespace OpenNos.GameObject
                     };
                     if (Session.CurrentMapInstance != null)
                     {
-                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act4) ||
-                            Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act42) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) ||
+                            Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                         {
                             List<long> alreadyGifted = new List<long>();
                             foreach (long charId in monsterToAttack.DamageList.Keys)
@@ -2377,7 +2377,7 @@ namespace OpenNos.GameObject
                         {
                             if (group != null)
                             {
-                                if (group.SharingMode == (byte) GroupSharingType.ByOrder)
+                                if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                                 {
                                     dropOwner = group.GetNextOrderedCharacterId(this);
 
@@ -2386,7 +2386,7 @@ namespace OpenNos.GameObject
                                         group.Characters.ToList().ForEach(s =>
                                             s.SendPacket(s.Character.GenerateSay(
                                                 string.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.Instance.GetItem(drop2.ItemVNum).Name,
-                                                    group.Characters.Single(c => c.Character.CharacterId == (long) dropOwner).Character.Name, drop2.Amount), 10)));
+                                                    group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop2.Amount), 10)));
                                     }
                                 }
                                 else
@@ -2453,6 +2453,26 @@ namespace OpenNos.GameObject
                 GenerateDignity(monsterToAttack.Monster);
 
                 #endregion
+            }
+        }
+
+        public void GenerateMail(MailDTO mail)
+        {
+            MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
+            if (!mail.IsSenderCopy && mail.ReceiverId == CharacterId)
+            {
+                if (mail.AttachmentVNum != null)
+                {
+                    Session.SendPacket(GenerateParcel(mail));
+                }
+                else
+                {
+                    Session.SendPacket(GeneratePost(mail, 1));
+                }
+            }
+            else
+            {
+                Session.SendPacket(GeneratePost(mail, 2));
             }
         }
 
@@ -2569,7 +2589,7 @@ namespace OpenNos.GameObject
 
         private string GenerateParcel(MailDTO mail)
         {
-            return mail.AttachmentVNum != null ? $"parcel 1 1 {MailList.First(s => s.Value.MailId == mail.MailId).Key} {(mail.Title == "NosWings" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.AttachmentVNum} {mail.AttachmentAmount} {(byte)ServerManager.Instance.GetItem((short)mail.AttachmentVNum).Type}" : string.Empty;
+            return mail.AttachmentVNum != null ? $"parcel 1 1 {MailList.First(s => s.Value.MailId == mail.MailId).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.AttachmentVNum} {mail.AttachmentAmount} {(byte)ServerManager.Instance.GetItem((short)mail.AttachmentVNum).Type}" : string.Empty;
         }
 
         public string GeneratePidx(bool isLeaveGroup = false)
@@ -2657,7 +2677,7 @@ namespace OpenNos.GameObject
             int enemydodge = target.GetBuff(CardType.DodgeAndDefencePercent, (byte)AdditionalTypes.DodgeAndDefencePercent.DodgeIncreased)[0]
                            - target.GetBuff(CardType.DodgeAndDefencePercent, (byte)AdditionalTypes.DodgeAndDefencePercent.DodgeDecreased)[0];
 
-            short enemydeflevel = (short) (target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.DefenceLevelIncreased)[0]
+            short enemydeflevel = (short)(target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.DefenceLevelIncreased)[0]
                                          - target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.DefenceLevelDecreased)[0]);
 
             int morale = Level + GetBuff(CardType.Morale, (byte)AdditionalTypes.Morale.MoraleDecreased)[0]
@@ -3101,7 +3121,7 @@ namespace OpenNos.GameObject
                 case 1:
                     bonusrez += target.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.FireIncreased)[0]
                               - target.GetBuff(CardType.ElementResistance, (byte)AdditionalTypes.ElementResistance.FireDecreased)[0];
-                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireIncreased)[0] 
+                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireIncreased)[0]
                                      - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireDecreased)[0];
                     enemyresistance = target.FireResistance;
                     switch (target.Element)
@@ -4243,7 +4263,7 @@ namespace OpenNos.GameObject
                 }
                 if (newItem.Item.ItemType == ItemType.Shell)
                 {
-                    byte[] incompleteShells = {25, 30, 40, 55, 60, 65, 70, 75, 80, 85};
+                    byte[] incompleteShells = { 25, 30, 40, 55, 60, 65, 70, 75, 80, 85 };
                     int rand = ServerManager.Instance.RandomNumber(0, 101);
                     if (!ShellGeneratorHelper.Instance.ShellTypes.TryGetValue(newItem.ItemVNum, out byte shellType))
                     {
@@ -4333,9 +4353,9 @@ namespace OpenNos.GameObject
             }
             multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP)[0] / 100D;
             multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumHP)[0] / 100D;
-            hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0];
-            hp -= GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
-            hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
+            hp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0];
+            hp -= GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
+            hp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
 
             return (int)((CharacterHelper.Instance.HpData[(byte)Class, Level] + hp) * multiplicator);
         }
@@ -4513,15 +4533,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void LoadSentMail()
-        {
-            foreach (MailDTO mail in ServerManager.Instance.Mails.Where(s => s.SenderId == CharacterId && s.IsSenderCopy && MailList.All(m => m.Value.MailId != s.MailId)))
-            {
-                MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
-
-                Session.SendPacket(GeneratePost(mail, 2));
-            }
-        }
 
         public void LoadSkills()
         {
@@ -4593,9 +4604,9 @@ namespace OpenNos.GameObject
             multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP)[0] / 100D;
             mp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0];
             mp -= GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
-            mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
+            mp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
 
-            return (int) ((CharacterHelper.Instance.MpData[(byte) Class, Level] + mp) * multiplicator);
+            return (int)((CharacterHelper.Instance.MpData[(byte)Class, Level] + mp) * multiplicator);
         }
 
         public void NotifyRarifyResult(sbyte rare)
@@ -4627,45 +4638,6 @@ namespace OpenNos.GameObject
             }
             packetList.Add(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
             return packetList;
-        }
-
-        public void RefreshMail()
-        {
-            int i = 0;
-            int j = 0;
-            try
-            {
-                List<MailDTO> mails = DAOFactory.MailDAO.LoadByCharacterId(CharacterId).Where(s => MailList.All(m => m.Value.MailId != s.MailId)).Take(50).ToList();
-                for (int x = 0; x < mails.Count; x++)
-                {
-                    MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mails.ElementAt(x));
-                    if (mails.ElementAt(x).AttachmentVNum != null)
-                    {
-                        i++;
-                        Session.SendPacket(GenerateParcel(mails.ElementAt(x)));
-                    }
-                    else
-                    {
-                        if (!mails.ElementAt(x).IsOpened)
-                        {
-                            j++;
-                        }
-                        Session.SendPacket(GeneratePost(mails.ElementAt(x), 1));
-                    }
-                }
-                if (i > 0)
-                {
-                    Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GIFTED"), i), 11));
-                }
-                if (j > 0)
-                {
-                    Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), j), 10));
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.Debug("Error while refreshing mail: " + ex.Message);
-            }
         }
 
         public void RemoveVehicle()
@@ -4725,7 +4697,7 @@ namespace OpenNos.GameObject
             Session.Character.Save();
             Session.Disconnect();
         }
-        
+
         public bool ConnectAct4()
         {
             if (Faction == FactionType.Neutral)
@@ -4765,7 +4737,7 @@ namespace OpenNos.GameObject
                 ChangeChannel(act4ChannelInfo.EndPointIp, act4ChannelInfo.EndPointPort, 1);
                 return true;
             }
-            if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act4) == true)
+            if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) == true)
             {
                 MapInstance map = ServerManager.Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == Session.CurrentMapInstance.Map.MapId);
                 if (map != null)
@@ -4830,7 +4802,7 @@ namespace OpenNos.GameObject
                                 continue;
                             }
                             DAOFactory.EquipmentOptionDAO.Delete(instance.Id);
-                            instance?.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
+                            instance.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
                             DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
                         }
                     }
@@ -4876,6 +4848,19 @@ namespace OpenNos.GameObject
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                 }
 
+                IEnumerable<MailDTO> mailDTOToInsertOrUpdate = MailList.Values.ToList();
+
+                IEnumerable<long> currentlySavedMailistEntries = DAOFactory.MailDAO.LoadByCharacterId(CharacterId).Select(s => s.MailId).ToList();
+                foreach (long maildtoEntryToDelete in currentlySavedMailistEntries.Except(MailList.Values.Select(s => s.MailId)))
+                {
+                    DAOFactory.MailDAO.DeleteById(maildtoEntryToDelete);
+                }
+                foreach (MailDTO mailEntry in mailDTOToInsertOrUpdate)
+                {
+                    MailDTO save = mailEntry;
+                    DAOFactory.MailDAO.InsertOrUpdate(ref save);
+                }
+
                 IEnumerable<MinilandObjectDTO> minilandobjectEntriesToInsertOrUpdate = Miniland.MapDesignObjects.ToList();
 
                 foreach (MinilandObjectDTO mobjEntry in minilandobjectEntriesToInsertOrUpdate)
@@ -4903,7 +4888,7 @@ namespace OpenNos.GameObject
 
                 foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
                 {
-                    StaticBuffDTO bf = new StaticBuffDTO()
+                    StaticBuffDTO bf = new StaticBuffDTO
                     {
                         CharacterId = CharacterId,
                         RemainingTime = (int)(buff.RemainingTime - (DateTime.Now - buff.Start).TotalSeconds),
@@ -4975,7 +4960,10 @@ namespace OpenNos.GameObject
             {
                 amount = 99;
             }
-
+            if (amount == 0)
+            {
+                amount = 1;
+            }
             MailDTO mail = new MailDTO
             {
                 AttachmentAmount = it.Type == InventoryType.Etc || it.Type == InventoryType.Main ? amount : (byte)1,
@@ -4996,14 +4984,12 @@ namespace OpenNos.GameObject
                 SenderMorphId = Morph == 0 ? (short)-1 : (short)(Morph > short.MaxValue ? 0 : Morph)
             };
 
-            DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+            CommunicationServiceClient.Instance.SendMail(ServerManager.Instance.ServerGroup, mail);
 
             if (id != CharacterId)
             {
                 return;
             }
-            MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
-            Session.SendPacket(GenerateParcel(mail));
             Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")} {mail.AttachmentAmount}", 12));
         }
 
@@ -5266,12 +5252,12 @@ namespace OpenNos.GameObject
             }
 
             GenerateLevelXpLevelUp();
-            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Fairy, InventoryType.Wear);
+            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (fairy != null)
             {
                 if (fairy.ElementRate + fairy.Item.ElementRate < fairy.Item.MaxElementRate && Level <= monsterinfo.Level + 15 && Level >= monsterinfo.Level - 15)
                 {
-                    fairy.XP += ServerManager.Instance.FairyXpRate;
+                    fairy.XP += (int)(ServerManager.Instance.FairyXpRate * (1 + GetBuff(CardType.FairyXPIncrease, (byte)AdditionalTypes.FairyXPIncrease.IncreaseFairyXPPoints)[0] / 100D));
                 }
                 GenerateFairyXpLevelUp();
             }
@@ -5458,15 +5444,15 @@ namespace OpenNos.GameObject
                     ? 2
                     : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short) MapTypeEnum.Act61A) ?? false
                         ? 5
-                        : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short) MapTypeEnum.Act61D) ?? false
+                        : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61D) ?? false
                             ? 5
-                            : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short) MapTypeEnum.Act62) ?? false
+                            : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act62) ?? false
                                 ? 5
-                                : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short) MapTypeEnum.Act32) ?? false
+                                : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act32) ?? false
                                     ? 5
-                                    : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short) MapTypeEnum.Oasis) ?? false
+                                    : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Oasis) ?? false
                                         ? 5
-                                        : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short) MapTypeEnum.Act42) ?? false
+                                        : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42) ?? false
                                             ? 2
                                             : 1;
                                             */
@@ -5589,7 +5575,7 @@ namespace OpenNos.GameObject
             {
                 return CharacterHelper.Instance.MpHealth[(byte)Class] + regen;
             }
-            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.Instance.MpHealthStand[(byte)Class] + regen: 0;
+            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.Instance.MpHealthStand[(byte)Class] + regen : 0;
         }
 
         private double HeroXpLoad()
@@ -5706,12 +5692,12 @@ namespace OpenNos.GameObject
                 bf.RemainingTime = staticBuff.RemainingTime;
                 Buff.Add(bf);
             }
-            if (staticBuff.RemainingTime > 0)
+            else if (staticBuff.RemainingTime > 0)
             {
                 bf.RemainingTime = staticBuff.RemainingTime;
                 Buff.Add(bf);
             }
-            else if (oldbuff != null)
+            if (oldbuff != null)
             {
                 Buff = Buff.Where(s => !s.Card.CardId.Equals(bf.Card.CardId));
 
@@ -5926,7 +5912,7 @@ namespace OpenNos.GameObject
             int value1 = 0;
             int value2 = 0;
 
-            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {
@@ -5946,7 +5932,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {
@@ -5969,7 +5955,7 @@ namespace OpenNos.GameObject
             foreach (Buff buff in Buff)
             {
                 foreach (BCard entry in buff.Card.BCards.Where(s =>
-                    s.Type.Equals((byte) type) && s.SubType.Equals(subtype) &&
+                    s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
                     (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
                 {
                     if (entry.IsLevelScaled)
@@ -5991,7 +5977,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            return new[] {value1, value2};
+            return new[] { value1, value2 };
         }
 
         /// <summary>
