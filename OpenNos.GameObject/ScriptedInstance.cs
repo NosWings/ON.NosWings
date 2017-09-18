@@ -327,11 +327,14 @@ namespace OpenNos.GameObject
                     //master events
                     case "CreateMap":
                     case "InstanceEvents":
-                        GenerateEvent(mapevent, mapinstance).ToList().ForEach(e => EventHelper.Instance.RunEvent(e));
+                        foreach (EventContainer i in GenerateEvent(mapevent, mapinstance))
+                        {
+                            EventHelper.Instance.RunEvent(i);
+                        }
                         break;
 
                     case "End":
-                        _mapinstancedictionary.Values.ToList().ForEach(m => evts.Add(new EventContainer(m, EventActionType.SCRIPTEND, byte.Parse(mapevent?.Attributes["Type"].Value))));
+                        _mapinstancedictionary.Values.ToList().ForEach(m => evts.Add(new EventContainer(m, EventActionType.SCRIPTEND, byte.Parse(mapevent.Attributes?["Type"]?.Value ?? "0"))));
                         break;
 
                     //register events
