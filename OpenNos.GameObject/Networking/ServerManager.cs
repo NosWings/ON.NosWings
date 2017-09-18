@@ -856,7 +856,7 @@ namespace OpenNos.GameObject
             }
             if (grp.CharacterCount >= 3 && grp.GroupType == GroupType.Group || grp.CharacterCount >= 2 && grp.GroupType != GroupType.Group)
             {
-                if (grp.Characters.ElementAt(0) == session)
+                if (grp.IsLeader(session))
                 {
                     Broadcast(session, UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, string.Empty,
                         grp.Characters.ElementAt(1).Character.CharacterId);
