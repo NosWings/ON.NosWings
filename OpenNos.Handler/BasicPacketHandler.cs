@@ -605,7 +605,7 @@ namespace OpenNos.Handler
                         }
                         return;
                     case MapInstanceType.RaidInstance:
-                        ClientSession leader = Session?.Character?.Group?.Characters?.ElementAt(0);
+                        ClientSession leader = Session?.Character?.Group?.Characters?.OrderBy(s => s.Character.LastGroupJoin).ElementAt(0);
                         if (leader != null)
                         {
                             if (Session.Character.CharacterId != leader.Character.CharacterId)
