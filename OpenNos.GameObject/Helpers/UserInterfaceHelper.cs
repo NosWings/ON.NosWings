@@ -512,7 +512,7 @@ namespace OpenNos.GameObject.Helpers
             string str = $"rl {type}";
             ServerManager.Instance.GroupList.ForEach(s =>
             {
-                ClientSession leader = s.Characters.OrderBy(s => s.Character.LastGroupJoin).ElementAt(0);
+                ClientSession leader = s.Characters.OrderBy(m => m.Character.LastGroupJoin).ElementAt(0);
                 str += $" {s.Raid.Id}.{s.Raid?.LevelMinimum}.{s.Raid?.LevelMaximum}.{leader.Character.Name}.{leader.Character.Level}.{(leader.Character.UseSp ? leader.Character.Morph : -1)}.{(byte)leader.Character.Class}.{(byte)leader.Character.Gender}.{s.CharacterCount}.{leader.Character.HeroLevel}";
             });
             return str;
