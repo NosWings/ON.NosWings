@@ -4830,7 +4830,7 @@ namespace OpenNos.GameObject
                                 continue;
                             }
                             DAOFactory.EquipmentOptionDAO.Delete(instance.Id);
-                            instance?.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
+                            instance.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
                             DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
                         }
                     }
@@ -4903,7 +4903,7 @@ namespace OpenNos.GameObject
 
                 foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
                 {
-                    StaticBuffDTO bf = new StaticBuffDTO()
+                    StaticBuffDTO bf = new StaticBuffDTO
                     {
                         CharacterId = CharacterId,
                         RemainingTime = (int)(buff.RemainingTime - (DateTime.Now - buff.Start).TotalSeconds),
@@ -5706,12 +5706,12 @@ namespace OpenNos.GameObject
                 bf.RemainingTime = staticBuff.RemainingTime;
                 Buff.Add(bf);
             }
-            if (staticBuff.RemainingTime > 0)
+            else if (staticBuff.RemainingTime > 0)
             {
                 bf.RemainingTime = staticBuff.RemainingTime;
                 Buff.Add(bf);
             }
-            else if (oldbuff != null)
+            if (oldbuff != null)
             {
                 Buff = Buff.Where(s => !s.Card.CardId.Equals(bf.Card.CardId));
 
