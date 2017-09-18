@@ -3536,30 +3536,33 @@ namespace OpenNos.GameObject
                     switch (inv.Type)
                     {
                         case InventoryType.Wear:
-                            switch (inv.Slot)
+                            if (inv is WearableInstance wearableinstance)
                             {
-                                case (byte) EquipmentType.MainWeapon:
-                                    Inventory.PrimaryWeapon = (inv as WearableInstance);
-                                    EquipmentOptionHelper.Instance.ShellToBCards((inv as WearableInstance).EquipmentOptions, (inv as WearableInstance).ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                    break;
+                                switch (inv.Slot)
+                                {
+                                    case (byte)EquipmentType.MainWeapon:
+                                        Inventory.PrimaryWeapon = wearableinstance;
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        break;
 
-                                case (byte )EquipmentType.SecondaryWeapon:
-                                    Inventory.SecondaryWeapon = (inv as WearableInstance);
-                                    EquipmentOptionHelper.Instance.ShellToBCards((inv as WearableInstance).EquipmentOptions, (inv as WearableInstance).ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                    break;
+                                    case (byte)EquipmentType.SecondaryWeapon:
+                                        Inventory.SecondaryWeapon = wearableinstance;
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        break;
 
-                                case (byte) EquipmentType.Armor:
-                                    Inventory.Armor = (inv as WearableInstance);
-                                    EquipmentOptionHelper.Instance.ShellToBCards((inv as WearableInstance).EquipmentOptions, (inv as WearableInstance).ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                    break;
+                                    case (byte)EquipmentType.Armor:
+                                        Inventory.Armor = wearableinstance;
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        break;
 
-                                case (byte) EquipmentType.Bracelet:
-                                case (byte) EquipmentType.Necklace:
-                                case (byte) EquipmentType.Ring:
-                                    EquipmentOptionHelper.Instance.CellonToBCards((inv as WearableInstance).EquipmentOptions, (inv as WearableInstance).ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                    break;
+                                    case (byte)EquipmentType.Bracelet:
+                                    case (byte)EquipmentType.Necklace:
+                                    case (byte)EquipmentType.Ring:
+                                        EquipmentOptionHelper.Instance.CellonToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        break;
+                                }
+                                inv.Item.BCards.ForEach(s => EquipmentBCards.Add(s));
                             }
-                            inv.Item.BCards.ForEach(s => EquipmentBCards.Add(s));
                             break;
                         case InventoryType.Equipment:
                             if (inv.Item.EquipmentSlot == EquipmentType.Sp)
