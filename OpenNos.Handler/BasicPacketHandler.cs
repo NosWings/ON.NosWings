@@ -30,6 +30,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using static OpenNos.Domain.BCardType;
 using System.Threading.Tasks;
 
 namespace OpenNos.Handler
@@ -1269,7 +1270,7 @@ namespace OpenNos.Handler
         {
             if (Session?.Character == null || !Session.HasCurrentMapInstance || Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) ||
                 Session.Character.IsChangingMapInstance ||
-                Session.Character.HasShopOpened)
+                Session.Character.HasShopOpened || Session.Character.HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
             {
                 return;
             }

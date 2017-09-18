@@ -920,17 +920,17 @@ namespace OpenNos.Import.Console
 
             // basicHpLoad
             int baseHp = 138;
-            int basup = 17;
+            int HPbasup = 17;
             for (int i = 0; i < 100; i++)
             {
                 basicHp[i] = baseHp;
-                basup++;
-                baseHp += basup;
+                HPbasup++;
+                baseHp += HPbasup;
 
                 if (i == 37)
                 {
                     baseHp = 1765;
-                    basup = 65;
+                    HPbasup = 65;
                 }
                 if (i < 41)
                 {
@@ -938,15 +938,33 @@ namespace OpenNos.Import.Console
                 }
                 if (((99 - i) % 8) == 0)
                 {
-                    basup++;
+                    HPbasup++;
                 }
             }
 
             // basicMpLoad
+            int baseMp = 10;
+            int MPbasup = 7;
             for (int i = 0; i < 100; i++)
             {
-                //FIX IT
-                basicMp[i] = basicHp[i];
+                basicMp[i] = baseMp;
+                MPbasup++;
+                baseMp += MPbasup;
+
+                if (i == 37)
+                {
+                    // need info
+                    /*baseMp = 1765;
+                    MPbasup = 65;*/
+                }
+                if (i < 41)
+                {
+                    continue;
+                }
+                if (((99 - i) % 8) == 0)
+                {
+                    MPbasup++;
+                }
             }
 
             // basicXPLoad
@@ -3178,6 +3196,31 @@ namespace OpenNos.Import.Console
 
                                         case 4504:
                                             item.EffectValue = 4294;
+                                            break;
+
+                                        case 282: // Red amulet
+                                            item.Effect = 791;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 283: // Blue amulet
+                                            item.Effect = 792;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 284: // Reinforcement amulet
+                                            item.Effect = 793;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 4264: // Heroic
+                                            item.Effect = 794;
+                                            item.EffectValue = 3;
+                                            break;
+
+                                        case 4262: // Random heroic
+                                            item.Effect = 795;
+                                            item.EffectValue = 3;
                                             break;
 
                                         default:
