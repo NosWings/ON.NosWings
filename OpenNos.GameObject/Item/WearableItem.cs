@@ -78,6 +78,11 @@ namespace OpenNos.GameObject
                     {
                         inv.ItemDeleteTime = DateTime.Now.AddSeconds(ItemValidTime);
                     }
+
+                    if (inv.Item.Effect >= 791 && inv.Item.Effect <= 795)
+                    {
+                    }
+
                     if (!inv.IsBound)
                     {
                         if (inv.Item.Effect == 790)
