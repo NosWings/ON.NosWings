@@ -61,6 +61,8 @@ namespace OpenNos.GameObject
 
         public ConcurrentBag<BCard> EquipmentBCards { get; set; }
 
+        public ConcurrentBag<BCard> PassiveSkillBcards { get; set; }
+
         public AuthorityType Authority { get; set; }
 
         public Node[,] BrushFire { get; set; }
@@ -4550,6 +4552,9 @@ namespace OpenNos.GameObject
                     Skills[characterskill.SkillVNum] = characterskill as CharacterSkill;
                 }
             }
+            // TODO IMPROVE PERFORMANCES
+            // ACCESSING A DICTIONARY LIKE THIS IS CPU CYCLE KILLER
+            PassiveSkillHelper.Instance.PassiveSkillToBcards(Skills.Values.Where(s => s.Skill.SkillType == 0).ToList()).ForEach(s => PassiveSkillBcards.Add(s));
         }
 
         public void LoadSpeed()
@@ -5874,6 +5879,10 @@ namespace OpenNos.GameObject
 
             WearableInstance tmp = primary ? Inventory.PrimaryWeapon : Inventory.SecondaryWeapon;
 
+            if (tmp == null)
+            {
+                return new[] {0, 0};
+            }
             foreach (BCard bcard in tmp.Item.BCards.Where(
                 s => s != null && s.Type.Equals((byte) CardType.IncreaseDamage) && s.SubType.Equals((byte) AdditionalTypes.IncreaseDamage.IncreasingPropability)))
             {
@@ -5955,7 +5964,27 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in PassiveSkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
+            {
+                if (entry.IsLevelScaled)
+                {
+                    if (entry.IsLevelDivided)
+                    {
+                        value1 += Level / entry.FirstData;
+                    }
+                    else
+                    {
+                        value1 += entry.FirstData * Level;
+                    }
+                }
+                else
+                {
+                    value1 += entry.FirstData;
+                }
+                value2 += entry.SecondData;
+            }
+
+            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {

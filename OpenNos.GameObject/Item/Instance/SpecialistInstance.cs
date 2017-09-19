@@ -150,12 +150,8 @@ namespace OpenNos.GameObject
             }
 
             string skill = string.Empty;
-            List<CharacterSkill> skillsSp = ServerManager.Instance.GetAllSkill().Where(ski => ski.Class == Item.Morph + 31 && ski.LevelMinimum <= SpLevel).Select(ski => new CharacterSkill
-                {
-                    SkillVNum = ski.SkillVNum,
-                    CharacterId = CharacterId
-                })
-                .ToList();
+            List<CharacterSkill> skillsSp = ServerManager.Instance.GetAllSkill().Where(ski => ski.Class == Item.Morph + 31 && ski.LevelMinimum <= SpLevel)
+                .Select(ski => new CharacterSkill {SkillVNum = ski.SkillVNum, CharacterId = CharacterId}).ToList();
             byte spdestroyed = 0;
             if (Rare == -2)
             {
