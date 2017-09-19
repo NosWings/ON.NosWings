@@ -2240,14 +2240,6 @@ namespace OpenNos.GameObject
                     return;
                 }
                 monsterToAttack.RunDeathEvent();
-
-                if (monsterToAttack.MapInstance.Map.MapId == 1)
-                {
-                    // NOSVILLE DISABLE DROPS
-                    return;
-                }
-
-
                 Random random = new Random(DateTime.Now.Millisecond & monsterToAttack.MapMonsterId);
 
                 // owner set
@@ -2267,6 +2259,55 @@ namespace OpenNos.GameObject
                 List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMapInstance.Map.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || s.MapTypeId == null).ToList();
                 if (monsterToAttack.Monster.MonsterType == MonsterType.Special)
                 {
+                    return;
+                }
+
+                #region exp
+
+                if (Hp <= 0)
+                {
+                    return;
+                }
+                Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId) && g.GroupType == GroupType.Group);
+                if (grp != null)
+                {
+                    foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
+                    {
+                        if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
+                        {
+                            targetSession.Character.GenerateXp(monsterToAttack, true);
+                        }
+                        else
+                        {
+                            targetSession.SendPacket(targetSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
+                            targetSession.Character.GenerateXp(monsterToAttack, false);
+                        }
+                    }
+                }
+                else
+                {
+                    if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId)
+                    {
+                        GenerateXp(monsterToAttack, true);
+                    }
+                    else
+                    {
+                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
+                        GenerateXp(monsterToAttack, false);
+                    }
+                }
+                // TODO ADD A CONFIGURATION FOR THAT
+                if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance)
+                {
+                    GetReput(monsterToAttack.Monster.Level / 3);
+                }
+                GenerateDignity(monsterToAttack.Monster);
+
+                #endregion
+
+                if (monsterToAttack.MapInstance.Map.MapId == 1)
+                {
+                    // NOSVILLE DISABLE DROPS
                     return;
                 }
 
@@ -2410,49 +2451,7 @@ namespace OpenNos.GameObject
                 }
 
                 #endregion
-
-                #region exp
-
-                if (Hp <= 0)
-                {
-                    return;
-                }
-                Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId) && g.GroupType == GroupType.Group);
-                if (grp != null)
-                {
-                    foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
-                    {
-                        if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
-                        {
-                            targetSession.Character.GenerateXp(monsterToAttack, true);
-                        }
-                        else
-                        {
-                            targetSession.SendPacket(targetSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
-                            targetSession.Character.GenerateXp(monsterToAttack, false);
-                        }
-                    }
-                }
-                else
-                {
-                    if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId)
-                    {
-                        GenerateXp(monsterToAttack, true);
-                    }
-                    else
-                    {
-                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
-                        GenerateXp(monsterToAttack, false);
-                    }
-                }
-                // TODO ADD A CONFIGURATION FOR THAT
-                if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance)
-                {
-                    GetReput(monsterToAttack.Monster.Level / 3);
-                }
-                GenerateDignity(monsterToAttack.Monster);
-
-                #endregion
+                
             }
         }
 
