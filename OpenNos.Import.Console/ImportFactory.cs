@@ -942,31 +942,29 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            // basicMpLoad
+            // basicMpLoad (Only for classic monster)
             int baseMp = 10;
             int MPbasup = 5;
             int mpInfo = 0;
             int secondMpInfo = 0;
             bool isStable = true;
             bool onlyOne = true;
+            bool isFirst = false;
             for (int i = 0; i < 100; i++)
             {
                 basicMp[i] = baseMp;
                 if (i == 0)
                 { continue; }
-                else if (i == 1)
-                {
-                    baseMp += MPbasup;
-                    continue;
-                }
                 if (i % 10 == 1)
                 {
-                    /*Special up*/
+                    basicMp[i] += MPbasup;
                     continue;
                 }
                 if (isStable)
                 {
                     mpInfo++;
+                    MPbasup += isFirst ? 1 : 0;
+                    isFirst = false;
                     baseMp += MPbasup;
                     if (mpInfo % 3 != 0)
                     {
@@ -980,6 +978,7 @@ namespace OpenNos.Import.Console
                     {
                         isStable = true;
                         onlyOne = false;
+                        isFirst = true;
                     }
                     else
                     {
@@ -988,6 +987,7 @@ namespace OpenNos.Import.Console
                         {
                             onlyOne = true;
                             isStable = true;
+                            isFirst = true;
                         }
                     }
                     baseMp += MPbasup;
