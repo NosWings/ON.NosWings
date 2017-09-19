@@ -505,7 +505,6 @@ namespace OpenNos.GameObject
                     if (protection == RarifyProtection.BlueAmulet || protection == RarifyProtection.RedAmulet)
                     {
                         WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
-                        Console.WriteLine(amulet.DurabilityPoint);
                         amulet.DurabilityPoint -= 1;
                         if (amulet.DurabilityPoint <= 0)
                         {
@@ -691,7 +690,7 @@ namespace OpenNos.GameObject
             session.SendPacket("shop_end 1");
         }
 
-        public void UpgradeItem(ClientSession session, UpgradeMode mode, UpgradeProtection protection, bool isCommand = false)
+        public void UpgradeItem(ClientSession session, UpgradeMode mode, UpgradeProtection protection, bool isCommand = false, FixedUpMode HasAmulet = FixedUpMode.None)
         {
             if (!session.HasCurrentMapInstance)
             {
@@ -733,7 +732,7 @@ namespace OpenNos.GameObject
             const short normalScrollVnum = 1218;
             const short goldScrollVnum = 5369;
 
-            if (IsFixed)
+            if (IsFixed && HasAmulet == FixedUpMode.None)
             {
                 session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
                 session.SendPacket("shop_end 1");
@@ -789,6 +788,17 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.RemoveItemAmount(goldScrollVnum);
                         session.SendPacket("shop_end 2");
                     }
+                    if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
+                    {
+                        WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                        amulet.DurabilityPoint -= 1;
+                        if (amulet.DurabilityPoint <= 0)
+                        {
+                            session.Character.DeleteItemByItemInstanceId(amulet.Id);
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
+                            session.SendPacket(session.Character.GenerateEquipment());
+                        }
+                    }
                     session.Character.Gold -= (long) (goldprice[Upgrade] * reducedpricefactor);
                     session.Character.Inventory.RemoveItemAmount(cellaVnum, (int) (cella[Upgrade] * reducedpricefactor));
                     session.SendPacket(session.Character.GenerateGold());
@@ -836,6 +846,17 @@ namespace OpenNos.GameObject
                     {
                         session.Character.Inventory.RemoveItemAmount(normalScrollVnum);
                         session.SendPacket("shop_end 2");
+                    }
+                    if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
+                    {
+                        WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                        amulet.DurabilityPoint -= 1;
+                        if (amulet.DurabilityPoint <= 0)
+                        {
+                            session.Character.DeleteItemByItemInstanceId(amulet.Id);
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
+                            session.SendPacket(session.Character.GenerateEquipment());
+                        }
                     }
                     session.Character.Inventory.RemoveItemAmount(cellaVnum, cella[Upgrade]);
                     session.Character.Gold -= goldprice[Upgrade];

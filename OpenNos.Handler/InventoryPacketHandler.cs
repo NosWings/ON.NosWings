@@ -1567,7 +1567,13 @@ namespace OpenNos.Handler
                     {
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
-                            inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.None);
+                            FixedUpMode HasAmulet = FixedUpMode.None;
+                            WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                            if (amulet.Item.Effect == 793)
+                            {
+                                HasAmulet = FixedUpMode.HasAmulet;
+                            }
+                            inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.None, HasAmulet: HasAmulet);
                         }
                     }
                     break;
@@ -1672,6 +1678,7 @@ namespace OpenNos.Handler
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
                             RarifyMode mode = RarifyMode.Normal;
+                            FixedUpMode isFixed = FixedUpMode.HasAmulet;
                             RarifyProtection protection = RarifyProtection.None;
                             WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                             if (amulet != null)
@@ -1730,9 +1737,15 @@ namespace OpenNos.Handler
                     inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                     if (inventory != null)
                     {
+                        FixedUpMode HasAmulet = FixedUpMode.None;
+                        WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                        if (amulet.Item.Effect == 793)
+                        {
+                            HasAmulet = FixedUpMode.HasAmulet;
+                        }
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
-                            inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.Protected);
+                            inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.Protected, HasAmulet: HasAmulet);
                         }
                     }
                     break;
@@ -1806,9 +1819,16 @@ namespace OpenNos.Handler
                     inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                     if (inventory != null)
                     {
+                        FixedUpMode HasAmulet = FixedUpMode.None;
+                        WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                        if (amulet.Item.Effect == 793)
+                        {
+                            HasAmulet = FixedUpMode.HasAmulet;
+                        }
+
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
-                            inventory.UpgradeItem(Session, UpgradeMode.Reduced, UpgradeProtection.Protected);
+                            inventory.UpgradeItem(Session, UpgradeMode.Reduced, UpgradeProtection.Protected, HasAmulet: HasAmulet);
                         }
                     }
                     break;
