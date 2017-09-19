@@ -533,10 +533,12 @@ namespace OpenNos.Master.Server
             else
             {
                 AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.CharacterId.Equals(mail.ReceiverId));
-                if (account != null && account.ConnectedWorld != null)
+                if (account == null || account.ConnectedWorld == null)
                 {
-                    account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().SendMail(mail);
+                    DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+                    return;
                 }
+                account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().SendMail(mail);
             }
         }
 
