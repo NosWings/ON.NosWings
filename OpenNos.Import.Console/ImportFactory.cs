@@ -3718,7 +3718,7 @@ namespace OpenNos.Import.Console
                                     case 4053:
                                     case 4054:
                                     case 4055:
-                                        item.EffectValue = 790;
+                                        item.Effect = 790;
                                         break;
 
                                     default:

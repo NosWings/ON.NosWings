@@ -84,7 +84,7 @@ namespace OpenNos.GameObject
                         {
                             ItemVNum = vnum,
                             Amount = amount,
-                            DurabilityPoint = newItem.Item.EffectValue
+                            DurabilityPoint = newItem.Item.Effect != 790 ? newItem.Item.EffectValue : 0
                         };
                         break;
                 }
