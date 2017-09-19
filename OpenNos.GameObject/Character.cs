@@ -4544,7 +4544,7 @@ namespace OpenNos.GameObject
             // only load speed if you dont use custom speed
             if (!IsVehicled && !IsCustomSpeed)
             {
-                Speed = CharacterHelper.Instance.SpeedData[(byte)Class];
+                Speed = CharacterHelper.Instance.SpeedData[(byte) Class];
 
                 if (UseSp)
                 {
@@ -4553,6 +4553,8 @@ namespace OpenNos.GameObject
                         Speed += SpInstance.Item.Speed;
                     }
                 }
+                Speed += (byte) GetBuff(CardType.Move, (byte) AdditionalTypes.Move.MovementSpeedIncreased)[0];
+                Speed -= (byte) GetBuff(CardType.Move, (byte) AdditionalTypes.Move.MovementSpeedDecreased)[0];
             }
 
             if (IsShopping)

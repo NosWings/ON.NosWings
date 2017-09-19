@@ -333,8 +333,7 @@ namespace OpenNos.Handler
                                                             return;
                                                         }
                                                         Session.CurrentMapInstance.Broadcast(npc.GenerateOut());
-                                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
-                                                            string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
+                                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
                                                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 11));
                                                         return;
                                                     }
