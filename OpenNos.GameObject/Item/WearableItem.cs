@@ -114,8 +114,8 @@ namespace OpenNos.GameObject
                         }
 
                         if (ItemType != ItemType.Weapon && ItemType != ItemType.Armor && ItemType != ItemType.Fashion && ItemType != ItemType.Jewelery && ItemType != ItemType.Specialist ||
-                            LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || Sex != 0 && Sex != (byte)session.Character.Gender + 1
-                            || ItemType != ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves && ((Class >> (byte)session.Character.Class) & 1) != 1)
+                            LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || Sex != 0 && Sex != (byte) session.Character.Gender + 1
+                            || ItemType != ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves && (Class >> (byte) session.Character.Class & 1) != 1)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                             return;
@@ -131,6 +131,15 @@ namespace OpenNos.GameObject
                                 return;
                             }
 
+                        }
+
+                        if (ItemType == ItemType.Weapon || ItemType == ItemType.Armor)
+                        {
+                            if (inv.BoundCharacterId.HasValue && inv.BoundCharacterId.Value != session.Character.CharacterId)
+                            {
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
+                                return;
+                            }
                         }
 
                         if (session.Character.UseSp && EquipmentSlot == EquipmentType.Sp)
