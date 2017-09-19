@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading;
@@ -120,8 +121,8 @@ namespace OpenNos.GameObject.Event
                 }
                 EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CLOCK, remaining * 10));
                 EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.STARTCLOCK,
-                    new Tuple<List<EventContainer>, List<EventContainer>>(new List<EventContainer>(),
-                        new List<EventContainer>())));
+                    new Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>(new ConcurrentBag<EventContainer>(),
+                        new ConcurrentBag<EventContainer>())));
             }
         }
 
