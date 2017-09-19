@@ -376,6 +376,19 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_IS_HEROIC"), 0));
                             return;
                         }
+                        if (protection == RarifyProtection.RandomHeroicAmulet)
+                        {
+                            if (Item.IsHeroic && Rare > 0)
+                            {
+                                byte shellType = (byte)(Item.ItemType == ItemType.Armor ? 11 : 10);
+                                if (shellType == 11 || shellType == 10)
+                                {
+                                    EquipmentOptions.Clear();
+                                    int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
+                                    EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(shellType, Rare == 8 ? 7 : Rare, shellLevel));
+                                }
+                            }
+                        }
 
                         if (protection == RarifyProtection.Scroll && !isCommand)
                         {
@@ -572,12 +585,6 @@ namespace OpenNos.GameObject
                     DamageMaximum = 0;
                     if (Rare >= 0)
                     {
-                        if (Item.IsHeroic)
-                        {
-                            EquipmentOptions.Clear();
-                            int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
-                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(10, Rare == 8 ? 7 : Rare, shellLevel));
-                        }
                         for (int i = 0; i < point; i++)
                         {
                             int rndn = ServerManager.Instance.RandomNumber(0, 3);
@@ -614,13 +621,7 @@ namespace OpenNos.GameObject
                     CloseDefence = 0;
                     if (Rare >= 0)
                     {
-                        if (Item.IsHeroic)
-                        {
-                            EquipmentOptions.Clear();
-                            int shellLevel = Item.LevelMinimum == 28 ? 102 : 107;
-                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(11, Rare == 8 ? 7 : Rare, shellLevel));
-                            }
-                            for (int i = 0; i < point; i++)
+                        for (int i = 0; i < point; i++)
                         {
                             int rndn = ServerManager.Instance.RandomNumber(0, 3);
                             if (rndn == 0)

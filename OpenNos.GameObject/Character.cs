@@ -1749,10 +1749,16 @@ namespace OpenNos.GameObject
             #endregion
             baseDamage *= 1 + (int)(GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D);
 
-            // ItemBonus with x% of increase damage by y%
-            if (GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability)[0] > ServerManager.Instance.RandomNumber())
+
+            int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
+            int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
+            if (ServerManager.Instance.RandomNumber() < primaryWeaponSoftDamage[0])
             {
-                baseDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability)[1];
+                baseDamage += (int)(baseDamage * (1 + primaryWeaponSoftDamage[1] / 100D));
+            }
+            if (ServerManager.Instance.RandomNumber() < secondaryWeaponSoftDamage[0])
+            {
+                baseDamage += (int)(baseDamage * (1 + secondaryWeaponSoftDamage[1] / 100D));
             }
 
             #region Soft-Damage
@@ -5852,6 +5858,22 @@ namespace OpenNos.GameObject
                 Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList()
                     .ForEach(s => RemoveBuff(s.Card.CardId));
             }
+        }
+
+        public int[] GetWeaponSoftDamage(bool primary)
+        {
+            int value1 = 0;
+            int value2 = 0;
+
+            WearableInstance tmp = primary ? Inventory.PrimaryWeapon : Inventory.SecondaryWeapon;
+
+            foreach (BCard bcard in tmp.Item.BCards.Where(
+                s => s != null && s.Type.Equals((byte) CardType.IncreaseDamage) && s.SubType.Equals((byte) AdditionalTypes.IncreaseDamage.IncreasingPropability)))
+            {
+                value1 += bcard.FirstData;
+                value2 += bcard.SecondData;
+            }
+            return new[] {value1, value2};
         }
 
         /// <summary>
