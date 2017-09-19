@@ -868,7 +868,6 @@ namespace OpenNos.GameObject
                     break;
             }
             WearableInstance wearable = session.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
-            ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
 
             int rnd = ServerManager.Instance.RandomNumber();
             if (Rare == 8)
