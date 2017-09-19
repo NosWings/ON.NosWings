@@ -238,22 +238,31 @@ namespace OpenNos.GameObject
                             {
                                 case ItemType.Armor:
                                 case ItemType.Weapon:
+                                case ItemType.Jewelery:
                                     switch (wearableInstance.Slot)
                                     {
-                                        case (byte)EquipmentType.Armor:
+                                        case (byte) EquipmentType.Armor:
                                             session.Character.Inventory.Armor = wearableInstance;
+                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
+                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
                                             break;
-                                        case (byte)EquipmentType.MainWeapon:
+                                        case (byte) EquipmentType.MainWeapon:
                                             session.Character.Inventory.PrimaryWeapon = wearableInstance;
+                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
+                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
                                             break;
-                                        case (byte)EquipmentType.SecondaryWeapon:
+                                        case (byte) EquipmentType.SecondaryWeapon:
                                             session.Character.Inventory.SecondaryWeapon = wearableInstance;
+                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
+                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
+                                            break;
+                                        case (byte) EquipmentType.Ring:
+                                        case (byte) EquipmentType.Necklace:
+                                        case (byte) EquipmentType.Bracelet:
+                                            EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
+                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
                                             break;
                                     }
-                                    EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => session.Character.EquipmentBCards.Add(s));
-                                    break;
-                                case ItemType.Jewelery:
-                                    EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum).ForEach(s => session.Character.EquipmentBCards.Add(s));
                                     break;
                             }
 
