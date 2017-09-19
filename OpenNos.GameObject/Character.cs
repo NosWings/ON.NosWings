@@ -2461,14 +2461,7 @@ namespace OpenNos.GameObject
             MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
             if (!mail.IsSenderCopy && mail.ReceiverId == CharacterId)
             {
-                if (mail.AttachmentVNum != null)
-                {
-                    Session.SendPacket(GenerateParcel(mail));
-                }
-                else
-                {
-                    Session.SendPacket(GeneratePost(mail, 1));
-                }
+                Session.SendPacket(mail.AttachmentVNum != null ? GenerateParcel(mail) : GeneratePost(mail, 1));
             }
             else
             {
@@ -5697,7 +5690,7 @@ namespace OpenNos.GameObject
                 bf.RemainingTime = staticBuff.RemainingTime;
                 Buff.Add(bf);
             }
-            if (oldbuff != null)
+            else if (oldbuff != null)
             {
                 Buff = Buff.Where(s => !s.Card.CardId.Equals(bf.Card.CardId));
 
