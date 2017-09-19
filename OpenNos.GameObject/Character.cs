@@ -53,6 +53,7 @@ namespace OpenNos.GameObject
             Mates = new List<Mate>();
             EquipmentBCards = new ConcurrentBag<BCard>();
             SkillBcards = new ConcurrentBag<BCard>();
+            PassiveSkillBcards = new ConcurrentBag<BCard>();
         }
 
         #endregion
