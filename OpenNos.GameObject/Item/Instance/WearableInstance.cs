@@ -378,18 +378,20 @@ namespace OpenNos.GameObject
                         }
                         if (protection == RarifyProtection.RandomHeroicAmulet)
                         {
-                            if (Item.IsHeroic && Rare > 0)
+                            if (!Item.IsHeroic || Rare <= 0)
                             {
-                                byte shellType = (byte)(Item.ItemType == ItemType.Armor ? 11 : 10);
-                                if (shellType == 11 || shellType == 10)
-                                {
-                                    EquipmentOptions.Clear();
-                                    int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
-                                    EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(shellType, Rare == 8 ? 7 : Rare, shellLevel));
-                                }
+                                return;
                             }
+                            byte shellType = (byte)(Item.ItemType == ItemType.Armor ? 11 : 10);
+                            if (shellType != 11 && shellType != 10)
+                            {
+                                return;
+                            }
+                            EquipmentOptions.Clear();
+                            int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
+                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(shellType, Rare == 8 ? 7 : Rare, shellLevel));
+                            return;
                         }
-
                         if (protection == RarifyProtection.Scroll && !isCommand)
                         {
                             session.Character.Inventory.RemoveItemAmount(scrollVnum);
