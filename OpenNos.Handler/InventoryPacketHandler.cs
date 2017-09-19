@@ -1683,17 +1683,26 @@ namespace OpenNos.Handler
                             WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                             if (amulet != null)
                             {
-                                if (amulet.Item.Effect == 792)
+                                switch(amulet.Item.Effect)
                                 {
-                                    protection = RarifyProtection.BlueAmulet;
-                                }
-                                else if (amulet.Item.Effect == 791)
-                                {
-                                    protection = RarifyProtection.RedAmulet;
-                                }
-                                if (amulet.Item.Effect == 796 && inventory.Item.IsHeroic)
-                                {
-                                    mode = RarifyMode.Success;
+                                    case 791:
+                                        protection = RarifyProtection.RedAmulet;
+                                        break;
+                                    case 792:
+                                        protection = RarifyProtection.BlueAmulet;
+                                        break;
+                                    case 794:
+                                        protection = RarifyProtection.HeroicAmulet;
+                                        break;
+                                    case 795:
+                                        protection = RarifyProtection.RandomHeroicAmulet;
+                                        break;
+                                    case 796:
+                                        if (inventory.Item.IsHeroic)
+                                        {
+                                            mode = RarifyMode.Success;
+                                        }
+                                        break;
                                 }
                             }
                             inventory.RarifyItem(Session, mode, protection);

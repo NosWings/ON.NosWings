@@ -19,6 +19,8 @@ namespace OpenNos.Domain
         None,
         BlueAmulet,
         RedAmulet,
+        HeroicAmulet,
+        RandomHeroicAmulet,
         Scroll
     }
 }
