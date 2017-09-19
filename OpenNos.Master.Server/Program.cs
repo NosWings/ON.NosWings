@@ -28,8 +28,10 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.Master.Server
 {
@@ -84,6 +86,16 @@ namespace OpenNos.Master.Server
                     server.ClientDisconnected += OnClientDisconnected;
                     WebApp.Start<Startup>(url: ConfigurationManager.AppSettings["WebAppURL"]);
                     server.Start();
+
+                    // AUTO SESSION KICK
+                    Observable.Interval(TimeSpan.FromMinutes(3)).Subscribe(x =>
+                    {
+                        Parallel.ForEach(MSManager.Instance.ConnectedAccounts.Where(s => s.LastPulse.AddMinutes(3) <= DateTime.Now), connection =>
+                        {
+                            CommunicationServiceClient.Instance.KickSession(connection.AccountId, null);
+                        });
+                    });
+
                     CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
                     Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count}";
