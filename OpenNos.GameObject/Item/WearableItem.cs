@@ -81,7 +81,7 @@ namespace OpenNos.GameObject
 
                     if (!inv.IsBound)
                     {
-                        if (inv.Item.EffectValue == 790)
+                        if (inv.Item.VNum >= 4046 && inv.Item.VNum <= 4055) /* If I do it with the effects, it shows the effect */
                         {
                             inv.BoundCharacterId = session.Character.CharacterId;
                         }
