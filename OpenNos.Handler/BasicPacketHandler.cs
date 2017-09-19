@@ -252,8 +252,10 @@ namespace OpenNos.Handler
                     }
                     GeneralLogDTO log = new GeneralLogDTO
                     {
-                        LogType = "CLAIM_GIFT",
-                        LogData = $"CLAIM GIFT {giftId}",
+                        AccountId = Session.Account.AccountId,
+                        CharacterId = Session.Character.CharacterId,
+                        LogType = "GETGIFT",
+                        LogData = $"{mail.AttachmentVNum} x {mail.AttachmentAmount}",
                         IpAddress = Session.IpAddress,
                         Timestamp = DateTime.Now,
                     };
