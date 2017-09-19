@@ -3,6 +3,7 @@ using OpenNos.Master.Library.Client;
 using OpenNos.Domain;
 using OpenNos.Data;
 using System;
+using OpenNos.Core;
 using OpenNos.Master.Server.Controllers.ControllersParam;
 
 namespace OpenNos.Master.Server.Controllers
@@ -26,7 +27,7 @@ namespace OpenNos.Master.Server.Controllers
                 Title = mail.IsNosmall ? "NOSMALL" : mail.Title,
                 AttachmentVNum = mail.VNum,
             };
-
+            Logger.Log.Info($"[{(mail.IsNosmall ? "NOSMALL" : "MAIL")}] Receiver ID : {mail2.ReceiverId}");
             CommunicationServiceClient.Instance.SendMail(mail.WorldGroup, mail2);
         }
     }

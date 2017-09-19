@@ -159,7 +159,6 @@
     <Compile Include="CommunicationService.cs" />
     <Compile Include="Controllers\ControllersParameters\MailPostParameter.cs" />
     <Compile Include="Controllers\MailController.cs" />
-    <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="MSManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
