@@ -20,6 +20,7 @@ namespace OpenNos.Domain
         Reduced,
         Free,
         Drop,
-        Success
+        Success,
+        Random
     }
 }
