@@ -263,6 +263,26 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
+        public void GenerateHeroicShell(RarifyProtection protection)
+        {
+            if (protection != RarifyProtection.RandomHeroicAmulet)
+            {
+                return;
+            }
+            if (!Item.IsHeroic || Rare <= 0)
+            {
+                return;
+            }
+            byte shellType = (byte)(Item.ItemType == ItemType.Armor ? 11 : 10);
+            if (shellType != 11 && shellType != 10)
+            {
+                return;
+            }
+            EquipmentOptions.Clear();
+            int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
+            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(shellType, Rare == 8 ? 7 : Rare, shellLevel));
+        }
+
         public void RarifyItem(ClientSession session, RarifyMode mode, RarifyProtection protection,
             bool isCommand = false)
         {
@@ -376,22 +396,6 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_IS_HEROIC"), 0));
                             return;
                         }
-                        if (protection == RarifyProtection.RandomHeroicAmulet)
-                        {
-                            if (!Item.IsHeroic || Rare <= 0)
-                            {
-                                return;
-                            }
-                            byte shellType = (byte)(Item.ItemType == ItemType.Armor ? 11 : 10);
-                            if (shellType != 11 && shellType != 10)
-                            {
-                                return;
-                            }
-                            EquipmentOptions.Clear();
-                            int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
-                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(shellType, Rare == 8 ? 7 : Rare, shellLevel));
-                            return;
-                        }
                         if (protection == RarifyProtection.Scroll && !isCommand)
                         {
                             session.Character.Inventory.RemoveItemAmount(scrollVnum);
@@ -419,6 +423,7 @@ namespace OpenNos.GameObject
                     }
 
                     Rare = 8;
+                    GenerateHeroicShell(protection);
                     SetRarityPoint();
                     ItemInstance inventory = session?.Character.Inventory.GetItemInstanceById(Id);
                     if (inventory != null)
@@ -436,6 +441,7 @@ namespace OpenNos.GameObject
                 }
 
                 Rare = 7;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare6 && !(protection == RarifyProtection.Scroll && Rare >= 6))
@@ -445,6 +451,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(6);
                 }
                 Rare = 6;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare5 && !(protection == RarifyProtection.Scroll && Rare >= 5))
@@ -454,6 +461,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(5);
                 }
                 Rare = 5;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare4 && !(protection == RarifyProtection.Scroll && Rare >= 4))
@@ -463,6 +471,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(4);
                 }
                 Rare = 4;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare3 && !(protection == RarifyProtection.Scroll && Rare >= 3))
@@ -472,6 +481,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(3);
                 }
                 Rare = 3;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare2 && !(protection == RarifyProtection.Scroll && Rare >= 2))
@@ -481,6 +491,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(2);
                 }
                 Rare = 2;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare1 && !(protection == RarifyProtection.Scroll && Rare >= 1))
@@ -490,6 +501,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(1);
                 }
                 Rare = 1;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare0 && !(protection == RarifyProtection.Scroll && Rare >= 0))
