@@ -403,9 +403,6 @@ namespace OpenNos.GameObject
                     case RarifyMode.Drop:
                         break;
 
-                    case RarifyMode.Random:
-                        break;
-
                     default:
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
                 }
