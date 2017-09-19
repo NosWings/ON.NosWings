@@ -1752,13 +1752,20 @@ namespace OpenNos.GameObject
 
             int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
             int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
+            bool softDamage = false;
             if (ServerManager.Instance.RandomNumber() < primaryWeaponSoftDamage[0])
             {
                 baseDamage += (int)(baseDamage * (1 + primaryWeaponSoftDamage[1] / 100D));
+                softDamage = true;
             }
             if (ServerManager.Instance.RandomNumber() < secondaryWeaponSoftDamage[0])
             {
                 baseDamage += (int)(baseDamage * (1 + secondaryWeaponSoftDamage[1] / 100D));
+                softDamage = true;
+            }
+            if (softDamage)
+            {
+                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(15));
             }
 
             #region Soft-Damage
