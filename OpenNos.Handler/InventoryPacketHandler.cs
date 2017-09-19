@@ -1569,7 +1569,7 @@ namespace OpenNos.Handler
                         {
                             FixedUpMode HasAmulet = FixedUpMode.None;
                             WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
-                            if (amulet.Item.Effect == 793)
+                            if (amulet != null && amulet.Item.Effect == 793)
                             {
                                 HasAmulet = FixedUpMode.HasAmulet;
                             }
@@ -1748,7 +1748,7 @@ namespace OpenNos.Handler
                     {
                         FixedUpMode HasAmulet = FixedUpMode.None;
                         WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
-                        if (amulet.Item.Effect == 793)
+                        if (amulet != null && amulet.Item.Effect == 793)
                         {
                             HasAmulet = FixedUpMode.HasAmulet;
                         }
@@ -1828,16 +1828,16 @@ namespace OpenNos.Handler
                     inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                     if (inventory != null)
                     {
-                        FixedUpMode HasAmulet = FixedUpMode.None;
+                        FixedUpMode hasAmulet = FixedUpMode.None;
                         WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                         if (amulet.Item.Effect == 793)
                         {
-                            HasAmulet = FixedUpMode.HasAmulet;
+                            hasAmulet = FixedUpMode.HasAmulet;
                         }
 
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
-                            inventory.UpgradeItem(Session, UpgradeMode.Reduced, UpgradeProtection.Protected, HasAmulet: HasAmulet);
+                            inventory.UpgradeItem(Session, UpgradeMode.Reduced, UpgradeProtection.Protected, HasAmulet: hasAmulet);
                         }
                     }
                     break;
