@@ -788,7 +788,7 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.RemoveItemAmount(goldScrollVnum);
                         session.SendPacket("shop_end 2");
                     }
-                    if (HasAmulet == FixedUpMode.HasAmulet)
+                    if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
                     {
                         WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                         amulet.DurabilityPoint -= 1;
@@ -847,7 +847,7 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.RemoveItemAmount(normalScrollVnum);
                         session.SendPacket("shop_end 2");
                     }
-                    if (HasAmulet == FixedUpMode.HasAmulet)
+                    if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
                     {
                         WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                         amulet.DurabilityPoint -= 1;
