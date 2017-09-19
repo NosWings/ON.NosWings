@@ -81,7 +81,7 @@ namespace OpenNos.GameObject
 
                     if (!inv.IsBound)
                     {
-                        if (inv.Item.Effect == 790)
+                        if (inv.Item.EffectValue == 790)
                         {
                             inv.BoundCharacterId = session.Character.CharacterId;
                         }
