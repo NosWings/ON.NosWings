@@ -266,7 +266,7 @@ namespace OpenNos.GameObject
                                                     NpcMonster mateNpc = ServerManager.Instance.GetNpc(monster.Monster.NpcMonsterVNum);
                                                     byte lvl = 0;
                                                     lvl += monster.Monster.Level;
-                                                    lvl -= 10;
+                                                    lvl -= 15;
                                                     if (lvl <= 0)
                                                     {
                                                         lvl = 1;
