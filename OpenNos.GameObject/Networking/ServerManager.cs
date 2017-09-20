@@ -1236,7 +1236,7 @@ namespace OpenNos.GameObject
                     Logger.Log.Info("[ARENA] Family Arena Map Loaded");
                     FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.ArenaInstance, new InstanceBag());
                     FamilyArenaInstance.IsPvp = true;
-                    ArenaInstance.Portals.Add(new Portal
+                    FamilyArenaInstance.Portals.Add(new Portal
                     {
                         DestinationMapId = 1,
                         DestinationX = 1,
