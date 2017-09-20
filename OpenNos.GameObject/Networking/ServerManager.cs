@@ -1962,20 +1962,24 @@ namespace OpenNos.GameObject
                         {
                             fam.FamilyCharacters.Add((FamilyCharacter)famchar);
                         }
-                        FamilyCharacter familyCharacter = fam.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                        if (familyCharacter != null)
+                        FamilyCharacter familyLeader = fam.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                        if (familyLeader != null)
                         {
-                            fam.Warehouse = new Inventory((Character)familyCharacter.Character);
-                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse)
-                                .ToList())
+                            fam.Warehouse = new Inventory((Character)familyLeader.Character);
+                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyLeader.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
                             {
-                                inventory.CharacterId = familyCharacter.CharacterId;
+                                inventory.CharacterId = familyLeader.CharacterId;
                                 fam.Warehouse[inventory.Id] = (ItemInstance) inventory;
                             }
                         }
                         fam.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fam.FamilyId).ToList();
                         fam.LandOfDeath = lod;
                         FamilyList.Add(fam);
+                        Parallel.ForEach(Sessions.Where(s => fam.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
+                        {
+                            session.Character.Family = fam;
+                            session.CurrentMapInstance.Broadcast(session.Character.GenerateGidx());
+                        });
                     }
                     else
                     {
@@ -1997,6 +2001,11 @@ namespace OpenNos.GameObject
                         }
                         fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
                         FamilyList.Add(fami);
+                        Parallel.ForEach(Sessions.Where(s => fami.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
+                        {
+                            session.Character.Family = fami;
+                            session.CurrentMapInstance.Broadcast(session.Character.GenerateGidx());
+                        });
                     }
                 }
                 else if (fam != null)
