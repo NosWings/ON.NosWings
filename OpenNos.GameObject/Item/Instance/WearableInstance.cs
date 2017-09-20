@@ -320,7 +320,9 @@ namespace OpenNos.GameObject
             {
                 rnd = ServerManager.Instance.RandomNumber(0, 1000) / 10D;
             }
-            if (protection == RarifyProtection.RedAmulet)
+            if (protection == RarifyProtection.RedAmulet ||
+                protection == RarifyProtection.HeroicAmulet ||
+                protection == RarifyProtection.RandomHeroicAmulet)
             {
                 raren2 = raren1 * reducedchancefactor;
                 raren1 = raren1 * reducedchancefactor;
@@ -399,7 +401,7 @@ namespace OpenNos.GameObject
                         if (protection == RarifyProtection.Scroll && !isCommand)
                         {
                             session.Character.Inventory.RemoveItemAmount(scrollVnum);
-                            session.SendPacket("shop_end 2");
+                            session.SendPacket(session.Character.Inventory.CountItem(scrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                         }
                         session.Character.Gold -= goldprice;
                         session.Character.Inventory.RemoveItemAmount(cellaVnum, cella);
@@ -769,7 +771,7 @@ namespace OpenNos.GameObject
             if (IsFixed && HasAmulet == FixedUpMode.None)
             {
                 session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
-                session.SendPacket("shop_end 1");
+                session.SendPacket("shop_end 2");
                 return;
             }
             if (IsFixed && HasAmulet == FixedUpMode.HasAmulet)
@@ -824,7 +826,7 @@ namespace OpenNos.GameObject
                     if (protection == UpgradeProtection.Protected && !isCommand)
                     {
                         session.Character.Inventory.RemoveItemAmount(goldScrollVnum);
-                        session.SendPacket("shop_end 1");
+                        session.SendPacket(session.Character.Inventory.CountItem(goldScrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                     }
                     if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
                     {
@@ -883,7 +885,7 @@ namespace OpenNos.GameObject
                     if (protection == UpgradeProtection.Protected && !isCommand)
                     {
                         session.Character.Inventory.RemoveItemAmount(normalScrollVnum);
-                        session.SendPacket("shop_end 1");
+                        session.SendPacket(session.Character.Inventory.CountItem(normalScrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                     }
                     if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
                     {
