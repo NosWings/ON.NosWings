@@ -1239,9 +1239,10 @@ namespace OpenNos.GameObject
                     : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int) (targetSession.Character.Hp / targetSession.Character.HpLoad() * 100)} {damage} {hitmode} 0");
                 npcMonsterSkill?.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(targetSession.Character));
                 LastSkill = DateTime.Now;
-                if (targetSession.Character.Hp <= 0)
+                if (targetSession.Character.Hp <= 0 && targetSession.Character.IsDead == false)
                 {
                     RemoveTarget();
+                    targetSession.Character.IsDead = true;
                     Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(targetSession.Character.CharacterId); });
                 }
             }

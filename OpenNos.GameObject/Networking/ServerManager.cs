@@ -324,6 +324,7 @@ namespace OpenNos.GameObject
             session.SendPacket(session.Character.GenerateStat());
             session.SendPacket(session.Character.GenerateCond());
             session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
+            session.Character.IsDead = false;
             switch (session.CurrentMapInstance.MapInstanceType)
             {
                 case MapInstanceType.BaseMapInstance:

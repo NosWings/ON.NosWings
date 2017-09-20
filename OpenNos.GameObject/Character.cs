@@ -173,6 +173,8 @@ namespace OpenNos.GameObject
 
         public bool IsDancing { get; set; }
 
+        public bool IsDead { get; set; }
+
         /// <summary>
         /// Defines if the Character Is currently sending or getting items thru exchange.
         /// </summary>
