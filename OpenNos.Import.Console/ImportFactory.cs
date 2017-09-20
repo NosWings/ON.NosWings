@@ -921,7 +921,7 @@ namespace OpenNos.Import.Console
 
             // basicHpLoad
             int baseHp = 138;
-            int HPbasup = 17;
+            int HPbasup = 18;
             for (int i = 0; i < 100; i++)
             {
                 basicHp[i] = baseHp;
