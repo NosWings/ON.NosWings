@@ -1463,9 +1463,8 @@ namespace OpenNos.GameObject
 
         public void SaveAll()
         {
-            List<ClientSession> sessions = Sessions.Where(s => s.HasSelectedCharacter && s.IsConnected).ToList();
             // AFTER
-            Parallel.ForEach(sessions, session =>
+            Parallel.ForEach(Sessions.Where(s => s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null), session =>
             {
                 session.Character?.Save();
             });
