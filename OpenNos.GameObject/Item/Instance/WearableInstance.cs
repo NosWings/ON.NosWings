@@ -857,6 +857,10 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
                             session.SendPacket(session.Character.GenerateEquipment());
                         }
+                        if (IsFixed)
+                        {
+                            IsFixed = !IsFixed;
+                        }
                     }
                     session.Character.Inventory.RemoveItemAmount(cellaVnum, cella[Upgrade]);
                     session.Character.Gold -= goldprice[Upgrade];
@@ -893,10 +897,6 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    if (IsFixed)
-                    {
-                        IsFixed = !IsFixed;
-                    }
                     session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3005), session.Character.MapX, session.Character.MapY);
                     session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
@@ -934,10 +934,6 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    if (IsFixed)
-                    {
-                        IsFixed = !IsFixed;
-                    }
                     session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3005), session.Character.MapX, session.Character.MapY);
                     session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
