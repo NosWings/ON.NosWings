@@ -772,6 +772,10 @@ namespace OpenNos.GameObject
                 session.SendPacket("shop_end 1");
                 return;
             }
+            if (IsFixed && HasAmulet == FixedUpMode.HasAmulet)
+            {
+                IsFixed = !IsFixed;
+            }
             switch (mode)
             {
                 case UpgradeMode.Free:
@@ -832,10 +836,6 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
                             session.SendPacket(session.Character.GenerateEquipment());
                         }
-                        if (IsFixed)
-                        {
-                            IsFixed = !IsFixed;
-                        }
                     }
                     session.Character.Gold -= (long) (goldprice[Upgrade] * reducedpricefactor);
                     session.Character.Inventory.RemoveItemAmount(cellaVnum, (int) (cella[Upgrade] * reducedpricefactor));
@@ -894,10 +894,6 @@ namespace OpenNos.GameObject
                             session.Character.DeleteItemByItemInstanceId(amulet.Id);
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
                             session.SendPacket(session.Character.GenerateEquipment());
-                        }
-                        if (IsFixed)
-                        {
-                            IsFixed = !IsFixed;
                         }
                     }
                     session.Character.Inventory.RemoveItemAmount(cellaVnum, cella[Upgrade]);
