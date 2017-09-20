@@ -992,7 +992,6 @@ namespace OpenNos.Handler
                     case 2:
                         if (Session.Character.MailList.ContainsKey(id))
                         {
-                            MailDTO mail = Session.Character.MailList[id];
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAIL_DELETED"), 11));
                             Session.SendPacket($"post 2 {type} {id}");
 

@@ -48,6 +48,15 @@ namespace OpenNos.GameObject
                 case 0:
                     switch (VNum)
                     {
+                        case 5370:
+                            if (session.Character.Buff.Any(s => s.Card.CardId == 393))
+                            {
+                                //TODO ADD MESSAGE ALREADY GOT BUFF
+                                return;
+                            }
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                            session.Character.AddStaticBuff(new StaticBuffDTO {CardId = 393});
+                            break;
                         case 1428:
                             session.SendPacket("guri 18 1");
                             break;

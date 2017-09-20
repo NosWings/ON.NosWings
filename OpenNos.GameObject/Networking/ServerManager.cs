@@ -554,7 +554,6 @@ namespace OpenNos.GameObject
                 session.SendPacket(session.Character.GenerateCond());
                 session.SendPacket(session.Character.GenerateCMap());
                 session.SendPacket(session.Character.GenerateStatChar());
-                session.SendPacket(session.Character.GeneratePairy());
                 session.SendPackets(session.Character.GeneratePst());
                 session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
                 {
@@ -684,6 +683,7 @@ namespace OpenNos.GameObject
                         }
                     });
                 }
+                session.SendPacket(session.Character.GeneratePairy());
                 session.Character.IsChangingMapInstance = false;
                 session.SendPacket(session.Character.GenerateMinimapPosition());
                 session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>

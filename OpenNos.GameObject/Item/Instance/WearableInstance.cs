@@ -263,6 +263,26 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
+        public void GenerateHeroicShell(RarifyProtection protection)
+        {
+            if (protection != RarifyProtection.RandomHeroicAmulet)
+            {
+                return;
+            }
+            if (!Item.IsHeroic || Rare <= 0)
+            {
+                return;
+            }
+            byte shellType = (byte)(Item.ItemType == ItemType.Armor ? 11 : 10);
+            if (shellType != 11 && shellType != 10)
+            {
+                return;
+            }
+            EquipmentOptions.Clear();
+            int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
+            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(shellType, Rare == 8 ? 7 : Rare, shellLevel));
+        }
+
         public void RarifyItem(ClientSession session, RarifyMode mode, RarifyProtection protection,
             bool isCommand = false)
         {
@@ -345,13 +365,18 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
+
+                        if (protection == RarifyProtection.Scroll && !isCommand && Item.IsHeroic)
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_IS_HEROIC"), 0));
+                            return;
+                        }
                         session.Character.Inventory.RemoveItemAmount(cellaVnum, (int) (cella * reducedpricefactor));
                         session.Character.Gold -= (long) (goldprice * reducedpricefactor);
                         session.SendPacket(session.Character.GenerateGold());
                         break;
 
                     case RarifyMode.Normal:
-
                         // TODO: Normal Item Amount
                         if (session.Character.Gold < goldprice)
                         {
@@ -366,7 +391,11 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-
+                        if ((protection == RarifyProtection.Scroll || protection == RarifyProtection.BlueAmulet || protection == RarifyProtection.RedAmulet) && !isCommand && Item.IsHeroic)
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_IS_HEROIC"), 0));
+                            return;
+                        }
                         if (protection == RarifyProtection.Scroll && !isCommand)
                         {
                             session.Character.Inventory.RemoveItemAmount(scrollVnum);
@@ -384,9 +413,9 @@ namespace OpenNos.GameObject
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
                 }
             }
-            if (Item.IsHeroic && protection == RarifyProtection.Scroll)
+            if (Item.IsHeroic && protection != RarifyProtection.None)
             {
-                if (rnd < rare8 && !(protection == RarifyProtection.Scroll && Rare >= 8))
+                if (rnd < rare8)
                 {
                     if (mode != RarifyMode.Drop)
                     {
@@ -394,6 +423,7 @@ namespace OpenNos.GameObject
                     }
 
                     Rare = 8;
+                    GenerateHeroicShell(protection);
                     SetRarityPoint();
                     ItemInstance inventory = session?.Character.Inventory.GetItemInstanceById(Id);
                     if (inventory != null)
@@ -411,6 +441,7 @@ namespace OpenNos.GameObject
                 }
 
                 Rare = 7;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare6 && !(protection == RarifyProtection.Scroll && Rare >= 6))
@@ -420,6 +451,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(6);
                 }
                 Rare = 6;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare5 && !(protection == RarifyProtection.Scroll && Rare >= 5))
@@ -429,6 +461,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(5);
                 }
                 Rare = 5;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare4 && !(protection == RarifyProtection.Scroll && Rare >= 4))
@@ -438,6 +471,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(4);
                 }
                 Rare = 4;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare3 && !(protection == RarifyProtection.Scroll && Rare >= 3))
@@ -447,6 +481,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(3);
                 }
                 Rare = 3;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare2 && !(protection == RarifyProtection.Scroll && Rare >= 2))
@@ -456,6 +491,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(2);
                 }
                 Rare = 2;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare1 && !(protection == RarifyProtection.Scroll && Rare >= 1))
@@ -465,6 +501,7 @@ namespace OpenNos.GameObject
                     session?.Character.NotifyRarifyResult(1);
                 }
                 Rare = 1;
+                GenerateHeroicShell(protection);
                 SetRarityPoint();
             }
             else if (rnd < rare0 && !(protection == RarifyProtection.Scroll && Rare >= 0))
@@ -502,26 +539,31 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop && session != null)
                 {
-                    if (protection == RarifyProtection.BlueAmulet || protection == RarifyProtection.RedAmulet)
+                    if ((protection == RarifyProtection.HeroicAmulet ||
+                         protection == RarifyProtection.RandomHeroicAmulet) && !Item.IsHeroic)
+                        protection = RarifyProtection.None;
+                    switch (protection)
                     {
-                        WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
-                        amulet.DurabilityPoint -= 1;
-                        if (amulet.DurabilityPoint <= 0)
-                        {
-                            session.Character.DeleteItemByItemInstanceId(amulet.Id);
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
-                            session.SendPacket(session.Character.GenerateEquipment());
-                        }
-                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("AMULET_FAIL_SAVED"), 11));
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("AMULET_FAIL_SAVED"), 0));
-                        return;
-                    }
-                    if (protection == RarifyProtection.None)
-                    {
-                        session.Character.DeleteItemByItemInstanceId(Id);
-                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
-                        return;
+                        case RarifyProtection.BlueAmulet:
+                        case RarifyProtection.RedAmulet:
+                        case RarifyProtection.HeroicAmulet:
+                        case RarifyProtection.RandomHeroicAmulet:
+                            WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                            amulet.DurabilityPoint -= 1;
+                            if (amulet.DurabilityPoint <= 0)
+                            {
+                                session.Character.DeleteItemByItemInstanceId(amulet.Id);
+                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
+                                session.SendPacket(session.Character.GenerateEquipment());
+                            }
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("AMULET_FAIL_SAVED"), 11));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("AMULET_FAIL_SAVED"), 0));
+                            return;
+                        case RarifyProtection.None:
+                            session.Character.DeleteItemByItemInstanceId(Id);
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
+                            return;
                     }
                     session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
@@ -554,12 +596,6 @@ namespace OpenNos.GameObject
                     DamageMaximum = 0;
                     if (Rare >= 0)
                     {
-                        if (Item.IsHeroic)
-                        {
-                            EquipmentOptions.Clear();
-                            int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
-                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(10, Rare == 8 ? 7 : Rare, shellLevel));
-                            }
                         for (int i = 0; i < point; i++)
                         {
                             int rndn = ServerManager.Instance.RandomNumber(0, 3);
@@ -596,13 +632,7 @@ namespace OpenNos.GameObject
                     CloseDefence = 0;
                     if (Rare >= 0)
                     {
-                        if (Item.IsHeroic)
-                        {
-                            EquipmentOptions.Clear();
-                            int shellLevel = Item.LevelMinimum == 28 ? 102 : 107;
-                            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(11, Rare == 8 ? 7 : Rare, shellLevel));
-                            }
-                            for (int i = 0; i < point; i++)
+                        for (int i = 0; i < point; i++)
                         {
                             int rndn = ServerManager.Instance.RandomNumber(0, 3);
                             if (rndn == 0)
@@ -723,6 +753,10 @@ namespace OpenNos.GameObject
                 goldprice = new[] {500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000};
                 cella = new short[] {20, 50, 80, 120, 160, 220, 280, 380, 480, 600};
                 gem = new short[] {1, 1, 2, 2, 3, 1, 1, 2, 2, 3};
+            }
+            if (HasAmulet == FixedUpMode.HasAmulet)
+            {
+                upfix = new short[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             }
 
             const short cellaVnum = 1014;
@@ -868,7 +902,6 @@ namespace OpenNos.GameObject
                     break;
             }
             WearableInstance wearable = session.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
-            ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
 
             int rnd = ServerManager.Instance.RandomNumber();
             if (Rare == 8)

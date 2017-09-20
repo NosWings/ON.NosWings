@@ -498,7 +498,6 @@ namespace OpenNos.Master.Server
 
         public void PulseAccount(long accountId)
         {
-            Logger.Log.Debug("PulseAccount");
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
             {
                 return;

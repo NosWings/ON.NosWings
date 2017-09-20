@@ -53,6 +53,7 @@ namespace OpenNos.GameObject
             Mates = new List<Mate>();
             EquipmentBCards = new ConcurrentBag<BCard>();
             SkillBcards = new ConcurrentBag<BCard>();
+            PassiveSkillBcards = new ConcurrentBag<BCard>();
         }
 
         #endregion
@@ -60,6 +61,8 @@ namespace OpenNos.GameObject
         #region Properties
 
         public ConcurrentBag<BCard> EquipmentBCards { get; set; }
+
+        public ConcurrentBag<BCard> PassiveSkillBcards { get; set; }
 
         public AuthorityType Authority { get; set; }
 
@@ -1749,10 +1752,23 @@ namespace OpenNos.GameObject
             #endregion
             baseDamage *= 1 + (int)(GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D);
 
-            // ItemBonus with x% of increase damage by y%
-            if (GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability)[0] > ServerManager.Instance.RandomNumber())
+
+            int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
+            int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
+            bool softDamage = false;
+            if (ServerManager.Instance.RandomNumber() < primaryWeaponSoftDamage[0])
             {
-                baseDamage += GetBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability)[1];
+                baseDamage += (int)(baseDamage * (1 + primaryWeaponSoftDamage[1] / 100D));
+                softDamage = true;
+            }
+            if (ServerManager.Instance.RandomNumber() < secondaryWeaponSoftDamage[0])
+            {
+                baseDamage += (int)(baseDamage * (1 + secondaryWeaponSoftDamage[1] / 100D));
+                softDamage = true;
+            }
+            if (softDamage)
+            {
+                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(15));
             }
 
             #region Soft-Damage
@@ -4537,6 +4553,9 @@ namespace OpenNos.GameObject
                     Skills[characterskill.SkillVNum] = characterskill as CharacterSkill;
                 }
             }
+            // TODO IMPROVE PERFORMANCES
+            // ACCESSING A DICTIONARY LIKE THIS IS CPU CYCLE KILLER
+            PassiveSkillHelper.Instance.PassiveSkillToBcards(Skills.Values.Where(s => s.Skill.SkillType == 0).ToList()).ForEach(s => PassiveSkillBcards.Add(s));
         }
 
         public void LoadSpeed()
@@ -4544,7 +4563,7 @@ namespace OpenNos.GameObject
             // only load speed if you dont use custom speed
             if (!IsVehicled && !IsCustomSpeed)
             {
-                Speed = CharacterHelper.Instance.SpeedData[(byte)Class];
+                Speed = CharacterHelper.Instance.SpeedData[(byte) Class];
 
                 if (UseSp)
                 {
@@ -4553,6 +4572,8 @@ namespace OpenNos.GameObject
                         Speed += SpInstance.Item.Speed;
                     }
                 }
+                Speed += (byte) GetBuff(CardType.Move, (byte) AdditionalTypes.Move.MovementSpeedIncreased)[0];
+                Speed -= (byte) GetBuff(CardType.Move, (byte) AdditionalTypes.Move.MovementSpeedDecreased)[0];
             }
 
             if (IsShopping)
@@ -4789,11 +4810,11 @@ namespace OpenNos.GameObject
                             DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
                             WearableInstance instance = itemInstance as WearableInstance;
 
+                            instance?.EquipmentOptions.ForEach(s => DAOFactory.EquipmentOptionDAO.Delete(s.Id));
                             if (instance?.EquipmentOptions.Any() != true)
                             {
                                 continue;
                             }
-                            DAOFactory.EquipmentOptionDAO.Delete(instance.Id);
                             instance.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
                             DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
                         }
@@ -5852,6 +5873,26 @@ namespace OpenNos.GameObject
             }
         }
 
+        public int[] GetWeaponSoftDamage(bool primary)
+        {
+            int value1 = 0;
+            int value2 = 0;
+
+            WearableInstance tmp = primary ? Inventory.PrimaryWeapon : Inventory.SecondaryWeapon;
+
+            if (tmp == null)
+            {
+                return new[] {0, 0};
+            }
+            foreach (BCard bcard in tmp.Item.BCards.Where(
+                s => s != null && s.Type.Equals((byte) CardType.IncreaseDamage) && s.SubType.Equals((byte) AdditionalTypes.IncreaseDamage.IncreasingPropability)))
+            {
+                value1 += bcard.FirstData;
+                value2 += bcard.SecondData;
+            }
+            return new[] {value1, value2};
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -5924,7 +5965,27 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in PassiveSkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
+            {
+                if (entry.IsLevelScaled)
+                {
+                    if (entry.IsLevelDivided)
+                    {
+                        value1 += Level / entry.FirstData;
+                    }
+                    else
+                    {
+                        value1 += entry.FirstData * Level;
+                    }
+                }
+                else
+                {
+                    value1 += entry.FirstData;
+                }
+                value2 += entry.SecondData;
+            }
+
+            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {
