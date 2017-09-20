@@ -203,7 +203,6 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.SendMessageToCharacter(message);
         }
 
-   
         public void Shutdown(string worldGroup)
         {
             _client.ServiceProxy.Shutdown(worldGroup);
