@@ -1190,8 +1190,6 @@ namespace OpenNos.Handler
             string kdlinit = ServerManager.Instance.TopPoints.Aggregate("kdlinit",
                 (current, character) => current + $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}");
 
-            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
-
             Session.SendPacket(Session.Character.GenerateFinit());
             Session.SendPacket(Session.Character.GenerateBlinit());
             Session.SendPacket(clinit);
@@ -1218,6 +1216,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage));
                 }
             }
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
 
             IEnumerable<PenaltyLogDTO> warning = DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Character.AccountId).Where(p => p.Penalty == PenaltyType.Warning);
             IEnumerable<PenaltyLogDTO> penaltyLogDtos = warning as IList<PenaltyLogDTO> ?? warning.ToList();
