@@ -310,7 +310,7 @@ namespace OpenNos.GameObject
         /// <param name="targetSession">The TargetSession to follow</param>
         private void FollowTarget(ClientSession targetSession)
         {
-            if (!IsMoving)
+            if (Monster == null || !IsAlive || HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible) || !IsMoving)
             {
                 return;
             }
@@ -334,8 +334,8 @@ namespace OpenNos.GameObject
                 int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
                 short mapX = (short)Path.ElementAt(maxindex - 1).X;
                 short mapY = (short)Path.ElementAt(maxindex - 1).Y;
-                double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)(Monster.Speed * 0.5);
-                MapInstance.Broadcast(new BroadcastPacket(null, $"mv 3 {MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
+                double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)(Monster.Speed * 0.6);
+                MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                 LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
                 Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000)))
@@ -1121,39 +1121,7 @@ namespace OpenNos.GameObject
             if (IsMoving && Monster.Speed > 0)
             {
                 double time = (DateTime.Now - LastMove).TotalMilliseconds;
-
-                if (Path.Any())
-                {
-                    int timetowalk = 2500 / Monster.Speed;
-                    if (time > timetowalk)
-                    {
-                        int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                        short mapX = Path.ElementAt(maxindex - 1).X;
-                        short mapY = Path.ElementAt(maxindex - 1).Y;
-                        double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Monster.Speed;
-                        LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
-
-                        Observable.Timer(TimeSpan.FromMilliseconds(timetowalk))
-                                    .Subscribe(x =>
-                                    {
-                                        MapX = mapX;
-                                        MapY = mapY;
-
-                                        MoveEvent?.Events.ToList().ForEach(e =>
-                                        {
-                                            EventHelper.Instance.RunEvent(e, monster: this);
-                                        });
-                                        if (MoveEvent != null && MoveEvent.InZone(MapX, MapY))
-                                        {
-                                            MoveEvent = null;
-                                        }
-                                    });
-                        MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
-                        Path.RemoveRange(0, maxindex);
-                        return;
-                    }
-                }
-                else if (time > _movetime && Target == -1)
+                if (!Path.Any() && time > _movetime && Target == -1)
                 {
                     short mapX = FirstX, mapY = FirstY;
                     if (MapInstance.Map?.GetFreePosition(ref mapX, ref mapY, (byte)ServerManager.Instance.RandomNumber(0, 2), (byte)_random.Next(0, 2)) ?? false)
