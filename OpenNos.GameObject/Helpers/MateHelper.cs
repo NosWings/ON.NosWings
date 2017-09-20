@@ -14,11 +14,21 @@ namespace OpenNos.GameObject.Helpers
         public MateHelper()
         {
             LoadXpData();
+            LoadPrimaryMpData();
+            LoadSecondaryMpData();
         }
 
         #endregion
 
         #region Properties
+
+        public double[] HpData { get; private set; }
+
+        // Race == 0
+        public double[] PrimaryMpData { get; private set; }
+
+        // Race == 2
+        public double[] SecondaryMpData { get; private set; }
 
         public double[] XpData { get; private set; }
 
@@ -26,6 +36,77 @@ namespace OpenNos.GameObject.Helpers
 
         #region Methods
 
+        private void LoadPrimaryMpData()
+        {
+            PrimaryMpData = new double[256];
+            PrimaryMpData[0] = 10;
+            PrimaryMpData[1] = 10;
+            PrimaryMpData[2] = 15;
+
+            int basup = 5;
+            byte count = 0;
+            bool isStable = true;
+            bool isDouble = false;
+
+            for (int i = 3; i < 100; i++)
+            {
+                if (i % 10 == 1)
+                {
+                    PrimaryMpData[i] += PrimaryMpData[i - 1] + basup * 2;
+                    continue;
+                }
+                if (!isStable)
+                {
+                    basup++;
+                    count++;
+
+                    if (count == 2)
+                    {
+                        if (isDouble)
+                        { isDouble = false; }
+                        else
+                        { isStable = true; isDouble = true; count = 0; }
+                    }
+
+                    if (count == 4)
+                    { isStable = true; count = 0; }
+                }
+                else
+                {
+                    count++;
+                    if (count == 2)
+                    { isStable = false; count = 0; }
+                }
+                PrimaryMpData[i] = PrimaryMpData[i - (i % 10 == 2 ? 2 : 1)] + basup;
+            }
+        }
+
+        private void LoadSecondaryMpData()
+        {
+            PrimaryMpData = new double[256];
+            PrimaryMpData[0] = 60;
+            PrimaryMpData[1] = 60;
+            PrimaryMpData[2] = 78;
+
+            int basup = 18;
+            bool boostup = false;
+
+            for (int i = 3; i < 100; i++)
+            {
+                if (i % 10 == 1)
+                {
+                    PrimaryMpData[i] += PrimaryMpData[i - 1] + i + 10;
+                    continue;
+                }
+
+                if(boostup)
+                { basup += 3; boostup = false; }
+                else
+                { basup++; boostup = true; }
+
+                PrimaryMpData[i] = PrimaryMpData[i - (i % 10 == 2 ? 2 : 1)] + basup;
+            }
+        }
         private void LoadXpData()
         {
             // Load XpData
