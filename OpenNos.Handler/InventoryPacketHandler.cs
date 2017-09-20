@@ -1569,7 +1569,7 @@ namespace OpenNos.Handler
                         {
                             FixedUpMode HasAmulet = FixedUpMode.None;
                             WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
-                            if (amulet != null && amulet.Item.Effect == 793)
+                            if (amulet?.Item.Effect == 793)
                             {
                                 HasAmulet = FixedUpMode.HasAmulet;
                             }
@@ -1748,7 +1748,7 @@ namespace OpenNos.Handler
                     {
                         FixedUpMode HasAmulet = FixedUpMode.None;
                         WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
-                        if (amulet != null && amulet.Item.Effect == 793)
+                        if (amulet?.Item.Effect == 793)
                         {
                             HasAmulet = FixedUpMode.HasAmulet;
                         }
@@ -1830,7 +1830,7 @@ namespace OpenNos.Handler
                     {
                         FixedUpMode hasAmulet = FixedUpMode.None;
                         WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
-                        if (amulet.Item.Effect == 793)
+                        if (amulet?.Item.Effect == 793)
                         {
                             hasAmulet = FixedUpMode.HasAmulet;
                         }
