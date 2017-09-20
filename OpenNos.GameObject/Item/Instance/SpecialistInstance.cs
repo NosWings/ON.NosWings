@@ -483,7 +483,7 @@ namespace OpenNos.GameObject
                                 return;
                             }
                             CharacterSession.Character.Inventory.RemoveItemAmount(blueScrollVnum);
-                            CharacterSession.SendPacket("shop_end 1");
+                            CharacterSession.SendPacket(CharacterSession.Character.Inventory.CountItem(blueScrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                         }
                     }
                     else
@@ -501,7 +501,7 @@ namespace OpenNos.GameObject
                                 return;
                             }
                             CharacterSession.Character.Inventory.RemoveItemAmount(blueScrollVnum);
-                            CharacterSession.SendPacket("shop_end 1");
+                            CharacterSession.SendPacket(CharacterSession.Character.Inventory.CountItem(blueScrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                         }
                     }
                 }
@@ -530,7 +530,7 @@ namespace OpenNos.GameObject
                                 return;
                             }
                             CharacterSession.Character.Inventory.RemoveItemAmount(blueScrollVnum);
-                            CharacterSession.SendPacket("shop_end 1");
+                            CharacterSession.SendPacket(CharacterSession.Character.Inventory.CountItem(blueScrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                         }
                     }
                     else
@@ -548,7 +548,7 @@ namespace OpenNos.GameObject
                                 return;
                             }
                             CharacterSession.Character.Inventory.RemoveItemAmount(blueScrollVnum);
-                            CharacterSession.SendPacket("shop_end 1");
+                            CharacterSession.SendPacket(CharacterSession.Character.Inventory.CountItem(blueScrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                         }
                     }
                 }
@@ -576,7 +576,7 @@ namespace OpenNos.GameObject
                                 return;
                             }
                             CharacterSession.Character.Inventory.RemoveItemAmount(redScrollVnum);
-                            CharacterSession.SendPacket("shop_end 1");
+                            CharacterSession.SendPacket(CharacterSession.Character.Inventory.CountItem(redScrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                         }
                     }
                     else
@@ -593,7 +593,7 @@ namespace OpenNos.GameObject
                                 return;
                             }
                             CharacterSession.Character.Inventory.RemoveItemAmount(redScrollVnum);
-                            CharacterSession.SendPacket("shop_end 1");
+                            CharacterSession.SendPacket(CharacterSession.Character.Inventory.CountItem(redScrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                         }
                     }
                 }
