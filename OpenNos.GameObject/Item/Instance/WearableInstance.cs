@@ -824,7 +824,7 @@ namespace OpenNos.GameObject
                     if (protection == UpgradeProtection.Protected && !isCommand)
                     {
                         session.Character.Inventory.RemoveItemAmount(goldScrollVnum);
-                        session.SendPacket("shop_end 2");
+                        session.SendPacket("shop_end 1");
                     }
                     if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
                     {
@@ -883,7 +883,7 @@ namespace OpenNos.GameObject
                     if (protection == UpgradeProtection.Protected && !isCommand)
                     {
                         session.Character.Inventory.RemoveItemAmount(normalScrollVnum);
-                        session.SendPacket("shop_end 2");
+                        session.SendPacket("shop_end 1");
                     }
                     if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
                     {
