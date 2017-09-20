@@ -16,6 +16,7 @@ namespace OpenNos.GameObject.Helpers
             LoadXpData();
             LoadPrimaryMpData();
             LoadSecondaryMpData();
+            LoadHpData();
         }
 
         #endregion
@@ -48,7 +49,7 @@ namespace OpenNos.GameObject.Helpers
             bool isStable = true;
             bool isDouble = false;
 
-            for (int i = 3; i < 100; i++)
+            for (int i = 3; i < PrimaryMpData.Length; i++)
             {
                 if (i % 10 == 1)
                 {
@@ -83,19 +84,19 @@ namespace OpenNos.GameObject.Helpers
 
         private void LoadSecondaryMpData()
         {
-            PrimaryMpData = new double[256];
-            PrimaryMpData[0] = 60;
-            PrimaryMpData[1] = 60;
-            PrimaryMpData[2] = 78;
+            SecondaryMpData = new double[256];
+            SecondaryMpData[0] = 60;
+            SecondaryMpData[1] = 60;
+            SecondaryMpData[2] = 78;
 
             int basup = 18;
             bool boostup = false;
 
-            for (int i = 3; i < 100; i++)
+            for (int i = 3; i < SecondaryMpData.Length; i++)
             {
                 if (i % 10 == 1)
                 {
-                    PrimaryMpData[i] += PrimaryMpData[i - 1] + i + 10;
+                    SecondaryMpData[i] += SecondaryMpData[i - 1] + i + 10;
                     continue;
                 }
 
@@ -104,9 +105,37 @@ namespace OpenNos.GameObject.Helpers
                 else
                 { basup++; boostup = true; }
 
-                PrimaryMpData[i] = PrimaryMpData[i - (i % 10 == 2 ? 2 : 1)] + basup;
+                SecondaryMpData[i] = SecondaryMpData[i - (i % 10 == 2 ? 2 : 1)] + basup;
             }
         }
+
+        private void LoadHpData()
+        {
+            HpData = new double[256];
+            int baseHp = 138;
+            int HPbasup = 18;
+            for (int i = 0; i < HpData.Length; i++)
+            {
+                HpData[i] = baseHp;
+                HPbasup++;
+                baseHp += HPbasup;
+
+                if (i == 37)
+                {
+                    baseHp = 1765;
+                    HPbasup = 65;
+                }
+                if (i < 41)
+                {
+                    continue;
+                }
+                if (((99 - i) % 8) == 0)
+                {
+                    HPbasup++;
+                }
+            }
+        }
+
         private void LoadXpData()
         {
             // Load XpData
