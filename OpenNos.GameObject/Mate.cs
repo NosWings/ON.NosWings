@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using static OpenNos.Domain.BCardType;
 using System.Collections.Concurrent;
+using OpenNos.Core;
+using System.Reactive.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -224,7 +226,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return $"st 2 {MateTransportId} {Level} {(int)((float)Hp / (float)MaxHp * 100)} {(int)((float)Mp / (float)MaxMp * 100)} {Hp} {Mp}";
+            return $"st 2 {MateTransportId} {Level} {(int)((float)Hp / (float)MaxHp * 100)} {(int)((float)Mp / (float)MaxMp * 100)} {Hp} {Mp}{Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}.{buff.Level}")}";
         }
 
         public void GenerateXp(int xp)
@@ -367,6 +369,37 @@ namespace OpenNos.GameObject
                 }
             }
             return new[] { value1, value2 };
+        }
+
+        public void AddBuff(Buff indicator)
+        {
+            if (indicator?.Card == null)
+            {
+                return;
+            }
+            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            indicator.RemainingTime = indicator.Card.Duration;
+            indicator.Start = DateTime.Now;
+            Buff.Add(indicator);
+            indicator.Card.BCards.ForEach(c => c.ApplyBCards(this));
+            if (indicator.Card.EffectId > 0)
+            {
+                GenerateEff(indicator.Card.EffectId);
+            }
+            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o => { RemoveBuff(indicator.Card.CardId); });
+        }
+
+        private void RemoveBuff(int id)
+        {
+            Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
+            if (indicator == null)
+            {
+                return;
+            }
+            if (Buff.Contains(indicator))
+            {
+                Buff = Buff.Where(s => s.Card.CardId != id);
+            }
         }
         #endregion
     }

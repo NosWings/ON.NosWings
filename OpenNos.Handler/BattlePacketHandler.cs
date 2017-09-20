@@ -611,12 +611,19 @@ namespace OpenNos.Handler
                         {
                             case 2:
                                 IEnumerable<ClientSession> clientSessions = Session.CurrentMapInstance?.Sessions?.Where(s => s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
+                                IEnumerable<Mate> matesInRange = Session.CurrentMapInstance?.Mates?.Where(s => s.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
                                 if (clientSessions != null)
                                 {
                                     foreach (ClientSession target in clientSessions)
                                     {
-
                                         ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(target.Character));
+                                    }
+                                }
+                                if (matesInRange != null)
+                                {
+                                    foreach (Mate targetMate in matesInRange)
+                                    {
+                                        ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(targetMate));
                                     }
                                 }
                                 break;

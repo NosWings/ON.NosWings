@@ -54,8 +54,12 @@ namespace OpenNos.GameObject
                     else if (session.GetType() == typeof(MapNpc))
                     {
                     }
-                    else if (session.GetType() == typeof(Mate))
+                    else if (session is Mate mate)
                     {
+                        if (ServerManager.Instance.RandomNumber() < FirstData)
+                        {
+                            mate?.AddBuff(new Buff(SecondData, (byte)(caster is Character character ? character.Level : 1)));
+                        }
                     }
                     break;
 

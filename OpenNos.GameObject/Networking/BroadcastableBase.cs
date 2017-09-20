@@ -56,6 +56,17 @@ namespace OpenNos.GameObject
             }
         }
 
+        // TO DO : OPTIMIZE
+        public IEnumerable<Mate> Mates
+        {
+            get
+            {
+                ConcurrentBag<Mate> mate = new ConcurrentBag<Mate>();
+                Sessions.ToList().ForEach(s => s.Character.Mates.ToList().ForEach(o => mate.Add(s.Character.Mates.FirstOrDefault(m => m.IsTeamMember))));
+                return mate;
+            }
+        }
+
         protected DateTime LastUnregister { get; private set; }
 
         #endregion
