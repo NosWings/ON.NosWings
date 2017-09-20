@@ -273,7 +273,7 @@ namespace OpenNos.GameObject
                     break;
 
                 // Cupid's arrow
-                case 34: // this is imaginary number I = √(-1)
+                case 34:
                     if (packetsplit != null && packetsplit.Length > 3)
                     {
                         if (long.TryParse(packetsplit[3], out long characterId))
@@ -291,7 +291,7 @@ namespace OpenNos.GameObject
                                     otherSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(
                                         $"#fins^-34^{session.Character.CharacterId} #fins^-69^{session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("MARRY_REQUEST"), session.Character.Name)}"));
                                     session.Character.FriendRequestCharacters.Add(characterId);
-                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                    //session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
 
                                 }
                             }
