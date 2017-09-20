@@ -408,7 +408,7 @@ namespace OpenNos.GameObject
                             }
                             else if (session.Character.IsVehicled)
                             {
-                                session.Character.Mates?.ForEach(x =>
+                                session.Character.Mates?.Where(s => s.IsTeamMember).ToList().ForEach(x =>
                                 {
                                     x.PositionX = session.Character.PositionX;
                                     x.PositionY = session.Character.PositionY;
