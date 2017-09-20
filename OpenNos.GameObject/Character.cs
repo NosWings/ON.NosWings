@@ -1757,8 +1757,9 @@ namespace OpenNos.GameObject
 
 
             #endregion
-            baseDamage *= 1 + (int)(GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D);
 
+            // OFFENSIVE POTION
+            baseDamage += (int) (baseDamage * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.AttackIncreased)[0] / 100D));
 
             int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
             int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
@@ -1777,6 +1778,7 @@ namespace OpenNos.GameObject
             {
                 Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(15));
             }
+
 
             #region Soft-Damage
 
@@ -3341,6 +3343,27 @@ namespace OpenNos.GameObject
             }
             SkillBcards.Clear();
             #endregion
+
+            // OFFENSIVE POTION
+            baseDamage += (int)(baseDamage * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D));
+
+            int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
+            int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
+            bool softDamage = false;
+            if (ServerManager.Instance.RandomNumber() < primaryWeaponSoftDamage[0])
+            {
+                baseDamage += (int)(baseDamage * (1 + primaryWeaponSoftDamage[1] / 100D));
+                softDamage = true;
+            }
+            if (ServerManager.Instance.RandomNumber() < secondaryWeaponSoftDamage[0])
+            {
+                baseDamage += (int)(baseDamage * (1 + secondaryWeaponSoftDamage[1] / 100D));
+                softDamage = true;
+            }
+            if (softDamage)
+            {
+                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(15));
+            }
 
             #region Total Damage
 
