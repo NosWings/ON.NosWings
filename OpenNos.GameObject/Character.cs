@@ -777,18 +777,23 @@ namespace OpenNos.GameObject
                         break;
                     case 7:
                         AddBuff(new Buff(395), false);
+                        AddBuff(new Buff(411), false);
                         break;
                     case 8:
                         AddBuff(new Buff(396), false);
+                        AddBuff(new Buff(411), false);
                         break;
                     case 9:
                         AddBuff(new Buff(397), false);
+                        AddBuff(new Buff(411), false);
                         break;
                     case 10:
                         AddBuff(new Buff(398), false);
+                        AddBuff(new Buff(411), false);
                         break;
                     case 11:
                         AddBuff(new Buff(410), false);
+                        AddBuff(new Buff(411), false);
                         break;
                     case 12:
                         AddBuff(new Buff(411), false);
