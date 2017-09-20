@@ -634,7 +634,7 @@ namespace OpenNos.Handler
                 }
                 mate.PositionX = positionX;
                 mate.PositionY = positionY;
-                Session.CurrentMapInstance.Broadcast($"mv 2 {petId} {positionX} {positionY} {mate.Monster.Speed}");
+                Session.CurrentMapInstance.Broadcast($"mv 2 {petId} {positionX} {positionY} {mate.Speed}");
             }
         }
 

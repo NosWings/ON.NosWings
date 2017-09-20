@@ -18,6 +18,8 @@ using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static OpenNos.Domain.BCardType;
+using System.Collections.Concurrent;
 
 namespace OpenNos.GameObject
 {
@@ -41,8 +43,8 @@ namespace OpenNos.GameObject
         {
             NpcMonsterVNum = npcMonster.NpcMonsterVNum;
             Monster = npcMonster;
-            Hp = npcMonster.MaxHP;
-            Mp = npcMonster.MaxMP;
+            Hp = MaxHp;
+            Mp = MaxMp;
             Name = npcMonster.Name;
             MateType = matetype;
             Level = level;
@@ -65,52 +67,47 @@ namespace OpenNos.GameObject
 
         public ItemInstance BootsInstance { get; set; }
 
+        public ConcurrentBag<Buff> Buff { get; internal set; }
+
+        public short CloseDefence { get; set; }
+
+        public short Concentrate { get; set; }
+
+        public byte CriticalChance { get; set; }
+
+        public short CriticalRate { get; set; }
+
+        public short DamageMaximum { get; set; }
+
+        public short DamageMinimum { get; set; }
+
         public ItemInstance GlovesInstance { get; set; }
 
         public bool IsSitting { get; set; }
 
         public bool IsUsingSp { get; set; }
 
+        public DateTime LastSpeedChange { get; set; }
+
+        public short MagicDefence { get; set; }
+
         public int MateTransportId { get; set; }
 
-        public int MaxHp
-        {
-            get
-            {
-                return Monster.MaxHP;
-            }
-        }
+        public int MaxHp { get { return HPLoad(); } }
 
-        public int MaxMp
-        {
-            get
-            {
-                return Monster.MaxMP;
-            }
-        }
+        public int MaxMp { get { return MpLoad(); } }
 
         public NpcMonster Monster
         {
-            get
-            {
-                return _monster ?? ServerManager.Instance.GetNpc(NpcMonsterVNum);
-            }
-            set
-            {
-                _monster = value;
-            }
+            get { return _monster ?? ServerManager.Instance.GetNpc(NpcMonsterVNum);}
+
+            set { _monster = value;}
         }
 
         public Character Owner
         {
-            get
-            {
-                return _owner ?? ServerManager.Instance.GetSessionByCharacterId(CharacterId).Character;
-            }
-            set
-            {
-                _owner = value;
-            }
+            get { return _owner ?? ServerManager.Instance.GetSessionByCharacterId(CharacterId).Character;}
+            set { _owner = value;}
         }
 
         public byte PetId { get; set; }
@@ -118,6 +115,28 @@ namespace OpenNos.GameObject
         public short PositionX { get; set; }
 
         public short PositionY { get; set; }
+
+        public byte Speed
+        {
+            get
+            {
+                byte bonusSpeed = (byte)(GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovementNegated)[0]
+                                       + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedIncreased)[0]
+                                       + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedDecreased)[0]);
+
+                if (Monster.Speed + bonusSpeed > 59)
+                {
+                    return 59;
+                }
+                return (byte)(Monster.Speed + bonusSpeed);
+            }
+
+            set
+            {
+                LastSpeedChange = DateTime.Now;
+                Monster.Speed = value > 59 ? (byte)59 : value;
+            }
+        }
 
         public ItemInstance SpInstance { get; set; }
 
@@ -141,7 +160,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCond()
         {
-            return $"cond 2 {MateTransportId} 0 0 {Monster.Speed}";
+            return $"cond 2 {MateTransportId} 0 0 {Speed}";
         }
 
         public EffectPacket GenerateEff(int effectid)
@@ -229,6 +248,33 @@ namespace OpenNos.GameObject
             ServerManager.Instance.GetSessionByCharacterId(Owner.CharacterId).SendPacket(GenerateScPacket());
         }
 
+        public int HPLoad()
+        {
+            double multiplicator = 1.0;
+            int hp = 0;
+
+            multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP)[0] / 100D;
+            multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumHP)[0] / 100D;
+            hp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0];
+            hp -= GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
+            hp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
+
+            return (int)((MateHelper.Instance.HpData[Level] + hp) * multiplicator);
+        }
+
+        public int MpLoad()
+        {
+            int mp = 0;
+            double multiplicator = 1.0;
+            multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumMP)[0] / 100D;
+            multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP)[0] / 100D;
+            mp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0];
+            mp -= GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
+            mp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
+
+            return (int)(((Monster.Race == 0 ? MateHelper.Instance.PrimaryMpData[Level] : MateHelper.Instance.SecondaryMpData[Level]) + mp) * multiplicator);
+        }
+
         private List<ItemInstance> GetInventory()
         {
             List<ItemInstance> items = new List<ItemInstance>();
@@ -291,6 +337,37 @@ namespace OpenNos.GameObject
             }
         }
 
+        public int[] GetBuff(CardType type, byte subtype)
+        {
+            int value1 = 0;
+            int value2 = 0;
+
+            foreach (Buff buff in Buff)
+            {
+                foreach (BCard entry in buff.Card.BCards.Where(s =>
+                    s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
+                    (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
+                {
+                    if (entry.IsLevelScaled)
+                    {
+                        if (entry.IsLevelDivided)
+                        {
+                            value1 += buff.Level / entry.FirstData;
+                        }
+                        else
+                        {
+                            value1 += entry.FirstData * buff.Level;
+                        }
+                    }
+                    else
+                    {
+                        value1 += entry.FirstData;
+                    }
+                    value2 += entry.SecondData;
+                }
+            }
+            return new[] { value1, value2 };
+        }
         #endregion
     }
 }
