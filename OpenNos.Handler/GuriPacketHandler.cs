@@ -391,20 +391,29 @@ namespace OpenNos.Handler
                                         {
                                             return;
                                         }
-                                        if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0 && Session.Character.Inventory.CountItem(baseVnum + faction) < 3)
+                                        if (Session.Character.Inventory.CountItem(baseVnum + faction) < 3)
                                         {
-                                            Session.Character.Faction = (FactionType) faction;
+                                            if (Session.Character.Family != null)
+                                            {
+                                                return;
+                                            }
+                                            Session.Character.Faction = (FactionType)faction;
                                             Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
                                             Session.SendPacket("scr 0 0 0 0 0 0 0");
                                             Session.SendPacket(Session.Character.GenerateFaction());
                                             Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
-                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                                Language.Instance.GetMessageFromKey(
+                                                    $"GET_PROTECTION_POWER_{faction}"), 0));
                                         }
-                                        else if (Session.Character.Inventory.CountItem(baseVnum + faction) > 2 && Session.Character.Inventory.CountItem(baseVnum + faction) <= 4 &&
-                                                 Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                                        else if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head && Session.Character.Inventory.CountItem(baseVnum + faction) <= 4)
                                         {
+                                            if (Session.Character.Family == null)
+                                            {
+                                                return;
+                                            }
                                             FamilyDTO fam = Session.Character.Family;
-                                            fam.FamilyFaction = (byte) faction;
+                                            fam.FamilyFaction = (byte)faction;
                                             DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                                         }
