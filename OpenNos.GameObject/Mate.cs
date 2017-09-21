@@ -346,7 +346,7 @@ namespace OpenNos.GameObject
             int value1 = 0;
             int value2 = 0;
 
-            foreach (Buff buff in Buff)
+            foreach (Buff buff in Buff.Where(s => s?.Card?.BCards != null))
             {
                 foreach (BCard entry in buff.Card.BCards.Where(s =>
                     s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
