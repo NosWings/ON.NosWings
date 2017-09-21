@@ -391,7 +391,11 @@ namespace OpenNos.Handler
                                         {
                                             return;
                                         }
-                                        if (Session.Character.Inventory.CountItem(baseVnum + faction) < 3)
+                                        if (Session.Character.Inventory.CountItem(baseVnum + faction) < 1)
+                                        {
+                                            return;
+                                        }
+                                        if (faction < 3)
                                         {
                                             if (Session.Character.Family != null)
                                             {
@@ -406,7 +410,7 @@ namespace OpenNos.Handler
                                                 Language.Instance.GetMessageFromKey(
                                                     $"GET_PROTECTION_POWER_{faction}"), 0));
                                         }
-                                        else if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head && Session.Character.Inventory.CountItem(baseVnum + faction) <= 4)
+                                        else if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head && faction <= 4)
                                         {
                                             if (Session.Character.Family == null)
                                             {
