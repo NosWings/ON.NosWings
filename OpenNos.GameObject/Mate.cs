@@ -46,11 +46,11 @@ namespace OpenNos.GameObject
         {
             NpcMonsterVNum = npcMonster.NpcMonsterVNum;
             Monster = npcMonster;
+            Level = level;
             Hp = MaxHp;
             Mp = MaxMp;
             Name = npcMonster.Name;
             MateType = matetype;
-            Level = level;
             Loyalty = 1000;
             PositionY = (short)(owner.PositionY + 1);
             PositionX = (short)(owner.PositionX + 1);
@@ -262,6 +262,8 @@ namespace OpenNos.GameObject
             hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0];
             hp -= GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
             hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
+            // Monster Bonus HP
+            hp += (int) (Monster.MaxHP - MateHelper.Instance.HpData[Monster.Level]);
 
             return (int) ((MateHelper.Instance.HpData[Level] + hp) * multiplicator);
         }
@@ -275,6 +277,8 @@ namespace OpenNos.GameObject
             mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0];
             mp -= GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
             mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
+            // Monster Bonus MP
+            mp += (int)(Monster.MaxMP - (Monster.Race == 0 ? MateHelper.Instance.PrimaryMpData[Monster.Level] : MateHelper.Instance.SecondaryMpData[Monster.Level]));
 
             return (int) (((Monster.Race == 0 ? MateHelper.Instance.PrimaryMpData[Level] : MateHelper.Instance.SecondaryMpData[Level]) + mp) * multiplicator);
         }
