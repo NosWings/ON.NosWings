@@ -1237,7 +1237,23 @@ namespace OpenNos.GameObject
                 MapInstance.Broadcast(npcMonsterSkill != null
                     ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int) (targetSession.Character.Hp / targetSession.Character.HpLoad() * 100)} {damage} {hitmode} 0"
                     : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int) (targetSession.Character.Hp / targetSession.Character.HpLoad() * 100)} {damage} {hitmode} 0");
-                npcMonsterSkill?.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(targetSession.Character));
+                
+                npcMonsterSkill?.Skill.BCards.ToList().ForEach(s =>
+                {
+                    if (s.CardId.HasValue)
+                    {
+                        Buff b = new Buff(s.CardId.Value);
+                        if (b.Card.BuffType == BuffType.Bad)
+                        {
+                            s.ApplyBCards(targetSession.Character);
+                        }
+                        /*else
+                        {
+                            s.ApplyBCards(this);
+                        }*/
+                    }
+                });
+
                 LastSkill = DateTime.Now;
                 if (targetSession.Character.Hp <= 0 && targetSession.Character.IsDead == false)
                 {
