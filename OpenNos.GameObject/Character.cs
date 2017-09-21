@@ -70,7 +70,7 @@ namespace OpenNos.GameObject
 
         public ConcurrentBag<Buff> Buff { get; internal set; }
 
-        private ConcurrentBag<BCard> SkillBcards { get; set; }
+        private ConcurrentBag<BCard> SkillBcards { get; }
 
         public bool CanFight
         {

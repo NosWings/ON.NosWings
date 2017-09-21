@@ -534,8 +534,10 @@ namespace OpenNos.Handler
                         }
 
                         Session.SendPacket(Session.Character.GenerateStat());
-                        CharacterSkill skillinfo = Session.Character.Skills.Select(s => s.Value).OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
-                        Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {skillinfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
+                        CharacterSkill skillinfo = Session.Character.Skills.Select(s => s.Value).OrderBy(o => o.SkillVNum)
+                            .FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+                        Session.CurrentMapInstance?.Broadcast(
+                            $"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {skillinfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
 
                         // Generate scp
                         ski.LastUse = DateTime.Now;
@@ -545,10 +547,13 @@ namespace OpenNos.Handler
                         }
                         if (Session.HasCurrentMapInstance)
                         {
-                            Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HpLoad() * 100)} 0 -2 {ski.Skill.SkillType - 1}");
+                            Session.CurrentMapInstance?.Broadcast(
+                                $"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int) ((double) Session.Character.Hp / Session.Character.HpLoad() * 100)} 0 -2 {ski.Skill.SkillType - 1}");
                             if (ski.Skill.TargetRange != 0 && Session.HasCurrentMapInstance)
                             {
-                                foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange)))
+                                foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s =>
+                                    s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId &&
+                                    s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange)))
                                 {
                                     if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance)
                                     {
@@ -598,41 +603,86 @@ namespace OpenNos.Handler
                     }
                     else if (ski.Skill.TargetType == 2 && ski.Skill.HitType == 0)
                     {
-                        Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
-                        Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HpLoad() * 100)} 0 -1 {ski.Skill.SkillType - 1}");
+                        Session.CurrentMapInstance?.Broadcast(
+                            $"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
+                        Session.CurrentMapInstance?.Broadcast(
+                            $"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int) ((double) Session.Character.Hp / Session.Character.HpLoad() * 100)} 0 -1 {ski.Skill.SkillType - 1}");
                         ClientSession target = ServerManager.Instance.GetSessionByCharacterId(targetId) ?? Session;
                         ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(target.Character));
                     }
                     else if (ski.Skill.TargetType == 1 && ski.Skill.HitType != 1)
                     {
-                        Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
-                        Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HpLoad() * 100)} 0 -1 {ski.Skill.SkillType - 1}");
+                        Session.CurrentMapInstance?.Broadcast(
+                            $"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
+                        Session.CurrentMapInstance?.Broadcast(
+                            $"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int) ((double) Session.Character.Hp / Session.Character.HpLoad() * 100)} 0 -1 {ski.Skill.SkillType - 1}");
                         switch (ski.Skill.HitType)
                         {
                             case 2:
-                                IEnumerable<ClientSession> clientSessions = Session.CurrentMapInstance?.Sessions?.Where(s => s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
-                                IEnumerable<Mate> matesInRange = Session.CurrentMapInstance?.Mates?.Where(s => s.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
+                                IEnumerable<ClientSession> clientSessions =
+                                    Session.CurrentMapInstance?.Sessions?.Where(s => s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
+                                IEnumerable<Mate> matesInRange =
+                                    Session.CurrentMapInstance?.Mates?.Where(s => s.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
                                 if (clientSessions != null)
                                 {
                                     foreach (ClientSession target in clientSessions)
                                     {
-                                        ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(target.Character));
-                                    }
-                                }
-                                if (matesInRange != null)
-                                {
-                                    foreach (Mate targetMate in matesInRange)
-                                    {
-                                        ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(targetMate));
+                                        ski.Skill.BCards.ToList().ForEach(s =>
+                                        {
+                                            switch (Session.CurrentMapInstance.MapInstanceType)
+                                            {
+                                                case MapInstanceType.Act4Instance:
+                                                    if (s.CardId.HasValue)
+                                                    {
+                                                        Buff b = new Buff(s.CardId.Value);
+                                                        switch (b.Card.BuffType)
+                                                        {
+                                                            case BuffType.Bad:
+                                                                s.ApplyBCards(target.Character);
+                                                                break;
+                                                            case BuffType.Good:
+                                                            case BuffType.Neutral:
+                                                                if (Session.Character.Faction == target.Character.Faction)
+                                                                {
+                                                                    s.ApplyBCards(target.Character);
+                                                                }
+                                                                break;
+                                                        }
+                                                    }
+                                                    break;
+                                                case MapInstanceType.ArenaInstance:
+                                                    if (s.CardId.HasValue)
+                                                    {
+                                                        Buff b = new Buff(s.CardId.Value);
+                                                        switch (b.Card.BuffType)
+                                                        {
+                                                            case BuffType.Bad:
+                                                                s.ApplyBCards(target.Character);
+                                                                break;
+                                                            case BuffType.Good:
+                                                            case BuffType.Neutral:
+                                                                if (Session.Character.Group?.GroupType == GroupType.Group && Session.Character.Group.IsMemberOfGroup(target))
+                                                                {
+                                                                    s.ApplyBCards(target.Character);
+                                                                }
+                                                                break;
+                                                        }
+                                                    }
+                                                    break;
+                                                default:
+                                                    s.ApplyBCards(target.Character);
+                                                    break;
+                                            }
+                                        });
                                     }
                                 }
                                 break;
 
                             case 4:
                             case 0:
-                                ski.Skill.BCards.ToList().ForEach(c =>
+                                ski.Skill.BCards.ToList().ForEach(s =>
                                 {
-                                    ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(Session.Character));
+                                    s.ApplyBCards(Session.Character);
                                 });
                                 break;
 
@@ -646,7 +696,8 @@ namespace OpenNos.Handler
                             ClientSession playerToAttack = ServerManager.Instance.GetSessionByCharacterId(targetId);
                             if (playerToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
                             {
-                                if (Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = playerToAttack.Character.PositionX, Y = playerToAttack.Character.PositionY }) <= ski.Skill.Range + 1)
+                                if (Map.GetDistance(new MapCell {X = Session.Character.PositionX, Y = Session.Character.PositionY},
+                                        new MapCell {X = playerToAttack.Character.PositionX, Y = playerToAttack.Character.PositionY}) <= ski.Skill.Range + 1)
                                 {
                                     Session.Character.LastSkillUse = DateTime.Now;
                                     ski.LastUse = DateTime.Now;
@@ -659,9 +710,11 @@ namespace OpenNos.Handler
                                         Session.SendPackets(Session.Character.GenerateQuicklist());
                                     }
                                     Session.SendPacket(Session.Character.GenerateStat());
-                                    CharacterSkill characterSkillInfo = Session.Character.Skills.Select(s => s.Value).OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+                                    CharacterSkill characterSkillInfo = Session.Character.Skills.Select(s => s.Value).OrderBy(o => o.SkillVNum)
+                                        .FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
-                                    Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
+                                    Session.CurrentMapInstance?.Broadcast(
+                                        $"ct 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
                                     Session.Character.Skills.Select(s => s.Value).Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
 
                                     // Generate scp
@@ -690,7 +743,9 @@ namespace OpenNos.Handler
                                             {
                                                 ski.Hit = 0;
                                             }
-                                            IEnumerable<ClientSession> playersInAoeRange = ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
+                                            IEnumerable<ClientSession> playersInAoeRange = ServerManager.Instance.Sessions.Where(s =>
+                                                s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId &&
+                                                s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
                                             int count = 0;
                                             foreach (ClientSession character in playersInAoeRange)
                                             {
@@ -726,7 +781,9 @@ namespace OpenNos.Handler
                                         }
                                         else
                                         {
-                                            IEnumerable<ClientSession> playersInAoeRange = ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
+                                            IEnumerable<ClientSession> playersInAoeRange = ServerManager.Instance.Sessions.Where(s =>
+                                                s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId &&
+                                                s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
 
                                             // hit the targetted monster
 
@@ -737,8 +794,10 @@ namespace OpenNos.Handler
                                                 {
                                                     team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                                 }
-                                                if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType
-                                                     || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
+                                                if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType !=
+                                                    team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType
+                                                    || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
+                                                    (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                 {
                                                     PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), playerToAttack);
                                                 }
@@ -765,7 +824,8 @@ namespace OpenNos.Handler
                                                     team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                                 }
                                                 if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == character)?.ArenaTeamType
-                                                    || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId)))
+                                                    || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
+                                                    (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId)))
                                                 {
                                                     PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
                                                 }
@@ -794,8 +854,10 @@ namespace OpenNos.Handler
                                                     {
                                                         team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                                     }
-                                                    if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType
-                                                     || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
+                                                    if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType !=
+                                                        team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType
+                                                        || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
+                                                        (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                     {
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session,
                                                             ski.Skill), playerToAttack);
@@ -812,8 +874,10 @@ namespace OpenNos.Handler
                                                     {
                                                         team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                                     }
-                                                    if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType
-                                                      || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
+                                                    if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType !=
+                                                        team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType
+                                                        || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
+                                                        (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                     {
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
                                                     }
@@ -837,8 +901,10 @@ namespace OpenNos.Handler
                                                 {
                                                     team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
                                                 }
-                                                if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType
-                                                      || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance && (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
+                                                if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType !=
+                                                    team.FirstOrDefault(s => s.Session == playerToAttack)?.ArenaTeamType
+                                                    || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
+                                                    (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                 {
                                                     PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
                                                 }
@@ -869,8 +935,8 @@ namespace OpenNos.Handler
                             MapMonster monsterToAttack = Session.CurrentMapInstance.GetMonster(targetId);
                             if (monsterToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
                             {
-                                    if (Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY },
-                                                    new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + 1 + monsterToAttack.Monster.BasicArea)
+                                if (Map.GetDistance(new MapCell {X = Session.Character.PositionX, Y = Session.Character.PositionY},
+                                        new MapCell {X = monsterToAttack.MapX, Y = monsterToAttack.MapY}) <= ski.Skill.Range + 1 + monsterToAttack.Monster.BasicArea)
                                 {
                                     Session.Character.LastSkillUse = DateTime.Now;
                                     ski.LastUse = DateTime.Now;
@@ -887,7 +953,8 @@ namespace OpenNos.Handler
                                     CharacterSkill characterSkillInfo = Session.Character.Skills.Select(s => s.Value).OrderBy(o => o.SkillVNum)
                                         .FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
-                                    Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
+                                    Session.CurrentMapInstance?.Broadcast(
+                                        $"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
                                     Session.Character.Skills.Select(s => s.Value).Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
 
                                     // Generate scp
@@ -916,7 +983,9 @@ namespace OpenNos.Handler
                                             {
                                                 ski.Hit = 0;
                                             }
-                                            IEnumerable<MapMonster> monstersInAoeRange = Session.CurrentMapInstance?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).Where(s => s.IsFactionTargettable(Session.Character.Faction)).ToList();
+                                            IEnumerable<MapMonster> monstersInAoeRange = Session.CurrentMapInstance
+                                                ?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).Where(s => s.IsFactionTargettable(Session.Character.Faction))
+                                                .ToList();
                                             if (monstersInAoeRange != null)
                                             {
                                                 foreach (MapMonster mon in monstersInAoeRange)
@@ -935,10 +1004,13 @@ namespace OpenNos.Handler
                                         }
                                         else
                                         {
-                                            IEnumerable<MapMonster> monstersInAoeRange = Session.CurrentMapInstance?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).Where(s => s.IsFactionTargettable(Session.Character.Faction)).ToList();
+                                            IEnumerable<MapMonster> monstersInAoeRange = Session.CurrentMapInstance
+                                                ?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).Where(s => s.IsFactionTargettable(Session.Character.Faction))
+                                                .ToList();
 
                                             //hit the targetted monster
-                                            monsterToAttack.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill, characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: true));
+                                            monsterToAttack.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill, characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect,
+                                                showTargetAnimation: true));
 
                                             //hit all other monsters
                                             if (monstersInAoeRange != null)
