@@ -1208,8 +1208,7 @@ namespace OpenNos.GameObject
             secCritHit += DistanceCritical;
 
             #endregion
-
-
+            
             skill?.BCards?.ToList().ForEach(s => SkillBcards.Add(s));
             #region Switch skill.Type
 
@@ -1759,7 +1758,7 @@ namespace OpenNos.GameObject
             #endregion
 
             // OFFENSIVE POTION
-            baseDamage += (int) (baseDamage * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.AttackIncreased)[0] / 100D));
+            baseDamage += (int)(baseDamage * GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D);
 
             int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
             int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
@@ -2240,7 +2239,7 @@ namespace OpenNos.GameObject
             if (Inventory == null)
             {
                 return
-                    $"in 1 {(Authority == AuthorityType.Moderator ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + name : name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HpLoad() * 100)} {Math.Ceiling(Mp / MpLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (long)Group?.GroupId : -1)} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(foe ? -1 : Family?.FamilyId ?? -1)} {(foe ? name : Family?.Name ?? "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} {faction} {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
+                    $"in 1 {(Authority == AuthorityType.Moderator ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + name : name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte) AuthorityType.User : Authority < AuthorityType.User ? (byte) AuthorityType.User : (byte) Authority)} {(byte) Gender} {(byte) HairStyle} {color} {(byte) Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HpLoad() * 100)} {Math.Ceiling(Mp / MpLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (long) Group?.GroupId : -1)} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(foe ? -1 : Family?.FamilyId ?? -1)} {(foe ? name : Family?.Name ?? "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} {faction} {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
             }
             WearableInstance headWearable = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
             if (headWearable?.Item.IsColored == true)
@@ -3343,10 +3342,7 @@ namespace OpenNos.GameObject
             }
             SkillBcards.Clear();
             #endregion
-
-            // OFFENSIVE POTION
-            baseDamage += (int)(baseDamage * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D));
-
+            
             int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
             int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
             bool softDamage = false;
@@ -3372,6 +3368,8 @@ namespace OpenNos.GameObject
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);
             }
+            // OFFENSIVE POTION
+            totalDamage += (int)(totalDamage * GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D);
 
             #endregion
 
@@ -5974,7 +5972,7 @@ namespace OpenNos.GameObject
         {
             int value1 = 0;
             int value2 = 0;
-
+            
             foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
@@ -6015,7 +6013,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {
