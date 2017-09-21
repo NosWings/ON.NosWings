@@ -386,45 +386,27 @@ namespace OpenNos.Handler
                                 case 750:
                                     if (!guriPacket.User.HasValue)
                                     {
-                                        Console.WriteLine(guriPacket.Type + "\n" + guriPacket.Argument + "\n" + guriPacket.User);
                                         const short baseVnum = 1623;
-                                        if (short.TryParse(guriPacket.Argument.ToString(), out short faction))
+                                        if (!short.TryParse(guriPacket.Argument.ToString(), out short faction))
                                         {
-                                            if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0 && Session.Character.Inventory.CountItem(baseVnum + faction) < 3) 
-                                            {
-                                                Session.Character.Faction = (FactionType) faction;
-                                                Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
-                                                Session.SendPacket("scr 0 0 0 0 0 0 0");
-                                                Session.SendPacket(Session.Character.GenerateFaction());
-                                                Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
-                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
-                                            }
-                                            else if (Session.Character.Inventory.CountItem(baseVnum + faction) > 2 &&
-                                                     Session.Character.Inventory.CountItem(baseVnum + faction) <= 4 &&
-                                                     Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
-                                            {
-                                                FamilyCharacter isHead = null;
-                                                foreach (FamilyCharacter s in Session.Character.Family.FamilyCharacters)
-                                                {
-                                                    if (s.Authority == FamilyAuthority.Head)
-                                                    {
-                                                        isHead = s;
-                                                        break;
-                                                    }
-                                                }
-                                                if (Session.Character.Family == null || isHead?.CharacterId
-                                                        .Equals(Session.Character.CharacterId) != true)
-                                                {
-                                                    return;
-                                                }
-                                                Session.Character.Faction = (FactionType) (faction / 2);
-                                                Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
-                                                Session.SendPacket("scr 0 0 0 0 0 0 0");
-                                                Session.SendPacket(Session.Character.GenerateFaction());
-                                                Session.SendPacket(Session.Character.GenerateEff(4799 + faction / 2));
-                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction / 2}"), 0));
-                                                ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-                                            }
+                                            return;
+                                        }
+                                        if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0 && Session.Character.Inventory.CountItem(baseVnum + faction) < 3)
+                                        {
+                                            Session.Character.Faction = (FactionType) faction;
+                                            Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
+                                            Session.SendPacket("scr 0 0 0 0 0 0 0");
+                                            Session.SendPacket(Session.Character.GenerateFaction());
+                                            Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                                        }
+                                        else if (Session.Character.Inventory.CountItem(baseVnum + faction) > 2 && Session.Character.Inventory.CountItem(baseVnum + faction) <= 4 &&
+                                                 Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                                        {
+                                            FamilyDTO fam = Session.Character.Family;
+                                            fam.FamilyFaction = (byte) faction;
+                                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                                            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                                         }
                                     }
                                     break;
