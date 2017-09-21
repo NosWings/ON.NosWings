@@ -705,7 +705,11 @@ namespace OpenNos.Handler
             else
             {
                 short vnum = sellPacket.Data;
-                CharacterSkill skill = Session.Character.Skills[vnum];
+                CharacterSkill skill = null;
+                if (Session.Character.Skills.ContainsKey(vnum))
+                {
+                    skill = Session.Character.Skills[vnum];
+                }
                 if (skill == null || vnum == 200 + 20 * (byte)Session.Character.Class || vnum == 201 + 20 * (byte)Session.Character.Class)
                 {
                     return;
