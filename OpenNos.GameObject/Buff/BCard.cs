@@ -51,9 +51,7 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
-                    else if (session.GetType() == typeof(MapNpc))
-                    {
-                    }
+                    /*
                     else if (session is Mate mate)
                     {
                         if (ServerManager.Instance.RandomNumber() < FirstData)
@@ -61,6 +59,7 @@ namespace OpenNos.GameObject
                             mate?.AddBuff(new Buff(SecondData, (byte)(caster is Character character ? character.Level : 1)));
                         }
                     }
+                    */
                     break;
 
                 case BCardType.CardType.Move:

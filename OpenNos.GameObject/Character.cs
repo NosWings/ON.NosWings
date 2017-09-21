@@ -472,6 +472,19 @@ namespace OpenNos.GameObject
             target?.SendPacket(target?.Character.GenerateFinit());
         }
 
+        public void ChangeFaction(FactionType faction)
+        {
+            Faction = faction;
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{(int)Faction}"), 0));
+            Session.SendPacket("scr 0 0 0 0 0 0");
+            Session.SendPacket(GenerateFaction());
+            Session.SendPacket(GenerateStatChar());
+            Session.SendPacket(GenerateEff(4799 + (int)Faction));
+            Session.SendPacket(GenerateCond());
+            Session.SendPacket(GenerateLev());
+
+        }
+
         public void ChangeClass(ClassType characterClass)
         {
             JobLevel = 1;

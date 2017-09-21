@@ -1206,6 +1206,11 @@ namespace OpenNos.Handler
 
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
+                // TODO IMPROVE THAT
+                if (Session.Character.Family.FamilyFaction != (byte) Session.Character.Faction)
+                {
+                    Session.Character.ChangeFaction((FactionType)Session.Character.Family.FamilyFaction);
+                }
                 Session.SendPacket(Session.Character.GenerateGInfo());
                 Session.SendPackets(Session.Character.GetFamilyHistory());
                 Session.SendPacket(Session.Character.GenerateFamilyMember());

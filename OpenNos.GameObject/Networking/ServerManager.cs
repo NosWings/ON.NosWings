@@ -714,9 +714,9 @@ namespace OpenNos.GameObject
             _disposed = true;
         }
 
-        public void FamilyRefresh(long familyId)
+        public void FamilyRefresh(long familyId, bool changeFaction = false)
         {
-            CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, familyId);
+            CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, familyId, changeFaction);
         }
 
         public MapInstance GenerateMapInstance(short mapId, MapInstanceType type, InstanceBag mapclock)
@@ -1945,7 +1945,8 @@ namespace OpenNos.GameObject
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
             // TODO: Parallelization of family.
-            long familyId = (long)sender;
+            Tuple<long, bool> tuple = (Tuple<long, bool>) sender;
+            long familyId = tuple.Item1;
             FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(familyId);
             Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == familyId);
             lock (FamilyList)
@@ -1978,6 +1979,10 @@ namespace OpenNos.GameObject
                         Parallel.ForEach(Sessions.Where(s => fam.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
                         {
                             session.Character.Family = fam;
+                            if (tuple.Item2)
+                            {
+                                session.Character.ChangeFaction((FactionType) fam.FamilyFaction);
+                            }
                             session.CurrentMapInstance.Broadcast(session.Character.GenerateGidx());
                         });
                     }
@@ -2024,14 +2029,7 @@ namespace OpenNos.GameObject
             }
             MailDTO message = (MailDTO)sender;
             ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == message.ReceiverId);
-            if (targetSession == null || targetSession.Character == null)
-            {
-                return;
-            }
-            else
-            {
-                targetSession.Character.GenerateMail(message);
-            }
+            targetSession?.Character?.GenerateMail(message);
         }
 
         private void OnMessageSentToCharacter(object sender, EventArgs e)

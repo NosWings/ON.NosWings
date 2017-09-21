@@ -12,7 +12,7 @@ namespace OpenNos.Master.Library.Interface
 
         void CharacterDisconnected(long characterId);
 
-        void UpdateFamily(long familyId);
+        void UpdateFamily(long familyId, bool changeFaction);
 
         void SendMessageToCharacter(SCSCharacterMessage message);
 

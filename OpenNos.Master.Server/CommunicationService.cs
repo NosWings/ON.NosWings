@@ -447,7 +447,7 @@ namespace OpenNos.Master.Server
             }
         }
 
-        public void UpdateFamily(string worldGroup, long familyId)
+        public void UpdateFamily(string worldGroup, long familyId, bool changeFaction)
         {
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
             {
@@ -456,7 +456,7 @@ namespace OpenNos.Master.Server
 
             foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldGroup)))
             {
-                world.ServiceClient.GetClientProxy<ICommunicationClient>().UpdateFamily(familyId);
+                world.ServiceClient.GetClientProxy<ICommunicationClient>().UpdateFamily(familyId, changeFaction);
             }
         }
 
