@@ -120,21 +120,7 @@ namespace OpenNos.GameObject
 
         public short PositionY { get; set; }
 
-        public Skill[] Skills
-        {
-            get
-            {
-                if (Skills == null)
-                {
-                    return new Skill[3];
-                }
-                return Skills;
-            }
-            set
-            {
-                Skills = value;                
-            }
-        }
+        public Skill[] Skills { get; set; }
 
         public byte Speed
         {
@@ -220,7 +206,7 @@ namespace OpenNos.GameObject
 
         public string GenPski()
         {
-            return $"pski {Skills[0].SkillVNum} {Skills[1].SkillVNum} {Skills[2].SkillVNum}";
+            return $"pski {Skills[0]?.SkillVNum} {Skills[1]?.SkillVNum} {Skills[2]?.SkillVNum}";
         }
 
         public string GenerateRest()
