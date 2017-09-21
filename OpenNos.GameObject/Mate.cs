@@ -218,6 +218,11 @@ namespace OpenNos.GameObject
             return $"out 2 {MateTransportId}";
         }
 
+        public string GenPski()
+        {
+            return $"pski {Skills[0].SkillVNum} {Skills[1].SkillVNum} {Skills[2].SkillVNum}";
+        }
+
         public string GenerateRest()
         {
             IsSitting = !IsSitting;
