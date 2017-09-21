@@ -136,7 +136,6 @@ namespace OpenNos.GameObject
                 }
                 return (byte)(Monster.Speed + bonusSpeed);
             }
-
             set
             {
                 LastSpeedChange = DateTime.Now;
@@ -414,6 +413,7 @@ namespace OpenNos.GameObject
                 Buff = Buff.Where(s => s.Card.CardId != id);
             }
         }
+        
         #endregion
     }
 }
