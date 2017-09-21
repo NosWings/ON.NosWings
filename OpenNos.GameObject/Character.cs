@@ -4752,6 +4752,10 @@ namespace OpenNos.GameObject
             Session.Disconnect();
         }
 
+        /// <summary>
+        /// Connect to act4
+        /// </summary>
+        /// <returns></returns>
         public bool ConnectAct4()
         {
             if (Faction == FactionType.Neutral)
@@ -4771,37 +4775,41 @@ namespace OpenNos.GameObject
                 if (Session.Character.MapId == 153)
                 {
                     // RESPAWN AT CITADEL
-                    Session.Character.MapX = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));
-                    Session.Character.MapY = (short)(42 + ServerManager.Instance.RandomNumber(-2, 3));
-                    Session.Character.MapId = (short)(Session.Character.Faction == FactionType.Angel ? 130 : 131);
+                    Session.Character.MapX = (short) (39 + ServerManager.Instance.RandomNumber(-2, 3));
+                    Session.Character.MapY = (short) (42 + ServerManager.Instance.RandomNumber(-2, 3));
+                    Session.Character.MapId = (short) (Session.Character.Faction == FactionType.Angel ? 130 : 131);
                 }
                 switch (Session.Character.Faction)
                 {
                     case FactionType.Angel:
                         Session.Character.MapId = 130;
-                        Session.Character.MapX = (short)(12 + ServerManager.Instance.RandomNumber(-2, 3));
-                        Session.Character.MapY = (short)(40 + ServerManager.Instance.RandomNumber(-2, 3));
+                        Session.Character.MapX = (short) (12 + ServerManager.Instance.RandomNumber(-2, 3));
+                        Session.Character.MapY = (short) (40 + ServerManager.Instance.RandomNumber(-2, 3));
                         break;
                     case FactionType.Demon:
                         Session.Character.MapId = 131;
-                        Session.Character.MapX = (short)(12 + ServerManager.Instance.RandomNumber(-2, 3));
-                        Session.Character.MapY = (short)(40 + ServerManager.Instance.RandomNumber(-2, 3));
+                        Session.Character.MapX = (short) (12 + ServerManager.Instance.RandomNumber(-2, 3));
+                        Session.Character.MapY = (short) (40 + ServerManager.Instance.RandomNumber(-2, 3));
                         break;
                 }
                 ChangeChannel(act4ChannelInfo.EndPointIp, act4ChannelInfo.EndPointPort, 1);
                 return true;
             }
-            if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) == true)
+            if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act4) != true)
             {
-                MapInstance map = ServerManager.Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == Session.CurrentMapInstance.Map.MapId);
-                if (map != null)
-                {
-                    ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, map.MapInstanceId, Session.Character.MapX, Session.Character.MapY);
-                }
+                return true;
+            }
+            MapInstance map = ServerManager.Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == Session.CurrentMapInstance.Map.MapId);
+            if (map != null)
+            {
+                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, map.MapInstanceId, Session.Character.MapX, Session.Character.MapY);
             }
             return true;
         }
 
+        /// <summary>
+        /// Save the Character
+        /// </summary>
         public void Save()
         {
             try
