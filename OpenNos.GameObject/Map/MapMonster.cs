@@ -219,7 +219,7 @@ namespace OpenNos.GameObject
                 EventHelper.Instance.RunEvent(e, monster: this);
             });
         }
-
+        
         public void StartLife()
         {
           Life =  Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
@@ -332,8 +332,8 @@ namespace OpenNos.GameObject
             if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
             {
                 int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                short mapX = (short)Path.ElementAt(maxindex - 1).X;
-                short mapY = (short)Path.ElementAt(maxindex - 1).Y;
+                short mapX = Path.ElementAt(maxindex - 1).X;
+                short mapY = Path.ElementAt(maxindex - 1).Y;
                 double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)(Monster.Speed * 0.6);
                 MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                 LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
@@ -871,6 +871,10 @@ namespace OpenNos.GameObject
         }
 
 
+        /// <summary>
+        /// Generate the mv 3 packet
+        /// </summary>
+        /// <returns>string mv 3 packet</returns>
         private string GenerateMv3()
         {
             return $"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}";
@@ -1226,6 +1230,13 @@ namespace OpenNos.GameObject
                     });
         }
 
+        /// <summary>
+        /// Hit the Character
+        /// </summary>
+        /// <param name="targetSession"></param>
+        /// <param name="npcMonsterSkill"></param>
+        /// <param name="damage"></param>
+        /// <param name="hitmode"></param>
         private void TargetHit2(ClientSession targetSession, NpcMonsterSkill npcMonsterSkill, int damage, int hitmode)
         {
             if (targetSession.Character.Hp > 0)
@@ -1282,6 +1293,10 @@ namespace OpenNos.GameObject
             }
         }
 
+        /// <summary>
+        /// Add the buff
+        /// </summary>
+        /// <param name="indicator"></param>
         public void AddBuff(Buff indicator)
         {
             if (indicator?.Card == null)
@@ -1300,6 +1315,10 @@ namespace OpenNos.GameObject
             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>{ RemoveBuff(indicator.Card.CardId); });
         }
 
+        /// <summary>
+        /// Remove buff from Buff Container
+        /// </summary>
+        /// <param name="id"></param>
         private void RemoveBuff(int id)
         {
             Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
@@ -1313,6 +1332,13 @@ namespace OpenNos.GameObject
             }
         }
 
+        /// <summary>
+        /// Get Buffs
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="subtype"></param>
+        /// <param name="affectingOpposite"></param>
+        /// <returns>Param1 = FirstData | Param2 = SecondData</returns>
         public int[] GetBuff(CardType type, byte subtype, bool affectingOpposite = false)
         {
             int value1 = 0;
@@ -1366,7 +1392,12 @@ namespace OpenNos.GameObject
             return new[] { value1, value2 };
         }
 
-        // NoAttack // NoMove [...]
+        /// <summary>
+        /// Check if the Entity has the MapMonster
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="subtype"></param>
+        /// <returns>true if has buff</returns>
         public bool HasBuff(CardType type, byte subtype)
         {
             return Buff.Any(buff => buff.Card.BCards.Any(b => b.Type == (byte)type && b.SubType == subtype && (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)));
