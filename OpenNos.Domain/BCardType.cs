@@ -113,6 +113,7 @@ namespace OpenNos.Domain
 
             // 81-??
             AbsorbedSpirit = 81,
+            EffectSummon = 86,
 
             AngerSkill = 82,
             MeteoriteTeleport = 83,
@@ -1099,6 +1100,13 @@ namespace OpenNos.Domain
             Element,
             HPMP,
             All
+        }
+
+        public enum EffectSummon : byte
+        {
+            // TODO
+            LastSkillReset = 11,
+            DamageBoostOnHigherLvl = 31
         }
 
         // end!
