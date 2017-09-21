@@ -112,9 +112,10 @@ namespace OpenNos.Handler
                 if (mate.IsUsingSp)
                 {
                     mate.IsUsingSp = false;
+                    mate.Skills = null;
                     Session.Character.MapInstance.Broadcast(mate.GenerateCMode(-1));
                     Session.SendPacket(mate.GenerateCond());
-                    //dpski
+                    Session.SendPacket(mate.GenPski());
                     Session.SendPacket(mate.GenerateScPacket());
                     Session.Character.MapInstance.Broadcast(mate.GenerateOut());
                     Session.Character.MapInstance.Broadcast(mate.GenerateIn());
@@ -123,7 +124,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.SendPacket("delay 5000 3 #psl^1 ");
+                    Session.SendPacket("pdelay 5000 3 #psl^1 ");
                     Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 2, mate.MateTransportId), mate.PositionX, mate.PositionY);
                 }
             }
@@ -134,9 +135,10 @@ namespace OpenNos.Handler
                     return;                    
                 }
                 mate.IsUsingSp = true;
+                //TODO: update pet skills
                 Session.SendPacket(mate.GenerateCond());
                 Session.Character.MapInstance.Broadcast(mate.GenerateCMode(mate.SpInstance.Item.Morph));
-                //pski 1236 1238 1240
+                Session.SendPacket(mate.GenPski());
                 Session.SendPacket(mate.GenerateScPacket());
                 Session.Character.MapInstance.Broadcast(mate.GenerateOut());
                 Session.Character.MapInstance.Broadcast(mate.GenerateIn());
