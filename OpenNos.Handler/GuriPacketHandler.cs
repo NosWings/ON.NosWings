@@ -389,16 +389,28 @@ namespace OpenNos.Handler
                                         const short baseVnum = 1623;
                                         if (!short.TryParse(guriPacket.Argument.ToString(), out short faction))
                                         {
+                                            // WRONG PACKET
                                             return;
                                         }
                                         if (Session.Character.Inventory.CountItem(baseVnum + faction) < 1)
                                         {
+                                            // NO EGG
+                                            return;
+                                        }
+                                        if (faction > 4)
+                                        {
+                                            /*
+                                             * Character faction : 1 - 2
+                                             * Family faction : 3 - 4
+                                             */
                                             return;
                                         }
                                         if (faction < 3)
                                         {
                                             if (Session.Character.Family != null)
                                             {
+                                                // CAN'T USE PERSONAL EGG IF IN FAMILY
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_CHARACTER_FACTION_IN_FAM"), 0));
                                                 return;
                                             }
                                             Session.Character.Faction = (FactionType)faction;
@@ -410,16 +422,25 @@ namespace OpenNos.Handler
                                                 Language.Instance.GetMessageFromKey(
                                                     $"GET_PROTECTION_POWER_{faction}"), 0));
                                         }
-                                        else if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head && faction <= 4)
+                                        else
                                         {
                                             if (Session.Character.Family == null)
                                             {
+                                                // IF CHARACTER HAS NO FAMILY
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
+                                                return;
+                                            }
+                                            if (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
+                                            {
+                                                // IF IS NOT HEAD OF FAMILY
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_FAMILYHEAD"), 0));
                                                 return;
                                             }
                                             FamilyDTO fam = Session.Character.Family;
                                             fam.FamilyFaction = (byte)faction;
                                             DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                                            Session.Character.Save();
                                         }
                                     }
                                     break;
