@@ -283,21 +283,14 @@ namespace OpenNos.GameObject
                                 session.SendPacket($"info {Language.Instance.GetMessageFromKey("ALREADY_MARRIED")}");
                                 return;
                             }
-                            if (session.Character.IsFriendOfCharacter(characterId))
+                            ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
+                            if (otherSession != null)
                             {
-                                ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
-                                if (otherSession != null)
-                                {
-                                    otherSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(
-                                        $"#fins^-34^{session.Character.CharacterId} #fins^-69^{session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("MARRY_REQUEST"), session.Character.Name)}"));
-                                    session.Character.FriendRequestCharacters.Add(characterId);
-                                    //session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                otherSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(
+                                    $"#fins^-34^{session.Character.CharacterId} #fins^-69^{session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("MARRY_REQUEST"), session.Character.Name)}"));
+                                session.Character.FriendRequestCharacters.Add(characterId);
+                                //session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
 
-                                }
-                            }
-                            else
-                            {
-                                session.SendPacket($"info {Language.Instance.GetMessageFromKey("NOT_FRIEND")}");
                             }
                         }
                     }
@@ -408,7 +401,7 @@ namespace OpenNos.GameObject
                             }
                             else if (session.Character.IsVehicled)
                             {
-                                session.Character.Mates?.ForEach(x =>
+                                session.Character.Mates?.Where(s => s.IsTeamMember).ToList().ForEach(x =>
                                 {
                                     x.PositionX = session.Character.PositionX;
                                     x.PositionY = session.Character.PositionY;

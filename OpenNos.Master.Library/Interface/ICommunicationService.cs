@@ -92,7 +92,8 @@ namespace OpenNos.Master.Library.Interface
         /// </summary>
         /// <param name="worldGroup">WorldGroup the Family should be updated on</param>
         /// <param name="familyId">Family that should be updated</param>
-        void UpdateFamily(string worldGroup, long familyId);
+        /// <param name="changeFaction"></param>
+        void UpdateFamily(string worldGroup, long familyId, bool changeFaction);
 
         /// <summary>
         /// Checks if the Account is allowed to login

@@ -914,13 +914,14 @@ namespace OpenNos.Import.Console
         public void ImportNpcMonsters()
         {
             int[] basicHp = new int[100];
-            int[] basicMp = new int[100];
+            int[] basicPrimaryMp = new int[100];
+            int[] basicSecondaryMp = new int[100];
             int[] basicXp = new int[100];
             int[] basicJXp = new int[100];
 
             // basicHpLoad
             int baseHp = 138;
-            int HPbasup = 17;
+            int HPbasup = 18;
             for (int i = 0; i < 100; i++)
             {
                 basicHp[i] = baseHp;
@@ -942,56 +943,70 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            // basicMpLoad (Only for classic monster)
-            int baseMp = 10;
-            int MPbasup = 5;
-            int mpInfo = 0;
-            int secondMpInfo = 0;
+            //Race == 0
+            basicPrimaryMp[0] = 10;
+            basicPrimaryMp[1] = 10;
+            basicPrimaryMp[2] = 15;
+
+            int primaryBasup = 5;
+            byte count = 0;
             bool isStable = true;
-            bool onlyOne = true;
-            bool isFirst = false;
-            for (int i = 0; i < 100; i++)
+            bool isDouble = false;
+
+            for (int i = 3; i < 100; i++)
             {
-                basicMp[i] = baseMp;
-                if (i == 0)
-                { continue; }
                 if (i % 10 == 1)
                 {
-                    basicMp[i] += MPbasup;
+                    basicPrimaryMp[i] += basicPrimaryMp[i - 1] + primaryBasup * 2;
                     continue;
                 }
-                if (isStable)
+                if (!isStable)
                 {
-                    mpInfo++;
-                    MPbasup += isFirst ? 1 : 0;
-                    isFirst = false;
-                    baseMp += MPbasup;
-                    if (mpInfo % 3 != 0)
+                    primaryBasup++;
+                    count++;
+
+                    if (count == 2)
                     {
-                        isStable = false;
+                        if (isDouble)
+                        { isDouble = false; }
+                        else
+                        { isStable = true; isDouble = true; count = 0; }
                     }
+
+                    if (count == 4)
+                    { isStable = true; count = 0; }
                 }
                 else
                 {
-                    MPbasup++;
-                    if (onlyOne)
-                    {
-                        isStable = true;
-                        onlyOne = false;
-                        isFirst = true;
-                    }
-                    else
-                    {
-                        secondMpInfo++;
-                        if(secondMpInfo % 3 == 0)
-                        {
-                            onlyOne = true;
-                            isStable = true;
-                            isFirst = true;
-                        }
-                    }
-                    baseMp += MPbasup;
+                    count++;
+                    if (count == 2)
+                    { isStable = false; count = 0; }
                 }
+                basicPrimaryMp[i] = basicPrimaryMp[i - (i % 10 == 2 ? 2 : 1)] + primaryBasup;
+            }
+
+            // Race == 2
+            basicSecondaryMp[0] = 60;
+            basicSecondaryMp[1] = 60;
+            basicSecondaryMp[2] = 78;
+
+            int secondaryBasup = 18;
+            bool boostup = false;
+
+            for (int i = 3; i < 100; i++)
+            {
+                if (i % 10 == 1)
+                {
+                    basicSecondaryMp[i] += basicSecondaryMp[i - 1] + i + 10;
+                    continue;
+                }
+
+                if (boostup)
+                { secondaryBasup += 3; boostup = false; }
+                else
+                { secondaryBasup++; boostup = true; }
+
+                basicSecondaryMp[i] = basicSecondaryMp[i - (i % 10 == 2 ? 2 : 1)] + secondaryBasup;
             }
 
             // basicXPLoad
@@ -1076,7 +1091,7 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 3 && currentLine[1] == "HP/MP")
                     {
                         npc.MaxHP = Convert.ToInt32(currentLine[2]) + basicHp[npc.Level];
-                        npc.MaxMP = Convert.ToInt32(currentLine[3]) + basicMp[npc.Level];
+                        npc.MaxMP = Convert.ToInt32(currentLine[3]) + npc.Race == 0 ? basicPrimaryMp[npc.Level] : basicSecondaryMp[npc.Level];
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EXP")
                     {
@@ -3342,6 +3357,14 @@ namespace OpenNos.Import.Console
                                     case 4106:
                                         item.Effect = 69;
                                         item.EffectValue = 4;
+                                        break;
+
+                                    case 185: // Hatus
+                                    case 302: // Classic
+                                    case 882: // Morcos
+                                    case 942: // Calvina
+                                    case 999: //Berios
+                                        item.Effect = 999;
                                         break;
 
                                     default:

@@ -45,9 +45,9 @@ namespace OpenNos.Master.Library.Client
             Task.Run(() => CommunicationServiceClient.Instance.OnUpdateBazaar(bazaarItemId));
         }
 
-        public void UpdateFamily(long familyId)
+        public void UpdateFamily(long familyId, bool changeFaction)
         {
-            Task.Run(() => CommunicationServiceClient.Instance.OnUpdateFamily(familyId));
+            Task.Run(() => CommunicationServiceClient.Instance.OnUpdateFamily(familyId, changeFaction));
         }
 
         public void UpdatePenaltyLog(int penaltyLogId)

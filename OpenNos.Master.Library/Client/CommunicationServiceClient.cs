@@ -218,9 +218,9 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.UpdateBazaar(worldGroup, bazaarItemId);
         }
 
-        public void UpdateFamily(string worldGroup, long familyId)
+        public void UpdateFamily(string worldGroup, long familyId, bool changeFaction)
         {
-            _client.ServiceProxy.UpdateFamily(worldGroup, familyId);
+            _client.ServiceProxy.UpdateFamily(worldGroup, familyId, changeFaction);
         }
 
         public void UpdateRelation(string worldGroup, long relationId)
@@ -260,9 +260,10 @@ namespace OpenNos.Master.Library.Client
             BazaarRefresh?.Invoke(bazaarItemId, null);
         }
 
-        internal void OnUpdateFamily(long familyId)
+        internal void OnUpdateFamily(long familyId, bool changeFaction)
         {
-            FamilyRefresh?.Invoke(familyId, null);
+            Tuple<long, bool> tu = new Tuple<long, bool>(familyId, changeFaction);
+            FamilyRefresh?.Invoke(tu, null);
         }
 
         internal void OnUpdatePenaltyLog(int penaltyLogId)

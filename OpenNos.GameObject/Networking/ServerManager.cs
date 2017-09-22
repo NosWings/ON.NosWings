@@ -324,6 +324,7 @@ namespace OpenNos.GameObject
             session.SendPacket(session.Character.GenerateStat());
             session.SendPacket(session.Character.GenerateCond());
             session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
+            session.Character.IsDead = false;
             switch (session.CurrentMapInstance.MapInstanceType)
             {
                 case MapInstanceType.BaseMapInstance:
@@ -713,9 +714,9 @@ namespace OpenNos.GameObject
             _disposed = true;
         }
 
-        public void FamilyRefresh(long familyId)
+        public void FamilyRefresh(long familyId, bool changeFaction = false)
         {
-            CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, familyId);
+            CommunicationServiceClient.Instance.UpdateFamily(ServerGroup, familyId, changeFaction);
         }
 
         public MapInstance GenerateMapInstance(short mapId, MapInstanceType type, InstanceBag mapclock)
@@ -1464,7 +1465,7 @@ namespace OpenNos.GameObject
         public void SaveAll()
         {
             // AFTER
-            Parallel.ForEach(Sessions.Where(s => s.HasSelectedCharacter && s.IsConnected), session =>
+            Parallel.ForEach(Sessions.Where(s => s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null), session =>
             {
                 session.Character?.Save();
             });
@@ -1951,7 +1952,8 @@ namespace OpenNos.GameObject
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
             // TODO: Parallelization of family.
-            long familyId = (long)sender;
+            Tuple<long, bool> tuple = (Tuple<long, bool>) sender;
+            long familyId = tuple.Item1;
             FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(familyId);
             Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == familyId);
             lock (FamilyList)
@@ -1968,20 +1970,28 @@ namespace OpenNos.GameObject
                         {
                             fam.FamilyCharacters.Add((FamilyCharacter)famchar);
                         }
-                        FamilyCharacter familyCharacter = fam.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                        if (familyCharacter != null)
+                        FamilyCharacter familyLeader = fam.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                        if (familyLeader != null)
                         {
-                            fam.Warehouse = new Inventory((Character)familyCharacter.Character);
-                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse)
-                                .ToList())
+                            fam.Warehouse = new Inventory((Character)familyLeader.Character);
+                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyLeader.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
                             {
-                                inventory.CharacterId = familyCharacter.CharacterId;
+                                inventory.CharacterId = familyLeader.CharacterId;
                                 fam.Warehouse[inventory.Id] = (ItemInstance) inventory;
                             }
                         }
                         fam.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fam.FamilyId).ToList();
                         fam.LandOfDeath = lod;
                         FamilyList.Add(fam);
+                        Parallel.ForEach(Sessions.Where(s => fam.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
+                        {
+                            session.Character.Family = fam;
+                            if (tuple.Item2)
+                            {
+                                session.Character.ChangeFaction((FactionType) fam.FamilyFaction);
+                            }
+                            session.CurrentMapInstance.Broadcast(session.Character.GenerateGidx());
+                        });
                     }
                     else
                     {
@@ -2003,6 +2013,11 @@ namespace OpenNos.GameObject
                         }
                         fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
                         FamilyList.Add(fami);
+                        Parallel.ForEach(Sessions.Where(s => fami.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
+                        {
+                            session.Character.Family = fami;
+                            session.CurrentMapInstance.Broadcast(session.Character.GenerateGidx());
+                        });
                     }
                 }
                 else if (fam != null)
@@ -2021,14 +2036,7 @@ namespace OpenNos.GameObject
             }
             MailDTO message = (MailDTO)sender;
             ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == message.ReceiverId);
-            if (targetSession == null || targetSession.Character == null)
-            {
-                return;
-            }
-            else
-            {
-                targetSession.Character.GenerateMail(message);
-            }
+            targetSession?.Character?.GenerateMail(message);
         }
 
         private void OnMessageSentToCharacter(object sender, EventArgs e)

@@ -431,6 +431,11 @@ namespace OpenNos.Handler
                             {
                                 return;
                             }
+                            if (otherSession.Character.FriendRequestBlocked)
+                            {
+                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_REQUEST_BLOCKED")}");
+                                return;
+                            }
                             if (otherSession.Character.FriendRequestCharacters.Contains(Session.Character.CharacterId))
                             {
                                 switch (fInsPacket.Type)
@@ -1190,8 +1195,6 @@ namespace OpenNos.Handler
             string kdlinit = ServerManager.Instance.TopPoints.Aggregate("kdlinit",
                 (current, character) => current + $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}");
 
-            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
-
             Session.SendPacket(Session.Character.GenerateFinit());
             Session.SendPacket(Session.Character.GenerateBlinit());
             Session.SendPacket(clinit);
@@ -1208,6 +1211,11 @@ namespace OpenNos.Handler
 
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
+                // TODO IMPROVE THAT
+                if (Session.Character.Family.FamilyFaction != (byte) Session.Character.Faction)
+                {
+                    Session.Character.ChangeFaction((FactionType)Session.Character.Family.FamilyFaction);
+                }
                 Session.SendPacket(Session.Character.GenerateGInfo());
                 Session.SendPackets(Session.Character.GetFamilyHistory());
                 Session.SendPacket(Session.Character.GenerateFamilyMember());
@@ -1218,6 +1226,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage));
                 }
             }
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
 
             IEnumerable<PenaltyLogDTO> warning = DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Character.AccountId).Where(p => p.Penalty == PenaltyType.Warning);
             IEnumerable<PenaltyLogDTO> penaltyLogDtos = warning as IList<PenaltyLogDTO> ?? warning.ToList();

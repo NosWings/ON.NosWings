@@ -70,7 +70,7 @@ namespace OpenNos.GameObject
 
         public ConcurrentBag<Buff> Buff { get; internal set; }
 
-        private ConcurrentBag<BCard> SkillBcards { get; set; }
+        private ConcurrentBag<BCard> SkillBcards { get; }
 
         public bool CanFight
         {
@@ -172,6 +172,8 @@ namespace OpenNos.GameObject
         public bool IsCustomSpeed { get; set; }
 
         public bool IsDancing { get; set; }
+
+        public bool IsDead { get; set; }
 
         /// <summary>
         /// Defines if the Character Is currently sending or getting items thru exchange.
@@ -468,6 +470,19 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateFinit());
             ClientSession target = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == characterId);
             target?.SendPacket(target?.Character.GenerateFinit());
+        }
+
+        public void ChangeFaction(FactionType faction)
+        {
+            Faction = faction;
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{(int)Faction}"), 0));
+            Session.SendPacket("scr 0 0 0 0 0 0");
+            Session.SendPacket(GenerateFaction());
+            Session.SendPacket(GenerateStatChar());
+            Session.SendPacket(GenerateEff(4799 + (int)Faction));
+            Session.SendPacket(GenerateCond());
+            Session.SendPacket(GenerateLev());
+
         }
 
         public void ChangeClass(ClassType characterClass)
@@ -1206,8 +1221,7 @@ namespace OpenNos.GameObject
             secCritHit += DistanceCritical;
 
             #endregion
-
-
+            
             skill?.BCards?.ToList().ForEach(s => SkillBcards.Add(s));
             #region Switch skill.Type
 
@@ -1755,8 +1769,9 @@ namespace OpenNos.GameObject
 
 
             #endregion
-            baseDamage *= 1 + (int)(GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D);
 
+            // OFFENSIVE POTION
+            baseDamage += (int)(baseDamage * GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D);
 
             int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
             int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
@@ -1775,6 +1790,7 @@ namespace OpenNos.GameObject
             {
                 Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(15));
             }
+
 
             #region Soft-Damage
 
@@ -2236,7 +2252,7 @@ namespace OpenNos.GameObject
             if (Inventory == null)
             {
                 return
-                    $"in 1 {(Authority == AuthorityType.Moderator ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + name : name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : Authority < AuthorityType.User ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HpLoad() * 100)} {Math.Ceiling(Mp / MpLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (long)Group?.GroupId : -1)} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(foe ? -1 : Family?.FamilyId ?? -1)} {(foe ? name : Family?.Name ?? "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} {faction} {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
+                    $"in 1 {(Authority == AuthorityType.Moderator ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + name : name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte) AuthorityType.User : Authority < AuthorityType.User ? (byte) AuthorityType.User : (byte) Authority)} {(byte) Gender} {(byte) HairStyle} {color} {(byte) Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HpLoad() * 100)} {Math.Ceiling(Mp / MpLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (long) Group?.GroupId : -1)} {(fairy != null ? 4 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(foe ? -1 : Family?.FamilyId ?? -1)} {(foe ? name : Family?.Name ?? "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} {faction} {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
             }
             WearableInstance headWearable = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
             if (headWearable?.Item.IsColored == true)
@@ -2661,7 +2677,7 @@ namespace OpenNos.GameObject
 
         public List<string> GeneratePst()
         {
-            return Mates.Where(s => s.IsTeamMember).OrderByDescending(s => s.MateType).Select(mate => $"pst 2 {mate.MateTransportId} {(int)mate.MateType} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0").ToList();
+            return Mates.Where(s => s.IsTeamMember).OrderBy(s => s.MateType).Select(mate => $"pst 2 {mate.MateTransportId} {(int)mate.MateType} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0").ToList();
         }
 
         public string GeneratePStashAll()
@@ -3339,6 +3355,24 @@ namespace OpenNos.GameObject
             }
             SkillBcards.Clear();
             #endregion
+            
+            int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
+            int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
+            bool softDamage = false;
+            if (ServerManager.Instance.RandomNumber() < primaryWeaponSoftDamage[0])
+            {
+                baseDamage += (int)(baseDamage * (1 + primaryWeaponSoftDamage[1] / 100D));
+                softDamage = true;
+            }
+            if (ServerManager.Instance.RandomNumber() < secondaryWeaponSoftDamage[0])
+            {
+                baseDamage += (int)(baseDamage * (1 + secondaryWeaponSoftDamage[1] / 100D));
+                softDamage = true;
+            }
+            if (softDamage)
+            {
+                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(15));
+            }
 
             #region Total Damage
 
@@ -3347,6 +3381,8 @@ namespace OpenNos.GameObject
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);
             }
+            // OFFENSIVE POTION
+            totalDamage += (int)(totalDamage * GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D);
 
             #endregion
 
@@ -4716,6 +4752,10 @@ namespace OpenNos.GameObject
             Session.Disconnect();
         }
 
+        /// <summary>
+        /// Connect to act4
+        /// </summary>
+        /// <returns></returns>
         public bool ConnectAct4()
         {
             if (Faction == FactionType.Neutral)
@@ -4735,37 +4775,41 @@ namespace OpenNos.GameObject
                 if (Session.Character.MapId == 153)
                 {
                     // RESPAWN AT CITADEL
-                    Session.Character.MapX = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));
-                    Session.Character.MapY = (short)(42 + ServerManager.Instance.RandomNumber(-2, 3));
-                    Session.Character.MapId = (short)(Session.Character.Faction == FactionType.Angel ? 130 : 131);
+                    Session.Character.MapX = (short) (39 + ServerManager.Instance.RandomNumber(-2, 3));
+                    Session.Character.MapY = (short) (42 + ServerManager.Instance.RandomNumber(-2, 3));
+                    Session.Character.MapId = (short) (Session.Character.Faction == FactionType.Angel ? 130 : 131);
                 }
                 switch (Session.Character.Faction)
                 {
                     case FactionType.Angel:
                         Session.Character.MapId = 130;
-                        Session.Character.MapX = (short)(12 + ServerManager.Instance.RandomNumber(-2, 3));
-                        Session.Character.MapY = (short)(40 + ServerManager.Instance.RandomNumber(-2, 3));
+                        Session.Character.MapX = (short) (12 + ServerManager.Instance.RandomNumber(-2, 3));
+                        Session.Character.MapY = (short) (40 + ServerManager.Instance.RandomNumber(-2, 3));
                         break;
                     case FactionType.Demon:
                         Session.Character.MapId = 131;
-                        Session.Character.MapX = (short)(12 + ServerManager.Instance.RandomNumber(-2, 3));
-                        Session.Character.MapY = (short)(40 + ServerManager.Instance.RandomNumber(-2, 3));
+                        Session.Character.MapX = (short) (12 + ServerManager.Instance.RandomNumber(-2, 3));
+                        Session.Character.MapY = (short) (40 + ServerManager.Instance.RandomNumber(-2, 3));
                         break;
                 }
                 ChangeChannel(act4ChannelInfo.EndPointIp, act4ChannelInfo.EndPointPort, 1);
                 return true;
             }
-            if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) == true)
+            if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act4) != true)
             {
-                MapInstance map = ServerManager.Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == Session.CurrentMapInstance.Map.MapId);
-                if (map != null)
-                {
-                    ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, map.MapInstanceId, Session.Character.MapX, Session.Character.MapY);
-                }
+                return true;
+            }
+            MapInstance map = ServerManager.Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == Session.CurrentMapInstance.Map.MapId);
+            if (map != null)
+            {
+                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, map.MapInstanceId, Session.Character.MapX, Session.Character.MapY);
             }
             return true;
         }
 
+        /// <summary>
+        /// Save the Character
+        /// </summary>
         public void Save()
         {
             try
@@ -5949,7 +5993,7 @@ namespace OpenNos.GameObject
         {
             int value1 = 0;
             int value2 = 0;
-
+            
             foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
@@ -5990,7 +6034,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {

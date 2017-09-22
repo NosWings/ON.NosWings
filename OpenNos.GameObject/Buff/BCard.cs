@@ -51,12 +51,15 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
-                    else if (session.GetType() == typeof(MapNpc))
+                    /*
+                    else if (session is Mate mate)
                     {
+                        if (ServerManager.Instance.RandomNumber() < FirstData)
+                        {
+                            mate?.AddBuff(new Buff(SecondData, (byte)(caster is Character character ? character.Level : 1)));
+                        }
                     }
-                    else if (session.GetType() == typeof(Mate))
-                    {
-                    }
+                    */
                     break;
 
                 case BCardType.CardType.Move:
@@ -266,7 +269,7 @@ namespace OpenNos.GameObject
                                                     NpcMonster mateNpc = ServerManager.Instance.GetNpc(monster.Monster.NpcMonsterVNum);
                                                     byte lvl = 0;
                                                     lvl += monster.Monster.Level;
-                                                    lvl -= 10;
+                                                    lvl -= 15;
                                                     if (lvl <= 0)
                                                     {
                                                         lvl = 1;

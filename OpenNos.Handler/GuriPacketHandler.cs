@@ -387,17 +387,59 @@ namespace OpenNos.Handler
                                     if (!guriPacket.User.HasValue)
                                     {
                                         const short baseVnum = 1623;
-                                        if (short.TryParse(guriPacket.Argument.ToString(), out short faction))
+                                        if (!short.TryParse(guriPacket.Argument.ToString(), out short faction))
                                         {
-                                            if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0)
+                                            // WRONG PACKET
+                                            return;
+                                        }
+                                        if (Session.Character.Inventory.CountItem(baseVnum + faction) < 1)
+                                        {
+                                            // NO EGG
+                                            return;
+                                        }
+                                        if (faction > 4)
+                                        {
+                                            /*
+                                             * Character faction : 1 - 2
+                                             * Family faction : 3 - 4
+                                             */
+                                            return;
+                                        }
+                                        if (faction < 3)
+                                        {
+                                            if (Session.Character.Family != null)
                                             {
-                                                Session.Character.Faction = (FactionType) faction;
-                                                Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
-                                                Session.SendPacket("scr 0 0 0 0 0 0 0");
-                                                Session.SendPacket(Session.Character.GenerateFaction());
-                                                Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
-                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                                                // CAN'T USE PERSONAL EGG IF IN FAMILY
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_CHARACTER_FACTION_IN_FAM"), 0));
+                                                return;
                                             }
+                                            Session.Character.Faction = (FactionType)faction;
+                                            Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
+                                            Session.SendPacket("scr 0 0 0 0 0 0 0");
+                                            Session.SendPacket(Session.Character.GenerateFaction());
+                                            Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                                Language.Instance.GetMessageFromKey(
+                                                    $"GET_PROTECTION_POWER_{faction}"), 0));
+                                        }
+                                        else
+                                        {
+                                            if (Session.Character.Family == null)
+                                            {
+                                                // IF CHARACTER HAS NO FAMILY
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
+                                                return;
+                                            }
+                                            if (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
+                                            {
+                                                // IF IS NOT HEAD OF FAMILY
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_FAMILYHEAD"), 0));
+                                                return;
+                                            }
+                                            FamilyDTO fam = Session.Character.Family;
+                                            fam.FamilyFaction = (byte)faction;
+                                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                                            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                                         }
                                     }
                                     break;
