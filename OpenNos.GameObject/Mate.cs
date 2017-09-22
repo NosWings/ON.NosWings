@@ -205,7 +205,14 @@ namespace OpenNos.GameObject
 
         public string GenPski()
         {
-            return $"pski {Skills[0]?.SkillVNum} {Skills[1]?.SkillVNum} {Skills[2]?.SkillVNum}";
+            if (Skills?.Length >= 3)
+            {
+                return $"pski {Skills?[0].SkillVNum} {Skills?[1].SkillVNum} {Skills?[2].SkillVNum}";
+            }
+            else
+            {
+                return $"pski ";
+            }
         }
 
         public string GenerateRest()
