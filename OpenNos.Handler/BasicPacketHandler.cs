@@ -427,8 +427,13 @@ namespace OpenNos.Handler
                         if (!Session.Character.IsBlockingCharacter(characterId))
                         {
                             ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
-                            if (otherSession == null || otherSession.Character.FriendRequestBlocked)
+                            if (otherSession == null)
                             {
+                                return;
+                            }
+                            if (otherSession.Character.FriendRequestBlocked)
+                            {
+                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_REQUEST_BLOCKED")}");
                                 return;
                             }
                             if (otherSession.Character.FriendRequestCharacters.Contains(Session.Character.CharacterId))
