@@ -440,6 +440,7 @@ namespace OpenNos.Handler
                                             fam.FamilyFaction = (byte)faction;
                                             DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                                            Session.Character.Save();
                                         }
                                     }
                                     break;

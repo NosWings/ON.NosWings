@@ -3359,14 +3359,6 @@ namespace OpenNos.Import.Console
                                         item.EffectValue = 4;
                                         break;
 
-                                    case 185: // Hatus
-                                    case 302: // Classic
-                                    case 882: // Morcos
-                                    case 942: // Calvina
-                                    case 999: //Berios
-                                        item.Effect = 999;
-                                        break;
-
                                     default:
                                         item.Effect = Convert.ToInt16(currentLine[2]);
                                         item.EffectValue = Convert.ToInt32(currentLine[3]);

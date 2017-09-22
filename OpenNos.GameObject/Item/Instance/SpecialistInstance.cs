@@ -422,10 +422,6 @@ namespace OpenNos.GameObject
             }
             if (Upgrade >= 15)
             {
-                if (CharacterSession.Character.Authority == AuthorityType.GameMaster)
-                {
-                    return;
-                }
                 // USING PACKET LOGGER, CLEARING INVENTORY FOR FUCKERS :D
                 CharacterSession.Character.Inventory.ClearInventory();
                 return;
