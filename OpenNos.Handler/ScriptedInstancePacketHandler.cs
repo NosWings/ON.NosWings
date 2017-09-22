@@ -275,7 +275,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (Session.Character.Group.CharacterCount > 4)
+            if (Session.Character.Group.CharacterCount > 4 || Session.Character.Authority == AuthorityType.GameMaster)
             {
                 if (Session.Character.Group.Raid.FirstMap == null)
                 {

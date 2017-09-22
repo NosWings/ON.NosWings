@@ -862,6 +862,7 @@ namespace OpenNos.Handler
             {
                 short vnum = createItemPacket.VNum;
                 sbyte rare = 0;
+                short boxEffect = 999;
                 byte upgrade = 0, amount = 1, design = 0;
                 if (vnum == 1046)
                 {
@@ -871,13 +872,13 @@ namespace OpenNos.Handler
                 if (iteminfo != null)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, createItemPacket, Session.IpAddress);
-                    if (iteminfo.IsColored || iteminfo.VNum == 302)
+                    if (iteminfo.IsColored || iteminfo.Effect == boxEffect)
                     {
                         if (createItemPacket.Design.HasValue)
                         {
                             design = createItemPacket.Design.Value;
                         }
-                        rare = createItemPacket.Upgrade.HasValue && iteminfo.VNum == 302 ? (sbyte) createItemPacket.Upgrade.Value : rare;
+                        rare = createItemPacket.Upgrade.HasValue && iteminfo.Effect == boxEffect ? (sbyte) createItemPacket.Upgrade.Value : rare;
                     }
                     else if (iteminfo.Type == 0)
                     {
