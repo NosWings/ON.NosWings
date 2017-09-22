@@ -1463,9 +1463,8 @@ namespace OpenNos.GameObject
 
         public void SaveAll()
         {
-            List<ClientSession> sessions = Sessions.Where(s => s.HasSelectedCharacter && s.IsConnected).ToList();
             // AFTER
-            Parallel.ForEach(sessions, session =>
+            Parallel.ForEach(Sessions.Where(s => s.HasSelectedCharacter && s.IsConnected), session =>
             {
                 session.Character?.Save();
             });
@@ -1725,8 +1724,8 @@ namespace OpenNos.GameObject
 
         private void Act4Process()
         {
-            MapInstance angelMapInstance = GetMapInstance(GetBaseMapInstanceIdByMapId(132));
-            MapInstance demonMapInstance = GetMapInstance(GetBaseMapInstanceIdByMapId(133));
+            MapInstance angelMapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == 132);
+            MapInstance demonMapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == 133);
 
             if (angelMapInstance == null || demonMapInstance == null)
             {
@@ -1752,9 +1751,12 @@ namespace OpenNos.GameObject
 
             Act4RaidType CreateRaid(FactionType faction)
             {
-                IEnumerable<MapInstance> maps = Instance.GetMapInstancesByMapInstanceType(MapInstanceType.Act4Instance);
-                Act4RaidType raid = (Act4RaidType) Random.Value.Next(0, 5);
-                //MapInstance middleAct4Map = maps?.FirstOrDefault(s => s.Map.MapId == );
+                MapInstance toundra = Act4Maps.FirstOrDefault(s => s.Map.MapId == 134);
+                FamilyList.ForEach(s =>
+                {
+                    // LOAD SCRIPTED INSTANCE TYPE 2
+                });
+                Act4RaidType raid = (Act4RaidType) Random.Value.Next(0, 3);
                 return raid;
             }
 
@@ -1894,6 +1896,10 @@ namespace OpenNos.GameObject
                                 SourceY = si.PositionY
                             };
                             map.Value.Portals.Add(port);
+                            break;
+                        case ScriptedInstanceType.RaidAct4:
+                            si.LoadGlobals();
+                            Raids.Add(si);
                             break;
                     }
                 }
