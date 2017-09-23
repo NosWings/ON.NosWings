@@ -1744,4 +1744,7 @@ Veux-tu continuer ?</value>
   <data name="MAX_MATES_COUNT" xml:space="preserve">
     <value>Tu ne peux pas adopter encore plus de familiers.</value>
   </data>
+  <data name="MUST_BE_IN_CLASSIC_MAP" xml:space="preserve">
+    <value>Vous n'êtes pas sur une map générale.</value>
+  </data>
 </root>

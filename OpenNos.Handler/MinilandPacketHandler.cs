@@ -53,6 +53,11 @@ namespace OpenNos.Handler
         /// <param name="mJoinPacket"></param>
         public void JoinMiniland(MJoinPacket mJoinPacket)
         {
+            if (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.BaseMapInstance && Session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MUST_BE_IN_CLASSIC_MAP"), 0));
+                return;
+            }
             ClientSession sess = ServerManager.Instance.GetSessionByCharacterId(mJoinPacket.CharacterId);
             if (sess?.Character != null)
             {
