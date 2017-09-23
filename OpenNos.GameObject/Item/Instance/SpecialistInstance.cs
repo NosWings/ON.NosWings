@@ -122,7 +122,7 @@ namespace OpenNos.GameObject
 
         public string GenerateSlInfo()
         {
-            int freepoint = CharacterHelper.Instance.SpPoint(SpLevel, Upgrade) - SlDamage - SlHP - SlElement - SlDefence;
+            int freepoint = CharacterHelper.Instance.SpPoint(SpLevel, Upgrade);
 
             int slHit = CharacterHelper.Instance.SlPoint(SlDamage, 0);
             int slDefence = CharacterHelper.Instance.SlPoint(SlDefence, 0);
