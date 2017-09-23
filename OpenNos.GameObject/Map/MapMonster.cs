@@ -1272,7 +1272,7 @@ namespace OpenNos.GameObject
 
                 npcMonsterSkill?.Skill.BCards.ToList().ForEach(s =>
                 {
-                    if (s.Type == 17 && s.SubType != 12)
+                    if (s.Type == 17)
                     {
                         s.ApplyBCards(this);
                     }

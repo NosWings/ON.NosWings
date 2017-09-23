@@ -38,6 +38,7 @@ namespace OpenNos.GameObject
             switch (Effect)
             {
                 case 0:
+                case 999:
                     if (option == 0)
                     {
                         if (packetsplit != null && packetsplit.Length == 9)
