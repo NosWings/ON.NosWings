@@ -1344,11 +1344,6 @@ namespace OpenNos.GameObject
 
         public void JoinMiniland(ClientSession session, ClientSession minilandOwner)
         {
-            if (session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseMapInstance)
-            {
-                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CANNOT_JOIN_MINILAND")), 10));
-                return;
-            }
             ChangeMapInstance(session.Character.CharacterId, minilandOwner.Character.Miniland.MapInstanceId, 5, 8);
             if (session.Character.Miniland.MapInstanceId != minilandOwner.Character.Miniland.MapInstanceId)
             {
