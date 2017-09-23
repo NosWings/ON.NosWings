@@ -49,6 +49,11 @@ namespace OpenNos.Handler
 
         #region Methods
 
+        public void Unstuck(MoveCommandPacket move)
+        {
+            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.MapInstanceId, Session.Character.PositionX, Session.Character.PositionY);
+        }
+
         public void Act4Connect(Act4ConnectPacket act4ConnectPacket)
         {
             ClientSession player = ServerManager.Instance.GetSessionByCharacterName(act4ConnectPacket.Name ?? Session.Character.Name);
