@@ -23,6 +23,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Xml.XPath;
 using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject
@@ -1270,15 +1271,20 @@ namespace OpenNos.GameObject
                     ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HpLoad() * 100)} {damage} {hitmode} 0"
                     : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HpLoad() * 100)} {damage} {hitmode} 0");
 
+
                 npcMonsterSkill?.Skill.BCards.ToList().ForEach(s =>
                 {
-                    if (s.Type == 17)
+                    Buff b = new Buff(s.SecondData);
+                    switch (b.Card.BuffType)
                     {
-                        s.ApplyBCards(this);
-                    }
-                    else
-                    {
-                        s.ApplyBCards(targetSession.Character);
+                        case BuffType.Bad:
+                            s.ApplyBCards(targetSession.Character);
+                            break;
+
+                        case BuffType.Good:
+                        case BuffType.Neutral:
+                            s.ApplyBCards(this);
+                            break;
                     }
 
                 });
