@@ -69,7 +69,7 @@ namespace OpenNos.GameObject.Helpers
                             InstantBattle.GenerateInstantBattle(useTimer);
                             break;
                         case EventType.TALENTARENA:
-                            ArenaEvent.GenerateTalentArena();
+                            //ArenaEvent.GenerateTalentArena();
                             break;
                         case EventType.LODDH:
                             Lod.GenerateLod(35);
