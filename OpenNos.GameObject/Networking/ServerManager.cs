@@ -1778,19 +1778,15 @@ namespace OpenNos.GameObject
                 {
                     case Act4RaidType.Morcos:
                         Act4AngelStat.IsMorcos = true;
-                        Act4Maps.ForEach(m => m.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), "Morcos"), 0)));
                         break;
                     case Act4RaidType.Hatus:
                         Act4AngelStat.IsHatus = true;
-                        Act4Maps.ForEach(m => m.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), "Hatus"), 0)));
                         break;
                     case Act4RaidType.Calvina:
                         Act4AngelStat.IsCalvina = true;
-                        Act4Maps.ForEach(m => m.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), "Calvina"), 0)));
                         break;
                     case Act4RaidType.Berios:
                         Act4AngelStat.IsBerios = true;
-                        Act4Maps.ForEach(m => m.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), "Berios"), 0)));
                         break;
                 }
             }

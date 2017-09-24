@@ -515,7 +515,20 @@ namespace OpenNos.GameObject.Helpers
                     evt.MapInstance.SummonMonsters(summonParameters);
                     break;
 
-                #endregion
+                case EventActionType.MAPGIVE:
+                    // 1 = isRandomRare // 2 = VNum // 3 = Amount // 4 = Design //
+                    Tuple<bool, short, byte, short> parameter = (Tuple<bool, short, byte, short>)evt.Parameter;
+                    foreach (ClientSession cli in evt.MapInstance.Sessions)
+                    {
+                        sbyte rare = 0;
+                        if (parameter.Item1)
+                        {
+                            rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
+                        }
+                        cli.Character.GiftAdd(parameter.Item2, parameter.Item3, parameter.Item4, rare: rare);
+                    }
+                    break;
+                    #endregion
             }
         }
 
