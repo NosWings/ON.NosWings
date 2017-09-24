@@ -1548,6 +1548,21 @@ namespace OpenNos.GameObject
             Environment.Exit(0);
         }
 
+        public void TeleportForward(ClientSession session, Guid guid, short x, short y)
+        {
+            MapInstance map = GetMapInstance(guid);
+            if (guid == default(Guid))
+            {
+                return;
+            }
+            bool pos = map.Map.GetDefinedPosition(x, y);
+            if (!pos)
+            {
+                return;
+            }
+            session.Character.TeleportOnMap(x, y);
+        }
+
         public void TeleportOnRandomPlaceInMap(ClientSession session, Guid guid)
         {
             MapInstance map = GetMapInstance(guid);

@@ -24,6 +24,9 @@ using OpenNos.DAL;
 using OpenNos.DAL.EF;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
+using System.Reactive.Linq;
+using OpenNos.PathFinder;
+using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject
 {
@@ -255,6 +258,94 @@ namespace OpenNos.GameObject
                         session.SendPacket(mate.GenerateCMode(mate.Skin));
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
+                    break;
+
+                //speed booster
+                case 998:
+                    if (!session.Character.IsVehicled)
+                    {
+                        return;
+                    }
+                    session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(885), session.Character.MapX, session.Character.MapY);
+                    session.Character.AddBuff(new Buff(336));
+                    switch (session.Character.Morph)
+                    {
+                        case 1: // Nossi
+                        case 2: // Rollers
+                            // Remove debuffs Lv <= 4, need to get active buffs & remove only bad ones ?
+                            break;
+                    }
+                    Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(o =>
+                    {
+                        switch (session.Character.Morph)
+                        {
+                            case 2526: // White male unicorn
+                            case 2527: // White female unicorn
+                            case 2528: // Pink male unicorn
+                            case 2529: // Pink female unicorn
+                            case 2530: // Black male unicorn
+                            case 2531: // Black Female Unicorn
+                            case 2928: // Male UFO
+                            case 2929: // Female UFO
+                                ServerManager.Instance.TeleportOnRandomPlaceInMap(session, session.Character.MapInstanceId);
+                                break;
+
+                            case 2432: // Magic broom
+                            case 2433: // Magic broom F
+                            case 2520: // VTT M
+                            case 2521: // VTT F
+                                switch (session.Character.Direction)
+                                {
+                                    case 0:
+                                        // -y
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, session.Character.PositionX, (short)(session.Character.PositionY - 5));
+                                        break;
+                                    case 1:
+                                        // +x
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX + 5), session.Character.PositionY);
+                                        break;
+                                    case 2:
+                                        // +y
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, session.Character.PositionX, (short)(session.Character.PositionY + 5));
+                                        break;
+                                    case 3:
+                                        // -x
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX - 5), session.Character.PositionY);
+                                        break;
+                                    case 4:
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX - 5), (short)(session.Character.PositionY - 5));
+                                        // -x -y
+                                        break;
+                                    case 5:
+                                        // +x +y
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX + 5), (short)(session.Character.PositionY + 5));
+                                        break;
+                                    case 6:
+                                        // +x -y
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX + 5), (short)(session.Character.PositionY - 5));
+                                        break;
+                                    case 7:
+                                        // -x +y
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX - 5), (short)(session.Character.PositionY + 5));
+                                        break;
+                                }
+                                break;
+
+                            case 2524:
+                            case 2525:
+                                if (session.Character.Hp > 0)
+                                {
+                                    session.Character.Hp += session.Character.Level * 15;
+                                    if (session.Character.Hp > session.Character.HpLoad())
+                                    {
+                                        session.Character.Hp = (int)session.Character.HpLoad();
+                                    }
+                                }
+                                break;
+                        }
+                        Console.WriteLine($"Buff timer has gone, teleport.\nMorph = {session.Character.Morph}");
+                    });
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
 
                 //Atk/Def/HP/Exp potions

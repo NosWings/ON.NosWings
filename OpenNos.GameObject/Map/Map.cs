@@ -134,6 +134,16 @@ namespace OpenNos.GameObject
             return summonParameters;
         }
 
+        public bool GetDefinedPosition(int x, int y)
+        {
+            MapCell cell = new MapCell {X = (short) x, Y = (short) y};
+            if (IsBlockedZone(x, y))
+            {
+                return false;
+            }
+            return true;
+        }
+
         public MapCell GetRandomPosition()
         {
             if (Cells != null)

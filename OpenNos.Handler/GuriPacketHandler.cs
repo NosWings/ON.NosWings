@@ -61,7 +61,7 @@ namespace OpenNos.Handler
             else
             {
                 switch (guriPacket.Type)
-                {
+                { 
                     // SHELL IDENTIFYING
                     case 204:
                         if (guriPacket.User == null)

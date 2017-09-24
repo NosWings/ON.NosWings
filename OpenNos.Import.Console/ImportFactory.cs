@@ -3359,6 +3359,10 @@ namespace OpenNos.Import.Console
                                         item.EffectValue = 4;
                                         break;
 
+                                    case 5119:
+                                        item.Effect = 998;
+                                        break;
+
                                     case 185: // Hatus
                                     case 302: // Classic
                                     case 882: // Morcos
