@@ -52,6 +52,8 @@ namespace OpenNos.Domain
         MOVE,
         ONTARGET,
         CONTROLEMONSTERINRANGE,
-        MAPGIVE
+        MAPGIVE,
+        REMOVEPORTAL,
+        ACT4RAIDEND
     }
 }

@@ -1750,4 +1750,7 @@ Veux-tu continuer ?</value>
   <data name="ACT4_RAID_OPEN" xml:space="preserve">
     <value>Le royaume de {0} est ouvert !</value>
   </data>
+  <data name="TELEPORTED_IN" xml:space="preserve">
+    <value>Vous allez être téléporté dans {0} secondes.</value>
+  </data>
 </root>
