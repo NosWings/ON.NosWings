@@ -32,6 +32,8 @@ namespace OpenNos.GameObject
 {
     public class SpecialItem : Item
     {
+        public bool IsInUse { set; get; }
+
         #region Instantiation
 
         public SpecialItem(ItemDTO item) : base(item)
@@ -262,10 +264,11 @@ namespace OpenNos.GameObject
 
                 //speed booster
                 case 998:
-                    if (!session.Character.IsVehicled)
+                    if (!session.Character.IsVehicled || IsInUse)
                     {
                         return;
                     }
+                    IsInUse = true;
                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(885), session.Character.MapX, session.Character.MapY);
                     session.Character.AddBuff(new Buff(336));
                     session.Character.Speed += 5;
@@ -282,6 +285,7 @@ namespace OpenNos.GameObject
                     Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(o =>
                     {
                         session.Character.Speed -= 5;
+                        IsInUse = false;
                         switch (session.Character.Morph)
                         {
                             case 2526: // White male unicorn
