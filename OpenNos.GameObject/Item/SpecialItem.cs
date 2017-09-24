@@ -343,7 +343,6 @@ namespace OpenNos.GameObject
                                 }
                                 break;
                         }
-                        Console.WriteLine($"Buff timer has gone, teleport.\nMorph = {session.Character.Morph}");
                     });
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
