@@ -268,22 +268,20 @@ namespace OpenNos.GameObject
                     }
                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(885), session.Character.MapX, session.Character.MapY);
                     session.Character.AddBuff(new Buff(336));
+                    session.Character.Speed += 5;
                     switch (session.Character.Morph)
                     {
-                        case 1: // Nossi
-                        case 2: // Rollers
-                            // Removes <= lv 4 debuffs
-                            foreach (Buff buff in session.Character.Buff)
-                            {
-                                if (buff.Card.BuffType == BuffType.Bad && buff.Level <= 4)
-                                {
-                                    session.Character.RemoveBuff(buff.Card.CardId);
-                                }
-                            }
+                        case 2517: // Nossi
+                        case 2518: // Rollers
+                                // Removes <= lv 4 debuffs
+                            List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad };
+                            session.Character.DisableBuffs(bufftodisable, 4);
                             break;
+                            
                     }
                     Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(o =>
                     {
+                        session.Character.Speed -= 5;
                         switch (session.Character.Morph)
                         {
                             case 2526: // White male unicorn
@@ -294,7 +292,7 @@ namespace OpenNos.GameObject
                             case 2531: // Black Female Unicorn
                             case 2928: // Male UFO
                             case 2929: // Female UFO
-                                ServerManager.Instance.TeleportOnRandomPlaceInMap(session, session.Character.MapInstanceId);
+                                ServerManager.Instance.TeleportOnRandomPlaceInMap(session, session.Character.MapInstanceId, true);
                                 break;
 
                             case 2432: // Magic broom

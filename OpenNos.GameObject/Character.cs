@@ -5917,7 +5917,7 @@ namespace OpenNos.GameObject
         {
             lock (Buff)
             {
-                Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level < level).ToList()
+                Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level <= level).ToList()
                     .ForEach(s => RemoveBuff(s.Card.CardId));
             }
         }

@@ -1563,7 +1563,7 @@ namespace OpenNos.GameObject
             session.Character.TeleportOnMap(x, y);
         }
 
-        public void TeleportOnRandomPlaceInMap(ClientSession session, Guid guid)
+        public void TeleportOnRandomPlaceInMap(ClientSession session, Guid guid, bool isSameMap = false)
         {
             MapInstance map = GetMapInstance(guid);
             if (guid == default(Guid))
@@ -1575,7 +1575,15 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            ChangeMapInstance(session.Character.CharacterId, guid, pos.X, pos.Y);
+            switch (isSameMap)
+            {
+                case false:
+                    ChangeMapInstance(session.Character.CharacterId, guid, pos.X, pos.Y);
+                    break;
+                case true:
+                    session.Character.TeleportOnMap(pos.X, pos.Y);
+                    break;
+            }
         }
 
         // Server
