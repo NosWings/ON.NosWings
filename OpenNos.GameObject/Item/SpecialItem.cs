@@ -274,8 +274,10 @@ namespace OpenNos.GameObject
                     session.Character.Speed += 5;
                     switch (session.Character.Morph)
                     {
-                        case 2517: // Nossi
-                        case 2518: // Rollers
+                        case 2517: // Nossi M
+                        case 2518: // Nossi F
+                        case 2522: // Roller M
+                        case 2523: // Roller F
                                 // Removes <= lv 4 debuffs
                             List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad };
                             session.Character.DisableBuffs(bufftodisable, 4);
