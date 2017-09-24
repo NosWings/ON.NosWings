@@ -1747,4 +1747,7 @@ Veux-tu continuer ?</value>
   <data name="MUST_BE_IN_CLASSIC_MAP" xml:space="preserve">
     <value>Vous n'êtes pas sur une map générale.</value>
   </data>
+  <data name="ACT4_RAID_OPEN" xml:space="preserve">
+    <value>Le royaume de {0} est ouvert !</value>
+  </data>
 </root>
