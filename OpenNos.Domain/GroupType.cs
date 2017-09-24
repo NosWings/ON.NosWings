@@ -20,6 +20,6 @@ namespace OpenNos.Domain
         Team = 15,
         BigTeam = 20,
         GiantTeam = 40,
-        IceBreaker = 50,
+        IceBreaker = 50
     }
 }
