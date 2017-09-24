@@ -1275,7 +1275,8 @@ namespace OpenNos.GameObject
                 npcMonsterSkill?.Skill.BCards.ToList().ForEach(s =>
                 {
                     Buff b = new Buff(s.SecondData);
-                    switch (b.Card.BuffType)
+
+                    switch (b.Card?.BuffType)
                     {
                         case BuffType.Bad:
                             s.ApplyBCards(targetSession.Character);
@@ -1286,7 +1287,6 @@ namespace OpenNos.GameObject
                             s.ApplyBCards(this);
                             break;
                     }
-
                 });
                 LastSkill = DateTime.Now;
                 if (targetSession.Character.Hp <= 0 && targetSession.Character.IsDead == false)
