@@ -1286,11 +1286,8 @@ namespace OpenNos.Handler
                     Session.Character.MapX = walkPacket.XCoordinate;
                     Session.Character.MapY = walkPacket.YCoordinate;
                 }
-                else
-                {
-                    Session.Character.PositionX = walkPacket.XCoordinate;
-                    Session.Character.PositionY = walkPacket.YCoordinate;
-                }
+                Session.Character.PositionX = walkPacket.XCoordinate;
+                Session.Character.PositionY = walkPacket.YCoordinate;
                 Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos
                 {
                     X = Session.Character.PositionX,
