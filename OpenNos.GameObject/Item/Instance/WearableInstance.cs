@@ -756,10 +756,6 @@ namespace OpenNos.GameObject
                 cella = new short[] {20, 50, 80, 120, 160, 220, 280, 380, 480, 600};
                 gem = new short[] {1, 1, 2, 2, 3, 1, 1, 2, 2, 3};
             }
-            if (HasAmulet == FixedUpMode.HasAmulet)
-            {
-                upfix = new short[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            }
 
             const short cellaVnum = 1014;
             const short gemVnum = 1015;
