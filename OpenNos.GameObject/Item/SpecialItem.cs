@@ -272,7 +272,14 @@ namespace OpenNos.GameObject
                     {
                         case 1: // Nossi
                         case 2: // Rollers
-                            // Remove debuffs Lv <= 4, need to get active buffs & remove only bad ones ?
+                            // Removes <= lv 4 debuffs
+                            foreach (Buff buff in session.Character.Buff)
+                            {
+                                if (buff.Card.BuffType == BuffType.Bad && buff.Level <= 4)
+                                {
+                                    session.Character.RemoveBuff(buff.Card.CardId);
+                                }
+                            }
                             break;
                     }
                     Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(o =>
