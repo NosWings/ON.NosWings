@@ -149,7 +149,6 @@ namespace OpenNos.GameObject.Event
                         });
                         EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10), new EventContainer(Map, EventActionType.DISPOSEMAP, null));
                     });
-                    obs.Dispose();
                 }
             });
         }

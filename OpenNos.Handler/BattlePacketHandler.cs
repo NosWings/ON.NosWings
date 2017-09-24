@@ -23,6 +23,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -391,18 +392,18 @@ namespace OpenNos.Handler
                             {
                                 IceBreaker.FrozenPlayers.Add(target);
                                 target.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_FROZEN"), target?.Character?.Name), 0));
-                                Task.Run(() =>
+                                target.Character.Hp = (int)target.Character.HpLoad();
+                                target.Character.Mp = (int)target.Character.MpLoad();
+                                target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
+                                target.SendPacket(target.Character?.GenerateStat());
+                                target.Character.NoMove = true;
+                                target.Character.NoAttack = true;
+                                target.SendPacket(target.Character?.GenerateCond());
+                                IDisposable obs = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(s =>
                                 {
-                                    target.Character.Hp = (int)target.Character.HpLoad();
-                                    target.Character.Mp = (int)target.Character.MpLoad();
-                                    target.SendPacket(target?.Character?.GenerateStat());
-                                    target.Character.NoMove = true;
-                                    target.Character.NoAttack = true;
-                                    target.SendPacket(target?.Character?.GenerateCond());
-                                    while (IceBreaker.FrozenPlayers.Contains(target))
+                                    if (IceBreaker.FrozenPlayers.Contains(target))
                                     {
-                                        target?.CurrentMapInstance?.Broadcast(target?.Character?.GenerateEff(35));
-                                        Thread.Sleep(1000);
+                                        target.CurrentMapInstance?.Broadcast(target.Character?.GenerateEff(35));
                                     }
                                 });
                             }
