@@ -125,7 +125,8 @@ namespace OpenNos.GameObject.Event
                         Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_START"), 0));
                         Map.IsPvp = true;
                     });
-                    IDisposable obs = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(b =>
+                    IDisposable obs = null;
+                    obs = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(b =>
                     {
                         if (Map.Sessions.Count() > 1 && AlreadyFrozenPlayers.Count != Map.Sessions.Count())
                         {
@@ -146,6 +147,7 @@ namespace OpenNos.GameObject.Event
                             x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), GoldRewards[_currentBracket]), 10));
                             x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), x.Character.Level * 10), 10));
                             x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DIGNITY_RESTORED"), x.Character.Level * 10), 10));
+                            obs.Dispose();
                         });
                         EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10), new EventContainer(Map, EventActionType.DISPOSEMAP, null));
                     });
