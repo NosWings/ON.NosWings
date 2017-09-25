@@ -2,6 +2,7 @@
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -13,8 +14,6 @@ namespace OpenNos.GameObject.Event
 {
     public class IceBreaker
     {
-        public const int MaxAllowedPlayers = 50;
-
         private static readonly int[] GoldRewards =
         {
             100,
@@ -35,9 +34,14 @@ namespace OpenNos.GameObject.Event
             new Tuple<int, int>(80, 99)
         };
 
-        private static int _currentBracket;
 
-        public static Dictionary<int, List<ClientSession>> Teams { get; set; }
+        public const int MaxAllowedPlayers = 50;
+
+
+        private static int _currentBracket;
+        
+        private static List<Group> _teams { get; set; }
+
 
         public static List<ClientSession> AlreadyFrozenPlayers { get; set; }
 
@@ -45,12 +49,72 @@ namespace OpenNos.GameObject.Event
 
         public static MapInstance Map { get; private set; }
 
+
+        public static void AddGroup(IEnumerable<ClientSession> members)
+        {
+            _teams.Add(new Group(GroupType.IceBreaker)
+            {
+                Characters = new ConcurrentBag<ClientSession>(members)
+            });
+        }
+
+        public static void AddGroup(Group group)
+        {
+            _teams.Add(group);
+        }
+
+        public static void MergeGroups(IEnumerable<Group> groups)
+        {
+            Group newGroup = new Group(GroupType.IceBreaker);
+            foreach (var group in groups)
+            {
+                foreach (var character in group.Characters)
+                {
+                    newGroup.JoinGroup(character);
+                    group.LeaveGroup(character);
+                }
+                RemoveGroup(group);
+            }
+            AddGroup(newGroup);
+        }
+
+        public static void RemoveGroup(Group group)
+        {
+            _teams.Remove(group);
+        }
+
+        public static bool SessionHasGroup(ClientSession session)
+        {
+            bool result;
+            try
+            {
+                result = _teams.Where(x => x.IsMemberOfGroup(session)).First() == null ? true : false;
+                return result;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool SessionsHaveSameGroup(ClientSession session1, ClientSession session2)
+        {
+            bool result;
+            try
+            {
+                result = _teams.Where(x => x.IsMemberOfGroup(session1) && x.IsMemberOfGroup(session2)).First() == null ? true : false;
+                return result;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
         public static void GenerateIceBreaker(bool useTimer = true)
         {
-            Teams = new Dictionary<int, List<ClientSession>>();
-            AlreadyFrozenPlayers = new List<ClientSession>();
-            FrozenPlayers = new List<ClientSession>();
-            Map = ServerManager.Instance.GenerateMapInstance(2005, MapInstanceType.IceBreakerInstance, new InstanceBag());
+            Initialize();
             if (useTimer)
             {
                 ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
@@ -153,6 +217,15 @@ namespace OpenNos.GameObject.Event
                     });
                 }
             });
+        }
+
+
+        private static void Initialize()
+        {
+            AlreadyFrozenPlayers = new List<ClientSession>();
+            FrozenPlayers = new List<ClientSession>();
+            Map = ServerManager.Instance.GenerateMapInstance(2005, MapInstanceType.IceBreakerInstance, new InstanceBag());
+            _teams = new List<Group>();
         }
     }
 }
