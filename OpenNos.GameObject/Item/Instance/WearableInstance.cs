@@ -832,6 +832,13 @@ namespace OpenNos.GameObject
                     {
                         WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                         amulet.DurabilityPoint -= 1;
+                        if (amulet.BoundCharacterId.HasValue)
+                        {
+                            session.SendPacket($"info {Language.Instance.GetMessageFromKey("BROKEN_AMULET")}");
+                            session.Character.DeleteItemByItemInstanceId(amulet.Id);
+                            session.SendPacket(session.Character.GenerateEquipment());
+                            return;
+                        }
                         if (amulet.DurabilityPoint <= 0)
                         {
                             session.Character.DeleteItemByItemInstanceId(amulet.Id);

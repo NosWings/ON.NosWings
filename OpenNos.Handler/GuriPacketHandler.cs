@@ -103,23 +103,22 @@ namespace OpenNos.Handler
 
                         if (shellType == 8 || shellType == 9)
                         {
-                            switch (shell.Upgrade)
+                            byte[] shellLevel = { 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85 };
+                            bool isGoodShell = false;
+
+                            foreach (byte i in shellLevel)
                             {
-                                case 25:
-                                case 30:
-                                case 40:
-                                case 55:
-                                case 60:
-                                case 65:
-                                case 70:
-                                case 75:
-                                case 80:
-                                case 85:
-                                    break;
-                                default:
-                                    Session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
-                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("STOP_SPAWNING_BROKEN_SHELL"), 0));
-                                    return;
+                                if (shell.Upgrade == shellLevel[i])
+                                {
+                                    isGoodShell = true;
+                                }
+                            }
+                            if (!isGoodShell)
+                            {
+                                Session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                    Language.Instance.GetMessageFromKey("STOP_SPAWNING_BROKEN_SHELL"), 0));
+                                return;
                             }
                         }
 

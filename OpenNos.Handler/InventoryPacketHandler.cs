@@ -1569,7 +1569,18 @@ namespace OpenNos.Handler
                         {
                             FixedUpMode HasAmulet = FixedUpMode.None;
                             WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
-                            if (amulet?.Item.Effect == 793)
+                            if (amulet == null)
+                            {
+                                return;
+                            }
+                            if (amulet.DurabilityPoint <= 0)
+                            {
+                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("BROKEN_AMULET")}");
+                                Session.Character.DeleteItemByItemInstanceId(amulet.Id);
+                                Session.SendPacket(Session.Character.GenerateEquipment());
+                                return;
+                            }
+                            if (amulet.Item.Effect == 793)
                             {
                                 HasAmulet = FixedUpMode.HasAmulet;
                             }
@@ -1683,7 +1694,14 @@ namespace OpenNos.Handler
                             WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                             if (amulet != null)
                             {
-                                switch(amulet.Item.Effect)
+                                if (amulet.DurabilityPoint <= 0)
+                                {
+                                    Session.SendPacket($"info {Language.Instance.GetMessageFromKey("BROKEN_AMULET")}");
+                                    Session.Character.DeleteItemByItemInstanceId(amulet.Id);
+                                    Session.SendPacket(Session.Character.GenerateEquipment());
+                                    return;
+                                }
+                                switch (amulet.Item.Effect)
                                 {
                                     case 791:
                                         protection = RarifyProtection.RedAmulet;
@@ -1748,7 +1766,18 @@ namespace OpenNos.Handler
                     {
                         FixedUpMode HasAmulet = FixedUpMode.None;
                         WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
-                        if (amulet?.Item.Effect == 793)
+                        if (amulet == null)
+                        {
+                            return;
+                        }
+                        if (amulet.DurabilityPoint <= 0)
+                        {
+                            Session.SendPacket($"info {Language.Instance.GetMessageFromKey("BROKEN_AMULET")}");
+                            Session.Character.DeleteItemByItemInstanceId(amulet.Id);
+                            Session.SendPacket(Session.Character.GenerateEquipment());
+                            return;
+                        }
+                        if (amulet.Item.Effect == 793)
                         {
                             HasAmulet = FixedUpMode.HasAmulet;
                         }
@@ -1830,7 +1859,18 @@ namespace OpenNos.Handler
                     {
                         FixedUpMode hasAmulet = FixedUpMode.None;
                         WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
-                        if (amulet?.Item.Effect == 793)
+                        if (amulet == null)
+                        {
+                            return;
+                        }
+                        if (amulet.DurabilityPoint <= 0)
+                        {
+                            Session.SendPacket($"info {Language.Instance.GetMessageFromKey("BROKEN_AMULET")}");
+                            Session.Character.DeleteItemByItemInstanceId(amulet.Id);
+                            Session.SendPacket(Session.Character.GenerateEquipment());
+                            return;
+                        }
+                        if (amulet.Item.Effect == 793)
                         {
                             hasAmulet = FixedUpMode.HasAmulet;
                         }
