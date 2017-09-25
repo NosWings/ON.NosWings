@@ -555,7 +555,7 @@ namespace OpenNos.GameObject
                             if (amulet.DurabilityPoint <= 0)
                             {
                                 session.Character.DeleteItemByItemInstanceId(amulet.Id);
-                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
+                                session.SendPacket($"info {Language.Instance.GetMessageFromKey("AMULET_DESTROYED")}");
                                 session.SendPacket(session.Character.GenerateEquipment());
                             }
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("AMULET_FAIL_SAVED"), 11));
@@ -831,7 +831,7 @@ namespace OpenNos.GameObject
                         if (amulet.DurabilityPoint <= 0)
                         {
                             session.Character.DeleteItemByItemInstanceId(amulet.Id);
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
+                            session.SendPacket($"info {Language.Instance.GetMessageFromKey("AMULET_DESTROYED")}");
                             session.SendPacket(session.Character.GenerateEquipment());
                         }
                     }
@@ -890,7 +890,7 @@ namespace OpenNos.GameObject
                         if (amulet.DurabilityPoint <= 0)
                         {
                             session.Character.DeleteItemByItemInstanceId(amulet.Id);
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(Language.Instance.GetMessageFromKey("AMULET_OVER")));
+                            session.SendPacket($"info {Language.Instance.GetMessageFromKey("AMULET_DESTROYED")}");
                             session.SendPacket(session.Character.GenerateEquipment());
                         }
                     }
