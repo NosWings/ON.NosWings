@@ -571,6 +571,14 @@ namespace OpenNos.Handler
                                             PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
                                         }
                                     }
+                                    else if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.IceBreakerInstance)
+                                    {
+                                        if (IceBreaker.FrozenPlayers.Contains(character))
+                                        {
+                                            return;
+                                        }
+                                        continue;
+                                    }
                                     else if (Session.CurrentMapInstance?.IsPvp == true)
                                     {
                                         ConcurrentBag<ArenaTeamMember> team = null;
@@ -694,11 +702,19 @@ namespace OpenNos.Handler
 
                         }
                     }
-                    else if (ski.Skill.TargetType == 0 && Session.HasCurrentMapInstance) // monster target
+                    else if (ski.Skill.TargetType == 0 && Session.HasCurrentMapInstance)
                     {
                         if (isPvp)
                         {
                             ClientSession playerToAttack = ServerManager.Instance.GetSessionByCharacterId(targetId);
+                            if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.IceBreakerInstance)
+                            {
+                                if (IceBreaker.FrozenPlayers.Contains(playerToAttack))
+                                {
+                                    Session.SendPacket($"cancel 2 {targetId}");
+                                    return;
+                                }
+                            }
                             if (playerToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
                             {
                                 if (Map.GetDistance(new MapCell {X = Session.Character.PositionX, Y = Session.Character.PositionY},
