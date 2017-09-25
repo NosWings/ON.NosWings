@@ -398,11 +398,16 @@ namespace OpenNos.Handler
                                 target.Character.NoMove = true;
                                 target.Character.NoAttack = true;
                                 target.SendPacket(target.Character?.GenerateCond());
-                                IDisposable obs = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(s =>
+                                IDisposable obs = null;
+                                obs = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(s =>
                                 {
                                     if (IceBreaker.FrozenPlayers.Contains(target))
                                     {
                                         target.CurrentMapInstance?.Broadcast(target.Character?.GenerateEff(35));
+                                    }
+                                    else
+                                    {
+                                        obs.Dispose();
                                     }
                                 });
                             }
