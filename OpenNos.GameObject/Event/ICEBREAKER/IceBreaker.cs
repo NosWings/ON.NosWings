@@ -74,8 +74,8 @@ namespace OpenNos.GameObject.Event
             {
                 foreach (var character in group.Characters)
                 {
-                    newGroup.JoinGroup(character);
-                    group.LeaveGroup(character);
+                    newGroup.Characters.Add(character);
+                    group.Characters.ToList().Remove(character);
                 }
                 RemoveGroup(group);
             }
