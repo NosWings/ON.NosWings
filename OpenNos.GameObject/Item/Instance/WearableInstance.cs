@@ -722,7 +722,7 @@ namespace OpenNos.GameObject
             session.SendPacket("shop_end 1");
         }
 
-        public void UpgradeItem(ClientSession session, UpgradeMode mode, UpgradeProtection protection, bool isCommand = false, FixedUpMode HasAmulet = FixedUpMode.None)
+        public void UpgradeItem(ClientSession session, UpgradeMode mode, UpgradeProtection protection, bool isCommand = false, FixedUpMode hasAmulet = FixedUpMode.None)
         {
             if (!session.HasCurrentMapInstance)
             {
@@ -756,7 +756,7 @@ namespace OpenNos.GameObject
                 cella = new short[] {20, 50, 80, 120, 160, 220, 280, 380, 480, 600};
                 gem = new short[] {1, 1, 2, 2, 3, 1, 1, 2, 2, 3};
             }
-            if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
+            if (hasAmulet == FixedUpMode.HasAmulet && IsFixed)
             {
                 upfix = new short[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             }
@@ -768,13 +768,13 @@ namespace OpenNos.GameObject
             const short normalScrollVnum = 1218;
             const short goldScrollVnum = 5369;
 
-            if (IsFixed && HasAmulet == FixedUpMode.None)
+            if (IsFixed && hasAmulet == FixedUpMode.None)
             {
                 session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
                 session.SendPacket("shop_end 2");
                 return;
             }
-            if (IsFixed && HasAmulet == FixedUpMode.HasAmulet)
+            if (IsFixed && hasAmulet == FixedUpMode.HasAmulet)
             {
                 IsFixed = !IsFixed;
             }
@@ -828,7 +828,7 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.RemoveItemAmount(goldScrollVnum);
                         session.SendPacket(session.Character.Inventory.CountItem(goldScrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                     }
-                    if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
+                    if (hasAmulet == FixedUpMode.HasAmulet && IsFixed)
                     {
                         WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                         amulet.DurabilityPoint -= 1;
@@ -887,7 +887,7 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.RemoveItemAmount(normalScrollVnum);
                         session.SendPacket(session.Character.Inventory.CountItem(normalScrollVnum) < 1 ? "shop_end 2" : "shop_end 1");
                     }
-                    if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
+                    if (hasAmulet == FixedUpMode.HasAmulet && IsFixed)
                     {
                         WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                         amulet.DurabilityPoint -= 1;

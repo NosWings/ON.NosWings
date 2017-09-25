@@ -1573,7 +1573,7 @@ namespace OpenNos.Handler
                             {
                                 HasAmulet = FixedUpMode.HasAmulet;
                             }
-                            inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.None, HasAmulet: HasAmulet);
+                            inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.None, hasAmulet: HasAmulet);
                         }
                     }
                     break;
@@ -1754,7 +1754,7 @@ namespace OpenNos.Handler
                         }
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
-                            inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.Protected, HasAmulet: HasAmulet);
+                            inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.Protected, hasAmulet: HasAmulet);
                         }
                     }
                     break;
@@ -1837,7 +1837,7 @@ namespace OpenNos.Handler
 
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
-                            inventory.UpgradeItem(Session, UpgradeMode.Reduced, UpgradeProtection.Protected, HasAmulet: hasAmulet);
+                            inventory.UpgradeItem(Session, UpgradeMode.Reduced, UpgradeProtection.Protected, hasAmulet: hasAmulet);
                         }
                     }
                     break;
