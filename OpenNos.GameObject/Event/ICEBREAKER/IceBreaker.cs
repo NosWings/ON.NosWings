@@ -57,14 +57,7 @@ namespace OpenNos.GameObject.Event
 
         public static Group GetGroupByClientSession(ClientSession session)
         {
-            try
-            {
-                return _groups.Where(x => x.IsMemberOfGroup(session)).First();
-            }
-            catch
-            {
-                return null;
-            }
+            return _groups.FirstOrDefault(x => x.IsMemberOfGroup(session));
         }
 
         public static void MergeGroups(IEnumerable<Group> groups)
