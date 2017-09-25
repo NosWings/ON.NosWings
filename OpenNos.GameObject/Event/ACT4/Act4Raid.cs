@@ -236,7 +236,7 @@ namespace OpenNos.GameObject.Event
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, 1046, 30, 20000, 20001)));
             //RaidBox
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.MAPGIVE, new Tuple<bool, short, byte, short>(true, boxVnum, 1, 50)));
-
+            boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BOSS_DIED"), 0)));
             boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.REMOVEPORTAL, bossPortal.PortalId));
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.ACT4RAIDEND, new Tuple<MapInstance, short, short>(raidMap, raidMap.MapIndexX, raidMap.MapIndexY)));
 

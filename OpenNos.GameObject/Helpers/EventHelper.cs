@@ -541,16 +541,18 @@ namespace OpenNos.GameObject.Helpers
                 case EventActionType.ACT4RAIDEND:
                     // tp // tp X // tp Y
                     Tuple<MapInstance, short, short> endParameters = (Tuple<MapInstance, short, short>)evt.Parameter;
-
-                    evt.MapInstance.Sessions.ToList().ForEach(s =>
-                        s.SendPacket($"{UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TELEPORTED_IN"), 10), 0)}")
-                    );
-
-                    Observable.Timer(TimeSpan.FromSeconds(10)).Subscribe(s =>
+                    Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(a =>
                     {
-                        evt.MapInstance.Sessions.ToList().ForEach(cli => 
-                        ServerManager.Instance.ChangeMapInstance(cli.Character.CharacterId, endParameters.Item1.MapInstanceId , endParameters.Item2, endParameters.Item3));
+                        evt.MapInstance.Broadcast($"{UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TELEPORTED_IN"), 10), 0)}");
+
+                        Observable.Timer(TimeSpan.FromSeconds(10)).Subscribe(s =>
+                        {
+                            evt.MapInstance.Sessions.ToList().ForEach(cli =>
+                                ServerManager.Instance.ChangeMapInstance(cli.Character.CharacterId, endParameters.Item1.MapInstanceId, endParameters.Item2, endParameters.Item3));
+                        });
+
                     });
+
                     break;
                     #endregion
             }

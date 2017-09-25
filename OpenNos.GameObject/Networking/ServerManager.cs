@@ -1778,15 +1778,19 @@ namespace OpenNos.GameObject
                 {
                     case Act4RaidType.Morcos:
                         Act4AngelStat.IsMorcos = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Angel);
                         break;
                     case Act4RaidType.Hatus:
                         Act4AngelStat.IsHatus = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Hatus, (byte) FactionType.Angel);
                         break;
                     case Act4RaidType.Calvina:
                         Act4AngelStat.IsCalvina = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Calvina, (byte) FactionType.Angel);
                         break;
                     case Act4RaidType.Berios:
                         Act4AngelStat.IsBerios = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Berios, (byte) FactionType.Angel);
                         break;
                 }
             }
@@ -1808,19 +1812,19 @@ namespace OpenNos.GameObject
                 {
                     case Act4RaidType.Morcos:
                         Act4DemonStat.IsMorcos = true;
-                        Act4Maps.ForEach(m => m.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), "Morcos"), 0)));
+                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
                         break;
                     case Act4RaidType.Hatus:
                         Act4DemonStat.IsHatus = true;
-                        Act4Maps.ForEach(m => m.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), "Hatus"), 0)));
+                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
                         break;
                     case Act4RaidType.Calvina:
                         Act4DemonStat.IsCalvina = true;
-                        Act4Maps.ForEach(m => m.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), "Calvina"), 0)));
+                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
                         break;
                     case Act4RaidType.Berios:
                         Act4DemonStat.IsBerios = true;
-                        Act4Maps.ForEach(m => m.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), "Berios"), 0)));
+                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
                         break;
                 }
             }

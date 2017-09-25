@@ -1753,4 +1753,7 @@ Veux-tu continuer ?</value>
   <data name="TELEPORTED_IN" xml:space="preserve">
     <value>Vous allez être téléporté dans {0} secondes.</value>
   </data>
+  <data name="BOSS_DIED" xml:space="preserve">
+    <value>Félicitations ! Vous avez vaincu le boss du donjon !</value>
+  </data>
 </root>
