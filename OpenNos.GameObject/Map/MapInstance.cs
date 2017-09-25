@@ -548,7 +548,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (s.Offset == 0)
+                    if (s.Offset == 0 && Sessions.Any())
                     {
                         s.Events.ToList().ForEach(e => EventHelper.Instance.RunEvent(e));
                     }
