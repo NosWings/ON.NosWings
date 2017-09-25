@@ -299,7 +299,7 @@ namespace OpenNos.Handler
                         target.CurrentMapInstance.Broadcast(onyx.GenerateOut());
                     });
                 }
-                target.Character.GetDamage(damage / 2);
+                target.Character.GetDamage(damage);
                 target.SendPacket(target.Character.GenerateStat());
                 bool isAlive = target.Character.Hp > 0;
                 if (!isAlive)
