@@ -383,9 +383,9 @@ namespace OpenNos.Handler
                             {
                                 IceBreaker.AlreadyFrozenPlayers.Remove(target);
                                 Group targetGroup = IceBreaker.GetGroupByClientSession(target);
-                                if (targetGroup != null)
+                                if (targetGroup != null && targetGroup.Characters.Count - 1 < 1)
                                 {
-                                    targetGroup.Characters.ToList().Remove(target);
+                                    IceBreaker.RemoveGroup(targetGroup);
                                 }
                                 target.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_OUT"), target?.Character?.Name), 0));
                                 target.Character.Hp = 1;

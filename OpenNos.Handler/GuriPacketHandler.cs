@@ -10,6 +10,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
+using System.Collections.Concurrent;
 
 namespace OpenNos.Handler
 {
@@ -202,6 +203,19 @@ namespace OpenNos.Handler
                         if (ServerManager.Instance.IceBreakerInWaiting && IceBreaker.Map.Sessions.Count() < IceBreaker.MaxAllowedPlayers)
                         {
                             ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, IceBreaker.Map.MapInstanceId);
+                            Group group = new Group(GroupType.IceBreaker);
+                            if (Session.Character.Group != null)
+                            {
+                                foreach (var session in Session.Character.Group.Characters)
+                                {
+                                    group.Characters.Add(session);
+                                }
+                            }
+                            else
+                            {
+                                group.Characters.Add(Session);
+                            }
+                            IceBreaker.AddGroup(group);
                         }
                         break;
                     case 502:
@@ -220,27 +234,12 @@ namespace OpenNos.Handler
                             UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_UNFROZEN"), target.Character?.Name), 0));
                         if (IceBreaker.SessionsHaveSameGroup(Session, target))
                         {
-                            return;
-                        }
-                        else if (IceBreaker.SessionHasGroup(Session) && IceBreaker.SessionHasGroup(target))
-                        {
-                            Group[] groups = { IceBreaker.GetGroupByClientSession(Session), IceBreaker.GetGroupByClientSession(target) };
-                            IceBreaker.MergeGroups(groups);
-                        }
-                        else if (IceBreaker.SessionHasGroup(Session) && !IceBreaker.SessionHasGroup(target))
-                        {
-                            Group sessionGroup = IceBreaker.GetGroupByClientSession(Session);
-                            sessionGroup.JoinGroup(target);
-                        }
-                        else if (!IceBreaker.SessionHasGroup(Session) && IceBreaker.SessionHasGroup(target))
-                        {
-                            Group targetGroup = IceBreaker.GetGroupByClientSession(target);
-                            targetGroup.JoinGroup(Session);
+                            break;
                         }
                         else
                         {
-                            ClientSession[] sessions = { Session, target };
-                            IceBreaker.AddGroup(sessions);
+                            Group[] groups = { IceBreaker.GetGroupByClientSession(Session), IceBreaker.GetGroupByClientSession(target) };
+                            IceBreaker.MergeGroups(groups);
                         }
                         break;
                     case 506:

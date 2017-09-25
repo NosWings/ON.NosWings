@@ -50,14 +50,6 @@ namespace OpenNos.GameObject.Event
         public static MapInstance Map { get; private set; }
 
 
-        public static void AddGroup(IEnumerable<ClientSession> members)
-        {
-            _groups.Add(new Group(GroupType.IceBreaker)
-            {
-                Characters = new ConcurrentBag<ClientSession>(members)
-            });
-        }
-
         public static void AddGroup(Group group)
         {
             _groups.Add(group);
@@ -93,11 +85,6 @@ namespace OpenNos.GameObject.Event
         public static void RemoveGroup(Group group)
         {
             _groups.Remove(group);
-        }
-
-        public static bool SessionHasGroup(ClientSession session)
-        {
-            return _groups != null && _groups.Any(x => x.IsMemberOfGroup(session));
         }
 
         public static bool SessionsHaveSameGroup(ClientSession session1, ClientSession session2)
@@ -186,7 +173,7 @@ namespace OpenNos.GameObject.Event
                     IDisposable obs = null;
                     obs = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(b =>
                     {
-                        if (Map.Sessions.Count() > 1 && AlreadyFrozenPlayers.Count != Map.Sessions.Count())
+                        if (Map.Sessions.Count() > 1 && AlreadyFrozenPlayers.Count != Map.Sessions.Count() && _groups.Count > 1)
                         {
                             return;
                         }
