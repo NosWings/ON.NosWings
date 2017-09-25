@@ -213,6 +213,9 @@ namespace OpenNos.Handler
                         ClientSession target = ServerManager.Instance.GetSessionByCharacterId(charid.Value);
                         IceBreaker.FrozenPlayers.Remove(target);
                         IceBreaker.AlreadyFrozenPlayers.Add(target);
+                        target.Character.NoMove = false;
+                        target.Character.NoAttack = false;
+                        target?.SendPacket(target?.Character?.GenerateCond());
                         target?.CurrentMapInstance?.Broadcast(
                             UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_UNFROZEN"), target.Character?.Name), 0));
                         break;

@@ -387,6 +387,8 @@ namespace OpenNos.Handler
                                 target.Character.Mp = 1;
                                 RespawnMapTypeDTO respawn = target?.Character?.Respawn;
                                 ServerManager.Instance.ChangeMap(target.Character.CharacterId, respawn.DefaultMapId);
+                                Session.SendPacket($"cancel 2 {target.Character?.CharacterId}");
+                                return;
                             }
                             else
                             {
