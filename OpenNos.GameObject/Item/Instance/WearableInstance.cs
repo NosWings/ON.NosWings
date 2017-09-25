@@ -749,12 +749,16 @@ namespace OpenNos.GameObject
             }
             else
             {
-                upfix = new short[] {0, 0, 10, 15, 20, 20, 20, 20, 15, 14};
-                upfail = new short[] {0, 0, 0, 5, 20, 40, 60, 70, 80, 85};
+                upfix = new short[] {0, 0, 10, 15, 20, 20, 10, 5, 3, 1};
+                upfail = new short[] {0, 0, 0, 5, 20, 40, 70, 85, 92, 98};
 
                 goldprice = new[] {500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000};
                 cella = new short[] {20, 50, 80, 120, 160, 220, 280, 380, 480, 600};
                 gem = new short[] {1, 1, 2, 2, 3, 1, 1, 2, 2, 3};
+            }
+            if (HasAmulet == FixedUpMode.HasAmulet && IsFixed)
+            {
+                upfix = new short[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             }
 
             const short cellaVnum = 1014;
