@@ -229,14 +229,10 @@ namespace OpenNos.Handler
                         IceBreaker.AlreadyFrozenPlayers.Add(target);
                         target.Character.NoMove = false;
                         target.Character.NoAttack = false;
-                        target?.SendPacket(target?.Character?.GenerateCond());
-                        target?.CurrentMapInstance?.Broadcast(
+                        target.SendPacket(target.Character?.GenerateCond());
+                        target.CurrentMapInstance?.Broadcast(
                             UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_UNFROZEN"), target.Character?.Name), 0));
-                        if (IceBreaker.SessionsHaveSameGroup(Session, target))
-                        {
-                            break;
-                        }
-                        else
+                        if (!IceBreaker.SessionsHaveSameGroup(Session, target))
                         {
                             Group[] groups = { IceBreaker.GetGroupByClientSession(Session), IceBreaker.GetGroupByClientSession(target) };
                             IceBreaker.MergeGroups(groups);

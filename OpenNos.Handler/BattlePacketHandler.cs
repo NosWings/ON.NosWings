@@ -387,10 +387,10 @@ namespace OpenNos.Handler
                                 {
                                     IceBreaker.RemoveGroup(targetGroup);
                                 }
-                                target.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_OUT"), target?.Character?.Name), 0));
+                                target.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_OUT"), target.Character?.Name), 0));
                                 target.Character.Hp = 1;
                                 target.Character.Mp = 1;
-                                RespawnMapTypeDTO respawn = target?.Character?.Respawn;
+                                RespawnMapTypeDTO respawn = target.Character?.Respawn;
                                 ServerManager.Instance.ChangeMap(target.Character.CharacterId, respawn.DefaultMapId);
                                 Session.SendPacket($"cancel 2 {target.Character?.CharacterId}");
                                 return;
@@ -398,7 +398,7 @@ namespace OpenNos.Handler
                             else
                             {
                                 IceBreaker.FrozenPlayers.Add(target);
-                                target.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_FROZEN"), target?.Character?.Name), 0));
+                                target.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_FROZEN"), target.Character?.Name), 0));
                                 target.Character.Hp = (int)target.Character.HpLoad();
                                 target.Character.Mp = (int)target.Character.MpLoad();
                                 target.SendPacket(target.Character?.GenerateStat());
@@ -414,7 +414,7 @@ namespace OpenNos.Handler
                                     }
                                     else
                                     {
-                                        obs.Dispose();
+                                        obs?.Dispose();
                                     }
                                 });
                             }
