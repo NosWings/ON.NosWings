@@ -575,6 +575,10 @@ namespace OpenNos.Handler
                                     {
                                         if (IceBreaker.FrozenPlayers.Contains(character))
                                         {
+                                            Session.SendPacket($"cancel 2 {targetId}");
+                                            Session.Character.LastDelay = DateTime.Now;
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 3, $"#guri^502^0^{targetId}"));
+                                            Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
                                             return;
                                         }
                                         continue;
@@ -712,6 +716,9 @@ namespace OpenNos.Handler
                                 if (IceBreaker.FrozenPlayers.Contains(playerToAttack))
                                 {
                                     Session.SendPacket($"cancel 2 {targetId}");
+                                    Session.Character.LastDelay = DateTime.Now;
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 3, $"#guri^502^0^{targetId}"));
+                                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
                                     return;
                                 }
                             }
