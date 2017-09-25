@@ -382,6 +382,11 @@ namespace OpenNos.Handler
                             if (IceBreaker.AlreadyFrozenPlayers.Contains(target))
                             {
                                 IceBreaker.AlreadyFrozenPlayers.Remove(target);
+                                Group targetGroup = IceBreaker.GetGroupByClientSession(target);
+                                if (targetGroup != null)
+                                {
+                                    targetGroup.Characters.ToList().Remove(target);
+                                }
                                 target.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_OUT"), target?.Character?.Name), 0));
                                 target.Character.Hp = 1;
                                 target.Character.Mp = 1;
@@ -583,6 +588,11 @@ namespace OpenNos.Handler
                                             Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
                                             return;
                                         }
+                                        else if (IceBreaker.SessionsHaveSameGroup(Session, character))
+                                        {
+                                            Session.SendPacket($"cancel 2 {targetId}");
+                                            return;
+                                        }
                                         continue;
                                     }
                                     else if (Session.CurrentMapInstance?.IsPvp == true)
@@ -721,6 +731,11 @@ namespace OpenNos.Handler
                                     Session.Character.LastDelay = DateTime.Now;
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 3, $"#guri^502^0^{targetId}"));
                                     Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
+                                    return;
+                                }
+                                else if (IceBreaker.SessionsHaveSameGroup(Session, playerToAttack))
+                                {
+                                    Session.SendPacket($"cancel 2 {targetId}");
                                     return;
                                 }
                             }

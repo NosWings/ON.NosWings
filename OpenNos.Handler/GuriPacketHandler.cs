@@ -218,6 +218,30 @@ namespace OpenNos.Handler
                         target?.SendPacket(target?.Character?.GenerateCond());
                         target?.CurrentMapInstance?.Broadcast(
                             UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_UNFROZEN"), target.Character?.Name), 0));
+                        if (IceBreaker.SessionsHaveSameGroup(Session, target))
+                        {
+                            return;
+                        }
+                        else if (IceBreaker.SessionHasGroup(Session) && IceBreaker.SessionHasGroup(target))
+                        {
+                            Group[] groups = { IceBreaker.GetGroupByClientSession(Session), IceBreaker.GetGroupByClientSession(target) };
+                            IceBreaker.MergeGroups(groups);
+                        }
+                        else if (IceBreaker.SessionHasGroup(Session) && !IceBreaker.SessionHasGroup(target))
+                        {
+                            Group sessionGroup = IceBreaker.GetGroupByClientSession(Session);
+                            sessionGroup.JoinGroup(target);
+                        }
+                        else if (!IceBreaker.SessionHasGroup(Session) && IceBreaker.SessionHasGroup(target))
+                        {
+                            Group targetGroup = IceBreaker.GetGroupByClientSession(target);
+                            targetGroup.JoinGroup(Session);
+                        }
+                        else
+                        {
+                            ClientSession[] sessions = { Session, target };
+                            IceBreaker.AddGroup(sessions);
+                        }
                         break;
                     case 506:
                         if (ServerManager.Instance.EventInWaiting)

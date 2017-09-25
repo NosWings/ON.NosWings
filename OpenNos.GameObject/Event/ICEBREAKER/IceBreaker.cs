@@ -40,7 +40,7 @@ namespace OpenNos.GameObject.Event
 
         private static int _currentBracket;
         
-        private static List<Group> _teams { get; set; }
+        private static List<Group> _groups { get; set; }
 
 
         public static List<ClientSession> AlreadyFrozenPlayers { get; set; }
@@ -52,7 +52,7 @@ namespace OpenNos.GameObject.Event
 
         public static void AddGroup(IEnumerable<ClientSession> members)
         {
-            _teams.Add(new Group(GroupType.IceBreaker)
+            _groups.Add(new Group(GroupType.IceBreaker)
             {
                 Characters = new ConcurrentBag<ClientSession>(members)
             });
@@ -60,7 +60,19 @@ namespace OpenNos.GameObject.Event
 
         public static void AddGroup(Group group)
         {
-            _teams.Add(group);
+            _groups.Add(group);
+        }
+
+        public static Group GetGroupByClientSession(ClientSession session)
+        {
+            try
+            {
+                return _groups.Where(x => x.IsMemberOfGroup(session)).First();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static void MergeGroups(IEnumerable<Group> groups)
@@ -80,35 +92,17 @@ namespace OpenNos.GameObject.Event
 
         public static void RemoveGroup(Group group)
         {
-            _teams.Remove(group);
+            _groups.Remove(group);
         }
 
         public static bool SessionHasGroup(ClientSession session)
         {
-            bool result;
-            try
-            {
-                result = _teams.Where(x => x.IsMemberOfGroup(session)).First() == null ? true : false;
-                return result;
-            }
-            catch
-            {
-                return false;
-            }
+            return _groups != null && _groups.Any(x => x.IsMemberOfGroup(session));
         }
 
         public static bool SessionsHaveSameGroup(ClientSession session1, ClientSession session2)
         {
-            bool result;
-            try
-            {
-                result = _teams.Where(x => x.IsMemberOfGroup(session1) && x.IsMemberOfGroup(session2)).First() == null ? true : false;
-                return result;
-            }
-            catch
-            {
-                return false;
-            }
+            return _groups != null && _groups.Any(x => x.IsMemberOfGroup(session1) && x.IsMemberOfGroup(session2));
         }
 
 
@@ -225,7 +219,7 @@ namespace OpenNos.GameObject.Event
             AlreadyFrozenPlayers = new List<ClientSession>();
             FrozenPlayers = new List<ClientSession>();
             Map = ServerManager.Instance.GenerateMapInstance(2005, MapInstanceType.IceBreakerInstance, new InstanceBag());
-            _teams = new List<Group>();
+            _groups = new List<Group>();
         }
     }
 }
