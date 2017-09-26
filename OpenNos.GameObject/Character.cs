@@ -4611,6 +4611,7 @@ namespace OpenNos.GameObject
                     }
                 }
                 Speed += (byte) GetBuff(CardType.Move, (byte) AdditionalTypes.Move.MovementSpeedIncreased)[0];
+                Speed *= (byte)(1 + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MoveSpeedIncreased)[0] / 100D);
                 Speed -= (byte) GetBuff(CardType.Move, (byte) AdditionalTypes.Move.MovementSpeedDecreased)[0];
             }
 

@@ -68,6 +68,7 @@ namespace OpenNos.GameObject
                         if (session is Character character)
                         {
                             character.LastSpeedChange = DateTime.Now;
+                            character.LoadSpeed();
                         }
                         Character o = session as Character;
                         o?.Session.SendPacket(o.GenerateCond());
