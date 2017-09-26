@@ -109,7 +109,9 @@ namespace OpenNos.GameObject.Event
             #endregion
 
             if (_lobby == null)
-            { return; }
+            {
+                return;
+            }
 
             _lobby.CreatePortal(new Portal()
             {
@@ -191,7 +193,6 @@ namespace OpenNos.GameObject.Event
                     fam.Act4Raid = ServerManager.Instance.GenerateMapInstance(raidMap, MapInstanceType.RaidInstance, new InstanceBag());
                     fam.Act4Raid.CreatePortal(new Portal()
                     {
-                        PortalId = 1,
                         SourceMapId = fam.Act4Raid.Map.MapId,
                         SourceX = sourceX,
                         SourceY = sourceY,
@@ -221,6 +222,7 @@ namespace OpenNos.GameObject.Event
         {
             raidMap.CreatePortal(new Portal()
             {
+                //Portal ID is usefull for "REMOVEPORTAL"
                 PortalId = 2,
                 SourceMapId = raidMap.Map.MapId,
                 SourceX = _bossPortalX,
