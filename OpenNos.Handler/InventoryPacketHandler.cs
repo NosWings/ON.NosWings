@@ -1920,7 +1920,7 @@ namespace OpenNos.Handler
             }
             if (Session.Character.HasShopOpened || Session.Character.InExchangeOrTrade || Session.Character.IsExchanging)
             {
-                // TODO ADD A MESSAGE CAN'T USE ITEM
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CAN'T USE ITEM"), 10));
                 return;
             }
             inv.Item.Use(Session, ref inv, wearPacket.Type);

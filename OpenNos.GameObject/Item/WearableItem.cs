@@ -81,9 +81,13 @@ namespace OpenNos.GameObject
 
                     if (!inv.IsBound)
                     {
-                        if (inv.Item.Effect == 790)
+                        switch (inv.Item.Effect)
                         {
-                            inv.BoundCharacterId = session.Character.CharacterId;
+                            case 790: // Tarot
+                            case 932: // Attack amulet
+                            case 933: // defense amulet
+                                inv.BoundCharacterId = session.Character.CharacterId;
+                                break;
                         }
 
                         if (!delay && (EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80) || EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit || EquipmentSlot == EquipmentType.WeaponSkin))
@@ -293,6 +297,32 @@ namespace OpenNos.GameObject
                                 break;
                             case EquipmentType.Amulet:
                                 session.SendPacket(session.Character.GenerateEff(39));
+                                WearableInstance amulet =
+                                    session.Character.Inventory.LoadBySlotAndType<WearableInstance>(
+                                        (byte) EquipmentType.Amulet, equipment);
+                                if (amulet == null)
+                                {
+                                    if (session.Character.Buff.Any(s => s.Card.CardId == 116))
+                                    {
+                                        session.Character.RemoveBuff(116);
+                                        return;
+                                    }
+                                    if (session.Character.Buff.Any(s => s.Card.CardId == 117))
+                                    {
+                                        session.Character.RemoveBuff(117);
+                                        return;
+                                    }
+                                }
+                                switch (inv.Item.Effect)
+                                {
+                                    case 932: // Attack amulet
+                                        session.Character.AddBuff(new Buff(116));
+                                        break;
+
+                                    case 933: // Defense amulet
+                                        session.Character.AddBuff(new Buff(117));
+                                        break;
+                                }
                                 break;
                         }
                     }

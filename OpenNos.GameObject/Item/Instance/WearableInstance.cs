@@ -345,7 +345,7 @@ namespace OpenNos.GameObject
                     case RarifyMode.Success:
                         if (Item.IsHeroic && Rare >= 8 || !Item.IsHeroic && Rare <= 7)
                         {
-                            // TODO MESSAGE TO NOTIFY USER
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ALREADY_MAX_RARE"), 10));
                             return;
                         }
                         Rare += 1;

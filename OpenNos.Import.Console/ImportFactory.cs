@@ -3359,10 +3359,6 @@ namespace OpenNos.Import.Console
                                         item.EffectValue = 4;
                                         break;
 
-                                    case 5119:
-                                        item.Effect = 998;
-                                        break;
-
                                     case 185: // Hatus
                                     case 302: // Classic
                                     case 882: // Morcos
@@ -3746,6 +3742,18 @@ namespace OpenNos.Import.Console
                                     case 4054:
                                     case 4055:
                                         item.Effect = 790;
+                                        break;
+
+                                    case 5119: // Speed booster
+                                        item.Effect = 998;
+                                        break;
+
+                                    case 180: // attack amulet
+                                        item.Effect = 932;
+                                        break;
+
+                                    case 181: // defense amulet
+                                        item.Effect = 933;
                                         break;
 
                                     default:
