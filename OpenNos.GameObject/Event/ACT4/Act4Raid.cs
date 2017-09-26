@@ -37,12 +37,13 @@ namespace OpenNos.GameObject.Event
 
         private Act4RaidType _type;
 
+        private MapInstance _lobby;
+
         private byte _faction;
         private short _bossPortalX;
         private short _bossPortalY;
         private short _bossPortalToX = -1;
         private short _bossPortalToY = -1;
-
         #endregion
 
         #region Methods
@@ -57,6 +58,7 @@ namespace OpenNos.GameObject.Event
             short boxVnum = 0;
             short destX = 0;
             short destY = 0;
+            _lobby = ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == (byte) (129 + _faction));
 
             #region SetParameters
 
@@ -106,22 +108,28 @@ namespace OpenNos.GameObject.Event
 
             #endregion
 
-            ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId((short)(129 + _faction))).CreatePortal(new Portal()
+            if (_lobby == null)
+            { return; }
+
+            _lobby.CreatePortal(new Portal()
             {
-                SourceMapId = (short)(129 + _faction),
+                SourceMapId = (short) (129 + _faction),
                 SourceX = 53,
                 SourceY = 53,
                 DestinationMapId = 0,
                 DestinationX = destX,
                 DestinationY = destY,
-                Type = (short)(9 + _faction)
+                Type = (short) (9 + _faction)
             });
 
-            ServerManager.Instance.Act4Maps.ForEach(m => m.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), type.ToString()), 0)));
+            foreach (MapInstance map in ServerManager.Instance.Act4Maps)
+            {
+                map.Sessions.Where(s => (byte) s?.Character?.Faction == _faction).ToList().ForEach(s => s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), type.ToString()), 0)));
+            }
 
             while (_raidTime > 0)
             {
-                RefreshAct4Raid(_raidTime, raidMap, destX, destY);
+                RefreshAct4Raid(raidMap, destX, destY);
 
                 if (_raidTime == BossSpawn)
                 {
@@ -147,6 +155,12 @@ namespace OpenNos.GameObject.Event
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
             {
+                foreach (ClientSession session in fam.Act4Raid.Sessions.Concat(fam.Act4RaidBossMap.Sessions))
+                {
+                    //DISOPEMAP teleport on base map instance not in the Act4 lobby
+                    ServerManager.Instance.TeleportOnRandomPlaceInMap(session, _lobby.MapInstanceId);
+                }
+
                 if (fam.Act4Raid == null)
                 {
                     continue;
@@ -167,7 +181,7 @@ namespace OpenNos.GameObject.Event
             { ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(131)).Portals.RemoveAll(s => s.Type.Equals(11)); }
         }
 
-        private void RefreshAct4Raid(int remaining, short raidMap, short sourceX, short sourceY)
+        private void RefreshAct4Raid(short raidMap, short sourceX, short sourceY)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
@@ -177,53 +191,51 @@ namespace OpenNos.GameObject.Event
                     fam.Act4Raid = ServerManager.Instance.GenerateMapInstance(raidMap, MapInstanceType.RaidInstance, new InstanceBag());
                     fam.Act4Raid.CreatePortal(new Portal()
                     {
+                        PortalId = 1,
                         SourceMapId = fam.Act4Raid.Map.MapId,
                         SourceX = sourceX,
                         SourceY = sourceY,
-                        DestinationMapId = (short) (129 + _faction),
+                        DestinationMapId = (short)(129 + _faction),
                         DestinationX = 53,
                         DestinationY = 53,
+                        DestinationMapInstanceId = _lobby.MapInstanceId,
                         Type = -1
                     });
+
                     fam.Act4Raid.MapIndexX = (byte) sourceX;
                     fam.Act4Raid.MapIndexY = (byte) sourceY;
 
-                }
-                EventHelper.Instance.RunEvent(new EventContainer(fam.Act4Raid, EventActionType.CLOCK, remaining * 10));
-                EventHelper.Instance.RunEvent(new EventContainer(fam.Act4Raid, EventActionType.STARTCLOCK,
-                    new Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>(new ConcurrentBag<EventContainer>(),
-                        new ConcurrentBag<EventContainer>())));
-
+                }         
+                
                 if (fam.Act4RaidBossMap == null)
                 {
                     fam.Act4RaidBossMap = ServerManager.Instance.GenerateMapInstance(raidMap++, MapInstanceType.RaidInstance, new InstanceBag());
                 }
-                EventHelper.Instance.RunEvent(new EventContainer(fam.Act4RaidBossMap, EventActionType.CLOCK, remaining * 10));
-                EventHelper.Instance.RunEvent(new EventContainer(fam.Act4RaidBossMap, EventActionType.STARTCLOCK,
-                    new Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>(new ConcurrentBag<EventContainer>(),
-                        new ConcurrentBag<EventContainer>())));
+
+                fam.Act4Raid.Sessions.Concat(fam.Act4RaidBossMap.Sessions).ToList().ForEach(s => s.SendPacket(s.Character.GenerateDg()));
+
             }
         }
 
         private void SpawnBoss(MapInstance raidMap, MapInstance raidBossMap, ConcurrentBag<MonsterToSummon> summonParameters, short boxVnum)
         {
-            Portal bossPortal = new Portal
+            raidMap.CreatePortal(new Portal()
             {
-                PortalId = 1,
+                PortalId = 2,
+                SourceMapId = raidMap.Map.MapId,
                 SourceX = _bossPortalX,
                 SourceY = _bossPortalY,
-                Type = 0,
+                DestinationMapId = raidBossMap.Map.MapId,
                 DestinationX = _bossPortalToX,
                 DestinationY = _bossPortalToY,
-                DestinationMapId = raidBossMap.Map.MapId,
-                SourceMapInstanceId = raidMap.MapInstanceId,
-                DestinationMapInstanceId = raidBossMap.MapInstanceId,
-            };
+                Type = 0,
+                DestinationMapInstanceId = raidBossMap.MapInstanceId
+            });
 
             EventHelper.Instance.RunEvent(new EventContainer(raidBossMap, EventActionType.SPAWNMONSTERS, summonParameters));
             EventHelper.Instance.RunEvent(new EventContainer(raidMap, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BOSS_APPEAR"), 0)));
-            EventHelper.Instance.RunEvent(new EventContainer(raidMap, EventActionType.SPAWNPORTAL, bossPortal));
             EventHelper.Instance.RunEvent(new EventContainer(raidBossMap, EventActionType.REGISTERWAVE, new EventWave(90, GetWaveMonster(raidBossMap))));
+            EventHelper.Instance.RunEvent(new EventContainer(raidMap, EventActionType.REFRESHMAPITEMS, null));
 
 
             MapMonster boss = raidBossMap.Monsters.FirstOrDefault(m => m.MonsterVNum == summonParameters.FirstOrDefault()?.VNum);
@@ -232,14 +244,18 @@ namespace OpenNos.GameObject.Event
             {
                 return;
             }
-            //Throw Gold
-            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, 1046, 30, 20000, 20001)));
+            //Throw Items
+            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, 1046, 20, 20000, 20001)));
+            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, 2027, 10, 5, 6)));
+            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, 1019, 5, 1, 2)));
+            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, 1009, 5, 3, 4)));
+            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, 1011, 5, 3, 4)));
+            
+            boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BOSS_DIED"), 0)));
+            boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.REMOVEPORTAL, 2));
+            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.ACT4RAIDEND, new Tuple<MapInstance, short, short>(raidMap, raidMap.MapIndexX, raidMap.MapIndexY)));
             //RaidBox
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.MAPGIVE, new Tuple<bool, short, byte, short>(true, boxVnum, 1, 50)));
-            boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BOSS_DIED"), 0)));
-            boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.REMOVEPORTAL, bossPortal.PortalId));
-            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.ACT4RAIDEND, new Tuple<MapInstance, short, short>(raidMap, raidMap.MapIndexX, raidMap.MapIndexY)));
-
         }
 
         private ConcurrentBag<EventContainer> GetWaveMonster(MapInstance mapInstance)
@@ -262,21 +278,25 @@ namespace OpenNos.GameObject.Event
                     break;
 
                 case Act4RaidType.Hatus:
-                    mapInstance.Map.GenerateMonsters(574, 2, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                    mapInstance.Map.GenerateMonsters(575, 2, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                    mapInstance.Map.GenerateMonsters(576, 2, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 20, Y = 22 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 22, Y = 25 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 31, Y = 29 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 36, Y = 30 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 42, Y = 29 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 48, Y = 27 }, -1, true));
                     break;
 
                 case Act4RaidType.Morcos:
-                    mapInstance.Map.GenerateMonsters(561, 3, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                    mapInstance.Map.GenerateMonsters(562, 3, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                    summonParameters.Add(new MonsterToSummon(561, new MapCell { X = 37, Y = 25 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(561, new MapCell { X = 49, Y = 35 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(561, new MapCell { X = 63, Y = 24 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(562, new MapCell { X = 41, Y = 33 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(562, new MapCell { X = 56, Y = 34 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(562, new MapCell { X = 67, Y = 24 }, -1, true));
                     break;
             }
 
-            foreach (MonsterToSummon sParameters in summonParameters)
-            {
-                evtParameters.Add(new EventContainer(mapInstance, EventActionType.SPAWNMONSTERS, sParameters));
-            }
+            evtParameters.Add(new EventContainer(mapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
 
             return evtParameters;
         }
