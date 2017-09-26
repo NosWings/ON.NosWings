@@ -297,32 +297,6 @@ namespace OpenNos.GameObject
                                 break;
                             case EquipmentType.Amulet:
                                 session.SendPacket(session.Character.GenerateEff(39));
-                                WearableInstance amulet =
-                                    session.Character.Inventory.LoadBySlotAndType<WearableInstance>(
-                                        (byte) EquipmentType.Amulet, equipment);
-                                if (amulet == null)
-                                {
-                                    if (session.Character.Buff.Any(s => s.Card.CardId == 116))
-                                    {
-                                        session.Character.RemoveBuff(116);
-                                        return;
-                                    }
-                                    if (session.Character.Buff.Any(s => s.Card.CardId == 117))
-                                    {
-                                        session.Character.RemoveBuff(117);
-                                        return;
-                                    }
-                                }
-                                switch (inv.Item.Effect)
-                                {
-                                    case 932: // Attack amulet
-                                        session.Character.AddBuff(new Buff(116));
-                                        break;
-
-                                    case 933: // Defense amulet
-                                        session.Character.AddBuff(new Buff(117));
-                                        break;
-                                }
                                 break;
                         }
                     }

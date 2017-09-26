@@ -271,9 +271,8 @@ namespace OpenNos.GameObject
                         return;
                     }
                     IsInUse = true;
-                    Buff b = new Buff(336);
                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(885), session.Character.MapX, session.Character.MapY);
-                    session.Character.AddBuff(b);
+                    session.Character.AddBuff(new Buff(336));
                     session.Character.Speed += 5;
                     switch (session.Character.Morph)
                     {
@@ -287,7 +286,7 @@ namespace OpenNos.GameObject
                             break;
                             
                     }
-                    Observable.Timer(TimeSpan.FromSeconds(b.Card.Duration)).Subscribe(o =>
+                    Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(o =>
                     {
                         session.Character.Speed -= 5;
                         IsInUse = false;

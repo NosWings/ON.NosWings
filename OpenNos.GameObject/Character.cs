@@ -1198,6 +1198,15 @@ namespace OpenNos.GameObject
 
             #region Get Weapon Stats
 
+            WearableInstance amulet =
+                Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Amulet, InventoryType.Equipment);
+
+            if (amulet != null && amulet.Item.Effect == 932)
+            {
+                mainUpgrade += 1;
+                secUpgrade += 1;
+            }
+
             if (Inventory.PrimaryWeapon != null)
             {
                 mainUpgrade += Inventory.PrimaryWeapon.Upgrade;

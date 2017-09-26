@@ -431,6 +431,15 @@ namespace OpenNos.GameObject
 
             int boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased)[0]
                                   - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageDecreased)[0];
+            
+
+            WearableInstance amulet =
+                targetCharacter.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Equipment);
+
+            if (amulet != null && amulet.Item.Effect == 933)
+            {
+                playerDefenseUpgrade += 1;
+            }
 
             switch (Monster.AttackClass)
             {
