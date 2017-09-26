@@ -1773,12 +1773,11 @@ namespace OpenNos.GameObject
             // OFFENSIVE POTION
             baseDamage += (int)(baseDamage * GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D);
 
-            int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
-            int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
+            int[] weaponSoftDamage = GetWeaponSoftDamage();
             bool softDamage = false;
-            if (ServerManager.Instance.RandomNumber() < primaryWeaponSoftDamage[0] + secondaryWeaponSoftDamage[0])
+            if (ServerManager.Instance.RandomNumber() < weaponSoftDamage[0])
             {
-                baseDamage += (int)(baseDamage * (1 + (primaryWeaponSoftDamage[1] / 100D + secondaryWeaponSoftDamage[1] / 100D)));
+                baseDamage += (int)(baseDamage * (1 + (weaponSoftDamage[1] / 100D)));
                 softDamage = true;
             }
             if (softDamage)
@@ -3351,12 +3350,11 @@ namespace OpenNos.GameObject
             SkillBcards.Clear();
             #endregion
             
-            int[] primaryWeaponSoftDamage = GetWeaponSoftDamage(true);
-            int[] secondaryWeaponSoftDamage = GetWeaponSoftDamage(false);
+            int[] weaponSoftDamage = GetWeaponSoftDamage();
             bool softDamage = false;
-            if (ServerManager.Instance.RandomNumber() < primaryWeaponSoftDamage[0] + secondaryWeaponSoftDamage[0])
+            if (ServerManager.Instance.RandomNumber() < weaponSoftDamage[0])
             {
-                baseDamage += (int)(baseDamage * (1 + (primaryWeaponSoftDamage[1] / 100D + secondaryWeaponSoftDamage[1] / 100D)));
+                baseDamage += (int)(baseDamage * (1 + (weaponSoftDamage[1] / 100D)));
                 softDamage = true;
             }
             if (softDamage)
@@ -5912,24 +5910,35 @@ namespace OpenNos.GameObject
             }
         }
 
-        public int[] GetWeaponSoftDamage(bool primary)
+        public int[] GetWeaponSoftDamage()
         {
-            int value1 = 0;
-            int value2 = 0;
+            int increase = 0;
+            int increaseChance = 0;
 
-            WearableInstance tmp = primary ? Inventory.PrimaryWeapon : Inventory.SecondaryWeapon;
+            WearableInstance prim = Inventory.PrimaryWeapon;
+            WearableInstance sec = Inventory.SecondaryWeapon;
 
-            if (tmp == null)
+            if (prim != null)
             {
-                return new[] {0, 0};
+                foreach (BCard bcard in prim.Item.BCards.Where(
+                    s => s != null && s.Type.Equals((byte) CardType.IncreaseDamage) &&
+                         s.SubType.Equals((byte) AdditionalTypes.IncreaseDamage.IncreasingPropability)))
+                {
+                    increaseChance += bcard.FirstData;
+                    increase += bcard.SecondData;
+                }
             }
-            foreach (BCard bcard in tmp.Item.BCards.Where(
-                s => s != null && s.Type.Equals((byte) CardType.IncreaseDamage) && s.SubType.Equals((byte) AdditionalTypes.IncreaseDamage.IncreasingPropability)))
+            if (sec != null)
             {
-                value1 += bcard.FirstData;
-                value2 += bcard.SecondData;
+                foreach (BCard bcard in sec.Item.BCards.Where(
+                    s => s != null && s.Type.Equals((byte)CardType.IncreaseDamage) &&
+                         s.SubType.Equals((byte)AdditionalTypes.IncreaseDamage.IncreasingPropability)))
+                {
+                    increaseChance += bcard.FirstData;
+                    increase += bcard.SecondData;
+                }
             }
-            return new[] {value1, value2};
+            return new[] {increaseChance, increase};
         }
 
         /// <summary>
