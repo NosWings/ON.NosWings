@@ -165,8 +165,6 @@ namespace OpenNos.GameObject
 
         public bool Invisible { get; set; }
 
-        public bool IsOnBoost { set; get; }
-
         public bool InvisibleGm { get; set; }
 
         public bool IsChangingMapInstance { get; set; }
@@ -176,6 +174,8 @@ namespace OpenNos.GameObject
         public bool IsDancing { get; set; }
 
         public bool IsDead { get; set; }
+
+        public bool IsOnBoost { set; get; }
 
         /// <summary>
         /// Defines if the Character Is currently sending or getting items thru exchange.
