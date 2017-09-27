@@ -5518,7 +5518,7 @@ namespace OpenNos.GameObject
                                             ? 2
                                             : 1;
                                             */
-            if (Session?.CurrentMapInstance?.Map.MapId == 2560)
+            if (Session?.CurrentMapInstance?.Map.MapId == 103)
             {
                 return ServerManager.Instance.RandomNumber(1, 1000);
             }
