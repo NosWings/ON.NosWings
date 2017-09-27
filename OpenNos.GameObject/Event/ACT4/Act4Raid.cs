@@ -222,8 +222,6 @@ namespace OpenNos.GameObject.Event
         {
             raidMap.CreatePortal(new Portal()
             {
-                //Portal ID is usefull for "REMOVEPORTAL"
-                PortalId = 2,
                 SourceMapId = raidMap.Map.MapId,
                 SourceX = _bossPortalX,
                 SourceY = _bossPortalY,
@@ -254,7 +252,7 @@ namespace OpenNos.GameObject.Event
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, 1011, 5, 3, 4)));
             
             boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BOSS_DIED"), 0)));
-            boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.REMOVEPORTAL, 2));
+            boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.REMOVEPORTAL, raidMap.Portals.FirstOrDefault(p => p.DestinationMapInstanceId == raidBossMap.MapInstanceId)));
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.ACT4RAIDEND, new Tuple<MapInstance, short, short>(raidMap, raidMap.MapIndexX, raidMap.MapIndexY)));
             //RaidBox
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.MAPGIVE, new Tuple<bool, short, byte, short>(true, boxVnum, 1, 50)));
