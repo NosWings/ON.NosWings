@@ -618,7 +618,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
                             Session.SendPacket(Session.Character.GenerateSpPoint());
                         }
-                        Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
+                        Session.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                     }
                     else
@@ -629,7 +629,7 @@ namespace OpenNos.Handler
                             ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
                             if (inv != null)
                             {
-                                Session.CurrentMapInstance.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
+                                Session?.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                                 if (getPacket.PickerType == 2)
                                 {
