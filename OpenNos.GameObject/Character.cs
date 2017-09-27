@@ -5493,7 +5493,7 @@ namespace OpenNos.GameObject
 
         private int GetGold(MapMonster mapMonster)
         {
-            if (!(MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
+            if (!(MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance) || mapMonster.Monster == null)
             {
                 return 0;
             }
