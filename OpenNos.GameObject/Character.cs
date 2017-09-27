@@ -165,6 +165,8 @@ namespace OpenNos.GameObject
 
         public bool Invisible { get; set; }
 
+        public bool IsOnBoost { set; get; }
+
         public bool InvisibleGm { get; set; }
 
         public bool IsChangingMapInstance { get; set; }

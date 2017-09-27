@@ -33,8 +33,6 @@ namespace OpenNos.GameObject
 {
     public class SpecialItem : Item
     {
-        public bool IsInUse { set; get; }
-
         #region Instantiation
 
         public SpecialItem(ItemDTO item) : base(item)
@@ -266,11 +264,11 @@ namespace OpenNos.GameObject
 
                 //speed booster
                 case 998:
-                    if (!session.Character.IsVehicled || IsInUse)
+                    if (!session.Character.IsVehicled || session.Character.IsOnBoost)
                     {
                         return;
                     }
-                    IsInUse = true;
+                    session.Character.IsOnBoost = true;
                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(885), session.Character.MapX, session.Character.MapY);
                     session.Character.AddBuff(new Buff(336));
                     session.Character.Speed += 5;
@@ -289,7 +287,7 @@ namespace OpenNos.GameObject
                     Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(o =>
                     {
                         session.Character.Speed -= 5;
-                        IsInUse = false;
+                        session.Character.IsOnBoost = false;
                         switch (session.Character.Morph)
                         {
                             case 2526: // White male unicorn
@@ -300,6 +298,8 @@ namespace OpenNos.GameObject
                             case 2531: // Black Female Unicorn
                             case 2928: // Male UFO
                             case 2929: // Female UFO
+                            case 3679: // Male squelettic dragon
+                            case 3680: // Female squelettic dragon
                                 ServerManager.Instance.TeleportOnRandomPlaceInMap(session, session.Character.MapInstanceId, true);
                                 break;
 
