@@ -1283,10 +1283,9 @@ namespace OpenNos.GameObject
 
                 });
                 LastSkill = DateTime.Now;
-                if (targetSession.Character.Hp <= 0 && targetSession.Character.IsDead == false)
+                if (targetSession.Character.Hp <= 0)
                 {
                     RemoveTarget();
-                    targetSession.Character.IsDead = true;
                     Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(targetSession.Character.CharacterId); });
                 }
             }
