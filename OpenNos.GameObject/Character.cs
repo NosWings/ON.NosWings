@@ -4306,7 +4306,16 @@ namespace OpenNos.GameObject
                 newItem.Rare = rare;
                 if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
                 {
-                    ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+                    newItem.Rare = rare;
+                    ((WearableInstance) newItem).SetRarityPoint();
+                    if (rare == 0)
+                    {
+                        ((WearableInstance) newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+                    }
+                    newItem.Upgrade = upgrade;
+                }
+                if (newItem.Item.ItemType == ItemType.Specialist)
+                {
                     newItem.Upgrade = upgrade;
                 }
                 if (newItem.Item.ItemType == ItemType.Shell)

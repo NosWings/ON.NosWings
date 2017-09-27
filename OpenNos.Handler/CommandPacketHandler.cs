@@ -61,50 +61,55 @@ namespace OpenNos.Handler
                 switch (stuffPackPacket.Type)
                 {
                     case "Archer":
+                    case "archer":
                         Session.Character.GiftAdd(4986, 1, rare:8, upgrade:10); // HERO 50 ARMOR
                         Session.Character.GiftAdd(4983, 1, rare:8, upgrade:10); // HERO 50 WEAPON
                         Session.Character.GiftAdd(4980, 1, rare:8, upgrade:10); // HERO 50 SECOND WEAPON
-                        CreateItem(new CreateItemPacket { VNum = 903, Upgrade = 15 }); // SP1
-                        CreateItem(new CreateItemPacket { VNum = 904, Upgrade = 15 }); // SP2
-                        CreateItem(new CreateItemPacket { VNum = 911, Upgrade = 15 }); // SP3
-                        CreateItem(new CreateItemPacket { VNum = 912, Upgrade = 15 }); // SP4
-                        CreateItem(new CreateItemPacket { VNum = 4501, Upgrade = 15 }); // SP5
-                        CreateItem(new CreateItemPacket { VNum = 4498, Upgrade = 15 }); // SP6
-                        CreateItem(new CreateItemPacket { VNum = 4492, Upgrade = 15 }); // SP7
-                        CreateItem(new CreateItemPacket { VNum = 4488, Upgrade = 15 }); // SP8
+                        Session.Character.GiftAdd(903, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(904, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(911, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(912, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4501, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4498, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4492, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4488, 1, 0, 15, 15);
                         break;
                     case "Mage":
+                    case "mage":
                         Session.Character.GiftAdd(4985, 1, rare:8, upgrade:10); // HERO 50 ARMOR
                         Session.Character.GiftAdd(4982, 1, rare: 8, upgrade: 10); // HERO 50 WEAPON
                         Session.Character.GiftAdd(4979, 1, rare: 8, upgrade: 10); // HERO 50 SECOND WEAPON
-                        CreateItem(new CreateItemPacket { VNum = 905, Upgrade = 15 }); // SP1
-                        CreateItem(new CreateItemPacket { VNum = 906, Upgrade = 15 }); // SP2
-                        CreateItem(new CreateItemPacket { VNum = 913, Upgrade = 15 }); // SP3
-                        CreateItem(new CreateItemPacket { VNum = 914, Upgrade = 15 }); // SP4
-                        CreateItem(new CreateItemPacket { VNum = 4502, Upgrade = 15 }); // SP5
-                        CreateItem(new CreateItemPacket { VNum = 4499, Upgrade = 15 }); // SP6
-                        CreateItem(new CreateItemPacket { VNum = 4491, Upgrade = 15 }); // SP7
-                        CreateItem(new CreateItemPacket { VNum = 4487, Upgrade = 15 }); // SP8
+                        Session.Character.GiftAdd(905, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(906, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(913, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(914, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4502, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4499, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4491, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4487, 1, 0, 15, 15);
                         break;
                     case "Sword":
-                        Session.Character.GiftAdd(4984, 1, rare: 8, upgrade: 10); // HERO 50 ARMOR
-                        Session.Character.GiftAdd(4981, 1, rare: 8, upgrade: 10); // HERO 50 WEAPON
-                        Session.Character.GiftAdd(4978, 1, rare: 8, upgrade: 10); // HERO 50 SECOND WEAPON
-                        CreateItem(new CreateItemPacket { VNum = 901, Upgrade = 15 }); // SP1
-                        CreateItem(new CreateItemPacket { VNum = 902, Upgrade = 15 }); // SP2
-                        CreateItem(new CreateItemPacket { VNum = 909, Upgrade = 15 }); // SP3
-                        CreateItem(new CreateItemPacket { VNum = 910, Upgrade = 15 }); // SP4
-                        CreateItem(new CreateItemPacket { VNum = 4500, Upgrade = 15 }); // SP5
-                        CreateItem(new CreateItemPacket { VNum = 4497, Upgrade = 15 }); // SP6
-                        CreateItem(new CreateItemPacket { VNum = 4493, Upgrade = 15 }); // SP7
-                        CreateItem(new CreateItemPacket { VNum = 4489, Upgrade = 15 }); // SP8
+                    case "sword":
+                        Session.Character.GiftAdd(4984, 1, 0, 10, 8); // HERO 50 ARMOR
+                        Session.Character.GiftAdd(4981, 1, 0, 10, 8); // HERO 50 WEAPON
+                        Session.Character.GiftAdd(4978, 1, 0, 10, 8); // HERO 50 SECOND WEAPON
+                        Session.Character.GiftAdd(901, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(902, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(909, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(910, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4500, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4497, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4493, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4489, 1, 0, 15, 15);
                         break;
                     case "Mount":
+                    case "mount":
                         Session.Character.GiftAdd(5196, 1); // Nossi
                         Session.Character.GiftAdd(5330, 1); // Soucoupe
                         Session.Character.GiftAdd(5360, 1); // Planche à voile
                         break;
                     case "Resists":
+                    case "resists":
                         break;
                     default:
                         Session.SendPacket(Session.Character.GenerateSay("Use : \"Archer\", \"Sword\" \"Mage\" or \"Mount\"", 10));
