@@ -76,7 +76,7 @@ namespace OpenNos.GameObject.Event
                     _bossPortalToY = 80;
                     break;
                 case Act4RaidType.Hatus:
-                    bossParametter.Add(new MonsterToSummon(282, new MapCell { X = 36, Y = 18 }, -1, false) { DeathEvents = new List<EventContainer>() });
+                    bossParametter.Add(new MonsterToSummon(577, new MapCell { X = 36, Y = 18 }, -1, false) { DeathEvents = new List<EventContainer>() });
                     raidMap = 137;
                     boxVnum = 185;
                     destX = 14;
@@ -209,7 +209,8 @@ namespace OpenNos.GameObject.Event
                 
                 if (fam.Act4RaidBossMap == null)
                 {
-                    fam.Act4RaidBossMap = ServerManager.Instance.GenerateMapInstance(raidMap++, MapInstanceType.RaidInstance, new InstanceBag());
+                    // raidMap++ doesn't work
+                    fam.Act4RaidBossMap = ServerManager.Instance.GenerateMapInstance(raidMap += 1, MapInstanceType.RaidInstance, new InstanceBag());
                 }
 
                 fam.Act4Raid.Sessions.Concat(fam.Act4RaidBossMap.Sessions).ToList().ForEach(s => s.SendPacket(s.Character.GenerateDg()));
