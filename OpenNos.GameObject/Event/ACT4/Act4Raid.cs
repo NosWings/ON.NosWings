@@ -154,7 +154,7 @@ namespace OpenNos.GameObject.Event
 
         private void EndRaid()
         {
-            _lobby.Portals.RemoveAll(s => _faction == 1 ? s.Type.Equals(10) : s.Type.Equals(11));
+            _lobby.Portals.RemoveAll(s => _faction == (byte) FactionType.Angel ? s.Type.Equals(10) : s.Type.Equals(11));
 
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
             foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
@@ -209,8 +209,7 @@ namespace OpenNos.GameObject.Event
                 
                 if (fam.Act4RaidBossMap == null)
                 {
-                    // raidMap++ doesn't work
-                    fam.Act4RaidBossMap = ServerManager.Instance.GenerateMapInstance(raidMap += 1, MapInstanceType.RaidInstance, new InstanceBag());
+                    fam.Act4RaidBossMap = ServerManager.Instance.GenerateMapInstance((short) (raidMap + 1), MapInstanceType.RaidInstance, new InstanceBag());
                 }
 
                 fam.Act4Raid.Sessions.Concat(fam.Act4RaidBossMap.Sessions).ToList().ForEach(s => s.SendPacket(s.Character.GenerateDg()));
@@ -222,8 +221,6 @@ namespace OpenNos.GameObject.Event
         {
             raidMap.CreatePortal(new Portal()
             {
-                //PortalId must be there ! If not the portal wich will be remove will be the raid entry portal and not the boss portal
-                PortalId = 1,
                 SourceMapId = raidMap.Map.MapId,
                 SourceX = _bossPortalX,
                 SourceY = _bossPortalY,
@@ -254,7 +251,7 @@ namespace OpenNos.GameObject.Event
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, 1011, 5, 3, 4)));
             
             boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BOSS_DIED"), 0)));
-            boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.REMOVEPORTAL, raidMap.Portals.FirstOrDefault(p => p.DestinationMapInstanceId == raidBossMap.MapInstanceId).PortalId));
+            boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.REMOVEPORTAL, raidMap.Portals.FirstOrDefault(p => p.DestinationMapInstanceId == raidBossMap.MapInstanceId)));
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.ACT4RAIDEND, new Tuple<MapInstance, short, short>(raidMap, raidMap.MapIndexX, raidMap.MapIndexY)));
             //RaidBox
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.MAPGIVE, new Tuple<bool, short, byte, short>(true, boxVnum, 1, 50)));
