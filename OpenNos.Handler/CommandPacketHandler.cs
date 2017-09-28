@@ -49,6 +49,318 @@ namespace OpenNos.Handler
 
         #region Methods
 
+
+        /// <summary>
+        /// $StuffPack
+        /// </summary>
+        /// <param name="stuffPackPacket"></param>
+        public void StuffPack(StuffPackPacket stuffPackPacket)
+        {
+            if (stuffPackPacket != null)
+            {
+                switch (stuffPackPacket.Type)
+                {
+                    case "Archer":
+                    case "archer":
+                        Session.Character.GiftAdd(4986, 1, rare:8, upgrade:10); // HERO 50 ARMOR
+                        Session.Character.GiftAdd(4983, 1, rare:8, upgrade:10); // HERO 50 WEAPON
+                        Session.Character.GiftAdd(4980, 1, rare:8, upgrade:10); // HERO 50 SECOND WEAPON
+                        Session.Character.GiftAdd(903, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(904, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(911, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(912, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4501, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4498, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4492, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4488, 1, 0, 15, 15);
+                        break;
+                    case "Mage":
+                    case "mage":
+                        Session.Character.GiftAdd(4985, 1, rare:8, upgrade:10); // HERO 50 ARMOR
+                        Session.Character.GiftAdd(4982, 1, rare: 8, upgrade: 10); // HERO 50 WEAPON
+                        Session.Character.GiftAdd(4979, 1, rare: 8, upgrade: 10); // HERO 50 SECOND WEAPON
+                        Session.Character.GiftAdd(905, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(906, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(913, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(914, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4502, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4499, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4491, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4487, 1, 0, 15, 15);
+                        break;
+                    case "Sword":
+                    case "sword":
+                        Session.Character.GiftAdd(4984, 1, 0, 10, 8); // HERO 50 ARMOR
+                        Session.Character.GiftAdd(4981, 1, 0, 10, 8); // HERO 50 WEAPON
+                        Session.Character.GiftAdd(4978, 1, 0, 10, 8); // HERO 50 SECOND WEAPON
+                        Session.Character.GiftAdd(901, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(902, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(909, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(910, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4500, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4497, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4493, 1, 0, 15, 15);
+                        Session.Character.GiftAdd(4489, 1, 0, 15, 15);
+                        break;
+                    case "Mount":
+                    case "mount":
+                        Session.Character.GiftAdd(5196, 1); // Nossi
+                        Session.Character.GiftAdd(5330, 1); // Soucoupe
+                        Session.Character.GiftAdd(5360, 1); // Planche à voile
+                        break;
+                    case "Resists":
+                    case "resists":
+                        break;
+                    default:
+                        Session.SendPacket(Session.Character.GenerateSay("Use : \"Archer\", \"Sword\" \"Mage\" or \"Mount\"", 10));
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// $Character
+        /// </summary>
+        /// <param name="characterPacket"></param>
+        public void CharacterUpdater(CharacterPacket characterPacket)
+        {
+            Logger.Debug("CharacterPacket Command", Session.Character.GenerateIdentity());
+            if (characterPacket != null)
+            {
+                ClientSession session = Session;
+                if (ServerManager.Instance.GetSessionByCharacterName(characterPacket.Name) != null)
+                {
+                    session = ServerManager.Instance.GetSessionByCharacterName(characterPacket.Name);
+                }
+                switch (characterPacket.Property)
+                {
+                    case "-h":
+                        Session.SendPacket("$Character [Type] [Value] <PlayerName>");
+                        Session.SendPacket("[Types] : Name Level JobLevel HeroLevel");
+                        Session.SendPacket("[Types] : Gold Compliment Reputation Gender");
+                        Session.SendPacket("[Types] : Dignity Stats Class");
+                        break;
+                    case "Name":
+                        if (DAOFactory.CharacterDAO.LoadByName(characterPacket.Value) != null) return;
+                        CharacterDTO character = session.Character;
+                        character.Name = characterPacket.Value;
+                        DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
+                        ServerManager.Instance.ChangeMap(session.Character.CharacterId);
+                        break;
+                    case "Level":
+                        ChangeCharacterLevel(session, byte.Parse(characterPacket.Value), 1);
+                        break;
+                    case "JobLevel":
+                        ChangeCharacterLevel(session, byte.Parse(characterPacket.Value), 2);
+                        break;
+                    case "HeroLevel":
+                        ChangeCharacterLevel(session, byte.Parse(characterPacket.Value), 3);
+                        break;
+                    case "Gold":
+                        ChangeGold(session, long.Parse(characterPacket.Value));
+                        break;
+                    case "Compliment":
+                        ChangeCompliment(session, short.Parse(characterPacket.Value));
+                        Session.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(
+                                Language.Instance.GetMessageFromKey("COMPLIMENT_CHANGED"), 0));
+                        break;
+                    case "Reputation":
+                        ChangeCharacterReputation(session, long.Parse(characterPacket.Value));
+                        Session.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"),
+                                0));
+                        break;
+                    case "Gender":
+                        session.Character.ChangeSex();
+                        Session.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(
+                                Language.Instance.GetMessageFromKey("GENDER_CHANGED"), 12));
+                        break;
+                    case "Dignity":
+                        session.Character.Dignity = long.Parse(characterPacket.Value) > 100 ? 100 : long.Parse(characterPacket.Value);
+                        session.SendPacket(Session.Character.GenerateFd());
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(),
+                            ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(),
+                            ReceiverType.AllExceptMe);
+                        Session.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(
+                                Language.Instance.GetMessageFromKey("DIGNITY_CHANGED"), 12));
+                        break;
+                    case "Stats":
+                        if (DAOFactory.CharacterDAO.LoadByName(characterPacket.Name) != null)
+                        {
+                            CharacterDTO characterDto = DAOFactory.CharacterDAO.LoadByName(characterPacket.Name);
+                            SendStats(characterDto);
+                        }
+                        break;
+                    case "Class":
+                        switch (characterPacket.Value)
+                        {
+                            case "0":
+                            case "Adventurer":
+                                session.Character.ChangeClass(ClassType.Adventurer);
+                                break;
+                            case "1":
+                            case "Swordman":
+                                session.Character.ChangeClass(ClassType.Swordman);
+                                break;
+                            case "2":
+                            case "Archer":
+                                session.Character.ChangeClass(ClassType.Archer);
+                                break;
+                            case "3":
+                            case "Mage":
+                                session.Character.ChangeClass(ClassType.Magician);
+                                break;
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$Character [Property] [Value] <PlayerName>", 10));
+            }
+        }
+
+        private void ChangeCharacterReputation(ClientSession session, long reput)
+        {
+            if (session == null || reput < 0) return;
+            session.Character.Reput = reput;
+            session.SendPacket(session.Character.GenerateFd());
+            session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+            session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+        }
+
+        private void ChangeCompliment(ClientSession session, short compliment)
+        {
+            if (session == null || compliment < 0) return;
+            session.Character.Compliment = compliment;
+            ServerManager.Instance.ChangeMap(session.Character.CharacterId);
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="gold"></param>
+        private void ChangeGold(ClientSession session, long gold)
+        {
+            if (session == null || gold < 0) return;
+            long maxGold = ServerManager.Instance.MaxGold;
+            gold = gold > maxGold ? maxGold : gold;
+            if (gold >= 0)
+            {
+                session.Character.Gold = gold;
+                Session.SendPacket(
+                    UserInterfaceHelper.Instance.GenerateMsg(
+                        Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
+                session.SendPacket(Session.Character.GenerateGold());
+            }
+            else
+            {
+                Session.SendPacket(
+                    UserInterfaceHelper.Instance.GenerateMsg(
+                        Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="level"></param>
+        /// <param name="type"></param>
+        private void ChangeCharacterLevel(ClientSession session, byte level, byte type)
+        {
+            if (session == null || level <= 0) return;
+            switch (type)
+            {
+                case 1:
+                    session.Character.Level = level;
+                    session.Character.LevelXp = 0;
+                    Session.SendPacket(
+                        UserInterfaceHelper.Instance.GenerateMsg(
+                            Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
+                    session.SendPacket(session.Character.GenerateLev());
+                    session.SendPacket(session.Character.GenerateStatInfo());
+                    session.SendPacket(session.Character.GenerateStatChar());
+                    session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
+                        ReceiverType.AllExceptMe);
+                    session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
+                        ReceiverType.AllExceptMe);
+                    session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX,
+                        Session.Character.PositionY);
+                    session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198),
+                        Session.Character.PositionX, Session.Character.PositionY);
+                    break;
+                case 2:
+                    if ((session.Character.Class == 0 && level <= 20 || session.Character.Class != 0 && level <= 255) &&
+                        level > 0)
+                    {
+                        session.Character.JobLevel = level;
+                        session.Character.JobLevelXp = 0;
+                        session.Character.Skills.Clear();
+                        session.SendPacket(Session.Character.GenerateLev());
+                        session.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(
+                                Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(),
+                            ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(),
+                            ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(8),
+                            session.Character.PositionX, session.Character.PositionY);
+
+                        session.Character.Skills[(short)(200 + 20 * (byte)session.Character.Class)] =
+                            new CharacterSkill
+                            {
+                                SkillVNum = (short)(200 + 20 * (byte)session.Character.Class),
+                                CharacterId = session.Character.CharacterId
+                            };
+                        session.Character.Skills[(short)(201 + 20 * (byte)session.Character.Class)] =
+                            new CharacterSkill
+                            {
+                                SkillVNum = (short)(201 + 20 * (byte)session.Character.Class),
+                                CharacterId = session.Character.CharacterId
+                            };
+                        session.Character.Skills[236] = new CharacterSkill
+                        {
+                            SkillVNum = 236,
+                            CharacterId = session.Character.CharacterId
+                        };
+                        if (!session.Character.UseSp)
+                        {
+                            session.SendPacket(session.Character.GenerateSki());
+                        }
+                        session.Character.LearnAdventurerSkill();
+                    }
+                    break;
+                case 3:
+                    {
+                        session.Character.HeroLevel = level;
+                        session.Character.HeroXp = 0;
+                        Session.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(
+                                Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
+                        session.SendPacket(session.Character.GenerateLev());
+                        session.SendPacket(session.Character.GenerateStatInfo());
+                        session.SendPacket(session.Character.GenerateStatChar());
+                        session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
+                            ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
+                            ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX,
+                            Session.Character.PositionY);
+                        session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198),
+                            Session.Character.PositionX, Session.Character.PositionY);
+                    }
+                    break;
+            }
+        }
+
         public void Unstuck(MoveCommandPacket move)
         {
             ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.MapInstanceId, Session.Character.PositionX, Session.Character.PositionY);

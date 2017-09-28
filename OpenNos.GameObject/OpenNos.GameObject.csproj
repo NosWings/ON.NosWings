@@ -252,12 +252,14 @@
     <Compile Include="Packets\ClientPackets\UseItemPacket.cs" />
     <Compile Include="Packets\CommandPackets\Act4ConnectPacket.cs" />
     <Compile Include="Packets\CommandPackets\AddPartnerPacket.cs" />
+    <Compile Include="Packets\CommandPackets\CharacterPacket.cs" />
     <Compile Include="Packets\CommandPackets\CreateItemPacket.cs" />
     <Compile Include="Packets\CommandPackets\MoveCommandPacket.cs" />
     <Compile Include="Packets\CommandPackets\PetExpPacket.cs" />
     <Compile Include="Packets\CommandPackets\ShutdownAllPacket.cs" />
     <Compile Include="Packets\CommandPackets\CharacterEditPacket.cs" />
     <Compile Include="Packets\ClientPackets\FDelPacket.cs" />
+    <Compile Include="Packets\CommandPackets\StuffPack.cs" />
     <Compile Include="Packets\CommandPackets\WarningPacket.cs" />
     <Compile Include="Packets\ServerPackets\TalkPacket.cs" />
     <Compile Include="ScriptedInstance.cs" />

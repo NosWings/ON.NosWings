@@ -175,6 +175,8 @@ namespace OpenNos.GameObject
 
         public bool IsDead { get; set; }
 
+        public bool IsOnBoost { set; get; }
+
         /// <summary>
         /// Defines if the Character Is currently sending or getting items thru exchange.
         /// </summary>
@@ -4316,7 +4318,16 @@ namespace OpenNos.GameObject
                 newItem.Rare = rare;
                 if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
                 {
-                    ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+                    ((WearableInstance) newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+                    if (rare != 0)
+                    {
+                        newItem.Rare = rare;
+                        ((WearableInstance)newItem).SetRarityPoint();
+                    }
+                    newItem.Upgrade = upgrade;
+                }
+                if (newItem.Item.ItemType == ItemType.Specialist)
+                {
                     newItem.Upgrade = upgrade;
                 }
                 if (newItem.Item.ItemType == ItemType.Shell)
