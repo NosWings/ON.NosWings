@@ -356,27 +356,6 @@ namespace OpenNos.GameObject
                             session.SendPacket(inventory.GenerateInventoryAdd());
                         }
                         return;
-                    case RarifyMode.Reduced:
-
-                        // TODO: Reduced Item Amount
-                        if (session.Character.Gold < (long) (goldprice * reducedpricefactor))
-                        {
-                            return;
-                        }
-                        if (session.Character.Inventory.CountItem(cellaVnum) < cella * reducedpricefactor)
-                        {
-                            return;
-                        }
-
-                        if (protection == RarifyProtection.Scroll && !isCommand && Item.IsHeroic)
-                        {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_IS_HEROIC"), 0));
-                            return;
-                        }
-                        session.Character.Inventory.RemoveItemAmount(cellaVnum, (int) (cella * reducedpricefactor));
-                        session.Character.Gold -= (long) (goldprice * reducedpricefactor);
-                        session.SendPacket(session.Character.GenerateGold());
-                        break;
 
                     case RarifyMode.Normal:
                         // TODO: Normal Item Amount
@@ -398,6 +377,13 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_IS_HEROIC"), 0));
                             return;
                         }
+                        if ((protection == RarifyProtection.HeroicAmulet ||
+                             protection == RarifyProtection.RandomHeroicAmulet) && !Item.IsHeroic)
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_HEROIC"), 0));
+                            return;
+                        }
+
                         if (protection == RarifyProtection.Scroll && !isCommand)
                         {
                             session.Character.Inventory.RemoveItemAmount(scrollVnum);
@@ -541,9 +527,6 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop && session != null)
                 {
-                    if ((protection == RarifyProtection.HeroicAmulet ||
-                         protection == RarifyProtection.RandomHeroicAmulet) && !Item.IsHeroic)
-                        protection = RarifyProtection.None;
                     switch (protection)
                     {
                         case RarifyProtection.BlueAmulet:
