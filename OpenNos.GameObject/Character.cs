@@ -5518,7 +5518,7 @@ namespace OpenNos.GameObject
                                             ? 2
                                             : 1;
                                             */
-            if (Session?.CurrentMapInstance?.Map.MapId == 103)
+            if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.CometPlain) == true)
             {
                 return ServerManager.Instance.RandomNumber(1, 1000);
             }
