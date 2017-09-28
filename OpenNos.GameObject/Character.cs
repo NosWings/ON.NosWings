@@ -3813,7 +3813,6 @@ namespace OpenNos.GameObject
                     MagicalDefence += SpInstance.MagicDefence + slDefence * 10;
 
                     int point = CharacterHelper.Instance.SlPoint((short)slHit, 0);
-
                     int p = 0;
                     if (point <= 10)
                     {
@@ -3919,6 +3918,7 @@ namespace OpenNos.GameObject
                     DistanceDefence += p;
 
                     point = CharacterHelper.Instance.SlPoint((short)slElement, 2);
+                    p = 0;
                     if (point <= 50)
                     {
                         p = point;
@@ -3928,6 +3928,18 @@ namespace OpenNos.GameObject
                         p = 50 + (point - 50) * 2;
                     }
                     ElementRateSp += p;
+
+                    point = CharacterHelper.Instance.SpPoint((short)slHp, 3);
+                    p = 0;
+                    if (point <= 50)
+                    {
+                        p = (point * (int) HpLoad()) / 100;
+                    }
+                    else
+                    {
+                        p = (2 * point) * (int) HpLoad() / 100;
+                    }
+                    Hp += p;
                 }
             }
 
