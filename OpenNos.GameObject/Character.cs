@@ -3942,6 +3942,7 @@ namespace OpenNos.GameObject
                         p = (2 * point) * (int) HpLoad() / 100;
                     }
                     Hp += p;
+                    Mp += p;
                 }
             }
 
