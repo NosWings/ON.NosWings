@@ -1124,6 +1124,7 @@ namespace OpenNos.Handler
             }
             Session.Character.LoadSpeed();
             Session.Character.LoadSkills();
+            Session.Character.LoadPassive();
             Session.SendPacket(Session.Character.GenerateTit());
             Session.SendPacket(Session.Character.GenerateSpPoint());
             Session.SendPacket("rsfi 1 1 0 9 0 9");

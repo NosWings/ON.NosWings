@@ -857,6 +857,7 @@ namespace OpenNos.GameObject
 
                             if (UseSp)
                             {
+                                LoadPassive();
                                 LastSp = currentRunningSeconds;
                                 if (Session != null && Session.HasSession)
                                 {
@@ -4603,6 +4604,13 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void LoadPassive()
+        {
+            // TODO IMPROVE PERFORMANCES
+            // ACCESSING A DICTIONARY LIKE THIS IS CPU CYCLE KILLER
+            PassiveSkillHelper.Instance.PassiveSkillToBcards(Skills.Values.Where(s => s.Skill.SkillType == 0).ToList()).ForEach(s => PassiveSkillBcards.Add(s));
+        }
+
 
         public void LoadSkills()
         {
@@ -4615,9 +4623,6 @@ namespace OpenNos.GameObject
                     Skills[characterskill.SkillVNum] = characterskill as CharacterSkill;
                 }
             }
-            // TODO IMPROVE PERFORMANCES
-            // ACCESSING A DICTIONARY LIKE THIS IS CPU CYCLE KILLER
-            PassiveSkillHelper.Instance.PassiveSkillToBcards(Skills.Values.Where(s => s.Skill.SkillType == 0).ToList()).ForEach(s => PassiveSkillBcards.Add(s));
         }
 
         public void LoadSpeed()
