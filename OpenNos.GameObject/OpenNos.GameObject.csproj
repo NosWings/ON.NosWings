@@ -188,6 +188,7 @@
     <Compile Include="Buff\Buff.cs" />
     <Compile Include="Buff\BCard.cs" />
     <Compile Include="Buff\Card.cs" />
+    <Compile Include="Event\ACT4\Act4Raid.cs" />
     <Compile Include="Event\ACT4\Act4Ship.cs" />
     <Compile Include="Event\ARENA\ArenaEvent.cs" />
     <Compile Include="Event\EventWave.cs" />

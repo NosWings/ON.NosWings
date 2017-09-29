@@ -676,6 +676,11 @@ namespace OpenNos.Handler
                 }
                 else
                 {
+                    if (portal.DestinationX == -1 && portal.DestinationY == -1)
+                    {
+                        ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, portal.DestinationMapInstanceId);
+                        return;
+                    }
                     ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
                 }
             });

@@ -347,7 +347,7 @@ namespace OpenNos.GameObject
                 int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
                 short mapX = Path.ElementAt(maxindex - 1).X;
                 short mapY = Path.ElementAt(maxindex - 1).Y;
-                double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)(Monster.Speed * 0.6);
+                double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (Monster.Speed * 0.5);
                 MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                 LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
@@ -1298,10 +1298,9 @@ namespace OpenNos.GameObject
                     }
                 });
                 LastSkill = DateTime.Now;
-                if (targetSession.Character.Hp <= 0 && targetSession.Character.IsDead == false)
+                if (targetSession.Character.Hp <= 0)
                 {
                     RemoveTarget();
-                    targetSession.Character.IsDead = true;
                     Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(targetSession.Character.CharacterId); });
                 }
             }

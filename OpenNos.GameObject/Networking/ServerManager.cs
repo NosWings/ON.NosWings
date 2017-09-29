@@ -311,7 +311,7 @@ namespace OpenNos.GameObject
         public void AskRevive(long characterId)
         {
             ClientSession session = GetSessionByCharacterId(characterId);
-            if (session == null || !session.HasSelectedCharacter || session.CurrentMapInstance == null)
+            if (session == null || !session.HasSelectedCharacter || session.CurrentMapInstance == null || session.Character.LastDeath.AddSeconds(1) > DateTime.Now)
             {
                 return;
             }
@@ -324,7 +324,7 @@ namespace OpenNos.GameObject
             session.SendPacket(session.Character.GenerateStat());
             session.SendPacket(session.Character.GenerateCond());
             session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
-            session.Character.IsDead = false;
+            session.Character.LastDeath = DateTime.Now;
             switch (session.CurrentMapInstance.MapInstanceType)
             {
                 case MapInstanceType.BaseMapInstance:
@@ -398,43 +398,56 @@ namespace OpenNos.GameObject
                     break;
 
                 case MapInstanceType.RaidInstance:
-                    List<long> save = session.CurrentMapInstance.InstanceBag.DeadList.ToList();
-                    if (session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count() < 0)
+                    if (session.Character.MapInstance == session.Character.Family?.Act4Raid || session.Character.MapInstance == session.Character.Family?.Act4RaidBossMap)
                     {
-                        session.Character.Hp = 1;
-                        session.Character.Mp = 1;
-                    }
-                    else if (2 - save.Count(s => s == session.Character.CharacterId) > 0)
-                    {
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"), 2 - session.CurrentMapInstance.InstanceBag.DeadList.Count(s => s == session.Character.CharacterId))));
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), session.Character.Name)));
-
-                        session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
-                        session.Character.Group?.Characters.ToList().ForEach(player =>
-                        {
-                            player.SendPacket(player.Character.Group.GeneraterRaidmbf());
-                            player.SendPacket(player.Character.Group.GenerateRdlst());
-                        });
+                        session.Character.LoseReput(session.Character.Level * 2);
                         Task.Factory.StartNew(async () =>
                         {
-                            await Task.Delay(20000);
+                            await Task.Delay(5000);
                             Instance.ReviveFirstPosition(session.Character.CharacterId);
                         });
                     }
                     else
                     {
-                        Group grp = session.Character.Group;
-                        if (grp != null)
+                        List<long> save = session.CurrentMapInstance.InstanceBag.DeadList.ToList();
+                        if (session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count() < 0)
                         {
-                            grp.Characters.Where(s => s != null).ToList().ForEach(s =>
+                            session.Character.Hp = 1;
+                            session.Character.Mp = 1;
+                        }
+                        else if (2 - save.Count(s => s == session.Character.CharacterId) > 0)
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"),
+                                2 - session.CurrentMapInstance.InstanceBag.DeadList.Count(s => s == session.Character.CharacterId))));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), session.Character.Name)));
+
+                            session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
+                            session.Character.Group?.Characters.ToList().ForEach(player =>
                             {
-                                s.SendPacket(s.Character?.Group?.GeneraterRaidmbf());
-                                s.SendPacket(s.Character?.Group?.GenerateRdlst());
+                                player.SendPacket(player.Character.Group.GeneraterRaidmbf());
+                                player.SendPacket(player.Character.Group.GenerateRdlst());
                             });
-                            grp.LeaveGroup(session);
-                            session.SendPacket(session.Character.GenerateRaid(1, true));
-                            session.SendPacket(session.Character.GenerateRaid(2, true));
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
+                            Task.Factory.StartNew(async () =>
+                            {
+                                await Task.Delay(20000);
+                                Instance.ReviveFirstPosition(session.Character.CharacterId);
+                            });
+                        }
+                        else
+                        {
+                            Group grp = session.Character.Group;
+                            if (grp != null)
+                            {
+                                grp.Characters.Where(s => s != null).ToList().ForEach(s =>
+                                {
+                                    s.SendPacket(s.Character?.Group?.GeneraterRaidmbf());
+                                    s.SendPacket(s.Character?.Group?.GenerateRdlst());
+                                });
+                                grp.LeaveGroup(session);
+                                session.SendPacket(session.Character.GenerateRaid(1, true));
+                                session.SendPacket(session.Character.GenerateRaid(2, true));
+                                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
+                            }
                         }
                     }
                     break;
@@ -569,11 +582,10 @@ namespace OpenNos.GameObject
                 if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
                 {
                     session.SendPacket(session.Character.GenerateFc());
-
-                    if (mapInstanceId == session.Character.Family?.Act4Raid?.MapInstanceId || mapInstanceId == session.Character.Family?.Act4RaidBossMap?.MapInstanceId)
-                    {
-                        session.SendPacket(session.Character.GenerateDg());
-                    }
+                }
+                if (mapInstanceId == session.Character.Family?.Act4Raid?.MapInstanceId || mapInstanceId == session.Character.Family?.Act4RaidBossMap?.MapInstanceId)
+                {
+                    session.SendPacket(session.Character.GenerateDg());
                 }
                 session.SendPacket(session.CurrentMapInstance.GenerateMapDesignObjects());
                 session.SendPackets(session.CurrentMapInstance.GetMapDesignObjectEffects());
@@ -1801,15 +1813,19 @@ namespace OpenNos.GameObject
                 {
                     case Act4RaidType.Morcos:
                         Act4AngelStat.IsMorcos = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Angel);
                         break;
                     case Act4RaidType.Hatus:
                         Act4AngelStat.IsHatus = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Hatus, (byte) FactionType.Angel);
                         break;
                     case Act4RaidType.Calvina:
                         Act4AngelStat.IsCalvina = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Calvina, (byte) FactionType.Angel);
                         break;
                     case Act4RaidType.Berios:
                         Act4AngelStat.IsBerios = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Berios, (byte) FactionType.Angel);
                         break;
                 }
             }
@@ -1830,16 +1846,20 @@ namespace OpenNos.GameObject
                 switch (CreateRaid(FactionType.Demon))
                 {
                     case Act4RaidType.Morcos:
-                        Act4AngelStat.IsMorcos = true;
+                        Act4DemonStat.IsMorcos = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
                         break;
                     case Act4RaidType.Hatus:
-                        Act4AngelStat.IsHatus = true;
+                        Act4DemonStat.IsHatus = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
                         break;
                     case Act4RaidType.Calvina:
-                        Act4AngelStat.IsCalvina = true;
+                        Act4DemonStat.IsCalvina = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
                         break;
                     case Act4RaidType.Berios:
-                        Act4AngelStat.IsBerios = true;
+                        Act4DemonStat.IsBerios = true;
+                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
                         break;
                 }
             }

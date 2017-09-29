@@ -1744,4 +1744,16 @@ Veux-tu continuer ?</value>
   <data name="MAX_MATES_COUNT" xml:space="preserve">
     <value>Tu ne peux pas adopter encore plus de familiers.</value>
   </data>
+  <data name="MUST_BE_IN_CLASSIC_MAP" xml:space="preserve">
+    <value>Vous n'êtes pas sur une map générale.</value>
+  </data>
+  <data name="ACT4_RAID_OPEN" xml:space="preserve">
+    <value>Le royaume de {0} est ouvert !</value>
+  </data>
+  <data name="TELEPORTED_IN" xml:space="preserve">
+    <value>Vous allez être téléporté dans {0} secondes.</value>
+  </data>
+  <data name="BOSS_DIED" xml:space="preserve">
+    <value>Félicitations ! Vous avez vaincu le boss du donjon !</value>
+  </data>
 </root>

@@ -175,6 +175,8 @@ namespace OpenNos.GameObject
 
         public bool IsDead { get; set; }
 
+        public bool IsDead { get; set; }
+
         public bool IsOnBoost { set; get; }
 
         /// <summary>
@@ -193,6 +195,8 @@ namespace OpenNos.GameObject
         public DateTime LastDefence { get; set; }
 
         public DateTime LastDelay { get; set; }
+
+        public DateTime LastDeath { get; set; }
 
         public DateTime LastEffect { get; set; }
 
@@ -440,7 +444,7 @@ namespace OpenNos.GameObject
                 ServerManager.Instance.Act4RaidStart = DateTime.Now;
             }
             double seconds = (ServerManager.Instance.Act4RaidStart.AddMinutes(60) - DateTime.Now).TotalSeconds;
-            return $"dg {Session?.Character?.Family?.Act4RaidType ?? 0} {(seconds > 1800 ? 1 : 2)} {(int)seconds} 0";
+            return $"dg {((int) (Session?.Character?.Family?.Act4RaidType ?? 0) + 1)} {(seconds > 1800 ? 1 : 2)} {(int)seconds} 0";
         }
 
         public bool AddPet(Mate mate)
@@ -5535,7 +5539,7 @@ namespace OpenNos.GameObject
 
         private int GetGold(MapMonster mapMonster)
         {
-            if (!(MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
+            if (!(MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance) || mapMonster.Monster == null)
             {
                 return 0;
             }
@@ -5560,7 +5564,7 @@ namespace OpenNos.GameObject
                                             ? 2
                                             : 1;
                                             */
-            if (Session?.CurrentMapInstance?.Map.MapId == 2560)
+            if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.CometPlain) == true)
             {
                 return ServerManager.Instance.RandomNumber(1, 1000);
             }

@@ -515,7 +515,54 @@ namespace OpenNos.GameObject.Helpers
                     evt.MapInstance.SummonMonsters(summonParameters);
                     break;
 
-                #endregion
+                case EventActionType.MAPGIVE:
+                    // 1 = isRandomRare // 2 = VNum // 3 = Amount // 4 = Design //
+                    Tuple<bool, short, byte, short> giveParameters = (Tuple<bool, short, byte, short>)evt.Parameter;
+                    foreach (ClientSession cli in evt.MapInstance.Sessions)
+                    {
+                        sbyte rare = 0;
+                        if (giveParameters.Item1)
+                        {
+                            rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
+                        }
+                        cli.Character.GiftAdd(giveParameters.Item2, giveParameters.Item3, giveParameters.Item4, rare: rare);
+                    }
+                    break;
+
+                case EventActionType.REMOVEPORTAL:
+                    Portal portalToRemove;
+                    if (evt.Parameter is Portal p)
+                    {
+                        portalToRemove = evt.MapInstance.Portals.FirstOrDefault(s => s == p);
+                    }
+                    else
+                    {
+                        portalToRemove = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == (int) evt.Parameter);
+                    }
+                    if (portalToRemove != null)
+                    {
+                        evt.MapInstance.Portals.Remove(portalToRemove);
+                        evt.MapInstance.MapClear();
+                    }
+                    break;
+
+                case EventActionType.ACT4RAIDEND:
+                    // tp // tp X // tp Y
+                    Tuple<MapInstance, short, short> endParameters = (Tuple<MapInstance, short, short>)evt.Parameter;
+                    Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(a =>
+                    {
+                        evt.MapInstance.Broadcast($"{UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TELEPORTED_IN"), 10), 0)}");
+
+                        Observable.Timer(TimeSpan.FromSeconds(10)).Subscribe(s =>
+                        {
+                            evt.MapInstance.Sessions.ToList().ForEach(cli =>
+                                ServerManager.Instance.ChangeMapInstance(cli.Character.CharacterId, endParameters.Item1.MapInstanceId, endParameters.Item2, endParameters.Item3));
+                        });
+
+                    });
+
+                    break;
+                    #endregion
             }
         }
 
