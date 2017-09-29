@@ -175,8 +175,6 @@ namespace OpenNos.GameObject
 
         public bool IsDead { get; set; }
 
-        public bool IsDead { get; set; }
-
         public bool IsOnBoost { set; get; }
 
         /// <summary>
