@@ -129,24 +129,24 @@ namespace OpenNos.GameObject
             int slElement = CharacterHelper.Instance.SlPoint(SlElement, 2);
             int slHp = CharacterHelper.Instance.SlPoint(SlHP, 3);
 
+            int shellHit = 0;
+            int shellDefense = 0;
+            int shellElement = 0;
+            int shellHp = 0;
+
             if (CharacterSession != null)
             {
-                slHit += CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack) +
+                shellHit = CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack) +
                          CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
-                slDefence += CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
+                shellDefense = CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
                              CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
-                slElement += CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
+                shellElement = CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
                              CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
-                slHp += CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
+                shellHp = CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
                         CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-
-                slHit = slHit > 100 ? 100 : slHit;
-                slDefence = slDefence > 100 ? 100 : slDefence;
-                slElement = slElement > 100 ? 100 : slElement;
-                slHp = slHp > 100 ? 100 : slHp;
             }
 
             string skill = string.Empty;
@@ -179,7 +179,7 @@ namespace OpenNos.GameObject
             // 3 first values are not important
             skill = skill.TrimEnd('.');
             return
-                $"slinfo {(Type == InventoryType.Wear || Type == InventoryType.Specialist || Type == InventoryType.Equipment ? "0" : "2")} {ItemVNum} {Item.Morph} {SpLevel} {Item.LevelJobMinimum} {Item.ReputationMinimum} 0 0 0 0 0 0 0 {Item.SpType} {Item.FireResistance} {Item.WaterResistance} {Item.LightResistance} {Item.DarkResistance} {XP} {CharacterHelper.Instance.SpxpData[SpLevel - 1]} {skill} {TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {Upgrade} 0 0 {spdestroyed} 0 0 0 0 {SpStoneUpgrade} {SpDamage} {SpDefence} {SpElement} {SpHP} {SpFire} {SpWater} {SpLight} {SpDark}";
+                $"slinfo {(Type == InventoryType.Wear || Type == InventoryType.Specialist || Type == InventoryType.Equipment ? "0" : "2")} {ItemVNum} {Item.Morph} {SpLevel} {Item.LevelJobMinimum} {Item.ReputationMinimum} 0 0 0 0 0 0 0 {Item.SpType} {Item.FireResistance} {Item.WaterResistance} {Item.LightResistance} {Item.DarkResistance} {XP} {CharacterHelper.Instance.SpxpData[SpLevel - 1]} {skill} {TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {Upgrade} 0 0 {spdestroyed} {shellHit} {shellDefense} {shellElement} {shellHp} {SpStoneUpgrade} {SpDamage} {SpDefence} {SpElement} {SpHP} {SpFire} {SpWater} {SpLight} {SpDark}";
         }
 
         public void PerfectSp()
