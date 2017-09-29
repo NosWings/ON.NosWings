@@ -233,9 +233,13 @@ namespace OpenNos.Handler
 
         private void PVPHit(HitRequest hitRequest, ClientSession target)
         {
+            if (target?.CurrentMapInstance == null)
+            {
+                return;
+            }
             if (target.Character.Hp > 0 && hitRequest.Session.Character.Hp > 0)
             {
-                switch (target.CurrentMapInstance.MapInstanceType)
+                switch (target.CurrentMapInstance?.MapInstanceType)
                 {
                     case MapInstanceType.ArenaInstance:
                         if (!target.Character.MapInstance.Map.IsArenaPvPable(target.Character.PositionX, target.Character.PositionY) || !Session.Character.MapInstance.Map.IsArenaPvPable(Session.Character.PositionX, Session.Character.PositionY))
