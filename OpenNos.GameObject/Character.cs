@@ -3770,9 +3770,9 @@ namespace OpenNos.GameObject
                 if (SpInstance != null)
                 {
                     int slHit = CharacterHelper.Instance.SlPoint(SpInstance.SlDamage, 0);
-                    int slDefence = CharacterHelper.Instance.SlPoint(SpInstance.SlDefence, 0);
-                    int slElement = CharacterHelper.Instance.SlPoint(SpInstance.SlElement, 0);
-                    int slHp = CharacterHelper.Instance.SlPoint(SpInstance.SlHP, 0);
+                    int slDefence = CharacterHelper.Instance.SlPoint(SpInstance.SlDefence, 1);
+                    int slElement = CharacterHelper.Instance.SlPoint(SpInstance.SlElement, 2);
+                    int slHp = CharacterHelper.Instance.SlPoint(SpInstance.SlHP, 3);
 
                     if (Session != null)
                     {
