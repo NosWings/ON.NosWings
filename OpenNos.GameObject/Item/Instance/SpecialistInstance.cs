@@ -125,9 +125,9 @@ namespace OpenNos.GameObject
             int freepoint = CharacterHelper.Instance.SpPoint(SpLevel, Upgrade) - SlDamage - SlHP - SlElement - SlDefence;
 
             int slHit = CharacterHelper.Instance.SlPoint(SlDamage, 0);
-            int slDefence = CharacterHelper.Instance.SlPoint(SlDefence, 0);
-            int slElement = CharacterHelper.Instance.SlPoint(SlElement, 0);
-            int slHp = CharacterHelper.Instance.SlPoint(SlHP, 0);
+            int slDefence = CharacterHelper.Instance.SlPoint(SlDefence, 1);
+            int slElement = CharacterHelper.Instance.SlPoint(SlElement, 2);
+            int slHp = CharacterHelper.Instance.SlPoint(SlHP, 3);
 
             if (CharacterSession != null)
             {
