@@ -2,6 +2,7 @@
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -13,8 +14,6 @@ namespace OpenNos.GameObject.Event
 {
     public class IceBreaker
     {
-        public const int MaxAllowedPlayers = 50;
-
         private static readonly int[] GoldRewards =
         {
             100,
@@ -35,9 +34,14 @@ namespace OpenNos.GameObject.Event
             new Tuple<int, int>(80, 99)
         };
 
-        private static int _currentBracket;
 
-        public static Dictionary<int, List<ClientSession>> Teams { get; set; }
+        public const int MaxAllowedPlayers = 50;
+
+
+        private static int _currentBracket;
+        
+        private static List<Group> _groups { get; set; }
+
 
         public static List<ClientSession> AlreadyFrozenPlayers { get; set; }
 
@@ -45,12 +49,46 @@ namespace OpenNos.GameObject.Event
 
         public static MapInstance Map { get; private set; }
 
+
+        public static void AddGroup(Group group)
+        {
+            _groups.Add(group);
+        }
+
+        public static Group GetGroupByClientSession(ClientSession session)
+        {
+            return _groups.FirstOrDefault(x => x.IsMemberOfGroup(session));
+        }
+
+        public static void MergeGroups(IEnumerable<Group> groups)
+        {
+            Group newGroup = new Group(GroupType.IceBreaker);
+            foreach (var group in groups)
+            {
+                foreach (var character in group.Characters)
+                {
+                    newGroup.Characters.Add(character);
+                    group.Characters.ToList().Remove(character);
+                }
+                RemoveGroup(group);
+            }
+            AddGroup(newGroup);
+        }
+
+        public static void RemoveGroup(Group group)
+        {
+            _groups.Remove(group);
+        }
+
+        public static bool SessionsHaveSameGroup(ClientSession session1, ClientSession session2)
+        {
+            return _groups != null && _groups.Any(x => x.IsMemberOfGroup(session1) && x.IsMemberOfGroup(session2));
+        }
+
+
         public static void GenerateIceBreaker(bool useTimer = true)
         {
-            Teams = new Dictionary<int, List<ClientSession>>();
-            AlreadyFrozenPlayers = new List<ClientSession>();
-            FrozenPlayers = new List<ClientSession>();
-            Map = ServerManager.Instance.GenerateMapInstance(2005, MapInstanceType.IceBreakerInstance, new InstanceBag());
+            Initialize();
             if (useTimer)
             {
                 ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
@@ -125,9 +163,10 @@ namespace OpenNos.GameObject.Event
                         Map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ICEBREAKER_FIGHT_START"), 0));
                         Map.IsPvp = true;
                     });
-                    IDisposable obs = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(b =>
+                    IDisposable obs = null;
+                    obs = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(b =>
                     {
-                        if (Map.Sessions.Count() > 1 && AlreadyFrozenPlayers.Count != Map.Sessions.Count())
+                        if (Map.Sessions.Count() > 1 && AlreadyFrozenPlayers.Count != Map.Sessions.Count() && _groups.Count > 1)
                         {
                             return;
                         }
@@ -146,12 +185,21 @@ namespace OpenNos.GameObject.Event
                             x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), GoldRewards[_currentBracket]), 10));
                             x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), x.Character.Level * 10), 10));
                             x.SendPacket(x.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DIGNITY_RESTORED"), x.Character.Level * 10), 10));
+                            obs.Dispose();
                         });
                         EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10), new EventContainer(Map, EventActionType.DISPOSEMAP, null));
                     });
-                    obs.Dispose();
                 }
             });
+        }
+
+
+        private static void Initialize()
+        {
+            AlreadyFrozenPlayers = new List<ClientSession>();
+            FrozenPlayers = new List<ClientSession>();
+            Map = ServerManager.Instance.GenerateMapInstance(2005, MapInstanceType.IceBreakerInstance, new InstanceBag());
+            _groups = new List<Group>();
         }
     }
 }

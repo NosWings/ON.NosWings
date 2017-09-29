@@ -4055,8 +4055,23 @@ namespace OpenNos.GameObject
             LastDefence = DateTime.Now;
             CloseShop();
             CloseExchangeOrTrade();
+            switch (MapInstance.MapInstanceType)
+            {
+                case MapInstanceType.IceBreakerInstance:
+                    Hp -= damage / 3;
+                    break;
 
-            Hp -= damage;
+                default:
+                    if (MapInstance.IsPvp)
+                    {
+                        Hp -= damage / 2;
+                    }
+                    else
+                    {
+                        Hp -= damage;
+                    }
+                    break;
+            }
             if (Hp < 0)
             {
                 Hp = 0;
