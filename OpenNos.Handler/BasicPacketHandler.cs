@@ -1294,11 +1294,7 @@ namespace OpenNos.Handler
                 }
                 Session.Character.PositionX = walkPacket.XCoordinate;
                 Session.Character.PositionY = walkPacket.YCoordinate;
-                Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos
-                {
-                    X = Session.Character.PositionX,
-                    Y = Session.Character.PositionY
-                }, Session.CurrentMapInstance.Map.Grid);
+
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                 Session.SendPacket(Session.Character.GenerateCond());
                 if (Session.Character != null)
