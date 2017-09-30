@@ -665,38 +665,40 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.AddBuff(new Buff(383), false);
                 }
-
-                switch (SpInstance?.Design)
+                if (UseSp)
                 {
-                    case 6:
-                        AddBuff(new Buff(387), false);
-                        break;
-                    case 7:
-                        AddBuff(new Buff(395), false);
-                        AddBuff(new Buff(411), false);
-                        break;
-                    case 8:
-                        AddBuff(new Buff(396), false);
-                        AddBuff(new Buff(411), false);
-                        break;
-                    case 9:
-                        AddBuff(new Buff(397), false);
-                        AddBuff(new Buff(411), false);
-                        break;
-                    case 10:
-                        AddBuff(new Buff(398), false);
-                        AddBuff(new Buff(411), false);
-                        break;
-                    case 11:
-                        AddBuff(new Buff(410), false);
-                        AddBuff(new Buff(411), false);
-                        break;
-                    case 12:
-                        AddBuff(new Buff(411), false);
-                        break;
-                    case 13:
-                        AddBuff(new Buff(444), false);
-                        break;
+                    switch (SpInstance?.Design)
+                    {
+                        case 6:
+                            AddBuff(new Buff(387), false);
+                            break;
+                        case 7:
+                            AddBuff(new Buff(395), false);
+                            AddBuff(new Buff(411), false);
+                            break;
+                        case 8:
+                            AddBuff(new Buff(396), false);
+                            AddBuff(new Buff(411), false);
+                            break;
+                        case 9:
+                            AddBuff(new Buff(397), false);
+                            AddBuff(new Buff(411), false);
+                            break;
+                        case 10:
+                            AddBuff(new Buff(398), false);
+                            AddBuff(new Buff(411), false);
+                            break;
+                        case 11:
+                            AddBuff(new Buff(410), false);
+                            AddBuff(new Buff(411), false);
+                            break;
+                        case 12:
+                            AddBuff(new Buff(411), false);
+                            break;
+                        case 13:
+                            AddBuff(new Buff(444), false);
+                            break;
+                    }
                 }
 
                 // HEAL
