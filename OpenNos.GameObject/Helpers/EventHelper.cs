@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using OpenNos.Pathfinding;
 using OpenNos.GameObject.CommandPackets;
 
 namespace OpenNos.GameObject.Helpers
@@ -235,7 +236,7 @@ namespace OpenNos.GameObject.Helpers
                         monster.FirstX = evt4.X;
                         monster.FirstY = evt4.Y;
                         monster.MoveEvent = evt4;
-                        monster.Path = BestFirstSearch.FindPath(new Node { X = monster.MapX, Y = monster.MapY }, new Node { X = evt4.X, Y = evt4.Y }, evt.MapInstance?.Map.Grid);
+                        monster.Path = monster.MapInstance.Map.PathSearch(new GridPos { X = monster.MapX, Y = monster.MapY }, new GridPos { X = evt4.X, Y = evt4.Y });
                     }
                     break;
 

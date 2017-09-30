@@ -23,7 +23,7 @@ using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
-using OpenNos.PathFinder;
+using OpenNos.Pathfinding;
 
 namespace OpenNos.GameObject
 {
