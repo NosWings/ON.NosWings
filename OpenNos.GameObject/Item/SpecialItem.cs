@@ -400,13 +400,28 @@ namespace OpenNos.GameObject
                     break;
 
                 case 570:
-                    if (session.Character.Faction == (FactionType)EffectValue)
+                    if (EffectValue < 3)
                     {
-                        return;
+                        if (session.Character.Faction == (FactionType) EffectValue)
+                        {
+                            return;
+                        }
+                        session.SendPacket(session.Character.Family == null
+                            ? $"qna #guri^750^{EffectValue} {Language.Instance.GetMessageFromKey($"ASK_CHANGE_FACTION{EffectValue}")}"
+                            : UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("IN_FAMILY"),
+                                0));
                     }
-                    session.SendPacket(session.Character.Family == null
-                        ? $"qna #guri^750^{EffectValue} {Language.Instance.GetMessageFromKey($"ASK_CHANGE_FACTION{EffectValue}")}"
-                        : UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("IN_FAMILY"), 0));
+                    else
+                    {
+                        if (session.Character.Family.FamilyFaction / 2 == EffectValue)
+                        {
+                            return;
+                        }
+                        session.SendPacket(session.Character.Family != null
+                            ? $"qna #guri^750^{EffectValue} {Language.Instance.GetMessageFromKey($"ASK_CHANGE_FACTION{EffectValue}")}"
+                            : UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_FAMILY"),
+                                0));
+                    }
                     break;
 
                 // wings
