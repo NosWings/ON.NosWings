@@ -48,11 +48,11 @@ namespace OpenNos.Handler
                     ClientSession target = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
                     if (rdPacket.Parameter == null && target?.Character?.Group == null && Session?.Character?.Group?.IsLeader(Session) == true)
                     {
-                        GroupJoin(new PJoinPacket { RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId });
+                        GroupJoin(new PJoinPacket {RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId});
                     }
                     else if (Session?.Character?.Group == null)
                     {
-                        GroupJoin(new PJoinPacket { RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId });
+                        GroupJoin(new PJoinPacket {RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId});
                     }
                     break;
 
@@ -136,9 +136,8 @@ namespace OpenNos.Handler
                             grp.LeaveGroup(targetSession);
                         }
                         ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                        ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group _);
+                        ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
                     }
-
                     break;
             }
         }

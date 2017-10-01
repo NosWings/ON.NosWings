@@ -377,7 +377,7 @@ namespace OpenNos.GameObject.Helpers
                                             grp.LeaveGroup(targetSession);
                                         }
                                         ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                                        ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group _);
+                                        ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
                                         mapinstances.ForEach(s => s.Dispose());
                                     });
                                 }
