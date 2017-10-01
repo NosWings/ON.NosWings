@@ -58,7 +58,7 @@ namespace OpenNos.GameObject.Event
             short boxVnum = 0;
             short destX = 0;
             short destY = 0;
-            _lobby = ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == (byte) (129 + _faction));
+            _lobby = ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == (byte) 134);
 
             #region SetParameters
 
