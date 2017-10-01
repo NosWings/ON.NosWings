@@ -1745,10 +1745,15 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void Act4Process()
+         public void Act4Process(int raidType = -1)
         {
             MapInstance angelMapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == 132);
             MapInstance demonMapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == 133);
+
+            if (raidType == -1)
+            {
+                raidType = Random.Value.Next(0, 3);
+            }
 
             if (angelMapInstance == null || demonMapInstance == null)
             {
@@ -1779,7 +1784,7 @@ namespace OpenNos.GameObject
                 {
                     // LOAD SCRIPTED INSTANCE TYPE 2
                 });
-                Act4RaidType raid = (Act4RaidType) Random.Value.Next(0, 3);
+                Act4RaidType raid = (Act4RaidType) raidType;
                 return raid;
             }
 
