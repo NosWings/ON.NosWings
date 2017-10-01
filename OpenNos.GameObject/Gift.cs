@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.Linq.Expressions;
+
 namespace OpenNos.GameObject
 {
     public class Gift
@@ -23,11 +25,11 @@ namespace OpenNos.GameObject
             // do nothing
         }
 
-        public Gift(short vnum, byte amount, short design = 0, bool isRareRandom = false)
+        public Gift(short vnum, byte amount, short design = 0, bool isRareRandom = true)
         {
             VNum = vnum;
             Amount = amount;
-            IsRareRandom = isRareRandom;
+            IsRandomRare = isRareRandom;
             Design = design;
         }
 
@@ -42,8 +44,6 @@ namespace OpenNos.GameObject
         public short VNum { get; set; }
 
         public bool IsRandomRare { get;  set; }
-
-        public bool IsRareRandom { get;  set; }
 
         #endregion
     }
