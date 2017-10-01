@@ -414,6 +414,11 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
+                        if (session.Character.Family == null)
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_FAMILY"), 0));
+                            return;
+                        }
                         if (session.Character.Family.FamilyFaction / 2 == EffectValue)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SAME_FACTION"), 0));

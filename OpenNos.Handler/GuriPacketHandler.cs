@@ -459,9 +459,16 @@ namespace OpenNos.Handler
                                                 return;
                                             }
                                             FamilyDTO fam = Session.Character.Family;
-                                            fam.FamilyFaction = (byte)faction;
+                                            fam.FamilyFaction = (byte)(faction / 2);
+                                            Session.Character.Faction = (FactionType) (faction / 2);
+                                            Session.SendPacket(Session.Character.GenerateFaction());
                                             DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                                            Session.SendPacket(Session.Character.GenerateEff(4799 + faction / 2));
+                                            Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                                Language.Instance.GetMessageFromKey(
+                                                    $"GET_PROTECTION_POWER_{faction / 2}"), 0));
                                         }
                                     }
                                     break;
