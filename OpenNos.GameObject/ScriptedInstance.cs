@@ -627,6 +627,10 @@ namespace OpenNos.GameObject
                         }
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNPORTAL, portal));
                         break;
+
+                    case "ClearMapMonsters":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.CLEARMAPMONSTERS, null));
+                        break;
                 }
             }
             return evts;

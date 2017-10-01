@@ -561,8 +561,12 @@ namespace OpenNos.GameObject.Helpers
                         });
 
                     });
-
                     break;
+
+                case EventActionType.CLEARMAPMONSTERS:
+                    evt.MapInstance.Monsters.ForEach(m => evt.MapInstance.DespawnMonster(m));
+                    break;
+
                     #endregion
             }
         }

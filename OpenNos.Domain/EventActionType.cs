@@ -54,6 +54,7 @@ namespace OpenNos.Domain
         CONTROLEMONSTERINRANGE,
         MAPGIVE,
         REMOVEPORTAL,
-        ACT4RAIDEND
+        ACT4RAIDEND,
+        CLEARMAPMONSTERS
     }
 }
