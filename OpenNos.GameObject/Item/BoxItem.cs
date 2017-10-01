@@ -141,7 +141,9 @@ namespace OpenNos.GameObject
                                                 (byte)ServerManager.Instance.RandomNumber(25, 75);
 
                                             break;
-                                                                                                                                            }
+                                        default:
+                                            break;
+                                    }
                                     newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, rare: box.Rare, upgrade: rollitem.ItemGeneratedUpgrade);
                                     if (!newInv.Any())
                                     {
