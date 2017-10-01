@@ -115,9 +115,9 @@ namespace OpenNos.GameObject.Event
 
             _lobby.CreatePortal(new Portal()
             {
-                SourceMapId = (short) (129 + _faction),
-                SourceX = 53,
-                SourceY = 53,
+                SourceMapId = (short) (134),
+                SourceX = 139,
+                SourceY = 100,
                 DestinationMapId = 0,
                 DestinationX = destX,
                 DestinationY = destY,
@@ -126,7 +126,8 @@ namespace OpenNos.GameObject.Event
 
             foreach (MapInstance map in ServerManager.Instance.Act4Maps)
             {
-                map.Sessions.Where(s => (byte) s?.Character?.Faction == _faction).ToList().ForEach(s => s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), type.ToString()), 0)));
+                map.Sessions.Where(s => s?.Character?.Faction == (FactionType)_faction).ToList().ForEach(s =>
+                    s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), type.ToString()), 0)));
             }
 
             while (_raidTime > 0)

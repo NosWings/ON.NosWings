@@ -163,6 +163,8 @@ namespace OpenNos.GameObject
 
         public Task TaskShutdown { get; set; }
 
+        public int? RaidType { get; set; }
+
         public List<CharacterDTO> TopComplimented { get; set; }
 
         public List<CharacterDTO> TopPoints { get; set; }
@@ -1745,14 +1747,14 @@ namespace OpenNos.GameObject
             }
         }
 
-         public void Act4Process(int raidType = -1)
+         public void Act4Process()
         {
             MapInstance angelMapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == 132);
             MapInstance demonMapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == 133);
 
-            if (raidType == -1)
+            if (RaidType == null)
             {
-                raidType = Random.Value.Next(0, 3);
+                RaidType = RandomNumber(0, 3);
             }
 
             if (angelMapInstance == null || demonMapInstance == null)
@@ -1784,7 +1786,7 @@ namespace OpenNos.GameObject
                 {
                     // LOAD SCRIPTED INSTANCE TYPE 2
                 });
-                Act4RaidType raid = (Act4RaidType) raidType;
+                Act4RaidType raid = (Act4RaidType) RaidType;
                 return raid;
             }
 
@@ -1843,15 +1845,15 @@ namespace OpenNos.GameObject
                         break;
                     case Act4RaidType.Hatus:
                         Act4DemonStat.IsHatus = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
+                        Act4Raid.GenerateRaid(Act4RaidType.Hatus, (byte) FactionType.Demon);
                         break;
                     case Act4RaidType.Calvina:
                         Act4DemonStat.IsCalvina = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
+                        Act4Raid.GenerateRaid(Act4RaidType.Calvina, (byte) FactionType.Demon);
                         break;
                     case Act4RaidType.Berios:
                         Act4DemonStat.IsBerios = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
+                        Act4Raid.GenerateRaid(Act4RaidType.Berios, (byte) FactionType.Demon);
                         break;
                 }
             }

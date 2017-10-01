@@ -51,7 +51,7 @@ namespace OpenNos.Handler
         #region Methods
 
         /// <summary>
-        /// $StuffPack
+        /// $CreateRaid
         /// </summary>
         /// <param name="createRaidPacket"></param>
         public void CreateRaid(CreateRaidPacket createRaidPacket)
@@ -70,16 +70,18 @@ namespace OpenNos.Handler
                 {
                     case 1:
                         ServerManager.Instance.Act4AngelStat.Percentage = 10001;
+                        ServerManager.Instance.Act4AngelStat.Mode = 1;
                         break;
                     case 2:
                         ServerManager.Instance.Act4DemonStat.Percentage = 10001;
+                        ServerManager.Instance.Act4DemonStat.Mode = 1;
                         break;
                     default:
                         break;
                 }
                 if (createRaidPacket.RaidType != null)
                 {
-                    ServerManager.Instance.Act4Process(raidType);
+                    ServerManager.Instance.RaidType = raidType;
                 }
             }
         }
