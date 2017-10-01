@@ -31,9 +31,9 @@ namespace OpenNos.GameObject.Event
 
         private const int Interval = 30;
 
-        private const int BossSpawn = 30 * 60;
+        private const int BossSpawn = 1800;
 
-        private int _raidTime = 60 * 60;
+        private int _raidTime = 3600;
 
         private Act4RaidType _type;
 
@@ -68,10 +68,10 @@ namespace OpenNos.GameObject.Event
                     bossParametter.Add(new MonsterToSummon(563, new MapCell { X = 56, Y = 11}, -1, false) { DeathEvents = new List<EventContainer>() });
                     raidMap = 135;
                     boxVnum = 882;
-                    destX = 151;
-                    destY = 45;
-                    _bossPortalX = 40;
-                    _bossPortalY = 177;
+                    destX = 40;
+                    destY = 177;
+                    _bossPortalX = 151;
+                    _bossPortalY = 45;
                     _bossPortalToX = 55;
                     _bossPortalToY = 80;
                     break;
