@@ -94,7 +94,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-        
+
         public static ServerManager Instance
         {
             get { return _instance ?? (_instance = new ServerManager()); }
@@ -128,7 +128,7 @@ namespace OpenNos.GameObject
 
         public List<Group> Groups
         {
-            get { return GroupsThreadSafe.Select(s => s.Value).ToList(); }
+            get { return _groups.Select(s => s.Value).ToList(); }
         }
 
         public int HeroicStartLevel { get; set; }
@@ -207,7 +207,7 @@ namespace OpenNos.GameObject
 
         public void AddGroup(Group group)
         {
-            GroupsThreadSafe[group.GroupId] = group;
+            _groups[group.GroupId] = group;
         }
 
         public void AskPvpRevive(long characterId)
@@ -925,7 +925,7 @@ namespace OpenNos.GameObject
                     targetSession.SendPackets(targetSession.Character.GeneratePst());
                 }
                 GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                GroupsThreadSafe.TryRemove(grp.GroupId, out Group value);
+                _groups.TryRemove(grp.GroupId, out Group value);
             }
             if (session != null)
             {
@@ -1688,7 +1688,7 @@ namespace OpenNos.GameObject
 
         private void LaunchEvents()
         {
-            GroupsThreadSafe = new ConcurrentDictionary<long, Group>();
+            _groups = new ConcurrentDictionary<long, Group>();
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { SaveAllProcess(); });
 

@@ -344,12 +344,7 @@ namespace OpenNos.GameObject.Helpers
                                     // Remove monster when raid is over
                                     foreach (MapMonster mapMonster in evt.MapInstance.Monsters.Where(s => !s.IsBoss))
                                     {
-                                        mapMonster.IsAlive = false;
-                                        mapMonster.LastMove = DateTime.Now;
-                                        mapMonster.CurrentHp = 0;
-                                        mapMonster.CurrentMp = 0;
-                                        mapMonster.Death = DateTime.Now;
-                                        evt.MapInstance.Broadcast(mapMonster.GenerateOut());
+                                        evt.MapInstance.DespawnMonster(mapMonster);
                                     }
                                     evt.MapInstance.WaveEvents.Clear();
 
