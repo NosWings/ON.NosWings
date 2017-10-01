@@ -342,9 +342,14 @@ namespace OpenNos.GameObject.Helpers
                                         }
                                     }
                                     // Remove monster when raid is over
-                                    foreach (MapMonster e in evt.MapInstance.Monsters.Where(s => !s.IsBoss))
+                                    foreach (MapMonster mapMonster in evt.MapInstance.Monsters.Where(s => !s.IsBoss))
                                     {
-                                        evt.MapInstance.DespawnMonster(e.MonsterVNum);
+                                        mapMonster.IsAlive = false;
+                                        mapMonster.LastMove = DateTime.Now;
+                                        mapMonster.CurrentHp = 0;
+                                        mapMonster.CurrentMp = 0;
+                                        mapMonster.Death = DateTime.Now;
+                                        evt.MapInstance.Broadcast(mapMonster.GenerateOut());
                                     }
                                     evt.MapInstance.WaveEvents.Clear();
 
