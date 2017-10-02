@@ -1045,12 +1045,19 @@ namespace OpenNos.GameObject
             }
 
             // Respawn
-            if (!IsAlive && ShouldRespawn != null && ShouldRespawn.Value)
+            if (!IsAlive)
             {
-                double timeDeath = (DateTime.Now - Death).TotalSeconds;
-                if (timeDeath >= Monster.RespawnTime / 10d)
+                if (ShouldRespawn != null && ShouldRespawn.Value)
                 {
-                    Respawn();
+                    double timeDeath = (DateTime.Now - Death).TotalSeconds;
+                    if (timeDeath >= Monster.RespawnTime / 10d)
+                    {
+                        Respawn();
+                    }
+                }
+                else
+                {
+                    Life.Dispose();
                 }
             }
             // target following
