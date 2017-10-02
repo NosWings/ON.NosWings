@@ -34,7 +34,7 @@ namespace OpenNos.DAL.Mock
 
         public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId)
         {
-            return Container.Where(c => c.CharacterId == characterId).Select(e => MapEntity(e));
+            return Container.Where(c => c.CharacterId == characterId).Select(MapEntity);
         }
 
         public IEnumerable<Guid> LoadKeysByCharacterId(long characterId)
@@ -43,5 +43,10 @@ namespace OpenNos.DAL.Mock
         }
 
         #endregion
+
+        public DeleteResult Delete(IEnumerable<Guid> id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

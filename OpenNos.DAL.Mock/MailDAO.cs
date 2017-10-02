@@ -31,6 +31,11 @@ namespace OpenNos.DAL.Mock
             return DeleteResult.Deleted;
         }
 
+        public DeleteResult Delete(IEnumerable<long> mailIds)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public SaveResult InsertOrUpdate(ref MailDTO mail)
         {
             MailDTO dto = LoadById(mail.MailId);

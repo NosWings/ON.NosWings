@@ -29,6 +29,11 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
+        public DeleteResult Delete(IEnumerable<long> id)
+        {
+            throw new NotImplementedException();
+        }
+
         public SaveResult InsertOrUpdate(ref MateDTO mate)
         {
             throw new NotImplementedException();

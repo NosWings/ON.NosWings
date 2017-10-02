@@ -95,5 +95,10 @@ namespace OpenNos.DAL.Mock
         }
 
         #endregion
+
+        public DeleteResult Delete(IEnumerable<Guid> id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
