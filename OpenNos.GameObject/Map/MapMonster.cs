@@ -433,7 +433,7 @@ namespace OpenNos.GameObject
             int boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased)[0]
                                   - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageDecreased)[0];
             
-            double luckyPigBuff = targetCharacter.Buff.Any(s => s.Card.CardId == 107) ? 1.1D : 1;
+            double luckyPigBuff = targetCharacter.Buff.Any(s => s.Card.CardId == 108) ? 1.1D : 1;
 
             WearableInstance amulet =
                 targetCharacter.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Equipment);
@@ -906,7 +906,7 @@ namespace OpenNos.GameObject
 
         public void KillMonster(FactionType faction = FactionType.Neutral)
         {
-            if (IsFactionTargettable(faction))
+            if (IsFactionTargettable(faction) && (MonsterVNum != 679 && MonsterVNum != 680))
             {
                 IsAlive = false;
                 CurrentHp = 0;
@@ -915,6 +915,11 @@ namespace OpenNos.GameObject
                 LastMove = DateTime.Now.AddMilliseconds(500);
                 Buff.Clear();
                 Target = -1;
+            }
+            else if (IsFactionTargettable(faction) && (MonsterVNum == 679 || MonsterVNum == 680))
+            {
+                IsAlive = true;
+                CurrentHp = 1;
             }
             else
             {

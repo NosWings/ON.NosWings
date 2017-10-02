@@ -666,7 +666,7 @@ namespace OpenNos.GameObject
                 // LUCKY PIG
                 if ((mates.Any(s => s.Monster.NpcMonsterVNum == 178) || mates.Any(s => s.Monster.NpcMonsterVNum == 536)) && Buff.All(s => s.Card.CardId != 107))
                 {
-                    Session.Character.AddBuff(new Buff(107), false);
+                    Session.Character.AddBuff(new Buff(108), false);
                 }
                 if (UseSp)
                 {
@@ -3380,7 +3380,7 @@ namespace OpenNos.GameObject
             #region Total Damage
 
             int totalDamage = baseDamage + elementalDamage;
-            double luckyPigBuff = Buff.Any(s => s.Card.CardId == 107) ? 1.1D : 1;
+            double luckyPigBuff = Buff.Any(s => s.Card.CardId == 108) ? 1.1D : 1;
             if (totalDamage < 5)
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);
