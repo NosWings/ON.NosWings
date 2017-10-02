@@ -1471,8 +1471,8 @@ namespace OpenNos.GameObject
 
         public void SaveAll()
         {
-            List<ClientSession> sessions = Sessions.Where(c => c.IsConnected).ToList();
-            sessions.ForEach(s => s.Character?.Save());
+            List<ClientSession> sessions = Sessions?.Where(c => c.IsConnected).ToList();
+            sessions?.ForEach(s => s.Character?.Save());
             DAOFactory.BazaarItemDAO.RemoveOutDated();
         }
 
