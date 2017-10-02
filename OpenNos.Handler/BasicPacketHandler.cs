@@ -639,6 +639,7 @@ namespace OpenNos.Handler
                         else if (portal.DestinationMapId == 152)
                         {
                             ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, 46, 171);
+                            return;
                         }
                         break;
                     case FactionType.Demon:
@@ -650,6 +651,7 @@ namespace OpenNos.Handler
                         else if (portal.DestinationMapId == 152)
                         {
                             ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, 135, 171);
+                            return;
                         }
                         break;
                 }
