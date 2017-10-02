@@ -615,8 +615,7 @@ namespace OpenNos.GameObject
                             return;
                         }
                         Session.Character.Gold -= 3000;
-                        MapCell pos = map.Map.GetRandomPosition();
-                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, map.MapInstanceId, pos.X, pos.Y);
+                        ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, map.MapInstanceId);
                     }
                     break;
 
