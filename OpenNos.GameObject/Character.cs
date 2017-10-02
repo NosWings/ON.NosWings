@@ -664,7 +664,7 @@ namespace OpenNos.GameObject
                     Session.Character.AddBuff(new Buff(383), false);
                 }
                 // LUCKY PIG
-                if ((mates.Any(s => s.Monster.NpcMonsterVNum == 178) || mates.Any(s => s.Monster.NpcMonsterVNum == 178)) && Buff.All(s => s.Card.CardId != 107))
+                if ((mates.Any(s => s.Monster.NpcMonsterVNum == 178) || mates.Any(s => s.Monster.NpcMonsterVNum == 536)) && Buff.All(s => s.Card.CardId != 107))
                 {
                     Session.Character.AddBuff(new Buff(107), false);
                 }
