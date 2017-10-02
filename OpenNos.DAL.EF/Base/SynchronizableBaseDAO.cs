@@ -21,6 +21,7 @@ namespace OpenNos.DAL.EF
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
+                context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (Guid id in ids)
                 { 
                     TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
@@ -39,11 +40,12 @@ namespace OpenNos.DAL.EF
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
-                if (entity != null)
+                if (entity == null)
                 {
-                    context.Set<TEntity>().Remove(entity);
-                    context.SaveChanges();
+                    return DeleteResult.Deleted;
                 }
+                context.Set<TEntity>().Remove(entity);
+                context.SaveChanges();
 
                 return DeleteResult.Deleted;
             }
@@ -56,6 +58,7 @@ namespace OpenNos.DAL.EF
                 IList<TDTO> results = new List<TDTO>();
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
+                    context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (TDTO dto in dtos)
                     {
                         TEntity entity = context.Set<TEntity>().FirstOrDefault(c => c.Id == dto.Id);
