@@ -465,22 +465,14 @@ namespace OpenNos.GameObject
         {
             Parallel.ForEach(_monsters.Select(s => s.Value).Where(s => s.MonsterVNum == monsterVnum), monster =>
             {
-                monster.IsAlive = false;
-                monster.LastMove = DateTime.Now;
-                monster.CurrentHp = 0;
-                monster.CurrentMp = 0;
-                monster.Death = DateTime.Now;
+                monster.KillMonster();
                 Broadcast(monster.GenerateOut());
             });
         }
 
         public void DespawnMonster(MapMonster monster)
         {
-            monster.IsAlive = false;
-            monster.LastMove = DateTime.Now;
-            monster.CurrentHp = 0;
-            monster.CurrentMp = 0;
-            monster.Death = DateTime.Now;
+            monster.KillMonster();
             Broadcast(monster.GenerateOut());
         }
 

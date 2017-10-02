@@ -83,8 +83,7 @@ namespace OpenNos.Handler
                     target.CurrentHp -= dmg;
                     if (target.CurrentHp <= 0)
                     {
-                        target.CurrentHp = 0;
-                        target.IsAlive = false;
+                            target.KillMonster(attacker.Owner?.Faction ?? FactionType.Neutral);
                     }
                     Session?.CurrentMapInstance?.Broadcast($"su 2 {attacker.MateTransportId} 3 {target.MapMonsterId} 0 12 11 200 0 0 {(target.IsAlive ? 1 : 0)} {(int) ((double) target.CurrentHp / target.Monster.MaxHP * 100)} {dmg} 0 0");
                 }

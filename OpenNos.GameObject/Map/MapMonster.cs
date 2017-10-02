@@ -903,6 +903,24 @@ namespace OpenNos.GameObject
             return $"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}";
         }
 
+        public void KillMonster(FactionType faction = FactionType.Neutral)
+        {
+            if (IsFactionTargettable(faction))
+            {
+                IsAlive = false;
+                CurrentHp = 0;
+                CurrentMp = 0;
+                Death = DateTime.Now;
+                LastMove = DateTime.Now.AddMilliseconds(500);
+                Buff.Clear();
+                Target = -1;
+            }
+            else
+            {
+                CurrentHp = 1;
+            }
+        }
+
         /// <summary>
         /// Handle any kind of Monster interaction
         /// </summary>
@@ -1037,12 +1055,19 @@ namespace OpenNos.GameObject
             }
 
             // Respawn
-            if (!IsAlive && ShouldRespawn != null && ShouldRespawn.Value)
+            if (!IsAlive)
             {
-                double timeDeath = (DateTime.Now - Death).TotalSeconds;
-                if (timeDeath >= Monster.RespawnTime / 10d)
+                if (ShouldRespawn != null && ShouldRespawn.Value)
                 {
-                    Respawn();
+                    double timeDeath = (DateTime.Now - Death).TotalSeconds;
+                    if (timeDeath >= Monster.RespawnTime / 10d)
+                    {
+                        Respawn();
+                    }
+                }
+                else
+                {
+                    Life.Dispose();
                 }
             }
             // target following

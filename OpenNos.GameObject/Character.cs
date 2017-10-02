@@ -1828,12 +1828,7 @@ namespace OpenNos.GameObject
             }
             if (monsterToAttack.CurrentHp <= totalDamage)
             {
-                monsterToAttack.IsAlive = false;
-                monsterToAttack.CurrentHp = 0;
-                monsterToAttack.CurrentMp = 0;
-                monsterToAttack.Death = DateTime.Now;
-                monsterToAttack.LastMove = DateTime.Now.AddMilliseconds(500);
-                monsterToAttack.Buff.Clear();
+                monsterToAttack.KillMonster(Faction);
             }
             else
             {

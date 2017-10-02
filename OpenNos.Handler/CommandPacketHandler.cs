@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using OpenNos.Core;
@@ -2442,6 +2443,11 @@ namespace OpenNos.Handler
                 {
                     // TODO CHECK IF MAP EXIST
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, teleportPacket, Session.IpAddress);
+                    if (teleportPacket.X == 0 && teleportPacket.Y == 0)
+                    {
+                        ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, ServerManager.Instance.GetBaseMapInstanceIdByMapId(mapId));
+                        return;
+                    }
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, teleportPacket.X, teleportPacket.Y);
                 }
                 else
