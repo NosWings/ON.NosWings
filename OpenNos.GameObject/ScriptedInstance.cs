@@ -68,6 +68,8 @@ namespace OpenNos.GameObject
 
         public short StartY { get; set; }
 
+        public string Title { get; set; }
+
         public List<Gift> RequieredItems { get; set; }
 
         public int RoomAmount { get; internal set; }
@@ -122,7 +124,7 @@ namespace OpenNos.GameObject
             // TODO FINISH THIS
             const int winnerScore = 0;
             const string winner = "";
-            return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} {RequieredItems.Sum(s => s.Amount)} {drawgift} {specialitems} {bonusitems} {winnerScore}.{(winnerScore > 0 ? winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
+            return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} {RequieredItems.Sum(s => s.Amount)} {drawgift} {specialitems} {bonusitems} {winnerScore}.{(winnerScore > 0 ? winner : "")} 0 0 {(Title != string.Empty ? Title : Language.Instance.GetMessageFromKey("TS_TUTORIAL"))}\n{Label}";
         }
 
         public string GenerateWp()
@@ -146,6 +148,7 @@ namespace OpenNos.GameObject
                 LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum")?.Attributes["Value"].Value);
                 LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum")?.Attributes["Value"].Value);
                 Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
+                Title = def.SelectSingleNode("Title")?.Attributes["Value"].Value;
                 byte.TryParse(def.SelectSingleNode("Id")?.Attributes["Value"].Value, out byte id);
                 Id = id;
                 long.TryParse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value, out long gold);
