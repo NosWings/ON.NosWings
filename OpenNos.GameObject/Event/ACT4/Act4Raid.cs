@@ -196,9 +196,9 @@ namespace OpenNos.GameObject.Event
                         SourceMapId = fam.Act4Raid.Map.MapId,
                         SourceX = sourceX,
                         SourceY = sourceY,
-                        DestinationMapId = (short)(129 + _faction),
-                        DestinationX = 53,
-                        DestinationY = 53,
+                        DestinationMapId = 134,
+                        DestinationX = 139,
+                        DestinationY = 100,
                         DestinationMapInstanceId = _lobby.MapInstanceId,
                         Type = -1
                     });
