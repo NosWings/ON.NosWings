@@ -424,7 +424,7 @@ namespace OpenNos.GameObject
             #region Get Player defense
 
             skill?.BCards?.ToList().ForEach(s => SkillBcards.Add(s));
-
+            
             int playerBoostpercentage;
 
             int boost = GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.AllAttacksIncreased)[0]
@@ -433,6 +433,7 @@ namespace OpenNos.GameObject
             int boostpercentage = GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageIncreased)[0]
                                   - GetBuff(CardType.Damage, (byte)AdditionalTypes.Damage.DamageDecreased)[0];
             
+            double luckyPigBuff = targetCharacter.Buff.Any(s => s.Card.CardId == 107) ? 1.1D : 1;
 
             WearableInstance amulet =
                 targetCharacter.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Equipment);
@@ -449,7 +450,7 @@ namespace OpenNos.GameObject
                     playerDodge += targetCharacter.DefenceRate;
                     playerBoostpercentage = targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.MeleeIncreased)[0]
                                           - targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.MeleeDecreased)[0];
-                    playerDefense = (int)(playerDefense * (1 + playerBoostpercentage / 100D));
+                    playerDefense = (int)(playerDefense * (1 + playerBoostpercentage / 100D) * luckyPigBuff);
 
                     boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksIncreased)[0]
                            - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MeleeAttacksDecreased)[0];
@@ -466,7 +467,7 @@ namespace OpenNos.GameObject
                     playerDodge += targetCharacter.DistanceDefenceRate;
                     playerBoostpercentage = targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedIncreased)[0]
                                           - targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.RangedDecreased)[0];
-                    playerDefense = (int)(playerDefense * (1 + playerBoostpercentage / 100D));
+                    playerDefense = (int)(playerDefense * (1 + playerBoostpercentage / 100D) * luckyPigBuff);
 
                     boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksIncreased)[0]
                            - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.RangedAttacksDecreased)[0];
@@ -482,7 +483,7 @@ namespace OpenNos.GameObject
                     playerDefense += targetCharacter.MagicalDefence;
                     playerBoostpercentage = targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.MagicalIncreased)[0]
                                           - targetCharacter.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.MeleeDecreased)[0];
-                    playerDefense = (int)(playerDefense * (1 + playerBoostpercentage / 100D));
+                    playerDefense = (int)(playerDefense * (1 + playerBoostpercentage / 100D) * luckyPigBuff);
 
                     boost += GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksIncreased)[0]
                            - GetBuff(CardType.AttackPower, (byte)AdditionalTypes.AttackPower.MagicalAttacksDecreased)[0];
