@@ -24,6 +24,8 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult Delete(long id);
 
+        DeleteResult Delete(IEnumerable<long> id);
+
         SaveResult InsertOrUpdate(ref MateDTO mate);
 
         IEnumerable<MateDTO> LoadByCharacterId(long characterId);

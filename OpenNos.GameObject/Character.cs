@@ -4872,6 +4872,7 @@ namespace OpenNos.GameObject
 
                         // remove all which are saved but not in our current enumerable
                         IEnumerable<ItemInstance> itemInstances = inventories as IList<ItemInstance> ?? inventories.ToList();
+                        DAOFactory.IteminstanceDAO.Delete(currentlySavedInventoryIds.Except(itemInstances.Select(s => s.Id)));
                         foreach (Guid inventoryToDeleteId in currentlySavedInventoryIds.Except(itemInstances.Select(i => i.Id)))
                         {
                             try
@@ -4886,19 +4887,29 @@ namespace OpenNos.GameObject
                         }
 
                         // create or update all which are new or do still exist
+                        DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse));
+
+                        List<EquipmentOptionDTO> equipmentOptionsToDelete = new List<EquipmentOptionDTO>();
+                        List<EquipmentOptionDTO> equipmentOptionsToSave = new List<EquipmentOptionDTO>();
+
                         foreach (ItemInstance itemInstance in itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse))
                         {
-                            DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
-                            WearableInstance instance = itemInstance as WearableInstance;
-
-                            instance?.EquipmentOptions.ForEach(s => DAOFactory.EquipmentOptionDAO.Delete(s.Id));
-                            if (instance?.EquipmentOptions.Any() != true)
+                            if (!(itemInstance is WearableInstance instance))
                             {
                                 continue;
                             }
+                            if (!instance.EquipmentOptions.Any())
+                            {
+                                continue;
+                            }
+                            instance.EquipmentOptions.ForEach(s => equipmentOptionsToDelete.Add(s));
+                            instance.EquipmentOptions.ForEach(s => DAOFactory.EquipmentOptionDAO.Delete(s.Id));
                             instance.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
-                            DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
+                            equipmentOptionsToSave.AddRange(instance.EquipmentOptions);
                         }
+
+                        DAOFactory.EquipmentOptionDAO.Delete(equipmentOptionsToDelete.Select(s => s.Id));
+                        DAOFactory.EquipmentOptionDAO.InsertOrUpdate(equipmentOptionsToSave);
                     }
                 }
 
@@ -4906,10 +4917,7 @@ namespace OpenNos.GameObject
                 {
                     IEnumerable<Guid> currentlySavedCharacterSkills = DAOFactory.CharacterSkillDAO.LoadKeysByCharacterId(CharacterId).ToList();
 
-                    foreach (Guid characterSkillToDeleteId in currentlySavedCharacterSkills.Except(Skills.Select(s => s.Value.Id)))
-                    {
-                        DAOFactory.CharacterSkillDAO.Delete(characterSkillToDeleteId);
-                    }
+                    DAOFactory.CharacterSkillDAO.Delete(currentlySavedCharacterSkills.Except(Skills.Select(s => s.Value.Id)));
 
                     foreach (CharacterSkill characterSkill in Skills.Select(s => s.Value))
                     {
@@ -4918,11 +4926,7 @@ namespace OpenNos.GameObject
                 }
 
                 IEnumerable<long> currentlySavedMates = DAOFactory.MateDAO.LoadByCharacterId(CharacterId).Select(s => s.MateId);
-
-                foreach (long matesToDeleteId in currentlySavedMates.Except(Mates.Select(s => s.MateId)))
-                {
-                    DAOFactory.MateDAO.Delete(matesToDeleteId);
-                }
+                DAOFactory.MateDAO.Delete(currentlySavedMates.Except(Mates.Select(s => s.MateId)));
 
                 foreach (Mate mate in Mates)
                 {
@@ -4933,10 +4937,7 @@ namespace OpenNos.GameObject
                 IEnumerable<QuicklistEntryDTO> quickListEntriesToInsertOrUpdate = QuicklistEntries.ToList();
 
                 IEnumerable<Guid> currentlySavedQuicklistEntries = DAOFactory.QuicklistEntryDAO.LoadKeysByCharacterId(CharacterId).ToList();
-                foreach (Guid quicklistEntryToDelete in currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)))
-                {
-                    DAOFactory.QuicklistEntryDAO.Delete(quicklistEntryToDelete);
-                }
+                DAOFactory.QuicklistEntryDAO.Delete(currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)));
                 foreach (QuicklistEntryDTO quicklistEntry in quickListEntriesToInsertOrUpdate)
                 {
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
@@ -4945,10 +4946,7 @@ namespace OpenNos.GameObject
                 IEnumerable<MailDTO> mailDTOToInsertOrUpdate = MailList.Values.ToList();
 
                 IEnumerable<long> currentlySavedMailistEntries = DAOFactory.MailDAO.LoadByCharacterId(CharacterId).Select(s => s.MailId).ToList();
-                foreach (long maildtoEntryToDelete in currentlySavedMailistEntries.Except(MailList.Values.Select(s => s.MailId)))
-                {
-                    DAOFactory.MailDAO.DeleteById(maildtoEntryToDelete);
-                }
+                DAOFactory.MailDAO.Delete(currentlySavedMailistEntries.Except(MailList.Values.Select(s => s.MailId)));
                 foreach (MailDTO mailEntry in mailDTOToInsertOrUpdate)
                 {
                     MailDTO save = mailEntry;

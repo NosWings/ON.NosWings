@@ -16,6 +16,24 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
+
+        public virtual DeleteResult Delete(IEnumerable<Guid> ids)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                foreach (Guid id in ids)
+                { 
+                    TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
+                    if (entity != null)
+                    {
+                        context.Set<TEntity>().Remove(entity);
+                    }
+                }
+                context.SaveChanges();
+                return DeleteResult.Deleted;
+            }
+        }
+
         public virtual DeleteResult Delete(Guid id)
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
@@ -40,8 +58,22 @@ namespace OpenNos.DAL.EF
                 {
                     foreach (TDTO dto in dtos)
                     {
-                        results.Add(InsertOrUpdate(context, dto));
+                        TEntity entity = context.Set<TEntity>().FirstOrDefault(c => c.Id == dto.Id);
+                        if (entity == null)
+                        {
+                            entity = MapEntity(dto);
+                            context.Set<TEntity>().Add(entity);
+                            context.SaveChanges();
+                            results.Add(_mapper.Map<TDTO>(entity));
+                        }
+                        else
+                        {
+                            _mapper.Map(dto, entity);
+                            context.SaveChanges();
+                            results.Add(_mapper.Map<TDTO>(entity));
+                        }
                     }
+                    context.SaveChanges();
                 }
 
                 return results;
@@ -89,14 +121,7 @@ namespace OpenNos.DAL.EF
         {
             Guid primaryKey = dto.Id;
             TEntity entity = context.Set<TEntity>().FirstOrDefault(c => c.Id == primaryKey);
-            if (entity == null)
-            {
-                dto = Insert(dto, context);
-            }
-            else
-            {
-                dto = Update(entity, dto, context);
-            }
+            dto = entity == null ? Insert(dto, context) : Update(entity, dto, context);
 
             return dto;
         }
@@ -108,11 +133,12 @@ namespace OpenNos.DAL.EF
 
         protected virtual TDTO Update(TEntity entity, TDTO inventory, OpenNosContext context)
         {
-            if (entity != null)
+            if (entity == null)
             {
-                _mapper.Map(inventory, entity);
-                context.SaveChanges();
+                return _mapper.Map<TDTO>(null);
             }
+            _mapper.Map(inventory, entity);
+            context.SaveChanges();
 
             return _mapper.Map<TDTO>(entity);
         }

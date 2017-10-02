@@ -22,6 +22,7 @@ using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace OpenNos.DAL.EF
 {
@@ -36,11 +37,39 @@ namespace OpenNos.DAL.EF
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
                     Mate mate = context.Mate.FirstOrDefault(c => c.MateId.Equals(id));
-                    if (mate != null)
+                    if (mate == null)
                     {
-                        context.Mate.Remove(mate);
-                        context.SaveChanges();
+                        return DeleteResult.Deleted;
                     }
+                    context.Mate.Remove(mate);
+                    context.SaveChanges();
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_MATE_ERROR"), e.Message), e);
+                return DeleteResult.Error;
+            }
+        }
+
+        public DeleteResult Delete(IEnumerable<long> ids)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    foreach (long id in ids)
+                    {
+                        Mate mate = context.Mate.FirstOrDefault(c => c.MateId.Equals(id));
+                        if (mate == null)
+                        {
+                            continue;
+                        }
+                        context.Mate.Remove(mate);
+                    }
+                    context.SaveChanges();
 
                     return DeleteResult.Deleted;
                 }

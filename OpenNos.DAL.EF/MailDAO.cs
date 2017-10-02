@@ -53,6 +53,34 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public DeleteResult Delete(IEnumerable<long> mailIds)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    foreach (long id in mailIds)
+                    {
+                        Mail mail = context.Mail.FirstOrDefault(i => i.MailId.Equals(id));
+
+                        if (mail == null)
+                        {
+                            continue;
+                        }
+                        context.Mail.Remove(mail);
+                    }
+                    context.SaveChanges();
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return DeleteResult.Error;
+            }
+        }
+
         public SaveResult InsertOrUpdate(ref MailDTO mail)
         {
             try
