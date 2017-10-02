@@ -614,8 +614,8 @@ namespace OpenNos.GameObject
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                             return;
                         }
-                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, map.MapInstanceId, pos.X, pos.Y);
                         MapCell pos = map.Map.GetRandomPosition();
+                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, map.MapInstanceId, pos.X, pos.Y);
                         session.Character.Gold -= 3000;
                     }
                     break;
