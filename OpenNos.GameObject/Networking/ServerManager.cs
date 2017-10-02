@@ -1471,8 +1471,10 @@ namespace OpenNos.GameObject
 
         public void SaveAll()
         {
-            List<ClientSession> sessions = Sessions?.Where(c => c.IsConnected).ToList();
-            sessions?.ForEach(s => s.Character?.Save());
+            Parallel.ForEach(Sessions.Where(s => s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null), session =>
+            {
+                session.Character?.Save();
+            });
             DAOFactory.BazaarItemDAO.RemoveOutDated();
         }
 
