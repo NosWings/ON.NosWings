@@ -22,6 +22,7 @@ using static OpenNos.Domain.BCardType;
 using System.Collections.Concurrent;
 using OpenNos.Core;
 using System.Reactive.Linq;
+using OpenNos.GameObject.BcardsBonus;
 
 namespace OpenNos.GameObject
 {
@@ -72,6 +73,8 @@ namespace OpenNos.GameObject
         public ItemInstance BootsInstance { get; set; }
 
         public ConcurrentBag<Buff> Buff { get; internal set; }
+
+        public Bonus Bonus { get; set; }
 
         public short CloseDefence { get; set; }
 

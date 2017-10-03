@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
+using OpenNos.GameObject.BcardsBonus;
 using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject
@@ -65,6 +66,8 @@ namespace OpenNos.GameObject
         public ConcurrentBag<BCard> PassiveSkillBcards { get; set; }
 
         public AuthorityType Authority { get; set; }
+
+        public Bonus Bonus { get; set; }
 
         public ConcurrentBag<Buff> Buff { get; internal set; }
 

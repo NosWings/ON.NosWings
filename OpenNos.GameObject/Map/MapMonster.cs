@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Xml.XPath;
+using OpenNos.GameObject.BcardsBonus;
 using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject
@@ -51,6 +52,8 @@ namespace OpenNos.GameObject
         #region Properties
 
         public ConcurrentBag<Buff> Buff { get; internal set; }
+
+        public Bonus Bonus { get; set; }
 
         public ConcurrentBag<BCard> SkillBcards { get; set; }
 
