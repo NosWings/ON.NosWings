@@ -22,6 +22,7 @@ using static OpenNos.Domain.BCardType;
 using System.Collections.Concurrent;
 using OpenNos.Core;
 using System.Reactive.Linq;
+using OpenNos.GameObject.BcardsBonus;
 
 namespace OpenNos.GameObject
 {
@@ -40,6 +41,7 @@ namespace OpenNos.GameObject
         public Mate()
         {
             Buff = new ConcurrentBag<Buff>();
+            Bonus = new Bonus();
         }
 
         public Mate(Character owner, NpcMonster npcMonster, byte level, MateType matetype)
@@ -72,6 +74,8 @@ namespace OpenNos.GameObject
         public ItemInstance BootsInstance { get; set; }
 
         public ConcurrentBag<Buff> Buff { get; internal set; }
+
+        public Bonus Bonus { get; set; }
 
         public short CloseDefence { get; set; }
 
@@ -363,7 +367,15 @@ namespace OpenNos.GameObject
             int value1 = 0;
             int value2 = 0;
 
-            foreach (Buff buff in Buff.Where(s => s?.Card?.BCards != null))
+            value1 += Bonus.Number[(int)type, subtype, 0, 0];
+            value1 += Bonus.Number[(int)type, subtype, 0, 1] == 0 ? 0 : Level / Bonus.Number[(int)type, subtype, 0, 1];
+            value1 += Level * Bonus.Number[(int)type, subtype, 0, 2];
+
+            value2 += Bonus.Number[(int)type, subtype, 1, 0];
+            value2 += Bonus.Number[(int)type, subtype, 1, 1] == 0 ? 0 : Level / Bonus.Number[(int)type, subtype, 1, 1];
+            value2 += Level * Bonus.Number[(int)type, subtype, 1, 2];
+
+            /*foreach (Buff buff in Buff.Where(s => s?.Card?.BCards != null))
             {
                 foreach (BCard entry in buff.Card.BCards.Where(s =>
                     s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
@@ -386,7 +398,7 @@ namespace OpenNos.GameObject
                     }
                     value2 += entry.SecondData;
                 }
-            }
+            }*/
             return new[] { value1, value2 };
         }
 
@@ -396,7 +408,14 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            if (Buff.Any(b => b.Card.CardId == indicator.Card.CardId))
+            {
+                Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            }
+            else
+            {
+                indicator.Card.BCards.ForEach(c => c.ApplyBonus(this));
+            }
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
@@ -418,6 +437,7 @@ namespace OpenNos.GameObject
             if (Buff.Contains(indicator))
             {
                 Buff = Buff.Where(s => s.Card.CardId != id);
+                indicator.Card.BCards.ForEach(c => c.RemoveBonus(this));
             }
         }
         

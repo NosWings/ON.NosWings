@@ -228,6 +228,7 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
                         session.Character.EquipmentBCards = session.Character.EquipmentBCards.Where(o => o.ItemVNum != currentlyEquippedItem.ItemVNum);
+                        currentlyEquippedItem.Item.BCards.ForEach(b => b.RemoveBonus(session.Character));
                         switch (currentlyEquippedItem.Slot)
                         {
                             case (byte) EquipmentType.Armor:
@@ -242,6 +243,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     inv.Item.BCards.ForEach(s => session.Character.EquipmentBCards.Add(s));
+                    inv.Item.BCards.ForEach(b => b.ApplyBonus(session.Character));
 
                     if (inv is WearableInstance wearableInstance)
                     {
@@ -256,24 +258,36 @@ namespace OpenNos.GameObject
                                     {
                                         case (byte) EquipmentType.Armor:
                                             session.Character.Inventory.Armor = wearableInstance;
-                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
-                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
+                                            foreach (BCard bcard in EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum))
+                                            {
+                                                session.Character.EquipmentBCards.Add(bcard);
+                                                bcard.ApplyBonus(session.Character);
+                                            }
                                             break;
                                         case (byte) EquipmentType.MainWeapon:
                                             session.Character.Inventory.PrimaryWeapon = wearableInstance;
-                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
-                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
+                                            foreach (BCard bcard in EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum))
+                                            {
+                                                session.Character.EquipmentBCards.Add(bcard);
+                                                bcard.ApplyBonus(session.Character);
+                                            }
                                             break;
                                         case (byte) EquipmentType.SecondaryWeapon:
                                             session.Character.Inventory.SecondaryWeapon = wearableInstance;
-                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
-                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
+                                            foreach (BCard bcard in EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum))
+                                            {
+                                                session.Character.EquipmentBCards.Add(bcard);
+                                                bcard.ApplyBonus(session.Character);
+                                            }
                                             break;
                                         case (byte) EquipmentType.Ring:
                                         case (byte) EquipmentType.Necklace:
                                         case (byte) EquipmentType.Bracelet:
-                                            EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
-                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
+                                            foreach (BCard bcard in EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum))
+                                            {
+                                                session.Character.EquipmentBCards.Add(bcard);
+                                                bcard.ApplyBonus(session.Character);
+                                            }
                                             break;
                                     }
                                     break;

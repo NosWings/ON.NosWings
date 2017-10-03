@@ -312,6 +312,7 @@ namespace OpenNos.GameObject
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
             Character.Buff = new ConcurrentBag<Buff>();
+            Character.Bonus = new BcardsBonus.Bonus();
         }
 
         private void ClearReceiveQueue()

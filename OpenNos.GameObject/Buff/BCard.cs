@@ -477,6 +477,44 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void ApplyBonus(object session)
+        {
+            if (session is Character character)
+            {
+                character.Bonus.Number[Type, SubType, 0, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] += FirstData;
+                character.Bonus.Number[Type, SubType, 1, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] += SecondData;
+            }
+            else if (session is MapMonster monster)
+            {
+                monster.Bonus.Number[Type, SubType, 0, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] += FirstData;
+                monster.Bonus.Number[Type, SubType, 1, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] += SecondData;
+            }
+            else if (session is Mate mate)
+            {
+                mate.Bonus.Number[Type, SubType, 0, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] += FirstData;
+                mate.Bonus.Number[Type, SubType, 1, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] += SecondData;
+            }
+        }
+
+        public void RemoveBonus(object session)
+        {
+            if (session is Character character)
+            {
+                character.Bonus.Number[Type, SubType, 0, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] -= FirstData;
+                character.Bonus.Number[Type, SubType, 1, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] -= SecondData;
+            }
+            else if (session is MapMonster monster)
+            {
+                monster.Bonus.Number[Type, SubType, 0, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] -= FirstData;
+                monster.Bonus.Number[Type, SubType, 1, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] -= SecondData;
+            }
+            else if (session is Mate mate)
+            {
+                mate.Bonus.Number[Type, SubType, 0, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] -= FirstData;
+                mate.Bonus.Number[Type, SubType, 1, IsLevelScaled ? (IsLevelDivided ? 1 : 2) : 0] -= SecondData;
+            }
+        }
+
         public override void Initialize()
         {
         }
