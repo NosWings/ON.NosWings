@@ -5843,7 +5843,8 @@ namespace OpenNos.GameObject
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
             foreach (BCard bcard in indicator.Card.BCards)
             {
-                Bonus.Number[bcard.FirstData, bcard.SubType, bcard.SecondData, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] += bcard.SecondData;
+                Bonus.Number[bcard.Type, bcard.SubType, 0, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] += bcard.FirstData;
+                Bonus.Number[bcard.Type, bcard.SubType, 1, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] += bcard.SecondData;
             }
             if (indicator.Card.EffectId > 0)
             {
@@ -5883,7 +5884,8 @@ namespace OpenNos.GameObject
             }
             foreach (BCard bcard in indicator.Card.BCards)
             {
-                Bonus.Number[bcard.FirstData, bcard.SubType, bcard.SecondData, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] -= bcard.SecondData;
+                Bonus.Number[bcard.Type, bcard.SubType, 0, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] -= bcard.FirstData;
+                Bonus.Number[bcard.Type, bcard.SubType, 1, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] -= bcard.SecondData;
             }
             if (indicator.Card.BCards.All(s => s.Type != (byte)CardType.Move))
             {
