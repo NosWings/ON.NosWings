@@ -3380,13 +3380,12 @@ namespace OpenNos.GameObject
             #region Total Damage
 
             int totalDamage = baseDamage + elementalDamage;
-            double luckyPigBuff = Buff.Any(s => s.Card.CardId == 108) ? 1.1D : 1;
             if (totalDamage < 5)
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);
             }
             // OFFENSIVE POTION
-            totalDamage += (int)((totalDamage * GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D) * luckyPigBuff);
+            totalDamage += (int)((totalDamage * GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D));
 
             #endregion
 
