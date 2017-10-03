@@ -58,7 +58,7 @@ namespace OpenNos.GameObject.Event
             short boxVnum = 0;
             short destX = 0;
             short destY = 0;
-            _lobby = ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 134);
+            _lobby = ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == (byte) 134);
 
             #region SetParameters
 
@@ -113,9 +113,9 @@ namespace OpenNos.GameObject.Event
                 return;
             }
 
-            _lobby.CreatePortal(new Portal
+            _lobby.CreatePortal(new Portal()
             {
-                SourceMapId = 134,
+                SourceMapId = (short) (134),
                 SourceX = 139,
                 SourceY = 100,
                 DestinationMapId = 0,

@@ -61,22 +61,8 @@ namespace OpenNos.DAL.EF
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (TDTO dto in dtos)
                     {
-                        TEntity entity = context.Set<TEntity>().FirstOrDefault(c => c.Id == dto.Id);
-                        if (entity == null)
-                        {
-                            entity = MapEntity(dto);
-                            context.Set<TEntity>().Add(entity);
-                            context.SaveChanges();
-                            results.Add(_mapper.Map<TDTO>(entity));
-                        }
-                        else
-                        {
-                            _mapper.Map(dto, entity);
-                            context.SaveChanges();
-                            results.Add(_mapper.Map<TDTO>(entity));
-                        }
+                        results.Add(InsertOrUpdate(context, dto));
                     }
-                    context.SaveChanges();
                 }
 
                 return results;
@@ -124,7 +110,14 @@ namespace OpenNos.DAL.EF
         {
             Guid primaryKey = dto.Id;
             TEntity entity = context.Set<TEntity>().FirstOrDefault(c => c.Id == primaryKey);
-            dto = entity == null ? Insert(dto, context) : Update(entity, dto, context);
+            if (entity == null)
+            {
+                dto = Insert(dto, context);
+            }
+            else
+            {
+                dto = Update(entity, dto, context);
+            }
 
             return dto;
         }
@@ -136,12 +129,11 @@ namespace OpenNos.DAL.EF
 
         protected virtual TDTO Update(TEntity entity, TDTO inventory, OpenNosContext context)
         {
-            if (entity == null)
+            if (entity != null)
             {
-                return _mapper.Map<TDTO>(null);
+                _mapper.Map(inventory, entity);
+                context.SaveChanges();
             }
-            _mapper.Map(inventory, entity);
-            context.SaveChanges();
 
             return _mapper.Map<TDTO>(entity);
         }

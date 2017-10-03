@@ -4861,7 +4861,9 @@ namespace OpenNos.GameObject
                         IEnumerable<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
                         IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
                         currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId)
-                            .Aggregate(currentlySavedInventoryIds, (current, characteraccount) => current.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(characteraccount.CharacterId).Where(s => s.Type == InventoryType.Warehouse).Select(i => i.Id).ToList()));
+                            .Aggregate(currentlySavedInventoryIds,
+                                (current, characteraccount) => current.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(characteraccount.CharacterId).Where(s => s.Type == InventoryType.Warehouse)
+                                    .Select(i => i.Id).ToList()));
 
                         IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries = DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId).ToList();
                         foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Miniland.MapDesignObjects))
@@ -4871,28 +4873,12 @@ namespace OpenNos.GameObject
 
                         // remove all which are saved but not in our current enumerable
                         IEnumerable<ItemInstance> itemInstances = inventories as IList<ItemInstance> ?? inventories.ToList();
-                        DAOFactory.IteminstanceDAO.Delete(currentlySavedInventoryIds.Except(itemInstances.Select(s => s.Id)));
-                        foreach (Guid inventoryToDeleteId in currentlySavedInventoryIds.Except(itemInstances.Select(i => i.Id)))
-                        {
-                            try
-                            {
-                                DAOFactory.IteminstanceDAO.Delete(inventoryToDeleteId);
-                            }
-                            catch (Exception err)
-                            {
-                                Logger.Error(err);
-                                Logger.Debug(Name, $"Detailed Item Information: Item ID = {inventoryToDeleteId}");
-                            }
-                        }
+                        DAOFactory.IteminstanceDAO.Delete(currentlySavedInventoryIds.Except(itemInstances.Select(i => i.Id)));
 
                         // create or update all which are new or do still exist
-                        DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse));
-
-                        List<EquipmentOptionDTO> equipmentOptionsToDelete = new List<EquipmentOptionDTO>();
-                        List<EquipmentOptionDTO> equipmentOptionsToSave = new List<EquipmentOptionDTO>();
-
                         foreach (ItemInstance itemInstance in itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse))
                         {
+                            DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
                             if (!(itemInstance is WearableInstance instance))
                             {
                                 continue;
@@ -4901,14 +4887,10 @@ namespace OpenNos.GameObject
                             {
                                 continue;
                             }
-                            instance.EquipmentOptions.ForEach(s => equipmentOptionsToDelete.Add(s));
-                            instance.EquipmentOptions.ForEach(s => DAOFactory.EquipmentOptionDAO.Delete(s.Id));
+                            DAOFactory.EquipmentOptionDAO.Delete(instance.EquipmentOptions.Select(s => s.Id));
                             instance.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
-                            equipmentOptionsToSave.AddRange(instance.EquipmentOptions);
+                            DAOFactory.EquipmentOptionDAO.InsertOrUpdate(instance.EquipmentOptions);
                         }
-
-                        DAOFactory.EquipmentOptionDAO.Delete(equipmentOptionsToDelete.Select(s => s.Id));
-                        DAOFactory.EquipmentOptionDAO.InsertOrUpdate(equipmentOptionsToSave);
                     }
                 }
 
@@ -4925,7 +4907,11 @@ namespace OpenNos.GameObject
                 }
 
                 IEnumerable<long> currentlySavedMates = DAOFactory.MateDAO.LoadByCharacterId(CharacterId).Select(s => s.MateId);
-                DAOFactory.MateDAO.Delete(currentlySavedMates.Except(Mates.Select(s => s.MateId)));
+
+                foreach (long matesToDeleteId in currentlySavedMates.Except(Mates.Select(s => s.MateId)))
+                {
+                    DAOFactory.MateDAO.Delete(matesToDeleteId);
+                }
 
                 foreach (Mate mate in Mates)
                 {
@@ -4937,16 +4923,20 @@ namespace OpenNos.GameObject
 
                 IEnumerable<Guid> currentlySavedQuicklistEntries = DAOFactory.QuicklistEntryDAO.LoadKeysByCharacterId(CharacterId).ToList();
                 DAOFactory.QuicklistEntryDAO.Delete(currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)));
+
                 foreach (QuicklistEntryDTO quicklistEntry in quickListEntriesToInsertOrUpdate)
                 {
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                 }
 
-                IEnumerable<MailDTO> mailDTOToInsertOrUpdate = MailList.Values.ToList();
+                IEnumerable<MailDTO> mailDtoToInsertOrUpdate = MailList.Values.ToList();
 
                 IEnumerable<long> currentlySavedMailistEntries = DAOFactory.MailDAO.LoadByCharacterId(CharacterId).Select(s => s.MailId).ToList();
-                DAOFactory.MailDAO.Delete(currentlySavedMailistEntries.Except(MailList.Values.Select(s => s.MailId)));
-                foreach (MailDTO mailEntry in mailDTOToInsertOrUpdate)
+                foreach (long maildtoEntryToDelete in currentlySavedMailistEntries.Except(MailList.Values.Select(s => s.MailId)))
+                {
+                    DAOFactory.MailDAO.DeleteById(maildtoEntryToDelete);
+                }
+                foreach (MailDTO mailEntry in mailDtoToInsertOrUpdate)
                 {
                     MailDTO save = mailEntry;
                     DAOFactory.MailDAO.InsertOrUpdate(ref save);

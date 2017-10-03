@@ -24,8 +24,6 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult DeleteById(long mailId);
 
-        DeleteResult Delete(IEnumerable<long> mailIds);
-
         SaveResult InsertOrUpdate(ref MailDTO mail);
 
         IEnumerable<MailDTO> LoadAll();
