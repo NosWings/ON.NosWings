@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Xml.XPath;
-using OpenNos.GameObject.BcardsBonus;
 using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject
@@ -52,8 +51,6 @@ namespace OpenNos.GameObject
         #region Properties
 
         public ConcurrentBag<Buff> Buff { get; internal set; }
-
-        public Bonus Bonus { get; set; }
 
         public ConcurrentBag<BCard> SkillBcards { get; set; }
 
@@ -190,7 +187,6 @@ namespace OpenNos.GameObject
             _random = new Random(MapMonsterId);
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
             Buff = new ConcurrentBag<Buff>();
-            Bonus = new Bonus();
             SkillBcards = new ConcurrentBag<BCard>();
         }
 
@@ -1384,14 +1380,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if (Buff.Any(b => b.Card.CardId == indicator.Card.CardId))
-            {
-                Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
-            }
-            else
-            {
-                indicator.Card.BCards.ForEach(b => b.ApplyBonus(this));
-            }
+            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
@@ -1417,7 +1406,6 @@ namespace OpenNos.GameObject
             if (Buff.Contains(indicator))
             {
                 Buff = Buff.Where(s => s.Card.CardId != id);
-                indicator.Card.BCards.ForEach(b => b.RemoveBonus(this));
             }
         }
 
@@ -1432,14 +1420,6 @@ namespace OpenNos.GameObject
         {
             int value1 = 0;
             int value2 = 0;
-
-            value1 += Bonus.Number[(int)type, subtype, 0, 0];
-            value1 += Bonus.Number[(int)type, subtype, 0, 1] == 0 ? 0 : Monster.Level / Bonus.Number[(int)type, subtype, 0, 1];
-            value1 += Monster.Level * Bonus.Number[(int)type, subtype, 0, 2];
-
-            value2 += Bonus.Number[(int)type, subtype, 1, 0];
-            value2 += Bonus.Number[(int)type, subtype, 1, 1] == 0 ? 0 : Monster.Level / Bonus.Number[(int)type, subtype, 1, 1];
-            value2 += Monster.Level * Bonus.Number[(int)type, subtype, 1, 2];
 
             foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
@@ -1461,7 +1441,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            /*foreach (Buff buff in Buff)
+            foreach (Buff buff in Buff)
             {
                 foreach (BCard entry in buff.Card.BCards.Where(s =>
                     s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
@@ -1484,7 +1464,7 @@ namespace OpenNos.GameObject
                     }
                     value2 += entry.SecondData;
                 }
-            }*/
+            }
 
             return new[] { value1, value2 };
         }

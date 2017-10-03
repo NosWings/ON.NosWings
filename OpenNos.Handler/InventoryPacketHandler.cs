@@ -876,7 +876,6 @@ namespace OpenNos.Handler
                         break;
                 }
                 Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != inventory.ItemVNum);
-                inventory.Item.BCards.ForEach(b => b.RemoveBonus(Session.Character));
             }
 
             ItemInstance inv = Session.Character.Inventory.MoveInInventory(removePacket.InventorySlot, equipment, InventoryType.Equipment);
@@ -2044,7 +2043,6 @@ namespace OpenNos.Handler
             List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
             Session.Character.DisableBuffs(bufftodisable);
             Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(s => !s.ItemVNum.Equals(vnum));
-            ServerManager.Instance.GetItem(vnum).BCards.ForEach(b => b.RemoveBonus(Session.Character));
             Session.Character.UseSp = false;
             Session.Character.LoadSpeed();
             Session.SendPacket(Session.Character.GenerateCond());

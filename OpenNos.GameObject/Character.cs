@@ -28,7 +28,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
-using OpenNos.GameObject.BcardsBonus;
 using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject
@@ -66,8 +65,6 @@ namespace OpenNos.GameObject
         public ConcurrentBag<BCard> PassiveSkillBcards { get; set; }
 
         public AuthorityType Authority { get; set; }
-
-        public Bonus Bonus { get; set; }
 
         public ConcurrentBag<Buff> Buff { get; internal set; }
 
@@ -1109,7 +1106,6 @@ namespace OpenNos.GameObject
                 }
                 Inventory.DeleteById(item.Id);
                 Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != item.ItemVNum);
-                item.Item.BCards.ForEach(b => b.RemoveBonus(this));
                 Session.SendPacket(item.Type == InventoryType.Wear ? GenerateEquipment() : UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
             }
@@ -3619,30 +3615,25 @@ namespace OpenNos.GameObject
                                     case (byte)EquipmentType.MainWeapon:
                                         Inventory.PrimaryWeapon = wearableinstance;
                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(b => b.ApplyBonus(this));
                                         break;
 
                                     case (byte)EquipmentType.SecondaryWeapon:
                                         Inventory.SecondaryWeapon = wearableinstance;
                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(b => b.ApplyBonus(this));
                                         break;
 
                                     case (byte)EquipmentType.Armor:
                                         Inventory.Armor = wearableinstance;
                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(b => b.ApplyBonus(this));
                                         break;
 
                                     case (byte)EquipmentType.Bracelet:
                                     case (byte)EquipmentType.Necklace:
                                     case (byte)EquipmentType.Ring:
                                         EquipmentOptionHelper.Instance.CellonToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
-                                        EquipmentOptionHelper.Instance.CellonToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(b => b.ApplyBonus(this));
                                         break;
                                 }
                                 inv.Item.BCards.ForEach(s => EquipmentBCards.Add(s));
-                                inv.Item.BCards.ForEach(b =>  b.ApplyBonus(this));
                             }
                             break;
                         case InventoryType.Equipment:
@@ -5760,7 +5751,6 @@ namespace OpenNos.GameObject
             {
                 Buff = Buff.Where(s => s != indicator);
             }
-            indicator.Card.BCards.ForEach(b => b.RemoveBonus(this));
             if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move && !s.SubType.Equals((byte)AdditionalTypes.Move.MovementImpossible)))
             {
                 LastSpeedChange = DateTime.Now;
@@ -5790,13 +5780,11 @@ namespace OpenNos.GameObject
             Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
             if (staticBuff.RemainingTime == -1)
             {
-                bf.Card.BCards.ForEach(bcard => bcard.ApplyBonus(this));
                 bf.RemainingTime = staticBuff.RemainingTime;
                 Buff.Add(bf);
             }
             else if (staticBuff.RemainingTime > 0)
             {
-                bf.Card.BCards.ForEach(bcard => bcard.ApplyBonus(this));
                 bf.RemainingTime = staticBuff.RemainingTime;
                 Buff.Add(bf);
             }
@@ -5809,12 +5797,10 @@ namespace OpenNos.GameObject
             }
             else
             {
-                bf.Card.BCards.ForEach(bcard => bcard.ApplyBonus(this));
                 bf.RemainingTime = bf.Card.Duration * 6 / 10;
                 Buff.Add(bf);
             }
-            bf.Card.BCards.ForEach(bcard => bcard.ApplyBCards(this));
-
+            bf.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
             if (bf.RemainingTime > 0)
             {
                 Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime)).Subscribe(o =>
@@ -5842,14 +5828,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if (Buff.Any(b => b.Card.CardId == indicator.Card.CardId))
-            {
-                Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
-            }
-            else
-            {
-                indicator.Card.BCards.ForEach(bcard => bcard.ApplyBonus(this));
-            }
+            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
@@ -5857,7 +5836,8 @@ namespace OpenNos.GameObject
             Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
 
-            indicator.Card.BCards.ForEach(bcard => bcard.ApplyBCards(this));
+            indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
+
             if (indicator.Card.EffectId > 0)
             {
                 GenerateEff(indicator.Card.EffectId);
@@ -5893,10 +5873,6 @@ namespace OpenNos.GameObject
             if (Buff.Contains(indicator))
             {
                 Buff = Buff.Where(s => s.Card.CardId != id);
-            }
-            foreach (BCard bcard in indicator.Card.BCards)
-            {
-                bcard.RemoveBonus(this);
             }
             if (indicator.Card.BCards.All(s => s.Type != (byte)CardType.Move))
             {
@@ -6057,16 +6033,8 @@ namespace OpenNos.GameObject
         {
             int value1 = 0;
             int value2 = 0;
-
-            value1 += Bonus.Number[(int) type, subtype, 0, 0];
-            value1 += Bonus.Number[(int)type, subtype, 0, 1] == 0 ? 0 : Level / Bonus.Number[(int)type, subtype, 0, 1];
-            value1 += Level * Bonus.Number[(int)type, subtype, 0, 2];
-
-            value2 += Bonus.Number[(int)type, subtype, 1, 0];
-            value2 += Bonus.Number[(int)type, subtype, 1, 1] == 0 ? 0 : Level / Bonus.Number[(int)type, subtype, 1, 1];
-            value2 += Level * Bonus.Number[(int)type, subtype, 1, 2];
-
-            /*foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+            
+            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {
@@ -6085,7 +6053,7 @@ namespace OpenNos.GameObject
                 }
                 value2 += entry.SecondData;
             }
-            */
+
             foreach (BCard entry in PassiveSkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
@@ -6126,7 +6094,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            /*foreach (Buff buff in Buff)
+            foreach (Buff buff in Buff)
             {
                 foreach (BCard entry in buff.Card.BCards.Where(s =>
                     s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
@@ -6149,7 +6117,7 @@ namespace OpenNos.GameObject
                     }
                     value2 += entry.SecondData;
                 }
-            }*/
+            }
 
             return new[] { value1, value2 };
         }
