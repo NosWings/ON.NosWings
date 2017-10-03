@@ -1109,6 +1109,7 @@ namespace OpenNos.GameObject
                 }
                 Inventory.DeleteById(item.Id);
                 Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != item.ItemVNum);
+                item.Item.BCards.ForEach(b => b.RemoveBonus(this));
                 Session.SendPacket(item.Type == InventoryType.Wear ? GenerateEquipment() : UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
             }
@@ -3619,25 +3620,30 @@ namespace OpenNos.GameObject
                                     case (byte)EquipmentType.MainWeapon:
                                         Inventory.PrimaryWeapon = wearableinstance;
                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(b => b.ApplyBonus(this));
                                         break;
 
                                     case (byte)EquipmentType.SecondaryWeapon:
                                         Inventory.SecondaryWeapon = wearableinstance;
                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(b => b.ApplyBonus(this));
                                         break;
 
                                     case (byte)EquipmentType.Armor:
                                         Inventory.Armor = wearableinstance;
                                         EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(b => b.ApplyBonus(this));
                                         break;
 
                                     case (byte)EquipmentType.Bracelet:
                                     case (byte)EquipmentType.Necklace:
                                     case (byte)EquipmentType.Ring:
                                         EquipmentOptionHelper.Instance.CellonToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        EquipmentOptionHelper.Instance.CellonToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(b => b.ApplyBonus(this));
                                         break;
                                 }
                                 inv.Item.BCards.ForEach(s => EquipmentBCards.Add(s));
+                                inv.Item.BCards.ForEach(b =>  b.ApplyBonus(this));
                             }
                             break;
                         case InventoryType.Equipment:
@@ -5889,8 +5895,7 @@ namespace OpenNos.GameObject
             }
             foreach (BCard bcard in indicator.Card.BCards)
             {
-                Bonus.Number[bcard.Type, bcard.SubType, 0, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] -= bcard.FirstData;
-                Bonus.Number[bcard.Type, bcard.SubType, 1, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] -= bcard.SecondData;
+                bcard.RemoveBonus(this);
             }
             if (indicator.Card.BCards.All(s => s.Type != (byte)CardType.Move))
             {
