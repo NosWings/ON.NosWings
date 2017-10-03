@@ -5841,7 +5841,10 @@ namespace OpenNos.GameObject
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
-
+            foreach (BCard bcard in indicator.Card.BCards)
+            {
+                Bonus.Number[bcard.FirstData, bcard.SubType, bcard.SecondData, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] += bcard.SecondData;
+            }
             if (indicator.Card.EffectId > 0)
             {
                 GenerateEff(indicator.Card.EffectId);
@@ -5877,6 +5880,10 @@ namespace OpenNos.GameObject
             if (Buff.Contains(indicator))
             {
                 Buff = Buff.Where(s => s.Card.CardId != id);
+            }
+            foreach (BCard bcard in indicator.Card.BCards)
+            {
+                Bonus.Number[bcard.FirstData, bcard.SubType, bcard.SecondData, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] -= bcard.SecondData;
             }
             if (indicator.Card.BCards.All(s => s.Type != (byte)CardType.Move))
             {
@@ -6037,8 +6044,16 @@ namespace OpenNos.GameObject
         {
             int value1 = 0;
             int value2 = 0;
-            
-            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+
+            value1 += Bonus.Number[(int) type, subtype, 0, 0];
+            value1 += Level / Bonus.Number[(int)type, subtype, 0, 1];
+            value1 += Level * Bonus.Number[(int)type, subtype, 0, 2];
+
+            value2 += Bonus.Number[(int)type, subtype, 1, 0];
+            value2 += Level / Bonus.Number[(int)type, subtype, 1, 1];
+            value2 += Level * Bonus.Number[(int)type, subtype, 1, 2];
+
+            /*foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
                 {
@@ -6057,7 +6072,7 @@ namespace OpenNos.GameObject
                 }
                 value2 += entry.SecondData;
             }
-
+            */
             foreach (BCard entry in PassiveSkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
             {
                 if (entry.IsLevelScaled)
