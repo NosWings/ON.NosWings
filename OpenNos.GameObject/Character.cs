@@ -5791,11 +5791,13 @@ namespace OpenNos.GameObject
             Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
             if (staticBuff.RemainingTime == -1)
             {
+                bf.Card.BCards.ForEach(bcard => bcard.ApplyBonus(this));
                 bf.RemainingTime = staticBuff.RemainingTime;
                 Buff.Add(bf);
             }
             else if (staticBuff.RemainingTime > 0)
             {
+                bf.Card.BCards.ForEach(bcard => bcard.ApplyBonus(this));
                 bf.RemainingTime = staticBuff.RemainingTime;
                 Buff.Add(bf);
             }
@@ -5808,14 +5810,11 @@ namespace OpenNos.GameObject
             }
             else
             {
+                bf.Card.BCards.ForEach(bcard => bcard.ApplyBonus(this));
                 bf.RemainingTime = bf.Card.Duration * 6 / 10;
                 Buff.Add(bf);
             }
-            foreach (BCard bcard in bf.Card.BCards)
-            {
-                bcard.ApplyBonus(this);
-                bcard.ApplyBCards(this);
-            }
+            bf.Card.BCards.ForEach(bcard => bcard.ApplyBCards(this));
 
             if (bf.RemainingTime > 0)
             {
@@ -5844,7 +5843,14 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            if (Buff.Any(b => b.Card.CardId == indicator.Card.CardId))
+            {
+                Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            }
+            else
+            {
+                indicator.Card.BCards.ForEach(bcard => bcard.ApplyBonus(this));
+            }
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
@@ -5852,11 +5858,7 @@ namespace OpenNos.GameObject
             Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
 
-            foreach (BCard bcard in indicator.Card.BCards)
-            {
-                bcard.ApplyBonus(this);
-                bcard.ApplyBCards(this);
-            }
+            indicator.Card.BCards.ForEach(bcard => bcard.ApplyBCards(this));
             if (indicator.Card.EffectId > 0)
             {
                 GenerateEff(indicator.Card.EffectId);
@@ -6125,7 +6127,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            foreach (Buff buff in Buff)
+            /*foreach (Buff buff in Buff)
             {
                 foreach (BCard entry in buff.Card.BCards.Where(s =>
                     s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
@@ -6148,7 +6150,7 @@ namespace OpenNos.GameObject
                     }
                     value2 += entry.SecondData;
                 }
-            }
+            }*/
 
             return new[] { value1, value2 };
         }
