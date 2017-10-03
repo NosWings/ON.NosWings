@@ -41,6 +41,7 @@ namespace OpenNos.GameObject
         public Mate()
         {
             Buff = new ConcurrentBag<Buff>();
+            Bonus = new Bonus();
         }
 
         public Mate(Character owner, NpcMonster npcMonster, byte level, MateType matetype)
@@ -399,7 +400,14 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            if (Buff.Any(b => b.Card.CardId == indicator.Card.CardId))
+            {
+                Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            }
+            else
+            {
+                indicator.Card.BCards.ForEach(c => c.ApplyBonus(this));
+            }
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
@@ -421,6 +429,7 @@ namespace OpenNos.GameObject
             if (Buff.Contains(indicator))
             {
                 Buff = Buff.Where(s => s.Card.CardId != id);
+                indicator.Card.BCards.ForEach(c => c.RemoveBonus(this));
             }
         }
         
