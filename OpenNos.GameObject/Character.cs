@@ -5755,6 +5755,7 @@ namespace OpenNos.GameObject
             {
                 Buff = Buff.Where(s => s != indicator);
             }
+            indicator.Card.BCards.ForEach(b => b.RemoveBonus(this));
             if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move && !s.SubType.Equals((byte)AdditionalTypes.Move.MovementImpossible)))
             {
                 LastSpeedChange = DateTime.Now;
@@ -5804,7 +5805,12 @@ namespace OpenNos.GameObject
                 bf.RemainingTime = bf.Card.Duration * 6 / 10;
                 Buff.Add(bf);
             }
-            bf.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
+            foreach (BCard bcard in bf.Card.BCards)
+            {
+                bcard.ApplyBonus(this);
+                bcard.ApplyBCards(this);
+            }
+
             if (bf.RemainingTime > 0)
             {
                 Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime)).Subscribe(o =>
@@ -5840,11 +5846,10 @@ namespace OpenNos.GameObject
             Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
 
-            indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
             foreach (BCard bcard in indicator.Card.BCards)
             {
-                Bonus.Number[bcard.Type, bcard.SubType, 0, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] += bcard.FirstData;
-                Bonus.Number[bcard.Type, bcard.SubType, 1, bcard.IsLevelScaled ? (bcard.IsLevelDivided ? 1 : 2) : 0] += bcard.SecondData;
+                bcard.ApplyBonus(this);
+                bcard.ApplyBCards(this);
             }
             if (indicator.Card.EffectId > 0)
             {
