@@ -6060,11 +6060,11 @@ namespace OpenNos.GameObject
             int value2 = 0;
 
             value1 += Bonus.Number[(int) type, subtype, 0, 0];
-            value1 += Level / Bonus.Number[(int)type, subtype, 0, 1];
+            value1 += Bonus.Number[(int)type, subtype, 0, 1] == 0 ? 0 : Level / Bonus.Number[(int)type, subtype, 0, 1];
             value1 += Level * Bonus.Number[(int)type, subtype, 0, 2];
 
             value2 += Bonus.Number[(int)type, subtype, 1, 0];
-            value2 += Level / Bonus.Number[(int)type, subtype, 1, 1];
+            value2 += Bonus.Number[(int)type, subtype, 1, 1] == 0 ? 0 : Level / Bonus.Number[(int)type, subtype, 1, 1];
             value2 += Level * Bonus.Number[(int)type, subtype, 1, 2];
 
             /*foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))

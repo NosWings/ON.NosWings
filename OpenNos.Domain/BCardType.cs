@@ -119,7 +119,7 @@ namespace OpenNos.Domain
             MeteoriteTeleport = 83,
             StealBuff = 84,
 
-            SPSL = 200,
+            SPSL = 85,
         }
     }
 

@@ -185,7 +185,7 @@
     <Compile Include="Act4Stat.cs" />
     <Compile Include="ArenaTeamMember.cs" />
     <Compile Include="ArenaMember.cs" />
-    <Compile Include="Buff\Bonus\Bonus.cs" />
+    <Compile Include="Buff\Bonus.cs" />
     <Compile Include="Buff\Buff.cs" />
     <Compile Include="Buff\BCard.cs" />
     <Compile Include="Buff\Card.cs" />
