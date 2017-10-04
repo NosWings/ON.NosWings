@@ -1594,10 +1594,8 @@ namespace OpenNos.GameObject
             #region Calculate Elemental Boost + Rate
 
             double elementalBoost = 0;
-            short monsterResistance = 0;
-            int elementalDamage = GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllIncreased)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllDecreased)[0];
-
-            // "GetBuff(CardType.IncreaseDamage, (byte) AdditionalTypes.IncreaseDamage.FireIncreased," is only use for monster, not for player
+            int monsterResistance = 0;
+            int elementalDamage = GetBuff(CardType.Element, (byte) AdditionalTypes.Element.AllIncreased)[0] - GetBuff(CardType.Element, (byte) AdditionalTypes.Element.AllDecreased)[0];
 
             switch (Element)
             {
@@ -1605,8 +1603,11 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1:
-                    elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireIncreased)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireDecreased)[0];
+                    elementalDamage += GetBuff(CardType.Element, (byte) AdditionalTypes.Element.FireIncreased)[0];
+                    elementalDamage -= GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireDecreased)[0];
                     monsterResistance = monsterToAttack.Monster.FireResistance;
+                    monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte) AdditionalTypes.Element.AllDecreased)[0];
+                    monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte) AdditionalTypes.Element.FireDecreased)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -1634,6 +1635,8 @@ namespace OpenNos.GameObject
                 case 2:
                     elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterIncreased)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterDecreased)[0];
                     monsterResistance = monsterToAttack.Monster.WaterResistance;
+                    monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllDecreased)[0];
+                    monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterDecreased)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -1661,6 +1664,8 @@ namespace OpenNos.GameObject
                 case 3:
                     elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightIncreased)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightDecreased)[0];
                     monsterResistance = monsterToAttack.Monster.LightResistance;
+                    monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllDecreased)[0];
+                    monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightDecreased)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -1688,6 +1693,8 @@ namespace OpenNos.GameObject
                 case 4:
                     elementalDamage += GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkIncreased)[0] - GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkDecreased)[0];
                     monsterResistance = monsterToAttack.Monster.DarkResistance;
+                    monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllDecreased)[0];
+                    monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkDecreased)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -6240,6 +6247,5 @@ namespace OpenNos.GameObject
         }
 
         #endregion
-
     }
 }
