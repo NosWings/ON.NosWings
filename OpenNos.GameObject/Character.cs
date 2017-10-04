@@ -1608,6 +1608,8 @@ namespace OpenNos.GameObject
                     monsterResistance = monsterToAttack.Monster.FireResistance;
                     monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte) AdditionalTypes.Element.AllDecreased)[0];
                     monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte) AdditionalTypes.Element.FireDecreased)[0];
+                    monsterResistance += monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllIncreased)[0];
+                    monsterResistance += monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.FireIncreased)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -1637,6 +1639,8 @@ namespace OpenNos.GameObject
                     monsterResistance = monsterToAttack.Monster.WaterResistance;
                     monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllDecreased)[0];
                     monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterDecreased)[0];
+                    monsterResistance += monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllIncreased)[0];
+                    monsterResistance += monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.WaterIncreased)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -1666,6 +1670,8 @@ namespace OpenNos.GameObject
                     monsterResistance = monsterToAttack.Monster.LightResistance;
                     monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllDecreased)[0];
                     monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightDecreased)[0];
+                    monsterResistance += monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllIncreased)[0];
+                    monsterResistance += monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.LightIncreased)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
@@ -1695,6 +1701,8 @@ namespace OpenNos.GameObject
                     monsterResistance = monsterToAttack.Monster.DarkResistance;
                     monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllDecreased)[0];
                     monsterResistance -= monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkDecreased)[0];
+                    monsterResistance += monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.AllIncreased)[0];
+                    monsterResistance += monsterToAttack.GetBuff(CardType.Element, (byte)AdditionalTypes.Element.DarkIncreased)[0];
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
