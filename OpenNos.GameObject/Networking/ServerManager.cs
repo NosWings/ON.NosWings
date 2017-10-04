@@ -1695,7 +1695,7 @@ namespace OpenNos.GameObject
         {
             _groups = new ConcurrentDictionary<long, Group>();
 
-            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { SaveAllProcess(); });
+            Observable.Interval(TimeSpan.FromMinutes(15)).Subscribe(x => { SaveAllProcess(); });
 
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { Act4Process(); });
 
