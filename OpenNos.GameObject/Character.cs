@@ -5386,6 +5386,7 @@ namespace OpenNos.GameObject
             {
                 LevelXp -= (long)t;
                 Level++;
+                RewardsHelper.Instance.GetLevelUpRewards(Session);
                 t = XpLoad();
                 if (Level >= ServerManager.Instance.MaxLevel)
                 {
