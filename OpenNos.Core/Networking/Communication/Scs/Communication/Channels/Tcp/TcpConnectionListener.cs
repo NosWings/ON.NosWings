@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using System.Net;
 using System.Net.Sockets;
@@ -73,6 +72,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         {
             StartSocket();
             _running = true;
+            _thread = new Thread(DoListenAsThread);
+            _thread.Start();
         }
 
         /// <inheritdoc />
@@ -86,26 +87,52 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
+        /// Entrance point of the thread. This method is used by the thread to listen incoming requests.
+        /// </summary>
+        private void DoListenAsThread()
+        {
+            while (_running)
+            {
+                if (!_listenerSocket.Pending())
+                {
+                    continue;
+                }
+                try
+                {
+                    Socket clientSocket = _listenerSocket.AcceptSocket();
+                    if (clientSocket.Connected)
+                    {
+                        OnCommunicationChannelConnected(new TcpCommunicationChannel(clientSocket));
+                    }
+                }
+                catch
+                {
+                    // Disconnect, wait for a while and connect again.
+                    StopSocket();
+                    Thread.Sleep(1000);
+                    if (!_running)
+                    {
+                        return;
+                    }
+                    try
+                    {
+                        StartSocket();
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Starts listening socket.
         /// </summary>
         private void StartSocket()
         {
             _listenerSocket = new TcpListener(IPAddress.Any, _endPoint.TcpPort);
             _listenerSocket.Start();
-            StartAccept();
-        }
-
-        private void StartAccept()
-        {
-            _listenerSocket.BeginAcceptTcpClient(NewRework, _listenerSocket);
-        }
-
-        private void NewRework(IAsyncResult res)
-        {
-            StartAccept(); //listen for new connections again
-            TcpClient client = _listenerSocket.EndAcceptTcpClient(res);
-            OnCommunicationChannelConnected(new TcpCommunicationChannel(client.Client));
-
         }
 
         /// <summary>
@@ -119,7 +146,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
             catch
             {
-                // ignored
             }
         }
 
