@@ -241,7 +241,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return $"st 2 {MateTransportId} {Level} {(int)((float)Hp / (float)MaxHp * 100)} {(int)((float)Mp / (float)MaxMp * 100)} {Hp} {Mp}{Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}.{buff.Level}")}";
+            return $"st 2 {MateTransportId} {Level} {(int)((float)Hp / (float)MaxHp * 100)} {(int)((float)Mp / (float)MaxMp * 100)} {Hp} {Mp}{/*Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}.{buff.Level}")*/0}";
         }
 
         public void GenerateXp(int xp)
