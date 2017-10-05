@@ -28,7 +28,6 @@ using OpenNos.GameObject.CommandPackets;
 using OpenNos.GameObject.Helpers;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
-using OpenNos.Pathfinding;
 
 namespace OpenNos.Handler
 {

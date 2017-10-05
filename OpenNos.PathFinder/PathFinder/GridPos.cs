@@ -1,10 +1,8 @@
-﻿namespace OpenNos.Pathfinding
+﻿namespace OpenNos.PathFinder
 {
     public class GridPos
     {
-        #region Properties
-
-        public bool Closed { get; internal set; }
+        #region Properties    
 
         public byte Value { get; set; }
 
@@ -18,7 +16,7 @@
 
         public bool IsWalkable()
         {
-            return (Value == 0 || Value == 2 || Value >= 16 && Value <= 19);
+            return Value == 0 || Value == 2 || Value >= 16 && Value <= 19;
         }
 
         public bool IsArenaStairs()

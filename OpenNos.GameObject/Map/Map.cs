@@ -14,14 +14,14 @@
 
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Pathfinding;
+using OpenNos.PathFinder;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using OpenNos.PathFinder;
+using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
@@ -76,8 +76,8 @@ namespace OpenNos.GameObject
 
         public RespawnMapTypeDTO DefaultReturn { get; }
 
-        public GridPos[,] Grid { get; set; }
-
+        public GridPos[,] Grid { get; private set; }
+        
         private ConcurrentBag<MapCell> Cells { get; set; }
 
         public short MapId { get; set; }
@@ -109,7 +109,7 @@ namespace OpenNos.GameObject
 
         public static int GetDistance(MapCell p, MapCell q)
         {
-            return (int) Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
+            return (int)Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
         public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true, bool isBoss = false)
@@ -282,11 +282,6 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-        }
-
-        public List<GridPos> PathSearch(GridPos cell1, GridPos cell2)
-        {
-            return BestFirstSearch.findPath(cell1, cell2, Grid);
         }
 
         #endregion

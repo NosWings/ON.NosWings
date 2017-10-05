@@ -66,6 +66,8 @@ namespace OpenNos.GameObject
 
         public AuthorityType Authority { get; set; }
 
+        public Node[,] BrushFire { get; set; }
+
         public ConcurrentBag<Buff> Buff { get; internal set; }
 
         private ConcurrentBag<BCard> SkillBcards { get; }

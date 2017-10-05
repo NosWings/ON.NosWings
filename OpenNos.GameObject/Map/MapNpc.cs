@@ -17,7 +17,6 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using OpenNos.PathFinder;
-using OpenNos.Pathfinding;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -60,7 +59,7 @@ namespace OpenNos.GameObject
 
         public ConcurrentBag<EventContainer> OnDeathEvents { get; set; }
 
-        public List<GridPos> Path { get; set; }
+        public List<Node> Path { get; set; }
 
         public List<Recipe> Recipes { get; set; }
 
@@ -140,7 +139,7 @@ namespace OpenNos.GameObject
             FirstY = MapY;
             EffectDelay = 4000;
             _movetime = ServerManager.Instance.RandomNumber(500, 3000);
-            Path = new List<GridPos>();
+            Path = new List<Node>();
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
             Target = -1;
             Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
@@ -303,7 +302,7 @@ namespace OpenNos.GameObject
                             short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                             short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                             //go to monster
-                            Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(monster.MapX + xoffset), Y = (short)(monster.MapY + yoffset) });
+                            Path = BestFirstSearch.FindPath(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(monster.MapX + xoffset), Y = (short)(monster.MapY + yoffset) }, MapInstance.Map.Grid);
                         }
                         if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
                         {
@@ -345,7 +344,7 @@ namespace OpenNos.GameObject
                 Path.Clear();
                 Target = -1;
                 //return to origin
-                Path = Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
+                Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY }, MapInstance.Map.Grid);
             }
         }
         

@@ -17,7 +17,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
-using OpenNos.Pathfinding;
+using OpenNos.PathFinder;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -114,7 +114,7 @@ namespace OpenNos.GameObject
 
         public ZoneEvent MoveEvent { get; set; }
 
-        public List<GridPos> Path { get; set; }
+        public List<Node> Path { get; set; }
 
         public bool? ShouldRespawn { get; set; }
 
@@ -175,7 +175,7 @@ namespace OpenNos.GameObject
             FirstY = MapY;
             LastSkill = LastMove = LastEffect = DateTime.Now;
             Target = -1;
-            Path = new List<GridPos>();
+            Path = new List<Node>();
             IsAlive = true;
             ShouldRespawn = ShouldRespawn ?? true;
             Monster = ServerManager.Instance.GetNpc(MonsterVNum);
@@ -314,7 +314,7 @@ namespace OpenNos.GameObject
             Path.Clear();
             Target = -1;
             //return to origin
-            Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
+            Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY }, MapInstance.Map.Grid);
         }
 
         /// <summary>
@@ -333,35 +333,34 @@ namespace OpenNos.GameObject
                 short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
                 try
                 {
-                    Path = MapInstance.Map.PathSearch(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(targetSession.Character.PositionX + xoffset), Y = (short)(targetSession.Character.PositionY + yoffset) });
+                    List<Node> list = BestFirstSearch.TracePath(new Node() { X = MapX, Y = MapY }, targetSession.Character.BrushFire, targetSession.Character.MapInstance.Map.Grid);
+                    Path = list;
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Error($"Pathfinding using JPSPlus failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.PositionX + xoffset)} TargetY: {(short)(targetSession.Character.PositionY + yoffset)}", ex);
+                    Logger.Log.Error($"Pathfinding using Pathfinder failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.PositionX + xoffset)} TargetY: {(short)(targetSession.Character.PositionY + yoffset)}", ex);
                     RemoveTarget();
                 }
             }
-
             if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
             {
                 int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                short mapX = (short) Path.ElementAt(maxindex - 1).X;
-                short mapY = (short) Path.ElementAt(maxindex - 1).Y;
-                double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Monster.Speed;
-                MapInstance.Broadcast(new BroadcastPacket(null, $"mv 3 {MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
+                short mapX = Path.ElementAt(maxindex - 1).X;
+                short mapY = Path.ElementAt(maxindex - 1).Y;
+                double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (Monster.Speed * 0.5);
+                MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                 LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
                 Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000)))
-                    .Subscribe(
-                        x =>
-                        {
-                            MapX = mapX;
-                            MapY = mapY;
-                        });
+                 .Subscribe(
+                     x =>
+                     {
+                         MapX = mapX;
+                         MapY = mapY;
+                     });
 
                 Path.RemoveRange(0, maxindex);
             }
-
             if (targetSession == null || MapId != targetSession.Character.MapInstance.Map.MapId)
             {
                 RemoveTarget();
@@ -1232,7 +1231,7 @@ namespace OpenNos.GameObject
             CurrentMp = Monster.MaxMP;
             MapX = FirstX;
             MapY = FirstY;
-            Path = new List<GridPos>();
+            Path = new List<Node>();
             MapInstance.Broadcast(GenerateIn());
             Monster.BCards.ForEach(s => s.ApplyBCards(this));
         }
