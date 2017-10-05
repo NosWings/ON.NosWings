@@ -27,9 +27,9 @@ namespace OpenNos.GameObject
         #region Members
 
         private IDictionary<string, DateTime> _connectionLog;
-        private TEncryptorT _encryptor;
-        private EncryptionBase _fallbackEncryptor;
-        private IScsServer _server;
+        private readonly TEncryptorT _encryptor;
+        private readonly EncryptionBase _fallbackEncryptor;
+        private readonly IScsServer _server;
 
         #endregion
 

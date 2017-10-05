@@ -19,6 +19,7 @@ using System.Threading;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {
+    /// <inheritdoc />
     /// <summary>
     /// This class is used to listen and accept incoming TCP connection requests on a TCP port.
     /// </summary>
@@ -63,6 +64,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         #region Methods
 
+        /// <inheritdoc />
         /// <summary>
         /// Starts listening incoming connections.
         /// </summary>
@@ -74,6 +76,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _thread.Start();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Stops listening incoming connections.
         /// </summary>
@@ -90,6 +93,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         {
             while (_running)
             {
+                if (!_listenerSocket.Pending())
+                {
+                    return;
+                }
                 try
                 {
                     Socket clientSocket = _listenerSocket.AcceptSocket();
@@ -113,6 +120,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                     }
                     catch
                     {
+                        // ignored
                     }
                 }
             }

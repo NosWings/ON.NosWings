@@ -122,13 +122,15 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         public void Dispose()
         {
-            if (!_disposed)
+            if (_disposed)
             {
-                GC.SuppressFinalize(this);
-                _disposed = true;
+                return;
             }
+            GC.SuppressFinalize(this);
+            _disposed = true;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Removes a previously added service object from this service application. It removes
         /// object according to interface type.
