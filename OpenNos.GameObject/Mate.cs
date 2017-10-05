@@ -126,15 +126,15 @@ namespace OpenNos.GameObject
         {
             get
             {
-                byte bonusSpeed = (byte)(GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovementNegated)[0]
-                                       + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedIncreased)[0]
-                                       + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedDecreased)[0]);
+                //byte bonusSpeed = (byte)(GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovementNegated)[0]
+                 //                      + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedIncreased)[0]
+                   //                    + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedDecreased)[0]);
 
-                if (Monster.Speed + bonusSpeed > 59)
+                if (Monster.Speed > 59)
                 {
                     return 59;
                 }
-                return (byte)(Monster.Speed + bonusSpeed);
+                return (byte)(Monster.Speed);
             }
             set
             {
@@ -270,11 +270,11 @@ namespace OpenNos.GameObject
             double multiplicator = 1.0;
             int hp = 0;
 
-            multiplicator += GetBuff(CardType.BearSpirit, (byte) AdditionalTypes.BearSpirit.IncreaseMaximumHP)[0] / 100D;
-            multiplicator += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumHP)[0] / 100D;
-            hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0];
-            hp -= GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
-            hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
+            //multiplicator += GetBuff(CardType.BearSpirit, (byte) AdditionalTypes.BearSpirit.IncreaseMaximumHP)[0] / 100D;
+           // multiplicator += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumHP)[0] / 100D;
+           // hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0];
+            //hp -= GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
+            //hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
             // Monster Bonus HP
             hp += (int) (Monster.MaxHP - MateHelper.Instance.HpData[Monster.Level]);
 
@@ -285,11 +285,11 @@ namespace OpenNos.GameObject
         {
             int mp = 0;
             double multiplicator = 1.0;
-            multiplicator += GetBuff(CardType.BearSpirit, (byte) AdditionalTypes.BearSpirit.IncreaseMaximumMP)[0] / 100D;
-            multiplicator += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumMP)[0] / 100D;
-            mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0];
-            mp -= GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
-            mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
+          //  multiplicator += GetBuff(CardType.BearSpirit, (byte) AdditionalTypes.BearSpirit.IncreaseMaximumMP)[0] / 100D;
+           // multiplicator += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumMP)[0] / 100D;
+         //   mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0];
+          //  mp -= GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
+           // mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
             // Monster Bonus MP
             mp += (int)(Monster.MaxMP - (Monster.Race == 0 ? MateHelper.Instance.PrimaryMpData[Monster.Level] : MateHelper.Instance.SecondaryMpData[Monster.Level]));
 
@@ -358,7 +358,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public int[] GetBuff(CardType type, byte subtype)
+       /* public int[] GetBuff(CardType type, byte subtype)
         {
             int value1 = 0;
             int value2 = 0;
@@ -419,7 +419,7 @@ namespace OpenNos.GameObject
             {
                 Buff = Buff.Where(s => s.Card.CardId != id);
             }
-        }
+        }*/
         
         #endregion
     }
