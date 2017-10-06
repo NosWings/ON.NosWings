@@ -29,6 +29,11 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
+        public DeleteResult DeleteByWearableInstanceId(Guid wearableInstanceId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         public DeleteResult Delete(IEnumerable<Guid> id)
