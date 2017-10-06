@@ -383,6 +383,11 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_HEROIC"), 0));
                             return;
                         }
+                        if (Item.IsHeroic && Rare == 8)
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ALREADY_MAX_RARE"), 0));
+                            return;
+                        }
 
                         if (protection == RarifyProtection.Scroll && !isCommand)
                         {
