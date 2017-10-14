@@ -58,6 +58,7 @@ namespace OpenNos.GameObject
             DroppedList = new ConcurrentDictionary<long, MapItem>();
             Portals = new List<Portal>();
             UserShops = new Dictionary<long, MapShop>();
+            MapDesignObjects = new ConcurrentBag<MapDesignObject>();
             StartLife();
         }
 
@@ -93,7 +94,7 @@ namespace OpenNos.GameObject
 
         public int DropRate { get; set; }
 
-        public ConcurrentBag<MapDesignObject> MapDesignObjects = new ConcurrentBag<MapDesignObject>();
+        public ConcurrentBag<MapDesignObject> MapDesignObjects { get; set; }
 
         public InstanceBag InstanceBag { get; set; }
 
@@ -105,7 +106,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(30) >= DateTime.Now)
+                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(20) >= DateTime.Now)
                 {
                     return _isSleeping;
                 }
@@ -388,7 +389,6 @@ namespace OpenNos.GameObject
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
         {
             Guid random2 = Guid.NewGuid();
-            MapItem droppedItem = null;
             List<GridPos> possibilities = new List<GridPos>();
 
             for (short x = -2; x < 3; x++)
@@ -425,7 +425,7 @@ namespace OpenNos.GameObject
             ItemInstance newItemInstance = inv.DeepCopy();
             newItemInstance.Id = random2;
             newItemInstance.Amount = amount;
-            droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
+            MapItem droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
             DroppedList[droppedItem.TransportId] = droppedItem;
             inv.Amount -= amount;
             return droppedItem;
@@ -521,12 +521,16 @@ namespace OpenNos.GameObject
             }
             for (int i = 0; i < parameter.Item3; i++)
             {
+                positionRandomizer:
                 short destX = (short) (originX + ServerManager.Instance.RandomNumber(-10, 10));
                 short destY = (short) (originY + ServerManager.Instance.RandomNumber(-10, 10));
+                if (Map.IsBlockedZone(destX, destY))
+                {
+                    goto positionRandomizer;
+                }
                 MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item2, amount);
                 DroppedList[droppedItem.TransportId] = droppedItem;
-                Broadcast(
-                    $"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
+                Broadcast($"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
             }
         }
 
