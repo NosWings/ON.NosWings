@@ -143,6 +143,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             return _serviceObjects.TryRemove(typeof(TServiceInterface).Name, out ServiceObject value);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Starts service application.
         /// </summary>

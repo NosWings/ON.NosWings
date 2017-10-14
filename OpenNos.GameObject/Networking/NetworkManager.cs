@@ -99,24 +99,23 @@ namespace OpenNos.GameObject
 
         private bool CheckGeneralLog(INetworkClient client)
         {
-            if (!client.IpAddress.Contains("127.0.0.1"))
+            if (client.IpAddress.Contains("127.0.0.1"))
             {
-                if (ConnectionLog.Any())
-                {
-                    foreach (KeyValuePair<string, DateTime> item in ConnectionLog.Where(cl => cl.Key.Contains(client.IpAddress.Split(':')[1]) && (DateTime.Now - cl.Value).TotalSeconds > 3).ToList())
-                    {
-                        ConnectionLog.Remove(item.Key);
-                    }
-                }
-
-                if (ConnectionLog.Any(c => c.Key.Contains(client.IpAddress.Split(':')[1])))
-                {
-                    return false;
-                }
-                ConnectionLog.Add(client.IpAddress, DateTime.Now);
                 return true;
             }
+            if (ConnectionLog.Any())
+            {
+                foreach (KeyValuePair<string, DateTime> item in ConnectionLog.Where(cl => cl.Key.Contains(client.IpAddress.Split(':')[1]) && (DateTime.Now - cl.Value).TotalSeconds > 3).ToList())
+                {
+                    ConnectionLog.Remove(item.Key);
+                }
+            }
 
+            if (ConnectionLog.Any(c => c.Key.Contains(client.IpAddress.Split(':')[1])))
+            {
+                return false;
+            }
+            ConnectionLog.Add(client.IpAddress, DateTime.Now);
             return true;
         }
 

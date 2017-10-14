@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Event;
-using OpenNos.GameObject.Event.ARENA;
 using OpenNos.PathFinder;
 using System;
 using System.Collections.Concurrent;
@@ -23,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using OpenNos.GameObject.CommandPackets;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -287,7 +285,6 @@ namespace OpenNos.GameObject.Helpers
                         case MapInstanceType.RaidInstance:
                             evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
                             client = evt.MapInstance.Sessions.FirstOrDefault();
-                            List<ClientSession> toBan = new List<ClientSession>();
                             if (client != null)
                             {
                                 Group grp = client.Character?.Group;
@@ -302,7 +299,6 @@ namespace OpenNos.GameObject.Helpers
                                         // TODO REMOTE THAT FOR PUBLIC RELEASE
                                         if (grp.Characters.Count(s => s.IpAddress.Equals(sess.IpAddress)) > 2)
                                         {
-                                            toBan.Add(sess);
                                             continue;
                                         }
                                         if (grp.Raid?.GiftItems == null)
