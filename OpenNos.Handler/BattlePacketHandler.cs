@@ -241,13 +241,6 @@ namespace OpenNos.Handler
             {
                 switch (target.CurrentMapInstance?.MapInstanceType)
                 {
-                    case MapInstanceType.ArenaInstance:
-                        if (!target.Character.MapInstance.Map.IsArenaPvPable(target.Character.PositionX, target.Character.PositionY) || !Session.Character.MapInstance.Map.IsArenaPvPable(Session.Character.PositionX, Session.Character.PositionY))
-                        {
-                            Session.SendPacket("cancel 2 0");
-                            return;
-                        }
-                        break;
                     case MapInstanceType.Act4Instance:
                         if (target.Character.Faction == Session.Character.Faction)
                         {

@@ -177,22 +177,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool IsArenaPvPable(int x, int y)
-        {
-            try
-            {
-                if (Grid == null)
-                {
-                    return false;
-                }
-                return !Grid[x, y].IsArenaStairs();
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
         {
             short minX = (short)(-xpoint + firstX);

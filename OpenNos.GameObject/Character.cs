@@ -52,6 +52,7 @@ namespace OpenNos.GameObject
             StaticBonusList = new List<StaticBonusDTO>();
             Mates = new List<Mate>();
             EquipmentBCards = new ConcurrentBag<BCard>();
+            LastMonsterAggro = DateTime.Now;
             SkillBcards = new ConcurrentBag<BCard>();
             PassiveSkillBcards = new ConcurrentBag<BCard>();
         }
@@ -203,6 +204,8 @@ namespace OpenNos.GameObject
         public DateTime LastGroupJoin { get; set; }
 
         public DateTime LastMapObject { get; set; }
+
+        public DateTime LastMonsterAggro { get; set; }
 
         public int LastMonsterId { get; set; }
 
@@ -558,6 +561,15 @@ namespace OpenNos.GameObject
             {
                 Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
             }
+        }
+
+        public void UpdateBushFire()
+        {
+            Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
+            {
+                X = Session.Character.PositionX,
+                Y = Session.Character.PositionY
+            }, Session.CurrentMapInstance.Map.Grid);
         }
 
         public string GenerateBsInfo(byte type, int arenaeventtype, int time, byte titletype)

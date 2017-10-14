@@ -5,13 +5,13 @@ using System.Threading;
 
 namespace OpenNos.PathFinder
 {
-    public class BestFirstSearch
+    public static class BestFirstSearch
     {
         #region Methods
 
         public static List<Node> FindPath(GridPos start, GridPos end, GridPos[,] Grid)
         {
-            if (Grid.GetLength(0) <= start.X || Grid.GetLength(1) <= start.Y || start.X < 0 || start.Y < 0)
+            if (Grid.GetLength(0) < start.X || Grid.GetLength(1) < start.Y || start.X < 0 || start.Y < 0)
             {
                 return new List<Node>();
             }
@@ -46,9 +46,9 @@ namespace OpenNos.PathFinder
                 }
 
                 // get neigbours of the current node
-                List<Node> neighbors = GetNeighbors(grid, node,Grid);
+                List<Node> neighbors = GetNeighbors(grid, node, Grid);
 
-                for (int i = 0, l = neighbors.Count(); i < l; ++i)
+                for (int i = 0, l = neighbors.Count; i < l; ++i)
                 {
                     Node neighbor = neighbors[i];
 
@@ -75,6 +75,7 @@ namespace OpenNos.PathFinder
                         }
                         else
                         {
+
                             neighbor.Parent = node;
                         }
                     }
@@ -84,8 +85,9 @@ namespace OpenNos.PathFinder
         }
 
         public static Node[,] LoadBrushFire(GridPos user, GridPos[,] mapGrid, short MaxDistance = 22)
+
         {
-            Node[,] grid = new Node[mapGrid.GetLength(0), mapGrid.GetLength(1)]; 
+            Node[,] grid = new Node[mapGrid.GetLength(0), mapGrid.GetLength(1)];
 
             Node node = new Node();
             if (grid[user.X, user.Y] == null)
@@ -94,6 +96,7 @@ namespace OpenNos.PathFinder
             }
             Node Start = grid[user.X, user.Y];
             MinHeap path = new MinHeap();
+
 
             // push the start node into the open list
             path.Push(Start);
@@ -111,10 +114,10 @@ namespace OpenNos.PathFinder
 
                 grid[node.X, node.Y].Closed = true;
 
-                // get neigbours of the current node
+                // get neighbors of the current node
                 List<Node> neighbors = GetNeighbors(grid, node, mapGrid);
 
-                for (int i = 0, l = neighbors.Count(); i < l; ++i)
+                for (int i = 0, l = neighbors.Count; i < l; ++i)
                 {
                     Node neighbor = neighbors[i];
 
@@ -171,7 +174,6 @@ namespace OpenNos.PathFinder
             int IndexX;
             int IndexY;
 
-
             // ↑
             IndexX = x;
             IndexY = y - 1;
@@ -197,7 +199,6 @@ namespace OpenNos.PathFinder
                 neighbors.Add(Grid[IndexX, IndexY]);
                 s1 = true;
             }
-
 
             // ↓
             IndexX = x;
@@ -233,7 +234,7 @@ namespace OpenNos.PathFinder
             // ↖
             IndexX = x - 1;
             IndexY = y - 1;
-            if (Grid.GetLength(0) > IndexX && Grid.GetLength(1) > IndexY && IndexX >= 0 && IndexY >= 0 && d0 && MapGrid[IndexX, IndexY].IsWalkable() == true)
+            if (Grid.GetLength(0) > IndexX && Grid.GetLength(1) > IndexY && IndexX >= 0 && IndexY >= 0 && d0 && MapGrid[IndexX, IndexY].IsWalkable())
             {
                 if (Grid[IndexX, IndexY] == null)
                 {
@@ -245,7 +246,7 @@ namespace OpenNos.PathFinder
             // ↗
             IndexX = x + 1;
             IndexY = y - 1;
-            if (Grid.GetLength(0) > IndexX && Grid.GetLength(1) > IndexY && IndexX >= 0 && IndexY >= 0 && d1 && MapGrid[IndexX, IndexY].IsWalkable() == true)
+            if (Grid.GetLength(0) > IndexX && Grid.GetLength(1) > IndexY && IndexX >= 0 && IndexY >= 0 && d1 && MapGrid[IndexX, IndexY].IsWalkable())
             {
                 if (Grid[IndexX, IndexY] == null)
                 {
@@ -257,7 +258,7 @@ namespace OpenNos.PathFinder
             // ↘
             IndexX = x + 1;
             IndexY = y + 1;
-            if (Grid.GetLength(0) > IndexX && Grid.GetLength(1) > IndexY && IndexX >= 0 && IndexY >= 0 && d2 && MapGrid[IndexX, IndexY].IsWalkable() == true)
+            if (Grid.GetLength(0) > IndexX && Grid.GetLength(1) > IndexY && IndexX >= 0 && IndexY >= 0 && d2 && MapGrid[IndexX, IndexY].IsWalkable())
             {
                 if (Grid[IndexX, IndexY] == null)
                 {
@@ -269,7 +270,7 @@ namespace OpenNos.PathFinder
             // ↙
             IndexX = x - 1;
             IndexY = y + 1;
-            if (Grid.GetLength(0) > IndexX && Grid.GetLength(1) > IndexY && IndexX >= 0 && IndexY >= 0 && d3 && MapGrid[IndexX, IndexY].IsWalkable() == true)
+            if (Grid.GetLength(0) > IndexX && Grid.GetLength(1) > IndexY && IndexX >= 0 && IndexY >= 0 && d3 && MapGrid[IndexX, IndexY].IsWalkable())
             {
                 if (Grid[IndexX, IndexY] == null)
                 {
@@ -296,17 +297,16 @@ namespace OpenNos.PathFinder
         public static List<Node> TracePath(Node node, Node[,] Grid, GridPos[,] MapGrid)
         {
             List<Node> list = new List<Node>();
-            if (MapGrid == null || Grid == null || node.X >= Grid.GetLength(0) || node.Y >= Grid.GetLength(1) || Grid[node.X, node.Y] == null)
+            if (MapGrid == null || Grid == null || node.X >= Grid.GetLength(0) || node.Y >= Grid.GetLength(1) || node.X < 0 || node.Y < 0 || Grid[node.X, node.Y] == null)
             {
                 node.F = 100;
                 list.Add(node);
                 return list;
-            }          
+            }
             Node currentnode = Grid[node.X, node.Y];
             while (currentnode.F != 1 && currentnode.F != 0)
             {
-                Node newnode = null;
-                newnode = BestFirstSearch.GetNeighbors(Grid, currentnode, MapGrid)?.OrderBy(s => s.F).FirstOrDefault();
+                Node newnode = GetNeighbors(Grid, currentnode, MapGrid)?.OrderBy(s => s.F).FirstOrDefault();
                 if (newnode != null)
                 {
                     list.Add(newnode);

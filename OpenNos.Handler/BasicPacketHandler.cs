@@ -1277,53 +1277,49 @@ namespace OpenNos.Handler
         /// <param name="walkPacket"></param>
         public void Walk(WalkPacket walkPacket)
         {
-            if (Session?.Character == null || !Session.HasCurrentMapInstance || Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) ||
-                Session.Character.IsChangingMapInstance ||
-                Session.Character.HasShopOpened || Session.Character.HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
+            if (!Session.Character.NoMove)
             {
-                return;
-            }
-            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-            double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            int distance = Map.GetDistance(new MapCell {X = Session.Character.PositionX, Y = Session.Character.PositionY}, new MapCell {X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate});
+                double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+                double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
+                int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
 
-            if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
-            {
-                if (Session.Character.MapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance || Session.Character.MapInstance?.MapInstanceType == MapInstanceType.Act4Instance)
+                if (Session.HasCurrentMapInstance && !Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) && !Session.Character.IsChangingMapInstance && !Session.Character.HasShopOpened)
                 {
-                    Session.Character.MapX = walkPacket.XCoordinate;
-                    Session.Character.MapY = walkPacket.YCoordinate;
-                }
-                Session.Character.PositionX = walkPacket.XCoordinate;
-                Session.Character.PositionY = walkPacket.YCoordinate;
-                Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos
-                {
-                    X = Session.Character.PositionX,
-                    Y = Session.Character.PositionY
-                }, Session.CurrentMapInstance.Map.Grid);
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
-                Session.SendPacket(Session.Character.GenerateCond());
-                if (Session.Character != null)
-                {
-                    Session.Character.LastMove = DateTime.Now;
-
-                    Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s != null && s.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList()
-                        .ForEach(e =>
+                    if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(5) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
+                    {
+                        if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                         {
-                            e?.Events?.ToList().ForEach(evt => EventHelper.Instance?.RunEvent(evt));
-                        });
-                    Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s != null && s.InZone(Session.Character.PositionX, Session.Character.PositionY));
-                }
+                            Session.Character.MapX = walkPacket.XCoordinate;
+                            Session.Character.MapY = walkPacket.YCoordinate;
+                        }
+                        Session.Character.PositionX = walkPacket.XCoordinate;
+                        Session.Character.PositionY = walkPacket.YCoordinate;
 
-                Session.CurrentMapInstance?.OnMoveOnMapEvents?.ForEach(e =>
-                {
-                    EventHelper.Instance?.RunEvent(e);
-                });
-                Session.CurrentMapInstance?.OnMoveOnMapEvents?.RemoveAll(s => s != null);
-            }
-            else
-            {
-                Session.Disconnect();
+                        if (Session.Character.LastMonsterAggro.AddSeconds(5) > DateTime.Now)
+                        {
+                            Session.Character.UpdateBushFire();
+                        }
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
+                        Session.SendPacket(Session.Character.GenerateCond());
+                        Session.Character.LastMove = DateTime.Now;
+
+                        Session.CurrentMapInstance?.OnAreaEntryEvents?.Where(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY)).ToList().ForEach(e =>
+                        {
+                            e.Events.ToList().ForEach(evt => EventHelper.Instance.RunEvent(evt));
+                        });
+                        Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY));
+
+                        Session.CurrentMapInstance?.OnMoveOnMapEvents?.ForEach(e =>
+                        {
+                            EventHelper.Instance.RunEvent(e);
+                        });
+                        Session.CurrentMapInstance?.OnMoveOnMapEvents?.RemoveAll(s => s != null);
+                    }
+                    else
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("You shall not use hacks!"));
+                    }
+                }
             }
         }
 

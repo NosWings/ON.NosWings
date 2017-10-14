@@ -221,7 +221,9 @@ namespace OpenNos.GameObject.Helpers
                 case EventActionType.ONTARGET:
                     if (monster?.MoveEvent != null && monster.MoveEvent.InZone(monster.MapX, monster.MapY))
                     {
-                        ((ConcurrentBag<EventContainer>)evt.Parameter).ToList().ForEach(s => RunEvent(s, monster: monster));
+                        monster.MoveEvent = null;
+                        monster.Path = null;
+                        ((List<EventContainer>)evt.Parameter).ForEach(s => RunEvent(s, monster: monster));
                     }
                     break;
 
@@ -229,9 +231,6 @@ namespace OpenNos.GameObject.Helpers
                     ZoneEvent evt4 = (ZoneEvent)evt.Parameter;
                     if (monster != null)
                     {
-
-                        monster.FirstX = evt4.X;
-                        monster.FirstY = evt4.Y;
                         monster.MoveEvent = evt4;
                         monster.Path = BestFirstSearch.FindPath(new Node { X = monster.MapX, Y = monster.MapY }, new Node { X = evt4.X, Y = evt4.Y }, evt.MapInstance?.Map.Grid);
                     }
