@@ -93,10 +93,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         {
             while (_running)
             {
-                if (!_listenerSocket.Pending())
-                {
-                    continue;
-                }
                 try
                 {
                     Socket clientSocket = _listenerSocket.AcceptSocket();

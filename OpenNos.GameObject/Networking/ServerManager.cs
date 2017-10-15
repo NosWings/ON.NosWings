@@ -702,7 +702,7 @@ namespace OpenNos.GameObject
                         }
                     });
                 }
-                
+
                 session.Character.IsChangingMapInstance = false;
                 session.SendPacket(session.Character.GenerateMinimapPosition());
                 session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
@@ -1471,10 +1471,7 @@ namespace OpenNos.GameObject
 
         public void SaveAll()
         {
-            Parallel.ForEach(Sessions.Where(s => s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null), session =>
-            {
-                session.Character?.Save();
-            });
+            Parallel.ForEach(Sessions.Where(s => s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null), session => { session.Character?.Save(); });
             DAOFactory.BazaarItemDAO.RemoveOutDated();
         }
 
@@ -1695,8 +1692,6 @@ namespace OpenNos.GameObject
         {
             _groups = new ConcurrentDictionary<long, Group>();
 
-            Observable.Interval(TimeSpan.FromMinutes(15)).Subscribe(x => { SaveAllProcess(); });
-
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { Act4Process(); });
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { Act4ShipProcess(); });
@@ -1750,7 +1745,7 @@ namespace OpenNos.GameObject
             }
         }
 
-         public void Act4Process()
+        public void Act4Process()
         {
             MapInstance angelMapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == 132);
             MapInstance demonMapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == 133);
@@ -1782,17 +1777,6 @@ namespace OpenNos.GameObject
                 instance.Broadcast(monster.GenerateIn());
             }
 
-            Act4RaidType CreateRaid(FactionType faction)
-            {
-                MapInstance toundra = Act4Maps.FirstOrDefault(s => s.Map.MapId == 134);
-                FamilyList.ForEach(s =>
-                {
-                    // LOAD SCRIPTED INSTANCE TYPE 2
-                });
-                Act4RaidType raid = (Act4RaidType) RaidType;
-                return raid;
-            }
-
             if (Act4AngelStat.Percentage > 10000)
             {
                 Act4AngelStat.Mode = 1;
@@ -1806,7 +1790,7 @@ namespace OpenNos.GameObject
                 Act4AngelStat.Mode = 3;
                 Act4AngelStat.TotalTime = 3600;
 
-                switch (CreateRaid(FactionType.Angel))
+                switch ((Act4RaidType)RaidType)
                 {
                     case Act4RaidType.Morcos:
                         Act4AngelStat.IsMorcos = true;
@@ -1840,7 +1824,7 @@ namespace OpenNos.GameObject
                 Act4DemonStat.Mode = 3;
                 Act4DemonStat.TotalTime = 3600;
 
-                switch (CreateRaid(FactionType.Demon))
+                switch ((Act4RaidType)RaidType)
                 {
                     case Act4RaidType.Morcos:
                         Act4DemonStat.IsMorcos = true;
@@ -2045,8 +2029,7 @@ namespace OpenNos.GameObject
                         if (familyCharacter != null)
                         {
                             fami.Warehouse = new Inventory((Character) familyCharacter.Character);
-                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse)
-                                .ToList())
+                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
                             {
                                 inventory.CharacterId = familyCharacter.CharacterId;
                                 fami.Warehouse[inventory.Id] = (ItemInstance) inventory;
@@ -2280,20 +2263,6 @@ namespace OpenNos.GameObject
             try
             {
                 Parallel.ForEach(Sessions.Where(c => c.IsConnected), session => session.Character?.RefreshValidity());
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
-        // Server
-        private void SaveAllProcess()
-        {
-            try
-            {
-                Logger.Log.Info(Language.Instance.GetMessageFromKey("SAVING_ALL"));
-                SaveAll();
             }
             catch (Exception e)
             {

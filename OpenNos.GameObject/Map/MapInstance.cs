@@ -433,7 +433,6 @@ namespace OpenNos.GameObject
 
         private void RemoveMapItem()
         {
-            // take the data from list to remove it without having enumeration problems (ToList)
             try
             {
                 List<MapItem> dropsToRemove = DroppedList.Select(s => s.Value).Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
