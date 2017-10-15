@@ -274,7 +274,6 @@ namespace OpenNos.GameObject
         public List<string> GetMapItems()
         {
             List<string> packets = new List<string>();
-            // TODO: Parallelize getting of items of mapinstance
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
             ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));
             Monsters.ForEach(s =>
@@ -285,10 +284,19 @@ namespace OpenNos.GameObject
                     packets.Add(s.GenerateBoss());
                 }
             });
-            Npcs.ForEach(s => packets.Add(s.GenerateIn()));
+            Npcs.ForEach(s =>
+            {
+                packets.Add(s.GenerateIn());
+            });
             packets.AddRange(GenerateNpcShopOnMap());
-            Parallel.ForEach(DroppedList.Select(s => s.Value), session => packets.Add(session.GenerateIn()));
-            Buttons.ForEach(s => packets.Add(s.GenerateIn()));
+            Parallel.ForEach(DroppedList.Select(s => s.Value), session =>
+            {
+                packets.Add(session.GenerateIn());
+            });
+            Buttons.ForEach(s =>
+            {
+                packets.Add(s.GenerateIn());
+            });
             packets.AddRange(GenerateUserShops());
             packets.AddRange(GeneratePlayerShopOnMap());
             return packets;
