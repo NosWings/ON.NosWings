@@ -5889,7 +5889,11 @@ namespace OpenNos.GameObject
         private void RemoveBuff(int id)
         {
             Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
-            if (indicator == null || indicator.Start.AddSeconds(indicator.RemainingTime / 10) > DateTime.Now.AddSeconds(-2))
+            if (indicator == null)
+            {
+                return;
+            }
+            if (indicator.RemainingTime == -1 && indicator.Start.AddSeconds(indicator.RemainingTime / 10) > DateTime.Now.AddSeconds(-2))
             {
                 return;
             }
