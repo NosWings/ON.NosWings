@@ -653,7 +653,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    if (Buff.Any(s => s.Card.CardId == 340))
+                    if (Buff.Any(s => s.Card.CardId == 339))
                     {
                         Session.Character.RemoveBuff(339);
                     }
