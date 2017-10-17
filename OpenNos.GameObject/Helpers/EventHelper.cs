@@ -323,26 +323,12 @@ namespace OpenNos.GameObject.Helpers
                                         }
                                         else
                                         {
-                                            bool isAct4 = false;
-                                            short[] act4BoxVnum = {185, 999, 882, 942};
-
                                             foreach (Gift gift in grp.Raid?.GiftItems)
                                             {
-                                                foreach (short b in act4BoxVnum)
-                                                {
-                                                    if (gift.VNum == act4BoxVnum[b])
-                                                    {
-                                                        isAct4 = true;
-                                                    }
-                                                }
                                                 sbyte rare = 0;
-                                                if (gift.IsRandomRare && !isAct4)
+                                                if (gift.IsRandomRare)
                                                 {
                                                     rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
-                                                }
-                                                if (gift.IsRandomRare && isAct4)
-                                                {
-                                                    rare = (sbyte) ServerManager.Instance.RandomNumber(1, 7);
                                                 }
                                                 //TODO add random rarity for some object
                                                 sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
