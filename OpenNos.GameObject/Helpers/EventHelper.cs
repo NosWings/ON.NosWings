@@ -328,7 +328,18 @@ namespace OpenNos.GameObject.Helpers
                                                 sbyte rare = 0;
                                                 if (gift.IsRandomRare)
                                                 {
-                                                    rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
+                                                    switch (gift.VNum)
+                                                    {
+                                                        case 302:
+                                                            rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
+                                                            break;
+                                                        case 185:
+                                                        case 999:
+                                                        case 882:
+                                                        case 942:
+                                                            rare = (sbyte) ServerManager.Instance.RandomNumber(1, 7);
+                                                            break;
+                                                    }
                                                 }
                                                 //TODO add random rarity for some object
                                                 sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
