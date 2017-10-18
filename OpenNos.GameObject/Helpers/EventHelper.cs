@@ -178,6 +178,7 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.REMOVEMONSTERLOCKER:
+                    session = evt.MapInstance.Sessions.FirstOrDefault();
                     if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                     {
                         if (evt.MapInstance.MonsterLocker.Current > 0)
@@ -189,6 +190,7 @@ namespace OpenNos.GameObject.Helpers
                             evt.MapInstance.UnlockEvents.ToList().ForEach(s => RunEvent(s));
                             evt.MapInstance.UnlockEvents.Clear();
                         }
+                        evt.MapInstance.Broadcast(session?.Character?.Group?.GeneraterRaidmbf(evt.MapInstance));
                         break;
                     }
                     if (evt.MapInstance.InstanceBag.MonsterLocker.Current > 0)
@@ -203,6 +205,7 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.REMOVEBUTTONLOCKER:
+                    session = evt.MapInstance.Sessions.FirstOrDefault();
                     if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                     {
                         if (evt.MapInstance.ButtonLocker.Current > 0)
@@ -214,6 +217,7 @@ namespace OpenNos.GameObject.Helpers
                             evt.MapInstance.UnlockEvents.ToList().ForEach(s => RunEvent(s));
                             evt.MapInstance.UnlockEvents.Clear();
                         }
+                        evt.MapInstance.Broadcast(session?.Character?.Group?.GeneraterRaidmbf(evt.MapInstance));
                         break;
                     }
                     if (evt.MapInstance.InstanceBag.ButtonLocker.Current > 0)
