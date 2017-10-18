@@ -110,7 +110,7 @@ namespace OpenNos.GameObject
                                         EventHelper.Instance.RunEvent(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     break;
                                 default:
-                                    if (monster.OnDeathEvents.All(s => s.EventActionType != EventActionType.SPAWNMONSTERS))
+                                    if (monster.OnDeathEvents.All(s => s?.EventActionType != EventActionType.SPAWNMONSTERS))
                                     {
                                         monster.OnDeathEvents.Add(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     }
