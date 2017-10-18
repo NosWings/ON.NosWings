@@ -45,6 +45,7 @@ namespace OpenNos.GameObject
             _random = new Random();
             Map = map;
             MapInstanceId = guid;
+            UnlockEvents = new ConcurrentBag<EventContainer>();
             ScriptedInstances = new List<ScriptedInstance>();
             OnCharacterDiscoveringMapEvents = new List<Tuple<EventContainer, List<long>>>();
             OnMoveOnMapEvents = new List<EventContainer>();
@@ -59,6 +60,8 @@ namespace OpenNos.GameObject
             Portals = new List<Portal>();
             UserShops = new Dictionary<long, MapShop>();
             MapDesignObjects = new ConcurrentBag<MapDesignObject>();
+            MonsterLocker = new Locker();
+            ButtonLocker = new Locker();
             StartLife();
         }
 
@@ -86,6 +89,8 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public Locker ButtonLocker { get; set; }
+
         public List<MapButton> Buttons { get; set; }
 
         public Clock Clock { get; set; }
@@ -95,6 +100,8 @@ namespace OpenNos.GameObject
         public int DropRate { get; set; }
 
         public ConcurrentBag<MapDesignObject> MapDesignObjects { get; set; }
+
+        public Locker MonsterLocker { get; set; }
 
         public InstanceBag InstanceBag { get; set; }
 
@@ -165,6 +172,8 @@ namespace OpenNos.GameObject
         public bool ShopAllowed { get; }
 
         public List<ScriptedInstance> ScriptedInstances { get; }
+
+        public ConcurrentBag<EventContainer> UnlockEvents { get; set; }
 
         public Dictionary<long, MapShop> UserShops { get; }
 

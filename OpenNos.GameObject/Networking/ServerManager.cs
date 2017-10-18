@@ -437,7 +437,7 @@ namespace OpenNos.GameObject
                             session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
                             session.Character.Group?.Characters.ToList().ForEach(player =>
                             {
-                                player.SendPacket(player.Character.Group.GeneraterRaidmbf());
+                                player.SendPacket(player.Character.Group.GeneraterRaidmbf(player.CurrentMapInstance));
                                 player.SendPacket(player.Character.Group.GenerateRdlst());
                             });
                             Task.Factory.StartNew(async () =>
@@ -453,7 +453,7 @@ namespace OpenNos.GameObject
                             {
                                 grp.Characters.Where(s => s != null).ToList().ForEach(s =>
                                 {
-                                    s.SendPacket(s.Character?.Group?.GeneraterRaidmbf());
+                                    s.SendPacket(s.Character?.Group?.GeneraterRaidmbf(s.CurrentMapInstance));
                                     s.SendPacket(s.Character?.Group?.GenerateRdlst());
                                 });
                                 grp.LeaveGroup(session);
@@ -596,6 +596,10 @@ namespace OpenNos.GameObject
                 if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
                 {
                     session.SendPacket(session.Character.GenerateFc());
+                }
+                else if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                {
+                    session.SendPacket(session.Character?.Group?.GeneraterRaidmbf(session.CurrentMapInstance));
                 }
                 if (mapInstanceId == session.Character.Family?.Act4Raid?.MapInstanceId || mapInstanceId == session.Character.Family?.Act4RaidBossMap?.MapInstanceId)
                 {
