@@ -75,7 +75,7 @@ namespace OpenNos.Handler
                     grp?.Characters?.ToList().ForEach(s =>
                     {
                         s.SendPacket(grp.GenerateRdlst());
-                        s.SendPacket(grp.GeneraterRaidmbf());
+                        s.SendPacket(grp.GeneraterRaidmbf(s.CurrentMapInstance));
                         s.SendPacket(s.Character.GenerateRaid(0, false));
                         if (!grp.IsLeader(s))
                         {

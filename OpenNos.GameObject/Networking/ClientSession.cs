@@ -181,7 +181,7 @@ namespace OpenNos.GameObject
                     {
                         Character?.Group?.Characters.ToList().ForEach(s =>
                         {
-                            s.SendPacket(s.Character.Group.GeneraterRaidmbf());
+                            s.SendPacket(s.Character?.Group?.GeneraterRaidmbf(s.CurrentMapInstance));
                             s.SendPacket(s.Character?.Group?.GenerateRdlst());
                         });
                     }

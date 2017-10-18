@@ -159,6 +159,11 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case "OnLockerOpen":
+                            if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                            {
+                                even.Item2.ToList().ForEach(s => evt.MapInstance.UnlockEvents.Add(s));
+                                break;
+                            }
                             even.Item2.ToList().ForEach(s => evt.MapInstance.InstanceBag.UnlockEvents.Add(s));
                             break;
                     }
@@ -173,6 +178,19 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.REMOVEMONSTERLOCKER:
+                    if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        if (evt.MapInstance.MonsterLocker.Current > 0)
+                        {
+                            evt.MapInstance.MonsterLocker.Current--;
+                        }
+                        if (evt.MapInstance.MonsterLocker.Current == 0 && evt.MapInstance.ButtonLocker.Current == 0)
+                        {
+                            evt.MapInstance.UnlockEvents.ToList().ForEach(s => RunEvent(s));
+                            evt.MapInstance.UnlockEvents.Clear();
+                        }
+                        break;
+                    }
                     if (evt.MapInstance.InstanceBag.MonsterLocker.Current > 0)
                     {
                         evt.MapInstance.InstanceBag.MonsterLocker.Current--;
@@ -185,6 +203,19 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.REMOVEBUTTONLOCKER:
+                    if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        if (evt.MapInstance.ButtonLocker.Current > 0)
+                        {
+                            evt.MapInstance.ButtonLocker.Current--;
+                        }
+                        if (evt.MapInstance.MonsterLocker.Current == 0 && evt.MapInstance.ButtonLocker.Current == 0)
+                        {
+                            evt.MapInstance.UnlockEvents.ToList().ForEach(s => RunEvent(s));
+                            evt.MapInstance.UnlockEvents.Clear();
+                        }
+                        break;
+                    }
                     if (evt.MapInstance.InstanceBag.ButtonLocker.Current > 0)
                     {
                         evt.MapInstance.InstanceBag.ButtonLocker.Current--;
@@ -242,11 +273,23 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.SETMONSTERLOCKERS:
+                    if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        evt.MapInstance.MonsterLocker.Current = Convert.ToByte(evt.Parameter);
+                        evt.MapInstance.MonsterLocker.Initial = Convert.ToByte(evt.Parameter);
+                        break;
+                    }
                     evt.MapInstance.InstanceBag.MonsterLocker.Current = Convert.ToByte(evt.Parameter);
                     evt.MapInstance.InstanceBag.MonsterLocker.Initial = Convert.ToByte(evt.Parameter);
                     break;
 
                 case EventActionType.SETBUTTONLOCKERS:
+                    if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        evt.MapInstance.ButtonLocker.Current = Convert.ToByte(evt.Parameter);
+                        evt.MapInstance.ButtonLocker.Initial = Convert.ToByte(evt.Parameter);
+                        break;
+                    }
                     evt.MapInstance.InstanceBag.ButtonLocker.Current = Convert.ToByte(evt.Parameter);
                     evt.MapInstance.InstanceBag.ButtonLocker.Initial = Convert.ToByte(evt.Parameter);
                     break;
@@ -487,7 +530,7 @@ namespace OpenNos.GameObject.Helpers
                     ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();
                     if (cl?.Character != null)
                     {
-                        ServerManager.Instance.Broadcast(cl, cl.Character?.Group?.GeneraterRaidmbf(), ReceiverType.Group);
+                        evt.MapInstance.Broadcast(cl.Character?.Group?.GeneraterRaidmbf(evt.MapInstance));
                         ServerManager.Instance.Broadcast(cl, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEW_MISSION"), 0), ReceiverType.Group);
                     }
                     break;

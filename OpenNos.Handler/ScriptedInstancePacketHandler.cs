@@ -303,7 +303,7 @@ namespace OpenNos.Handler
                     ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Group.Raid.FirstMap.MapInstanceId, session.Character.Group.Raid.StartX,
                         session.Character.Group.Raid.StartY);
                     session.SendPacket("raidbf 0 0 25");
-                    session.SendPacket(session.Character.Group.GeneraterRaidmbf());
+                    session.SendPacket(session.Character.Group.GeneraterRaidmbf(session.CurrentMapInstance));
                     session.SendPacket(session.Character.GenerateRaid(5, false));
                     session.SendPacket(session.Character.GenerateRaid(4, false));
                     session.SendPacket(session.Character.GenerateRaid(3, false));

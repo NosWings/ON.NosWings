@@ -157,9 +157,9 @@ namespace OpenNos.GameObject
             return Characters.OrderBy(s => s.Character.LastGroupJoin).ElementAt(0) == session;
         }
 
-        public string GeneraterRaidmbf()
+        public string GeneraterRaidmbf(MapInstance mapInstance)
         {
-            return $"raidmbf {Raid?.FirstMap?.InstanceBag.MonsterLocker.Initial} {Raid?.FirstMap?.InstanceBag.MonsterLocker.Current} {Raid?.FirstMap?.InstanceBag.ButtonLocker.Initial} {Raid?.FirstMap?.InstanceBag.ButtonLocker.Current} {Raid?.FirstMap?.InstanceBag.Lives - Raid?.FirstMap?.InstanceBag.DeadList.Count()} {Raid?.FirstMap?.InstanceBag.Lives} 25";
+            return $"raidmbf {mapInstance.MonsterLocker.Initial} {mapInstance.MonsterLocker.Current} {mapInstance.ButtonLocker.Initial} {mapInstance.ButtonLocker.Current} {Raid?.FirstMap?.InstanceBag.Lives - Raid?.FirstMap?.InstanceBag.DeadList.Count()} {Raid?.FirstMap?.InstanceBag.Lives} 25";
         }
         #endregion
     }
