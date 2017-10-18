@@ -21,11 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenNos.DAL;
-using OpenNos.DAL.EF;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using System.Reactive.Linq;
-using Microsoft.SqlServer.Server;
 using OpenNos.PathFinder;
 using static OpenNos.Domain.BCardType;
 

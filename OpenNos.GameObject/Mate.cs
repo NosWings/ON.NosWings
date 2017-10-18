@@ -39,7 +39,7 @@ namespace OpenNos.GameObject
 
         public Mate()
         {
-            Buff = new ConcurrentBag<Buff>();
+            //Buff = new ConcurrentBag<Buff>();
         }
 
         public Mate(Character owner, NpcMonster npcMonster, byte level, MateType matetype)
@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
             CharacterId = owner.CharacterId;
             Owner = owner;
             GeneateMateTransportId();
-            Buff = new ConcurrentBag<Buff>();
+            //Buff = new ConcurrentBag<Buff>();
         }
 
         #endregion
@@ -71,9 +71,14 @@ namespace OpenNos.GameObject
 
         public ItemInstance BootsInstance { get; set; }
 
-        public ConcurrentBag<Buff> Buff { get; internal set; }
+        public ConcurrentBag<Buff> Buff
+        {
+            get => Buff ?? (Buff = new ConcurrentBag<Buff>());
 
-        public short CloseDefence { get; set; }
+            set => Buff = value;
+        }
+
+        short CloseDefence { get; set; }
 
         public short Concentrate { get; set; }
 
@@ -103,15 +108,15 @@ namespace OpenNos.GameObject
 
         public NpcMonster Monster
         {
-            get { return _monster ?? ServerManager.Instance.GetNpc(NpcMonsterVNum);}
+            get { return _monster ?? ServerManager.Instance.GetNpc(NpcMonsterVNum); }
 
-            set { _monster = value;}
+            set { _monster = value; }
         }
 
         public Character Owner
         {
-            get { return _owner ?? ServerManager.Instance.GetSessionByCharacterId(CharacterId).Character;}
-            set { _owner = value;}
+            get { return _owner ?? ServerManager.Instance.GetSessionByCharacterId(CharacterId).Character; }
+            set { _owner = value; }
         }
 
         public byte PetId { get; set; }
@@ -127,8 +132,8 @@ namespace OpenNos.GameObject
             get
             {
                 //byte bonusSpeed = (byte)(GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovementNegated)[0]
-                 //                      + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedIncreased)[0]
-                   //                    + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedDecreased)[0]);
+                //                      + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedIncreased)[0]
+                //                    + GetBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementSpeedDecreased)[0]);
 
                 if (Monster.Speed > 59)
                 {
@@ -231,7 +236,7 @@ namespace OpenNos.GameObject
             switch (MateType)
             {
                 case MateType.Partner:
-                    return $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(WeaponInstance != null ? $"{WeaponInstance.ItemVNum}.{WeaponInstance.Rare}.{WeaponInstance.Upgrade}" : "-1")} {(ArmorInstance != null ? $"{ArmorInstance.ItemVNum}.{ArmorInstance.Rare}.{ArmorInstance.Upgrade}" : "-1")} {(GlovesInstance != null ? $"{GlovesInstance.ItemVNum}.0.0" : "-1")} {(BootsInstance != null ? $"{BootsInstance.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {(IsUsingSp ? "SP_NAME" : Name.Replace(' ', '^'))} {(IsUsingSp && SpInstance != null ? SpInstance.Item.Morph : Skin != 0 ? Skin : -1)} {(IsSummonable ? 1 : 0)} {(SpInstance != null ? $"{SpInstance.ItemVNum}.100" : "-1" )} -1 -1 -1";
+                    return $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(WeaponInstance != null ? $"{WeaponInstance.ItemVNum}.{WeaponInstance.Rare}.{WeaponInstance.Upgrade}" : "-1")} {(ArmorInstance != null ? $"{ArmorInstance.ItemVNum}.{ArmorInstance.Rare}.{ArmorInstance.Upgrade}" : "-1")} {(GlovesInstance != null ? $"{GlovesInstance.ItemVNum}.0.0" : "-1")} {(BootsInstance != null ? $"{BootsInstance.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {(IsUsingSp ? "SP_NAME" : Name.Replace(' ', '^'))} {(IsUsingSp && SpInstance != null ? SpInstance.Item.Morph : Skin != 0 ? Skin : -1)} {(IsSummonable ? 1 : 0)} {(SpInstance != null ? $"{SpInstance.ItemVNum}.100" : "-1")} -1 -1 -1";
 
                 case MateType.Pet:
                     return $"sc_p {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.Element} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";
@@ -253,7 +258,7 @@ namespace OpenNos.GameObject
                 {
                     if (Level + 1 < Owner.Level)
                     {
-                        Experience = (long) (Experience - XpLoad());
+                        Experience = (long)(Experience - XpLoad());
                         Level++;
                         Hp = MaxHp;
                         Mp = MaxMp;
@@ -271,29 +276,29 @@ namespace OpenNos.GameObject
             int hp = 0;
 
             //multiplicator += GetBuff(CardType.BearSpirit, (byte) AdditionalTypes.BearSpirit.IncreaseMaximumHP)[0] / 100D;
-           // multiplicator += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumHP)[0] / 100D;
-           // hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0];
+            // multiplicator += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumHP)[0] / 100D;
+            // hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0];
             //hp -= GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
             //hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
             // Monster Bonus HP
-            hp += (int) (Monster.MaxHP - MateHelper.Instance.HpData[Monster.Level]);
+            hp += (int)(Monster.MaxHP - MateHelper.Instance.HpData[Monster.Level]);
 
-            return (int) ((MateHelper.Instance.HpData[Level] + hp) * multiplicator);
+            return (int)((MateHelper.Instance.HpData[Level] + hp) * multiplicator);
         }
 
         public int MpLoad()
         {
             int mp = 0;
             double multiplicator = 1.0;
-          //  multiplicator += GetBuff(CardType.BearSpirit, (byte) AdditionalTypes.BearSpirit.IncreaseMaximumMP)[0] / 100D;
-           // multiplicator += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumMP)[0] / 100D;
-         //   mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0];
-          //  mp -= GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
-           // mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
+            //  multiplicator += GetBuff(CardType.BearSpirit, (byte) AdditionalTypes.BearSpirit.IncreaseMaximumMP)[0] / 100D;
+            // multiplicator += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumMP)[0] / 100D;
+            //   mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0];
+            //  mp -= GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
+            // mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
             // Monster Bonus MP
             mp += (int)(Monster.MaxMP - (Monster.Race == 0 ? MateHelper.Instance.PrimaryMpData[Monster.Level] : MateHelper.Instance.SecondaryMpData[Monster.Level]));
 
-            return (int) (((Monster.Race == 0 ? MateHelper.Instance.PrimaryMpData[Level] : MateHelper.Instance.SecondaryMpData[Level]) + mp) * multiplicator);
+            return (int)(((Monster.Race == 0 ? MateHelper.Instance.PrimaryMpData[Level] : MateHelper.Instance.SecondaryMpData[Level]) + mp) * multiplicator);
         }
 
         private List<ItemInstance> GetInventory()
@@ -357,70 +362,40 @@ namespace OpenNos.GameObject
                 return 0;
             }
         }
-
-       /* public int[] GetBuff(CardType type, byte subtype)
-        {
-            int value1 = 0;
-            int value2 = 0;
-
-            foreach (Buff buff in Buff.Where(s => s?.Card?.BCards != null))
-            {
-                foreach (BCard entry in buff.Card.BCards.Where(s =>
-                    s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
-                    (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
-                {
-                    if (entry.IsLevelScaled)
-                    {
-                        if (entry.IsLevelDivided)
-                        {
-                            value1 += buff.Level / entry.FirstData;
-                        }
-                        else
-                        {
-                            value1 += entry.FirstData * buff.Level;
-                        }
-                    }
-                    else
-                    {
-                        value1 += entry.FirstData;
-                    }
-                    value2 += entry.SecondData;
-                }
-            }
-            return new[] { value1, value2 };
-        }
-
-        public void AddBuff(Buff indicator)
-        {
-            if (indicator?.Card == null)
-            {
-                return;
-            }
-            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
-            indicator.RemainingTime = indicator.Card.Duration;
-            indicator.Start = DateTime.Now;
-            Buff.Add(indicator);
-            indicator.Card.BCards.ForEach(c => c.ApplyBCards(this));
-            if (indicator.Card.EffectId > 0)
-            {
-                GenerateEff(indicator.Card.EffectId);
-            }
-            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o => { RemoveBuff(indicator.Card.CardId); });
-        }
-
-        private void RemoveBuff(int id)
-        {
-            Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
-            if (indicator == null)
-            {
-                return;
-            }
-            if (Buff.Contains(indicator))
-            {
-                Buff = Buff.Where(s => s.Card.CardId != id);
-            }
-        }*/
         
+
+         public void AddBuff(Buff indicator)
+         {
+             /*if (indicator?.Card == null)
+             {
+                 return;
+             }
+             Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+             indicator.RemainingTime = indicator.Card.Duration;
+             indicator.Start = DateTime.Now;
+             Buff.Add(indicator);
+             indicator.Card.BCards.ForEach(c => c.ApplyBCards(this));
+             if (indicator.Card.EffectId > 0)
+             {
+                 GenerateEff(indicator.Card.EffectId);
+             }
+             Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o => { RemoveBuff(indicator.Card.CardId); });
+             */
+         }
+
+         private void RemoveBuff(int id)
+         {
+             /*Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
+             if (indicator == null)
+             {
+                 return;
+             }
+             if (Buff.Contains(indicator))
+             {
+                 Buff = Buff.Where(s => s.Card.CardId != id);
+             }*/
+         }
+
         #endregion
     }
 }

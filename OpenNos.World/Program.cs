@@ -178,9 +178,7 @@ namespace OpenNos.World
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();
             Thread.Sleep(5000);
-
-            Process.Start(Process.GetCurrentProcess().ProcessName);
-            Environment.Exit(1);
+            Process.Start("OpenNos.World.exe");
         }
 
         private static void RegisterMappings()

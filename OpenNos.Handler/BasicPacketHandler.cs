@@ -1121,11 +1121,10 @@ namespace OpenNos.Handler
             if (ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
             {
                 Session.SendPacket(Session.Character.GenerateSay("----------[NosWings : Reborn]----------", 10));
-                Session.SendPacket(Session.Character.GenerateSay($"Xp : {ServerManager.Instance.XpRate}", 11));
+                Session.SendPacket(Session.Character.GenerateSay($"Xp : 10", 11));
                 Session.SendPacket(Session.Character.GenerateSay($"Drop : {ServerManager.Instance.DropRate}", 11));
                 Session.SendPacket(Session.Character.GenerateSay($"Or : {ServerManager.Instance.GoldRate}", 11));
                 Session.SendPacket(Session.Character.GenerateSay($"XpFée : {ServerManager.Instance.FairyXpRate}", 11));
-                Session.SendPacket(Session.Character.GenerateSay($"Discord : http://discord.noswings.fr", 11));
                 Session.SendPacket(Session.Character.GenerateSay($"Site : https://noswings.fr/", 11));
                 Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
             }
@@ -1225,6 +1224,7 @@ namespace OpenNos.Handler
                     Session.Character.ChangeFaction((FactionType)Session.Character.Family.FamilyFaction);
                 }
                 Session.SendPacket(Session.Character.GenerateGInfo());
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
                 Session.SendPackets(Session.Character.GetFamilyHistory());
                 Session.SendPacket(Session.Character.GenerateFamilyMember());
                 Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
@@ -1234,7 +1234,6 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage));
                 }
             }
-            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
 
             IEnumerable<PenaltyLogDTO> warning = DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Character.AccountId).Where(p => p.Penalty == PenaltyType.Warning);
             IEnumerable<PenaltyLogDTO> penaltyLogDtos = warning as IList<PenaltyLogDTO> ?? warning.ToList();

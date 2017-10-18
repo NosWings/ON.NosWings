@@ -11,7 +11,6 @@ namespace OpenNos.Master.Server.Controllers
     public class MailController : ApiController
     {
         // POST /mail 
-        [AuthorizeRole(AuthorityType.GameMaster)]
         public void Post([FromBody]MailPostParameter mail)
         {
             MailDTO mail2 = new MailDTO
