@@ -17,7 +17,7 @@ namespace OpenNos.GameObject.CommandPackets
         public byte? Design { get; set; }
 
         [PacketIndex(2)]
-        public byte? Upgrade { get; set; }
+        public short? Upgrade { get; set; }
 
         public static string ReturnHelp()
         {

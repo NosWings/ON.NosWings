@@ -36,9 +36,9 @@ namespace OpenNos.Data
 
         public bool IsRareRandom { get; set; }
 
-        public byte MinimumOriginalItemRare { get; set; }
+        public short MinimumOriginalItemRare { get; set; }
 
-        public byte MaximumOriginalItemRare { get; set; }
+        public short MaximumOriginalItemRare { get; set; }
 
         public bool IsSuperReward { get; set; }
 

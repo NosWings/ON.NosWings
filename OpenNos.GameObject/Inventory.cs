@@ -165,7 +165,7 @@ namespace OpenNos.GameObject
             return invcopy;
         }
 
-        public List<ItemInstance> AddNewToInventory(short vnum, byte amount = 1, InventoryType? type = null, sbyte rare = 0, byte upgrade = 0, byte design = 0)
+        public List<ItemInstance> AddNewToInventory(short vnum, byte amount = 1, InventoryType? type = null, sbyte rare = 0, short upgrade = 0, byte design = 0)
         {
             if (Owner == null)
             {
@@ -173,7 +173,7 @@ namespace OpenNos.GameObject
             }
             ItemInstance newItem = InstantiateItemInstance(vnum, Owner.CharacterId, amount);
             newItem.Rare = rare;
-            newItem.Upgrade = upgrade;
+            newItem.Upgrade = (byte)upgrade;
             newItem.Design = design;
             if (newItem.Rare != 0 && newItem is WearableInstance wearable)
             {

@@ -47,9 +47,9 @@ namespace OpenNos.DAL.EF
 
         public bool IsRareRandom { get; set; }
 
-        public byte MinimumOriginalItemRare { get; set; }
+        public short MinimumOriginalItemRare { get; set; }
 
-        public byte MaximumOriginalItemRare { get; set; }
+        public short MaximumOriginalItemRare { get; set; }
 
         public virtual Item ItemGenerated { get; set; }
 

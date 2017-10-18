@@ -1216,7 +1216,8 @@ namespace OpenNos.Handler
                 short vnum = createItemPacket.VNum;
                 sbyte rare = 0;
                 short boxEffect = 999;
-                byte upgrade = 0, amount = 1, design = 0;
+                byte amount = 1, design = 0;
+                short upgrade = 0;
                 if (vnum == 1046)
                 {
                     return; // cannot create gold as item, use $Gold instead
@@ -1243,7 +1244,7 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                design = createItemPacket.Upgrade.Value;
+                                design = (byte)createItemPacket.Upgrade.Value;
                             }
                             if (iteminfo.EquipmentSlot != EquipmentType.Sp && upgrade == 0 && iteminfo.BasicUpgrade != 0)
                             {
