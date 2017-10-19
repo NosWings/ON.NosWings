@@ -820,11 +820,8 @@ namespace OpenNos.GameObject.Helpers
 
                 object generatedOption = possibleOptions[_rand.Next(possibleOptions.Count)];
 
-                if (ShellType[w].Count <= g + 1)
-                {
-                    continue;
-                }
-                if ((int) ShellType[w][g + 1] != 1 && _rand.Next(2) != 0)
+                int? shellTyp = (int?)ShellType[w][g + 1];
+                if (shellTyp.HasValue && shellTyp.Value != 1 && _rand.Next(2) != 0)
                 {
                     continue;
                 }
