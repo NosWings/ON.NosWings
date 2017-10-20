@@ -61,7 +61,7 @@ namespace OpenNos.Handler
             long accountId = Session.Account.AccountId;
             byte slot = characterCreatePacket.Slot;
             string characterName = characterCreatePacket.Name;
-            if (slot > 2 || DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) != null)
+            if (slot > 2 || DaoFactory.CharacterDao.LoadBySlot(accountId, slot) != null)
             {
                 return;
             }
@@ -72,7 +72,7 @@ namespace OpenNos.Handler
             Regex rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B\u002E]*$");
             if (rg.Matches(characterName).Count == 1)
             {
-                CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
+                CharacterDTO character = DaoFactory.CharacterDao.LoadByName(characterName);
                 if (character == null || character.State == CharacterState.Inactive)
                 {
                     if (characterCreatePacket.Slot > 2)
@@ -102,7 +102,7 @@ namespace OpenNos.Handler
                         State = CharacterState.Active
                     };
 
-                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+                    SaveResult insertResult = DaoFactory.CharacterDao.InsertOrUpdate(ref newCharacter);
                     CharacterSkillDTO sk1 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 200};
                     CharacterSkillDTO sk2 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 201};
                     CharacterSkillDTO sk3 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 209};
@@ -135,13 +135,13 @@ namespace OpenNos.Handler
                         Slot = 3,
                         Pos = 1
                     };
-                    DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst1);
-                    DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst2);
-                    DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst3);
-                    DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst4);
-                    DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk1);
-                    DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk2);
-                    DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
+                    DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst1);
+                    DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst2);
+                    DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst3);
+                    DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst4);
+                    DaoFactory.CharacterSkillDao.InsertOrUpdate(sk1);
+                    DaoFactory.CharacterSkillDao.InsertOrUpdate(sk2);
+                    DaoFactory.CharacterSkillDao.InsertOrUpdate(sk3);
 
                     Inventory startupInventory = new Inventory((Character) newCharacter);
                     startupInventory.AddNewToInventory(1, 1, InventoryType.Wear, 5, 5);
@@ -150,7 +150,7 @@ namespace OpenNos.Handler
                     startupInventory.AddNewToInventory(2024, 10, InventoryType.Etc);
                     startupInventory.AddNewToInventory(2081, 1, InventoryType.Etc);
                     startupInventory.AddNewToInventory(1907, 1, InventoryType.Main);
-                    startupInventory.Select(s => s.Value).ToList().ForEach(i => DAOFactory.IteminstanceDAO.InsertOrUpdate(i));
+                    startupInventory.Select(s => s.Value).ToList().ForEach(i => DaoFactory.IteminstanceDao.InsertOrUpdate(i));
 
                     LoadCharacters(characterCreatePacket.OriginalContent);
                 }
@@ -176,7 +176,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            AccountDTO account = DAOFactory.AccountDAO.LoadById(Session.Account.AccountId);
+            AccountDTO account = DaoFactory.AccountDao.LoadById(Session.Account.AccountId);
             if (account == null)
             {
                 return;
@@ -184,13 +184,13 @@ namespace OpenNos.Handler
 
             if (account.Password.ToLower() == EncryptionBase.Sha512(characterDeletePacket.Password))
             {
-                CharacterDTO character = DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, characterDeletePacket.Slot);
+                CharacterDTO character = DaoFactory.CharacterDao.LoadBySlot(account.AccountId, characterDeletePacket.Slot);
                 if (character == null)
                 {
                     return;
                 }
-                DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(character.CharacterId));
-                DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, characterDeletePacket.Slot);
+                DaoFactory.GeneralLogDao.SetCharIdNull(Convert.ToInt64(character.CharacterId));
+                DaoFactory.CharacterDao.DeleteByPrimaryKey(account.AccountId, characterDeletePacket.Slot);
                 LoadCharacters(string.Empty);
             }
             else
@@ -220,11 +220,11 @@ namespace OpenNos.Handler
                     if (loginPacketParts.Length > 7 && loginPacketParts[4] == "DAC" && loginPacketParts[8] == "CrossServerAuthenticate")
                     {
                         isCrossServerLogin = true;
-                        account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[5]);
+                        account = DaoFactory.AccountDao.LoadByName(loginPacketParts[5]);
                     }
                     else
                     {
-                        account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+                        account = DaoFactory.AccountDao.LoadByName(loginPacketParts[4]);
                     }
                 }
                 try
@@ -248,7 +248,7 @@ namespace OpenNos.Handler
                     {
                         if (account.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])) || isCrossServerLogin)
                         {
-                            PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(account.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
+                            PenaltyLogDTO penalty = DaoFactory.PenaltyLogDao.LoadByAccount(account.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
                             if (penalty != null)
                             {
                                 Session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, penalty.DateEnd.ToString("yyyy-MM-dd-HH:mm"))}");
@@ -312,14 +312,14 @@ namespace OpenNos.Handler
             }
             else
             {
-                IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
+                IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadByAccount(Session.Account.AccountId);
                 Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.Account.Name);
 
                 // load characterlist packet for each character in CharacterDTO
                 Session.SendPacket("clist_start 0");
                 foreach (CharacterDTO character in characters)
                 {
-                    IEnumerable<ItemInstanceDTO> inventory = DAOFactory.IteminstanceDAO.LoadByType(character.CharacterId, InventoryType.Wear);
+                    IEnumerable<ItemInstanceDTO> inventory = DaoFactory.IteminstanceDao.LoadByType(character.CharacterId, InventoryType.Wear);
 
                     WearableInstance[] equipment = new WearableInstance[16];
                     foreach (ItemInstanceDTO equipmentEntry in inventory)
@@ -329,7 +329,7 @@ namespace OpenNos.Handler
                         equipment[(short) currentInstance.Item.EquipmentSlot] = currentInstance;
                     }
                     string petlist = string.Empty;
-                    List<MateDTO> mates = DAOFactory.MateDAO.LoadByCharacterId(character.CharacterId).ToList();
+                    List<MateDTO> mates = DaoFactory.MateDao.LoadByCharacterId(character.CharacterId).ToList();
                     for (int i = 0; i < 26; i++)
                     {
                         //0.2105.1102.319.0.632.0.333.0.318.0.317.0.9.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1
@@ -355,11 +355,11 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                if (!(DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) is Character character))
+                if (!(DaoFactory.CharacterDao.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) is Character character))
                 {
                     return;
                 }
-                character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
+                character.GeneralLogs = DaoFactory.GeneralLogDao.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
                 character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(character.MapId);
                 character.PositionX = character.MapX;
                 character.PositionY = character.MapY;
@@ -378,12 +378,12 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Mp = (int)Session.Character.MpLoad();
                 }
-                Session.Character.Respawns = DAOFactory.RespawnDAO.LoadByCharacter(Session.Character.CharacterId).ToList();
-                Session.Character.StaticBonusList = DAOFactory.StaticBonusDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();
+                Session.Character.Respawns = DaoFactory.RespawnDao.LoadByCharacter(Session.Character.CharacterId).ToList();
+                Session.Character.StaticBonusList = DaoFactory.StaticBonusDao.LoadByCharacterId(Session.Character.CharacterId).ToList();
                 Session.Character.LoadInventory();
                 Session.Character.LoadQuicklists();
                 Session.Character.GenerateMiniland();
-                DAOFactory.MateDAO.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
+                DaoFactory.MateDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
                 {
                     Mate mate = (Mate)s;
                     mate.Owner = Session.Character;

@@ -453,7 +453,7 @@ namespace OpenNos.GameObject
                             session.Character.Gold -= 500000;
                             session.SendPacket(session.Character.GenerateGold());
                             FamilyDTO fam = session.Character.Family;
-                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                            DaoFactory.FamilyDao.InsertOrUpdate(ref fam);
                             ServerManager.Instance.FamilyRefresh(session.Character.Family.FamilyId);
                         }
                         else
@@ -478,7 +478,7 @@ namespace OpenNos.GameObject
                             session.Character.Gold -= 2000000;
                             session.SendPacket(session.Character.GenerateGold());
                             FamilyDTO fam = session.Character.Family;
-                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                            DaoFactory.FamilyDao.InsertOrUpdate(ref fam);
                             ServerManager.Instance.FamilyRefresh(session.Character.Family.FamilyId);
                         }
                         else
@@ -503,7 +503,7 @@ namespace OpenNos.GameObject
                             session.Character.Gold -= 5000000;
                             session.SendPacket(session.Character.GenerateGold());
                             FamilyDTO fam = session.Character.Family;
-                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                            DaoFactory.FamilyDao.InsertOrUpdate(ref fam);
                             ServerManager.Instance.FamilyRefresh(session.Character.Family.FamilyId);
                         }
                         else
@@ -528,7 +528,7 @@ namespace OpenNos.GameObject
                             session.Character.Gold -= 10000000;
                             session.SendPacket(session.Character.GenerateGold());
                             FamilyDTO fam = session.Character.Family;
-                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                            DaoFactory.FamilyDao.InsertOrUpdate(ref fam);
                             ServerManager.Instance.FamilyRefresh(session.Character.Family.FamilyId);
                         }
                         else

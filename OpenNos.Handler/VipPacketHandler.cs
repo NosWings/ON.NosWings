@@ -12,20 +12,26 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.Domain
+using OpenNos.Core;
+using OpenNos.GameObject;
+
+namespace OpenNos.Handler
 {
-    public enum AuthorityType : short
+    public class VipPacketHandler : IPacketHandler
     {
-        Closed = -3,
-        Banned = -2,
-        Unconfirmed = -1,
-        User = 0,
-        Vip = 1,
-        VipPlus = 2,
-        VipPlusPlus = 3,
-        Moderator = 4,
-        GameMaster = 5,
-        SuperGameMaster = 6,
-        Administrator = 7,
+        #region Instantiation
+
+        public VipPacketHandler(ClientSession session)
+        {
+            Session = session;
+        }
+
+        #endregion
+
+        #region Properties
+
+        private ClientSession Session { get; }
+
+        #endregion
     }
 }

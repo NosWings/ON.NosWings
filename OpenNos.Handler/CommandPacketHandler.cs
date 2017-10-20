@@ -177,10 +177,10 @@ namespace OpenNos.Handler
                         Session.SendPacket("[Types] : Dignity Stats Class");
                         break;
                     case "Name":
-                        if (DAOFactory.CharacterDAO.LoadByName(characterPacket.Value) != null) return;
+                        if (DaoFactory.CharacterDao.LoadByName(characterPacket.Value) != null) return;
                         CharacterDTO character = session.Character;
                         character.Name = characterPacket.Value;
-                        DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
+                        DaoFactory.CharacterDao.InsertOrUpdate(ref character);
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
                         break;
                     case "Level":
@@ -225,9 +225,9 @@ namespace OpenNos.Handler
                                 Language.Instance.GetMessageFromKey("DIGNITY_CHANGED"), 12));
                         break;
                     case "Stats":
-                        if (DAOFactory.CharacterDAO.LoadByName(characterPacket.Name) != null)
+                        if (DaoFactory.CharacterDao.LoadByName(characterPacket.Name) != null)
                         {
-                            CharacterDTO characterDto = DAOFactory.CharacterDAO.LoadByName(characterPacket.Name);
+                            CharacterDTO characterDto = DaoFactory.CharacterDao.LoadByName(characterPacket.Name);
                             SendStats(characterDto);
                         }
                         break;
@@ -457,10 +457,10 @@ namespace OpenNos.Handler
                     IsMoving = addMonsterPacket.IsMoving,
                     MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId()
                 };
-                if (!DAOFactory.MapMonsterDAO.DoesMonsterExist(monst.MapMonsterId))
+                if (!DaoFactory.MapMonsterDao.DoesMonsterExist(monst.MapMonsterId))
                 {
-                    DAOFactory.MapMonsterDAO.Insert(monst);
-                    if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) is MapMonster monster)
+                    DaoFactory.MapMonsterDao.Insert(monst);
+                    if (DaoFactory.MapMonsterDao.LoadById(monst.MapMonsterId) is MapMonster monster)
                     {
                         monster.Initialize(Session.CurrentMapInstance);
                         Session.CurrentMapInstance.AddMonster(monster);
@@ -587,7 +587,7 @@ namespace OpenNos.Handler
             if (banPacket != null)
             {
                 banPacket.Reason = banPacket.Reason?.Trim();
-                CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(banPacket.CharacterName);
+                CharacterDTO character = DaoFactory.CharacterDao.LoadByName(banPacket.CharacterName);
                 if (character != null)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, banPacket, Session.IpAddress);
@@ -629,7 +629,7 @@ namespace OpenNos.Handler
                 }
 
                 blockExpPacket.Reason = blockExpPacket.Reason?.Trim();
-                CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(blockExpPacket.CharacterName);
+                CharacterDTO character = DaoFactory.CharacterDao.LoadByName(blockExpPacket.CharacterName);
                 if (character != null)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, blockExpPacket, Session.IpAddress);
@@ -674,7 +674,7 @@ namespace OpenNos.Handler
                 }
 
                 blockFExpPacket.Reason = blockFExpPacket.Reason?.Trim();
-                CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(blockFExpPacket.CharacterName);
+                CharacterDTO character = DaoFactory.CharacterDao.LoadByName(blockFExpPacket.CharacterName);
                 if (character != null)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, blockFExpPacket, Session.IpAddress);
@@ -738,7 +738,7 @@ namespace OpenNos.Handler
                 }
 
                 blockRepPacket.Reason = blockRepPacket.Reason?.Trim();
-                CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(blockRepPacket.CharacterName);
+                CharacterDTO character = DaoFactory.CharacterDao.LoadByName(blockRepPacket.CharacterName);
                 if (character != null)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, blockRepPacket, Session.IpAddress);
@@ -1131,9 +1131,9 @@ namespace OpenNos.Handler
                         Character character = ServerManager.Instance.GetSessionByCharacterName(name).Character;
                         SendStats(character);
                     }
-                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    else if (DaoFactory.CharacterDao.LoadByName(name) != null)
                     {
-                        CharacterDTO characterDto = DAOFactory.CharacterDAO.LoadByName(name);
+                        CharacterDTO characterDto = DaoFactory.CharacterDao.LoadByName(name);
                         SendStats(characterDto);
                     }
                     else
@@ -1349,23 +1349,23 @@ namespace OpenNos.Handler
             if (demotePacket != null)
             {
                 string name = demotePacket.CharacterName;
-                AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
+                AccountDTO account = DaoFactory.AccountDao.LoadById(DaoFactory.CharacterDao.LoadByName(name).AccountId);
                 if (account != null && account.Authority > AuthorityType.User)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, demotePacket, Session.IpAddress);
                     account.Authority -= 1;
-                    DAOFactory.AccountDAO.InsertOrUpdate(ref account);
+                    DaoFactory.AccountDao.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                     if (session != null)
                     {
                         session.Account.Authority -= 1;
                         session.Character.Authority -= 1;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-                        DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
+                        DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
                     }
                     else
                     {
-                        DAOFactory.AccountDAO.WriteGeneralLog(account.AccountId, "127.0.0.1", null, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
+                        DaoFactory.AccountDao.WriteGeneralLog(account.AccountId, "127.0.0.1", null, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
                     }
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
@@ -1472,7 +1472,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(giftPacket.CharacterName);
+                    CharacterDTO chara = DaoFactory.CharacterDao.LoadByName(giftPacket.CharacterName);
                     if (chara != null)
                     {
                         LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, giftPacket, Session.IpAddress);
@@ -1719,7 +1719,7 @@ namespace OpenNos.Handler
                 }
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, kickSessionPacket, Session.IpAddress);
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                AccountDTO account = DAOFactory.AccountDAO.LoadByName(kickSessionPacket.AccountName);
+                AccountDTO account = DaoFactory.AccountDao.LoadByName(kickSessionPacket.AccountName);
                 CommunicationServiceClient.Instance.KickSession(account?.AccountId, kickSessionPacket.SessionId);
             }
             else
@@ -1942,23 +1942,23 @@ namespace OpenNos.Handler
             if (promotePacket != null)
             {
                 string name = promotePacket.CharacterName;
-                AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
+                AccountDTO account = DaoFactory.AccountDao.LoadById(DaoFactory.CharacterDao.LoadByName(name).AccountId);
                 if (account != null && account.Authority >= AuthorityType.User && account.Authority < AuthorityType.GameMaster)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, promotePacket, Session.IpAddress);
                     account.Authority += 1;
-                    DAOFactory.AccountDAO.InsertOrUpdate(ref account);
+                    DaoFactory.AccountDao.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                     if (session != null)
                     {
                         session.Account.Authority += 1;
                         session.Character.Authority += 1;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-                        DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
+                        DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
                     }
                     else
                     {
-                        DAOFactory.AccountDAO.WriteGeneralLog(account.AccountId, "127.0.0.1", null, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
+                        DaoFactory.AccountDao.WriteGeneralLog(account.AccountId, "127.0.0.1", null, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
                     }
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
@@ -2015,9 +2015,9 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay(
                         string.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
                     Session.CurrentMapInstance.RemoveMonster(monst);
-                    if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) != null)
+                    if (DaoFactory.MapMonsterDao.LoadById(monst.MapMonsterId) != null)
                     {
-                        DAOFactory.MapMonsterDAO.DeleteById(monst.MapMonsterId);
+                        DaoFactory.MapMonsterDao.DeleteById(monst.MapMonsterId);
                     }
                 }
                 else
@@ -2088,7 +2088,7 @@ namespace OpenNos.Handler
             if (searchItemPacket != null)
             {
                 // TODO REVIEW COMMAND LOGGING
-                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(string.IsNullOrEmpty(searchItemPacket.Data) ? string.Empty : searchItemPacket.Data).OrderBy(s => s.VNum).Skip(0 * 200)
+                IEnumerable<ItemDTO> itemlist = DaoFactory.ItemDao.FindByName(string.IsNullOrEmpty(searchItemPacket.Data) ? string.Empty : searchItemPacket.Data).OrderBy(s => s.VNum).Skip(0 * 200)
                     .Take(200).ToList();
                 if (itemlist.Any())
                 {
@@ -2117,7 +2117,7 @@ namespace OpenNos.Handler
         {
             if (searchMonsterPacket != null)
             {
-                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(string.IsNullOrEmpty(searchMonsterPacket.Name) ? string.Empty : searchMonsterPacket.Name)
+                IEnumerable<NpcMonsterDTO> monsterlist = DaoFactory.NpcMonsterDao.FindByName(string.IsNullOrEmpty(searchMonsterPacket.Name) ? string.Empty : searchMonsterPacket.Name)
                     .OrderBy(s => s.NpcMonsterVNum).Skip(searchMonsterPacket.Page * 200).Take(200).ToList();
                 if (monsterlist.Any())
                 {
@@ -2562,7 +2562,7 @@ namespace OpenNos.Handler
             if (unbanPacket != null)
             {
                 string name = unbanPacket.CharacterName;
-                CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(name);
+                CharacterDTO chara = DaoFactory.CharacterDao.LoadByName(name);
                 if (chara != null)
                 {
                     PenaltyLogDTO log = ServerManager.Instance.PenaltyLogs.FirstOrDefault(s => s.AccountId == chara.AccountId && s.Penalty == PenaltyType.Banned && s.DateEnd > DateTime.Now);
@@ -2611,7 +2611,7 @@ namespace OpenNos.Handler
             if (unmutePacket != null)
             {
                 string name = unmutePacket.CharacterName;
-                CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(name);
+                CharacterDTO chara = DaoFactory.CharacterDao.LoadByName(name);
                 if (chara != null)
                 {
                     if (ServerManager.Instance.PenaltyLogs.Any(s => s.AccountId == chara.AccountId && s.Penalty == (byte) PenaltyType.Muted && s.DateEnd > DateTime.Now))
@@ -2670,7 +2670,7 @@ namespace OpenNos.Handler
         public void Warn(WarningPacket warningPacket)
         {
             string characterName = warningPacket.CharacterName;
-            CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
+            CharacterDTO character = DaoFactory.CharacterDao.LoadByName(characterName);
             if (character != null)
             {
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, warningPacket, Session.IpAddress);
@@ -2686,7 +2686,7 @@ namespace OpenNos.Handler
                     AdminName = Session.Character.Name
                 };
                 Session.Character.InsertOrUpdatePenalty(log);
-                int penaltyCount = DAOFactory.PenaltyLogDAO.LoadByAccount(character.AccountId).Count(p => p.Penalty == PenaltyType.Warning);
+                int penaltyCount = DaoFactory.PenaltyLogDao.LoadByAccount(character.AccountId).Count(p => p.Penalty == PenaltyType.Warning);
                 switch (penaltyCount)
                 {
                     case 2:
@@ -2819,7 +2819,7 @@ namespace OpenNos.Handler
         /// <param name="duration"></param>
         private void MuteMethod(string characterName, string reason, int duration)
         {
-            CharacterDTO characterToMute = DAOFactory.CharacterDAO.LoadByName(characterName);
+            CharacterDTO characterToMute = DaoFactory.CharacterDao.LoadByName(characterName);
             if (characterToMute != null)
             {
                 ClientSession session = ServerManager.Instance.GetSessionByCharacterName(characterName);
@@ -2872,7 +2872,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay(
                 $"Faction: {(character.Faction == FactionType.Demon ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
             Session.SendPacket(Session.Character.GenerateSay("----- --------- -----", 13));
-            AccountDTO account = DAOFactory.AccountDAO.LoadById(character.AccountId);
+            AccountDTO account = DaoFactory.AccountDao.LoadById(character.AccountId);
             if (account != null)
             {
                 Session.SendPacket(Session.Character.GenerateSay("----- ACCOUNT -----", 13));

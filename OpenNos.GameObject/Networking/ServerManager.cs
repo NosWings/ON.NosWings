@@ -961,7 +961,7 @@ namespace OpenNos.GameObject
             Act4AngelStat = new Act4Stat();
             Act4DemonStat = new Act4Stat();
 
-            OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DAOFactory.ItemDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
+            OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DaoFactory.ItemDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
             ConcurrentDictionary<short, Item> item = new ConcurrentDictionary<short, Item>();
             Parallel.ForEach(itemPartitioner, new ParallelOptions {MaxDegreeOfParallelism = 4}, itemDto =>
             {
@@ -1069,7 +1069,7 @@ namespace OpenNos.GameObject
 
             // intialize monsterdrops
             _monsterDrops = new ConcurrentDictionary<short, List<DropDTO>>();
-            Parallel.ForEach(DAOFactory.DropDAO.LoadAll().GroupBy(d => d.MonsterVNum), monsterDropGrouping =>
+            Parallel.ForEach(DaoFactory.DropDao.LoadAll().GroupBy(d => d.MonsterVNum), monsterDropGrouping =>
             {
                 if (monsterDropGrouping.Key.HasValue)
                 {
@@ -1084,7 +1084,7 @@ namespace OpenNos.GameObject
 
             // initialize monsterskills
             _monsterSkills = new ConcurrentDictionary<short, List<NpcMonsterSkill>>();
-            Parallel.ForEach(DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum),
+            Parallel.ForEach(DaoFactory.NpcMonsterSkillDao.LoadAll().GroupBy(n => n.NpcMonsterVNum),
                 monsterSkillGrouping => { _monsterSkills[monsterSkillGrouping.Key] = monsterSkillGrouping.Select(n => n as NpcMonsterSkill).ToList(); });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.Sum(i => i.Value.Count)));
 
@@ -1094,7 +1094,7 @@ namespace OpenNos.GameObject
 
             // initialize npcmonsters
             ConcurrentDictionary<short, NpcMonster> npcMonsters = new ConcurrentDictionary<short, NpcMonster>();
-            Parallel.ForEach(DAOFactory.NpcMonsterDAO.LoadAll(), npcMonster =>
+            Parallel.ForEach(DaoFactory.NpcMonsterDao.LoadAll(), npcMonster =>
             {
                 npcMonsters[npcMonster.NpcMonsterVNum] = npcMonster as NpcMonster;
                 NpcMonster monster = npcMonsters[npcMonster.NpcMonsterVNum];
@@ -1102,47 +1102,47 @@ namespace OpenNos.GameObject
                 {
                     monster.BCards = new List<BCard>();
                 }
-                DAOFactory.BCardDAO.LoadByNpcMonsterVNum(npcMonster.NpcMonsterVNum).ToList().ForEach(s => npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard) s));
+                DaoFactory.BCardDao.LoadByNpcMonsterVNum(npcMonster.NpcMonsterVNum).ToList().ForEach(s => npcMonsters[npcMonster.NpcMonsterVNum].BCards.Add((BCard) s));
             });
             Npcs.AddRange(npcMonsters.Select(s => s.Value));
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), Npcs.Count));
 
             // intialize recipes
             _recipes = new ConcurrentDictionary<int, List<Recipe>>();
-            Parallel.ForEach(DAOFactory.RecipeDAO.LoadAll().GroupBy(r => r.MapNpcId), recipeGrouping => { _recipes[recipeGrouping.Key] = recipeGrouping.Select(r => r as Recipe).ToList(); });
+            Parallel.ForEach(DaoFactory.RecipeDao.LoadAll().GroupBy(r => r.MapNpcId), recipeGrouping => { _recipes[recipeGrouping.Key] = recipeGrouping.Select(r => r as Recipe).ToList(); });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), _recipes.Sum(i => i.Value.Count)));
 
             // initialize shopitems
             _shopItems = new ConcurrentDictionary<int, List<ShopItemDTO>>();
-            Parallel.ForEach(DAOFactory.ShopItemDAO.LoadAll().GroupBy(s => s.ShopId), shopItemGrouping => { _shopItems[shopItemGrouping.Key] = shopItemGrouping.ToList(); });
+            Parallel.ForEach(DaoFactory.ShopItemDao.LoadAll().GroupBy(s => s.ShopId), shopItemGrouping => { _shopItems[shopItemGrouping.Key] = shopItemGrouping.ToList(); });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_LOADED"), _shopItems.Sum(i => i.Value.Count)));
 
             // initialize shopskills
             _shopSkills = new ConcurrentDictionary<int, List<ShopSkillDTO>>();
-            Parallel.ForEach(DAOFactory.ShopSkillDAO.LoadAll().GroupBy(s => s.ShopId), shopSkillGrouping => { _shopSkills[shopSkillGrouping.Key] = shopSkillGrouping.ToList(); });
+            Parallel.ForEach(DaoFactory.ShopSkillDao.LoadAll().GroupBy(s => s.ShopId), shopSkillGrouping => { _shopSkills[shopSkillGrouping.Key] = shopSkillGrouping.ToList(); });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_LOADED"), _shopSkills.Sum(i => i.Value.Count)));
 
             // initialize shops
             _shops = new ConcurrentDictionary<int, Shop>();
-            Parallel.ForEach(DAOFactory.ShopDAO.LoadAll(), shopGrouping => { _shops[shopGrouping.MapNpcId] = (Shop) shopGrouping; });
+            Parallel.ForEach(DaoFactory.ShopDao.LoadAll(), shopGrouping => { _shops[shopGrouping.MapNpcId] = (Shop) shopGrouping; });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), _shops.Count));
 
             // initialize teleporters
             _teleporters = new ConcurrentDictionary<int, List<TeleporterDTO>>();
-            Parallel.ForEach(DAOFactory.TeleporterDAO.LoadAll().GroupBy(t => t.MapNpcId), teleporterGrouping => { _teleporters[teleporterGrouping.Key] = teleporterGrouping.Select(t => t).ToList(); });
+            Parallel.ForEach(DaoFactory.TeleporterDao.LoadAll().GroupBy(t => t.MapNpcId), teleporterGrouping => { _teleporters[teleporterGrouping.Key] = teleporterGrouping.Select(t => t).ToList(); });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_LOADED"), _teleporters.Sum(i => i.Value.Count)));
 
             // initialize skills
             ConcurrentDictionary<short, Skill> skill = new ConcurrentDictionary<short, Skill>();
-            Parallel.ForEach(DAOFactory.SkillDAO.LoadAll(), skillItem =>
+            Parallel.ForEach(DaoFactory.SkillDao.LoadAll(), skillItem =>
             {
                 if (!(skillItem is Skill skillObj))
                 {
                     return;
                 }
-                skillObj.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skillObj.SkillVNum).ToList());
+                skillObj.Combos.AddRange(DaoFactory.ComboDao.LoadBySkillVnum(skillObj.SkillVNum).ToList());
                 skillObj.BCards = new ConcurrentBag<BCard>();
-                DAOFactory.BCardDAO.LoadBySkillVNum(skillObj.SkillVNum).ToList().ForEach(o => skillObj.BCards.Add((BCard) o));
+                DaoFactory.BCardDao.LoadBySkillVNum(skillObj.SkillVNum).ToList().ForEach(o => skillObj.BCards.Add((BCard) o));
                 skill[skillObj.SkillVNum] = skillObj;
             });
             Skills.AddRange(skill.Select(s => s.Value));
@@ -1150,11 +1150,11 @@ namespace OpenNos.GameObject
 
             // initialize buffs
             Cards = new List<Card>();
-            foreach (CardDTO carddto in DAOFactory.CardDAO.LoadAll())
+            foreach (CardDTO carddto in DaoFactory.CardDao.LoadAll())
             {
                 Card card = (Card) carddto;
                 card.BCards = new List<BCard>();
-                DAOFactory.BCardDAO.LoadByCardId(card.CardId).ToList().ForEach(o => card.BCards.Add((BCard) o));
+                DaoFactory.BCardDao.LoadByCardId(card.CardId).ToList().ForEach(o => card.BCards.Add((BCard) o));
                 Cards.Add(card);
             }
 
@@ -1163,14 +1163,14 @@ namespace OpenNos.GameObject
 
             // intialize mapnpcs
             _mapNpcs = new ConcurrentDictionary<short, List<MapNpc>>();
-            Parallel.ForEach(DAOFactory.MapNpcDAO.LoadAll().GroupBy(t => t.MapId), mapNpcGrouping => { _mapNpcs[mapNpcGrouping.Key] = mapNpcGrouping.Select(t => t as MapNpc).ToList(); });
+            Parallel.ForEach(DaoFactory.MapNpcDao.LoadAll().GroupBy(t => t.MapId), mapNpcGrouping => { _mapNpcs[mapNpcGrouping.Key] = mapNpcGrouping.Select(t => t as MapNpc).ToList(); });
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPNPCS_LOADED"), _mapNpcs.Sum(i => i.Value.Count)));
 
             try
             {
                 int i = 0;
                 int monstercount = 0;
-                OrderablePartitioner<MapDTO> mapPartitioner = Partitioner.Create(DAOFactory.MapDAO.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
+                OrderablePartitioner<MapDTO> mapPartitioner = Partitioner.Create(DaoFactory.MapDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
                 ConcurrentDictionary<short, Map> mapList = new ConcurrentDictionary<short, Map>();
                 Parallel.ForEach(mapPartitioner, new ParallelOptions {MaxDegreeOfParallelism = 8}, map =>
                 {
@@ -1215,10 +1215,10 @@ namespace OpenNos.GameObject
                 LoadFamilies();
                 LaunchEvents();
                 RefreshRanking();
-                CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
-                PenaltyLogs = DAOFactory.PenaltyLogDAO.LoadAll().ToList();
+                CharacterRelations = DaoFactory.CharacterRelationDao.LoadAll().ToList();
+                PenaltyLogs = DaoFactory.PenaltyLogDao.LoadAll().ToList();
 
-                if (DAOFactory.MapDAO.LoadById(2006) != null)
+                if (DaoFactory.MapDao.LoadById(2006) != null)
                 {
                     Logger.Log.Info("[ARENA] Arena Map Loaded");
                     ArenaInstance = GenerateMapInstance(2006, MapInstanceType.ArenaInstance, new InstanceBag());
@@ -1233,7 +1233,7 @@ namespace OpenNos.GameObject
                         SourceY = 15
                     });
                 }
-                if (DAOFactory.MapDAO.LoadById(2106) != null)
+                if (DaoFactory.MapDao.LoadById(2106) != null)
                 {
                     Logger.Log.Info("[ARENA] Family Arena Map Loaded");
                     FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.ArenaInstance, new InstanceBag());
@@ -1248,7 +1248,7 @@ namespace OpenNos.GameObject
                         SourceY = 3
                     });
                 }
-                if (DAOFactory.MapDAO.LoadById(148) != null)
+                if (DaoFactory.MapDao.LoadById(148) != null)
                 {
                     Logger.Log.Info("[ACT4] Demon Ship Loaded");
                     Act4ShipDemon = GenerateMapInstance(148, MapInstanceType.ArenaInstance, null);
@@ -1398,9 +1398,9 @@ namespace OpenNos.GameObject
 
         public void RefreshRanking()
         {
-            TopComplimented = DAOFactory.CharacterDAO.GetTopCompliment();
-            TopPoints = DAOFactory.CharacterDAO.GetTopPoints();
-            TopReputation = DAOFactory.CharacterDAO.GetTopReputation();
+            TopComplimented = DaoFactory.CharacterDao.GetTopCompliment();
+            TopPoints = DaoFactory.CharacterDao.GetTopPoints();
+            TopReputation = DaoFactory.CharacterDao.GetTopReputation();
         }
 
         public void RelationRefresh(long relationId)
@@ -1476,7 +1476,7 @@ namespace OpenNos.GameObject
         public void SaveAll()
         {
             Parallel.ForEach(Sessions.Where(s => s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null), session => { session.Character?.Save(); });
-            DAOFactory.BazaarItemDAO.RemoveOutDated();
+            DaoFactory.BazaarItemDao.RemoveOutDated();
         }
 
         public void SetProperty(long charId, string property, object value)
@@ -1855,17 +1855,17 @@ namespace OpenNos.GameObject
         private void LoadBazaar()
         {
             BazaarList = new List<BazaarItemLink>();
-            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
+            foreach (BazaarItemDTO bz in DaoFactory.BazaarItemDao.LoadAll())
             {
                 BazaarItemLink item = new BazaarItemLink
                 {
                     BazaarItem = bz
                 };
-                CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
+                CharacterDTO chara = DaoFactory.CharacterDao.LoadById(bz.SellerId);
                 if (chara != null)
                 {
                     item.Owner = chara.Name;
-                    item.Item = (ItemInstance) DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                    item.Item = (ItemInstance) DaoFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
                 }
                 BazaarList.Add(item);
             }
@@ -1876,11 +1876,11 @@ namespace OpenNos.GameObject
             // TODO: Parallelization of family load
             FamilyList = new List<Family>();
             ConcurrentDictionary<long, Family> families = new ConcurrentDictionary<long, Family>();
-            Parallel.ForEach(DAOFactory.FamilyDAO.LoadAll(), familyDto =>
+            Parallel.ForEach(DaoFactory.FamilyDao.LoadAll(), familyDto =>
             {
                 Family family = (Family) familyDto;
                 family.FamilyCharacters = new List<FamilyCharacter>();
-                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(family.FamilyId).ToList())
+                foreach (FamilyCharacterDTO famchar in DaoFactory.FamilyCharacterDao.LoadByFamilyId(family.FamilyId).ToList())
                 {
                     family.FamilyCharacters.Add((FamilyCharacter) famchar);
                 }
@@ -1888,13 +1888,13 @@ namespace OpenNos.GameObject
                 if (familyCharacter != null)
                 {
                     family.Warehouse = new Inventory((Character) familyCharacter.Character);
-                    foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                    foreach (ItemInstanceDTO inventory in DaoFactory.IteminstanceDao.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
                     {
                         inventory.CharacterId = familyCharacter.CharacterId;
                         family.Warehouse[inventory.Id] = (ItemInstance) inventory;
                     }
                 }
-                family.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(family.FamilyId).ToList();
+                family.FamilyLogs = DaoFactory.FamilyLogDao.LoadByFamilyId(family.FamilyId).ToList();
                 families[family.FamilyId] = family;
             });
             FamilyList.AddRange(families.Select(s => s.Value));
@@ -1905,7 +1905,7 @@ namespace OpenNos.GameObject
             Raids = new List<ScriptedInstance>();
             Parallel.ForEach(Mapinstances, map =>
             {
-                foreach (ScriptedInstanceDTO scriptedInstanceDto in DAOFactory.ScriptedInstanceDAO.LoadByMap(map.Value.Map.MapId).ToList())
+                foreach (ScriptedInstanceDTO scriptedInstanceDto in DaoFactory.ScriptedInstanceDao.LoadByMap(map.Value.Map.MapId).ToList())
                 {
                     ScriptedInstance si = (ScriptedInstance) scriptedInstanceDto;
                     switch (si.Type)
@@ -1940,19 +1940,19 @@ namespace OpenNos.GameObject
         {
             // TODO: Parallelization of bazaar.
             long bazaarId = (long) sender;
-            BazaarItemDTO bzdto = DAOFactory.BazaarItemDAO.LoadById(bazaarId);
+            BazaarItemDTO bzdto = DaoFactory.BazaarItemDao.LoadById(bazaarId);
             BazaarItemLink bzlink = BazaarList.FirstOrDefault(s => s.BazaarItem.BazaarItemId == bazaarId);
             lock (BazaarList)
             {
                 if (bzdto != null)
                 {
-                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bzdto.SellerId);
+                    CharacterDTO chara = DaoFactory.CharacterDao.LoadById(bzdto.SellerId);
                     if (bzlink != null)
                     {
                         BazaarList.Remove(bzlink);
                         bzlink.BazaarItem = bzdto;
                         bzlink.Owner = chara.Name;
-                        bzlink.Item = (ItemInstance) DAOFactory.IteminstanceDAO.LoadById(bzdto.ItemInstanceId);
+                        bzlink.Item = (ItemInstance) DaoFactory.IteminstanceDao.LoadById(bzdto.ItemInstanceId);
                         BazaarList.Add(bzlink);
                     }
                     else
@@ -1964,7 +1964,7 @@ namespace OpenNos.GameObject
                         if (chara != null)
                         {
                             item.Owner = chara.Name;
-                            item.Item = (ItemInstance) DAOFactory.IteminstanceDAO.LoadById(bzdto.ItemInstanceId);
+                            item.Item = (ItemInstance) DaoFactory.IteminstanceDao.LoadById(bzdto.ItemInstanceId);
                         }
                         BazaarList.Add(item);
                     }
@@ -1982,7 +1982,7 @@ namespace OpenNos.GameObject
             // TODO: Parallelization of family.
             Tuple<long, bool> tuple = (Tuple<long, bool>) sender;
             long familyId = tuple.Item1;
-            FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(familyId);
+            FamilyDTO famdto = DaoFactory.FamilyDao.LoadById(familyId);
             Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == familyId);
             lock (FamilyList)
             {
@@ -1994,7 +1994,7 @@ namespace OpenNos.GameObject
                         FamilyList.Remove(fam);
                         fam = (Family) famdto;
                         fam.FamilyCharacters = new List<FamilyCharacter>();
-                        foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fam.FamilyId).ToList())
+                        foreach (FamilyCharacterDTO famchar in DaoFactory.FamilyCharacterDao.LoadByFamilyId(fam.FamilyId).ToList())
                         {
                             fam.FamilyCharacters.Add((FamilyCharacter) famchar);
                         }
@@ -2002,13 +2002,13 @@ namespace OpenNos.GameObject
                         if (familyLeader != null)
                         {
                             fam.Warehouse = new Inventory((Character) familyLeader.Character);
-                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyLeader.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                            foreach (ItemInstanceDTO inventory in DaoFactory.IteminstanceDao.LoadByCharacterId(familyLeader.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
                             {
                                 inventory.CharacterId = familyLeader.CharacterId;
                                 fam.Warehouse[inventory.Id] = (ItemInstance) inventory;
                             }
                         }
-                        fam.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fam.FamilyId).ToList();
+                        fam.FamilyLogs = DaoFactory.FamilyLogDao.LoadByFamilyId(fam.FamilyId).ToList();
                         fam.LandOfDeath = lod;
                         FamilyList.Add(fam);
                         Parallel.ForEach(Sessions.Where(s => fam.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
@@ -2025,7 +2025,7 @@ namespace OpenNos.GameObject
                     {
                         Family fami = (Family) famdto;
                         fami.FamilyCharacters = new List<FamilyCharacter>();
-                        foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
+                        foreach (FamilyCharacterDTO famchar in DaoFactory.FamilyCharacterDao.LoadByFamilyId(fami.FamilyId).ToList())
                         {
                             fami.FamilyCharacters.Add((FamilyCharacter) famchar);
                         }
@@ -2033,13 +2033,13 @@ namespace OpenNos.GameObject
                         if (familyCharacter != null)
                         {
                             fami.Warehouse = new Inventory((Character) familyCharacter.Character);
-                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                            foreach (ItemInstanceDTO inventory in DaoFactory.IteminstanceDao.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
                             {
                                 inventory.CharacterId = familyCharacter.CharacterId;
                                 fami.Warehouse[inventory.Id] = (ItemInstance) inventory;
                             }
                         }
-                        fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
+                        fami.FamilyLogs = DaoFactory.FamilyLogDao.LoadByFamilyId(fami.FamilyId).ToList();
                         FamilyList.Add(fami);
                         Parallel.ForEach(Sessions.Where(s => fami.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
                         {
@@ -2190,7 +2190,7 @@ namespace OpenNos.GameObject
         private void OnPenaltyLogRefresh(object sender, EventArgs e)
         {
             int relId = (int) sender;
-            PenaltyLogDTO reldto = DAOFactory.PenaltyLogDAO.LoadById(relId);
+            PenaltyLogDTO reldto = DaoFactory.PenaltyLogDao.LoadById(relId);
             PenaltyLogDTO rel = PenaltyLogs.FirstOrDefault(s => s.PenaltyLogId == relId);
             if (reldto != null)
             {
@@ -2214,7 +2214,7 @@ namespace OpenNos.GameObject
             long relId = (long) sender;
             lock (CharacterRelations)
             {
-                CharacterRelationDTO reldto = DAOFactory.CharacterRelationDAO.LoadById(relId);
+                CharacterRelationDTO reldto = DaoFactory.CharacterRelationDao.LoadById(relId);
                 CharacterRelationDTO rel = CharacterRelations.FirstOrDefault(s => s.CharacterRelationId == relId);
                 if (reldto != null)
                 {

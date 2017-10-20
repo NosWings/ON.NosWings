@@ -24,7 +24,7 @@ namespace OpenNos.GameObject.Helpers
                 IpAddress = ipAddress,
                 Timestamp = DateTime.Now
             };
-            DAOFactory.LogCommandsDAO.InsertOrUpdate(ref command);
+            DaoFactory.LogCommandsDao.InsertOrUpdate(ref command);
         }
 
         public void InsertChatLog(ChatType type, long characterId, string message, string ipAddress)
@@ -37,7 +37,7 @@ namespace OpenNos.GameObject.Helpers
                 ChatType = (byte) type,
                 Timestamp = DateTime.Now
             };
-            DAOFactory.LogChatDAO.InsertOrUpdate(ref log);
+            DaoFactory.LogChatDao.InsertOrUpdate(ref log);
         }
     }
 }

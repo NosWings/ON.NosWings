@@ -230,13 +230,13 @@ namespace OpenNos.Master.Library.Client
 
         internal void OnCharacterConnected(long characterId)
         {
-            string characterName = DAOFactory.CharacterDAO.LoadById(characterId)?.Name;
+            string characterName = DaoFactory.CharacterDao.LoadById(characterId)?.Name;
             CharacterConnectedEvent?.Invoke(new Tuple<long, string>(characterId, characterName), null);
         }
 
         internal void OnCharacterDisconnected(long characterId)
         {
-            string characterName = DAOFactory.CharacterDAO.LoadById(characterId)?.Name;
+            string characterName = DaoFactory.CharacterDao.LoadById(characterId)?.Name;
             CharacterDisconnectedEvent?.Invoke(new Tuple<long, string>(characterId, characterName), null);
         }
 
