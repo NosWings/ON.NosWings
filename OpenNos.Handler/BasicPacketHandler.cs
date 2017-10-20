@@ -1116,8 +1116,8 @@ namespace OpenNos.Handler
             }
             if (ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
             {
-                Session.SendPacket(Session.Character.GenerateSay("----------[NosWings : Reborn]----------", 10));
-                Session.SendPacket(Session.Character.GenerateSay($"Xp : 10", 11));
+                Session.SendPacket(Session.Character.GenerateSay("--------------[NosWings : Reborn]--------------", 10));
+                Session.SendPacket(Session.Character.GenerateSay($"Xp : {ServerManager.Instance.XpRate}", 11));
                 Session.SendPacket(Session.Character.GenerateSay($"Drop : {ServerManager.Instance.DropRate}", 11));
                 Session.SendPacket(Session.Character.GenerateSay($"Or : {ServerManager.Instance.GoldRate}", 11));
                 Session.SendPacket(Session.Character.GenerateSay($"XpFée : {ServerManager.Instance.FairyXpRate}", 11));
