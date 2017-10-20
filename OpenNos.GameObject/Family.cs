@@ -119,7 +119,7 @@ namespace OpenNos.GameObject
                 FamilyLogType = logtype,
                 Timestamp = DateTime.Now
             };
-            DAOFactory.FamilyLogDAO.InsertOrUpdate(ref log);
+            DaoFactory.FamilyLogDao.InsertOrUpdate(ref log);
             ServerManager.Instance.FamilyRefresh(FamilyId);
             CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
             {

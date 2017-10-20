@@ -462,7 +462,7 @@ namespace OpenNos.Handler
                                             fam.FamilyFaction = (byte)(faction / 2);
                                             Session.Character.Faction = (FactionType) (faction / 2);
                                             Session.SendPacket(Session.Character.GenerateFaction());
-                                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                                            DaoFactory.FamilyDao.InsertOrUpdate(ref fam);
                                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                                             Session.SendPacket(Session.Character.GenerateEff(4799 + faction / 2));
                                             Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);

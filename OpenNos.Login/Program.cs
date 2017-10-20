@@ -98,8 +98,8 @@ namespace OpenNos.Login
         private static void RegisterMappings()
         {
             // entities
-            DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
-            DAOFactory.PenaltyLogDAO.RegisterMapping(typeof(PenaltyLogDTO)).InitializeMapper();
+            DaoFactory.AccountDao.RegisterMapping(typeof(Account)).InitializeMapper();
+            DaoFactory.PenaltyLogDao.RegisterMapping(typeof(PenaltyLogDTO)).InitializeMapper();
         }
 
         #endregion

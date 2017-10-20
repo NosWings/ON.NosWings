@@ -82,7 +82,7 @@ namespace OpenNos.Master.Server
             }
 
             //Multiple WorldGroups not yet supported by DAOFactory
-            long accountId = DAOFactory.CharacterDAO.LoadById(characterId)?.AccountId ?? 0;
+            long accountId = DaoFactory.CharacterDao.LoadById(characterId)?.AccountId ?? 0;
 
             AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && a.ConnectedWorld?.Id.Equals(worldId) == true);
             if (account == null)
@@ -526,15 +526,15 @@ namespace OpenNos.Master.Server
         {
             if (!IsCharacterConnected(worldGroup, mail.ReceiverId))
             {
-                CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(mail.ReceiverId);
-                DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+                CharacterDTO chara = DaoFactory.CharacterDao.LoadById(mail.ReceiverId);
+                DaoFactory.MailDao.InsertOrUpdate(ref mail);
             }
             else
             {
                 AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.CharacterId.Equals(mail.ReceiverId));
                 if (account == null || account.ConnectedWorld == null)
                 {
-                    DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+                    DaoFactory.MailDao.InsertOrUpdate(ref mail);
                     return;
                 }
                 account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().SendMail(mail);

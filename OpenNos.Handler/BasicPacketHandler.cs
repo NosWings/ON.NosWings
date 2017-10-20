@@ -259,7 +259,7 @@ namespace OpenNos.Handler
                         IpAddress = Session.IpAddress,
                         Timestamp = DateTime.Now,
                     };
-                    DAOFactory.GeneralLogDAO.Insert(log);
+                    DaoFactory.GeneralLogDao.Insert(log);
 
                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
 
@@ -377,7 +377,7 @@ namespace OpenNos.Handler
             }
             message = message.Trim();
 
-            CharacterDTO character = DAOFactory.CharacterDAO.LoadById(btkPacket.CharacterId);
+            CharacterDTO character = DaoFactory.CharacterDao.LoadById(btkPacket.CharacterId);
             if (character == null)
             {
                 return;
@@ -927,7 +927,7 @@ namespace OpenNos.Handler
         {
             if (pstpacket.Data != null)
             {
-                CharacterDTO receiver = DAOFactory.CharacterDAO.LoadByName(pstpacket.Receiver);
+                CharacterDTO receiver = DaoFactory.CharacterDao.LoadByName(pstpacket.Receiver);
                 if (receiver != null)
                 {
                     string[] datasplit = pstpacket.Data.Split(' ');
@@ -968,7 +968,7 @@ namespace OpenNos.Handler
                         SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)(Session.Character.Morph > short.MaxValue ? 0 : Session.Character.Morph)
                     };
                     
-                    DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+                    DaoFactory.MailDao.InsertOrUpdate(ref mail);
                     CommunicationServiceClient.Instance.SendMail(ServerManager.Instance.ServerGroup,mail);
 
                     Session.Character.MailList.Add((Session.Character.MailList.Any() ? Session.Character.MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mailcopy);
@@ -1210,7 +1210,7 @@ namespace OpenNos.Handler
 
             Session.Character.LastPvpRevive = DateTime.Now;
 
-            long? familyId = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(Session.Character.CharacterId)?.FamilyId;
+            long? familyId = DaoFactory.FamilyCharacterDao.LoadByCharacterId(Session.Character.CharacterId)?.FamilyId;
             if (familyId != null)
             {
                 Session.Character.Family = ServerManager.Instance.FamilyList.FirstOrDefault(s => s.FamilyId == familyId.Value);
@@ -1235,7 +1235,7 @@ namespace OpenNos.Handler
                 }
             }
 
-            IEnumerable<PenaltyLogDTO> warning = DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Character.AccountId).Where(p => p.Penalty == PenaltyType.Warning);
+            IEnumerable<PenaltyLogDTO> warning = DaoFactory.PenaltyLogDao.LoadByAccount(Session.Character.AccountId).Where(p => p.Penalty == PenaltyType.Warning);
             IEnumerable<PenaltyLogDTO> penaltyLogDtos = warning as IList<PenaltyLogDTO> ?? warning.ToList();
             if (penaltyLogDtos.Any())
             {
@@ -1243,7 +1243,7 @@ namespace OpenNos.Handler
             }
 
             // finfo - friends info
-            List<MailDTO> mails = DAOFactory.MailDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();
+            List<MailDTO> mails = DaoFactory.MailDao.LoadByCharacterId(Session.Character.CharacterId).ToList();
             foreach (MailDTO mail in mails)
             {
                 Session.Character.GenerateMail(mail);
@@ -1260,7 +1260,7 @@ namespace OpenNos.Handler
             }
             Session.Character.DeleteTimeout();
 
-            foreach (StaticBuffDTO sb in DAOFactory.StaticBuffDAO.LoadByCharacterId(Session.Character.CharacterId))
+            foreach (StaticBuffDTO sb in DaoFactory.StaticBuffDao.LoadByCharacterId(Session.Character.CharacterId))
             {
                 Session.Character.AddStaticBuff(sb);
             }
@@ -1349,7 +1349,7 @@ namespace OpenNos.Handler
                 message = message.Trim();
 
                 Session.SendPacket(Session.Character.GenerateSpk(message, 5));
-                CharacterDTO receiver = DAOFactory.CharacterDAO.LoadByName(characterName);
+                CharacterDTO receiver = DaoFactory.CharacterDao.LoadByName(characterName);
                 if (receiver.CharacterId == Session.Character.CharacterId)
                 {
                     return;

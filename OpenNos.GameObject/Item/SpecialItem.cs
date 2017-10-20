@@ -126,7 +126,7 @@ namespace OpenNos.GameObject
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             break;
                         default:
-                            IEnumerable<RollGeneratedItemDTO> roll = DAOFactory.RollGeneratedItemDAO.LoadByItemVNum(VNum);
+                            IEnumerable<RollGeneratedItemDTO> roll = DaoFactory.RollGeneratedItemDao.LoadByItemVNum(VNum);
                             IEnumerable<RollGeneratedItemDTO> rollGeneratedItemDtos = roll as IList<RollGeneratedItemDTO> ?? roll.ToList();
                             if (!rollGeneratedItemDtos.Any())
                             {

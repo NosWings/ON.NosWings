@@ -402,7 +402,7 @@ namespace OpenNos.GameObject
             }
             MoveItem(inventory, InventoryType.FamilyWareHouse, slot, amount, newSlot, out item, out itemdest);
             itemdest.CharacterId = fhead.CharacterId;
-            DAOFactory.IteminstanceDAO.InsertOrUpdate(itemdest);
+            DaoFactory.IteminstanceDao.InsertOrUpdate(itemdest);
             Owner.Session.SendPacket(item != null ? item.GenerateInventoryAdd()
                 : UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
 

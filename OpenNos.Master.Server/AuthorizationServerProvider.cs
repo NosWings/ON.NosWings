@@ -18,7 +18,7 @@ namespace OpenNos.Master.Server
         {
 
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
-            AccountDTO account = DAOFactory.AccountDAO.LoadByName(context.UserName);
+            AccountDTO account = DaoFactory.AccountDao.LoadByName(context.UserName);
 
 
             if (account != null && account.Password.ToLower().Equals(EncryptionBase.Sha512(context.Password)))
