@@ -93,7 +93,7 @@ namespace OpenNos.Handler
 
                         if (shellType != 8 && shellType != 9)
                         {
-                            if (shell.Upgrade < 50 || shell.Upgrade > 90)
+                            if (shell.Upgrade < 50)
                             {
                                 return;
                             }
