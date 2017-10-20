@@ -166,7 +166,7 @@ namespace OpenNos.Handler
                                 wear.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(item.Id));
                                 wear.EquipmentOptions.ForEach(s => s.WearableInstanceId = newBz.Id);
                             }
-                            List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(newBz);
+                            Session.Character.Inventory.AddToInventory(newBz);
                         }
                         Session.SendPacket($"rc_scalc 1 {bz.Price} {bz.Amount - item.Amount} {bz.Amount} {taxes} {price + taxes}");
 
@@ -268,7 +268,7 @@ namespace OpenNos.Handler
             long taxmin = price >= 4000 ? (60 + (price - 4000) / 2000 * 30 > 10000 ? 10000 : 60 + (price - 4000) / 2000 * 30) : 50;
             long tax = medal == null ? taxmax : taxmin;
             long maxGold = ServerManager.Instance.MaxGold;
-            if (Session.Character.Gold < tax || cRegPacket.Amount <= 0 || Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
+            if (Session.Character.Gold < tax && Session.Account.Authority < AuthorityType.VipPlus || cRegPacket.Amount <= 0 || Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
             {
                 return;
             }
@@ -341,8 +341,11 @@ namespace OpenNos.Handler
             }
             ServerManager.Instance.BazaarRefresh(bazaarItem.BazaarItemId);
 
-            Session.Character.Gold -= tax;
-            Session.SendPacket(Session.Character.GenerateGold());
+            if (Session.Account.Authority < AuthorityType.VipPlus)
+            {
+                Session.Character.Gold -= tax;
+                Session.SendPacket(Session.Character.GenerateGold());
+            }
 
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 10));
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 0));

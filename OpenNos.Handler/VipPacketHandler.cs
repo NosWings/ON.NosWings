@@ -12,22 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Threading.Tasks;
 using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL;
-using OpenNos.Domain;
 using OpenNos.GameObject;
-using OpenNos.GameObject.CommandPackets;
-using OpenNos.GameObject.Helpers;
-using OpenNos.Master.Library.Client;
-using OpenNos.Master.Library.Data;
 
 namespace OpenNos.Handler
 {
