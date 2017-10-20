@@ -12,10 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
 using OpenNos.DAL.Interface;
-using System;
-using System.Configuration;
 using OpenNos.DAL.EF;
 
 namespace OpenNos.DAL

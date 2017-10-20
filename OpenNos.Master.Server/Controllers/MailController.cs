@@ -1,6 +1,5 @@
 ﻿using System.Web.Http;
 using OpenNos.Master.Library.Client;
-using OpenNos.Domain;
 using OpenNos.Data;
 using System;
 using OpenNos.Core;

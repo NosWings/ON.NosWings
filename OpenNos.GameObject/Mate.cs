@@ -18,10 +18,7 @@ using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static OpenNos.Domain.BCardType;
 using System.Collections.Concurrent;
-using OpenNos.Core;
-using System.Reactive.Linq;
 
 namespace OpenNos.GameObject
 {

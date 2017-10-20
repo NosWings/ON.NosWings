@@ -19,14 +19,12 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
-using OpenNos.Master.Library;
 using OpenNos.Master.Library.Client;
 using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using System.Threading;
 
 namespace OpenNos.Login
 {

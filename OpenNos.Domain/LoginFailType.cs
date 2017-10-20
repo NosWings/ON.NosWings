@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.Domain
+﻿namespace OpenNos.Domain
 {
     public enum LoginFailType : byte
     {

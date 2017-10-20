@@ -27,7 +27,6 @@ using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
-using System.Net.Http;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;

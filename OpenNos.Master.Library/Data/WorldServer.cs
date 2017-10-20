@@ -1,7 +1,6 @@
 ﻿using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Service;
 using System;
-using OpenNos.Domain;
 
 namespace OpenNos.Master.Library.Data
 {

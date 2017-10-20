@@ -12,11 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.DAL.EF
 {

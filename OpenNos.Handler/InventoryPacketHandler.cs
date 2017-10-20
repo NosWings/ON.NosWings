@@ -26,7 +26,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using OpenNos.Data;
-using OpenNos.DAL;
 using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.Handler

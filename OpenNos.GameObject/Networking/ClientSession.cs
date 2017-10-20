@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
-using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.Master.Library.Client;
 using System;
@@ -25,7 +24,6 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
-using OpenNos.Master.Library.Data;
 
 namespace OpenNos.GameObject
 {

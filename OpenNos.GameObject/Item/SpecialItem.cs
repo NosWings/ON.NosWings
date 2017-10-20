@@ -24,8 +24,6 @@ using OpenNos.DAL;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using System.Reactive.Linq;
-using OpenNos.PathFinder;
-using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject
 {

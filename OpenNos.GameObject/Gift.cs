@@ -12,8 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using System.Linq.Expressions;
-
 namespace OpenNos.GameObject
 {
     public class Gift

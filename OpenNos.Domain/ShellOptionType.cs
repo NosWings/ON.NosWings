@@ -12,11 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace OpenNos.Domain
 {
     //TODO IMPROVE NAMING

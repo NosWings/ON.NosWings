@@ -1,5 +1,4 @@
-﻿using OpenNos.Core;
-using OpenNos.Domain;
+﻿using OpenNos.Domain;
 using System;
 
 namespace OpenNos.Master.Library.Data
