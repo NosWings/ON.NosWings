@@ -908,6 +908,10 @@ namespace OpenNos.Handler
                     ArenaTeamMember member2 = member.FirstOrDefault(o => o.Session == Session);
                     member.Where(s => s.ArenaTeamType == member2?.ArenaTeamType && s != member2).ToList().ForEach(o => o.Session.SendPacket(Session.Character.GenerateSay(message.Trim(), type)));
                 }
+                else if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
+                {
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), type), ReceiverType.AllExceptMeAct4);
+                }
                 else
                 {
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), type), ReceiverType.AllExceptMe);

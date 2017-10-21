@@ -220,6 +220,17 @@ namespace OpenNos.GameObject
                         });
                     }
                     break;
+                case ReceiverType.AllExceptMeAct4:
+                    if (sentPacket.Sender == null)
+                    {
+                        return;
+                    }
+                    foreach (ClientSession session in Sessions.Where(s =>
+                        s.SessionId != sentPacket.Sender.SessionId && s.Character.Faction == sentPacket.Sender.Character.Faction && s.HasSelectedCharacter))
+                    {
+                        session.SendPacket(sentPacket.Packet);
+                    }
+                    break;
                 case ReceiverType.AllExceptMe: // send to everyone except the sender
                     if (sentPacket.Packet.StartsWith("out"))
                     {
