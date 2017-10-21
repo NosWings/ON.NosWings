@@ -324,7 +324,7 @@ namespace OpenNos.GameObject.Helpers
                                 if (si != null)
                                 {
                                     evt.MapInstance.Broadcast(
-                                        $"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} {si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
+                                        $"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count} {evt.MapInstance.InstanceBag.MonstersKilled} {si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
                                 }
                             }
                             break;
@@ -422,7 +422,7 @@ namespace OpenNos.GameObject.Helpers
                                             targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
                                             targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
                                             targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
-                                            if (!mapinstances.Any(s => s.MapInstanceId == targetSession?.CurrentMapInstance.MapInstanceId && s.MapInstanceType == MapInstanceType.RaidInstance))
+                                            if (!mapinstances.Any(s => s.MapInstanceId == targetSession.CurrentMapInstance.MapInstanceId && s.MapInstanceType == MapInstanceType.RaidInstance))
                                             {
                                                 mapinstances.Add(targetSession.CurrentMapInstance);
                                             }

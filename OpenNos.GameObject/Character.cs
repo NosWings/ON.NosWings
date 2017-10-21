@@ -4930,8 +4930,11 @@ namespace OpenNos.GameObject
                                 continue;
                             }
                             DaoFactory.EquipmentOptionDao.DeleteByWearableInstanceId(instance.Id);
-                            instance.EquipmentOptions.ForEach(s => s.WearableInstanceId = instance.Id);
-                            DaoFactory.EquipmentOptionDao.InsertOrUpdate(instance.EquipmentOptions);
+                            instance.EquipmentOptions.ForEach(s =>
+                            {
+                                s.WearableInstanceId = instance.Id;
+                                DaoFactory.EquipmentOptionDao.InsertOrUpdate(s);
+                            });
                         }
                     }
                 }
