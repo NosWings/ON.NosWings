@@ -5,7 +5,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject.CommandPackets
 {
-    [PacketHeader("$Promote", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
+    [PacketHeader("$Promote", PassNonParseablePacket = true, Authority = AuthorityType.SuperGameMaster)]
     public class PromotePacket : PacketDefinition
     {
         #region Properties
