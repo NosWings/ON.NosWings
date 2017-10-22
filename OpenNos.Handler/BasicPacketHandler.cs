@@ -623,31 +623,34 @@ namespace OpenNos.Handler
                     case MapInstanceType.ArenaInstance:
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
                         return;
-                }
-                switch (Session.Character.Faction)
-                {
-                    case FactionType.Angel:
-                        if (portal.DestinationMapId == 131)
+
+                    case MapInstanceType.Act4Instance:
+                        switch (Session.Character.Faction)
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
-                            return;
-                        }
-                        else if (portal.DestinationMapId == 152)
-                        {
-                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, 46, 171);
-                            return;
-                        }
-                        break;
-                    case FactionType.Demon:
-                        if (portal.DestinationMapId == 130)
-                        {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
-                            return;
-                        }
-                        else if (portal.DestinationMapId == 152)
-                        {
-                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, 135, 171);
-                            return;
+                            case FactionType.Angel:
+                                if (portal.DestinationMapId == 131)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
+                                    return;
+                                }
+                                else if (portal.DestinationMapId == 153)
+                                {
+                                    ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, 46, 171);
+                                    return;
+                                }
+                                break;
+                            case FactionType.Demon:
+                                if (portal.DestinationMapId == 130)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
+                                    return;
+                                }
+                                else if (portal.DestinationMapId == 153)
+                                {
+                                    ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, 135, 171);
+                                    return;
+                                }
+                                break;
                         }
                         break;
                 }
