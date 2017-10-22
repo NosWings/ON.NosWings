@@ -410,7 +410,6 @@ namespace OpenNos.GameObject.Helpers
                                     {
                                         ClientSession[] grpmembers = new ClientSession[40];
                                         grp.Characters.ToList().CopyTo(grpmembers);
-                                        List<MapInstance> mapinstances = new List<MapInstance>();
                                         foreach (ClientSession targetSession in grpmembers)
                                         {
                                             if (targetSession == null)
@@ -425,15 +424,11 @@ namespace OpenNos.GameObject.Helpers
                                             targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
                                             targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
                                             targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
-                                            if (!mapinstances.Any(s => s.MapInstanceId == targetSession.CurrentMapInstance.MapInstanceId && s.MapInstanceType == MapInstanceType.RaidInstance))
-                                            {
-                                                mapinstances.Add(targetSession.CurrentMapInstance);
-                                            }
                                             grp.LeaveGroup(targetSession);
                                         }
                                         ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
                                         ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
-                                        mapinstances.ForEach(s => s.Dispose());
+                                        grp.Raid.Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
                                     });
                                 }
                             }

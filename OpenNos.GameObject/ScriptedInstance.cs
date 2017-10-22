@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
 
         private InstanceBag _instancebag = new InstanceBag();
 
-        private Dictionary<int, MapInstance> _mapinstancedictionary = new Dictionary<int, MapInstance>();
+        public Dictionary<int, MapInstance> Mapinstancedictionary = new Dictionary<int, MapInstance>();
 
         private IDisposable _obs;
 
@@ -83,7 +83,7 @@ namespace OpenNos.GameObject
         public void Dispose()
         {
             Thread.Sleep(10000);
-            _mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
+            Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
         }
 
         public string GenerateMainInfo()
@@ -94,7 +94,7 @@ namespace OpenNos.GameObject
         public List<string> GenerateMinimap()
         {
             List<string> lst = new List<string> {"rsfm 0 0 4 12"};
-            _mapinstancedictionary.Values.ToList().ForEach(s => lst.Add(s.GenerateRsfn(true)));
+            Mapinstancedictionary.Values.ToList().ForEach(s => lst.Add(s.GenerateRsfn(true)));
             return lst;
         }
 
@@ -231,28 +231,28 @@ namespace OpenNos.GameObject
                     byte.TryParse(variable?.Attributes["IndexY"]?.Value, out byte indexy);
                     newmap.MapIndexY = indexy;
 
-                    if (!_mapinstancedictionary.ContainsKey(int.Parse(variable?.Attributes["Map"].Value)))
+                    if (!Mapinstancedictionary.ContainsKey(int.Parse(variable?.Attributes["Map"].Value)))
                     {
-                        _mapinstancedictionary.Add(int.Parse(variable?.Attributes["Map"].Value), newmap);
+                        Mapinstancedictionary.Add(int.Parse(variable?.Attributes["Map"].Value), newmap);
                     }
                 }
             }
 
-            FirstMap = _mapinstancedictionary.Values.FirstOrDefault();
+            FirstMap = Mapinstancedictionary.Values.FirstOrDefault();
             Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(x =>
             {
                 if (FirstMap.InstanceBag.Lock)
                 {
                     return;
                 }
-                _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
+                Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
                 Dispose();
             });
             _obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
             {
                 if (_instancebag.Lives - _instancebag.DeadList.Count < 0)
                 {
-                    _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 3)));
+                    Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 3)));
                     Dispose();
                     _obs.Dispose();
                 }
@@ -260,7 +260,7 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
+                Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
                 Dispose();
                 _obs.Dispose();
             });
@@ -291,7 +291,7 @@ namespace OpenNos.GameObject
                 }
                 if (int.TryParse(mapevent.Attributes["ToMap"]?.Value, out int toMap))
                 {
-                    MapInstance destmap = _mapinstancedictionary.First(s => s.Key == toMap).Value;
+                    MapInstance destmap = Mapinstancedictionary.First(s => s.Key == toMap).Value;
                     if (!short.TryParse(mapevent?.Attributes["ToY"]?.Value, out toY) || !short.TryParse(mapevent?.Attributes["ToX"]?.Value, out toX))
                     {
                         if (destmap != null)
@@ -325,7 +325,7 @@ namespace OpenNos.GameObject
                 {
                     isHostile = true;
                 }
-                MapInstance mapinstance = _mapinstancedictionary.FirstOrDefault(s => s.Key == mapid).Value ?? parentmapinstance;
+                MapInstance mapinstance = Mapinstancedictionary.FirstOrDefault(s => s.Key == mapid).Value ?? parentmapinstance;
                 MapCell cell;
                 switch (mapevent.Name)
                 {
@@ -339,7 +339,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case "End":
-                        _mapinstancedictionary.Values.ToList().ForEach(m => evts.Add(new EventContainer(m, EventActionType.SCRIPTEND, byte.Parse(mapevent.Attributes?["Type"]?.Value ?? "0"))));
+                        Mapinstancedictionary.Values.ToList().ForEach(m => evts.Add(new EventContainer(m, EventActionType.SCRIPTEND, byte.Parse(mapevent.Attributes?["Type"]?.Value ?? "0"))));
                         break;
 
                     //register events
