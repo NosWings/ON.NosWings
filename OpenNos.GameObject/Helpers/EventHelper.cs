@@ -258,7 +258,10 @@ namespace OpenNos.GameObject.Helpers
                     {
                         monster.MoveEvent = null;
                         monster.Path = null;
-                        ((List<EventContainer>)evt.Parameter).ForEach(s => RunEvent(s, monster: monster));
+                        foreach (EventContainer s in ((ConcurrentBag<EventContainer>) evt.Parameter))
+                        {
+                            RunEvent(s, monster: monster);
+                        }
                     }
                     break;
 
