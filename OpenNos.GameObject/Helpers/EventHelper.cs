@@ -405,32 +405,31 @@ namespace OpenNos.GameObject.Helpers
 
                                     ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
                                         string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
-
-                                    Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(obj =>
-                                    {
-                                        ClientSession[] grpmembers = new ClientSession[40];
-                                        grp.Characters.ToList().CopyTo(grpmembers);
-                                        foreach (ClientSession targetSession in grpmembers)
-                                        {
-                                            if (targetSession == null)
-                                            {
-                                                continue;
-                                            }
-                                            if (targetSession.Character.Hp <= 0)
-                                            {
-                                                targetSession.Character.Hp = 1;
-                                                targetSession.Character.Mp = 1;
-                                            }
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
-                                            grp.LeaveGroup(targetSession);
-                                        }
-                                        ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                                        ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
-                                        grp.Raid.Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
-                                    });
                                 }
+                                Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(obj =>
+                                {
+                                    ClientSession[] grpmembers = new ClientSession[40];
+                                    grp.Characters.ToList().CopyTo(grpmembers);
+                                    foreach (ClientSession targetSession in grpmembers)
+                                    {
+                                        if (targetSession == null)
+                                        {
+                                            continue;
+                                        }
+                                        if (targetSession.Character.Hp <= 0)
+                                        {
+                                            targetSession.Character.Hp = 1;
+                                            targetSession.Character.Mp = 1;
+                                        }
+                                        targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
+                                        targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
+                                        targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
+                                        grp.LeaveGroup(targetSession);
+                                    }
+                                    ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
+                                    ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
+                                    grp.Raid.Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
+                                });
                             }
                             break;
                     }
