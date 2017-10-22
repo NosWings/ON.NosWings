@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
@@ -42,9 +41,9 @@ namespace OpenNos.GameObject
             Data = data;
             LoadZone();
             MapTypes = new List<MapTypeDTO>();
-            foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId).ToList())
+            foreach (MapTypeMapDTO maptypemap in DaoFactory.MapTypeMapDao.LoadByMapId(mapId).ToList())
             {
-                MapTypeDTO maptype = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
+                MapTypeDTO maptype = DaoFactory.MapTypeDao.LoadById(maptypemap.MapTypeId);
                 MapTypes.Add(maptype);
             }
 
@@ -56,11 +55,11 @@ namespace OpenNos.GameObject
                     long? returnMapTypeId = MapTypes.ElementAt(0).ReturnMapTypeId;
                     if (respawnMapTypeId != null)
                     {
-                        DefaultRespawn = DAOFactory.RespawnMapTypeDAO.LoadById((long)respawnMapTypeId);
+                        DefaultRespawn = DaoFactory.RespawnMapTypeDao.LoadById((long)respawnMapTypeId);
                     }
                     if (returnMapTypeId != null)
                     {
-                        DefaultReturn = DAOFactory.RespawnMapTypeDAO.LoadById((long)returnMapTypeId);
+                        DefaultReturn = DaoFactory.RespawnMapTypeDao.LoadById((long)returnMapTypeId);
                     }
                 }
             }
@@ -134,6 +133,16 @@ namespace OpenNos.GameObject
             return summonParameters;
         }
 
+        public bool GetDefinedPosition(int x, int y)
+        {
+            MapCell cell = new MapCell {X = (short) x, Y = (short) y};
+            if (IsBlockedZone(x, y))
+            {
+                return false;
+            }
+            return true;
+        }
+
         public MapCell GetRandomPosition()
         {
             if (Cells != null)
@@ -167,34 +176,18 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool IsArenaPVPable(int x, int y)
-        {
-            try
-            {
-                if (Grid == null)
-                {
-                    return false;
-                }
-                return !Grid[x, y].IsArenaStairs();
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
         {
-            short MinX = (short)(-xpoint + firstX);
-            short MaxX = (short)(xpoint + firstX);
+            short minX = (short)(-xpoint + firstX);
+            short maxX = (short)(xpoint + firstX);
 
-            short MinY = (short)(-ypoint + firstY);
-            short MaxY = (short)(ypoint + firstY);
+            short minY = (short)(-ypoint + firstY);
+            short maxY = (short)(ypoint + firstY);
 
             List<MapCell> cells = new List<MapCell>();
-            for (short y = MinY; y <= MaxY; y++)
+            for (short y = minY; y <= maxY; y++)
             {
-                for (short x = MinX; x <= MaxX; x++)
+                for (short x = minX; x <= maxX; x++)
                 {
                     if (x != firstX || y != firstY)
                     {

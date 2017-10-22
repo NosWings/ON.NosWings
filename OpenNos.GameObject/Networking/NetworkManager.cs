@@ -21,15 +21,15 @@ using System.Linq;
 
 namespace OpenNos.GameObject
 {
-    public class NetworkManager<EncryptorT> : SessionManager
-        where EncryptorT : EncryptionBase
+    public class NetworkManager<TEncryptorT> : SessionManager
+        where TEncryptorT : EncryptionBase
     {
         #region Members
 
         private IDictionary<string, DateTime> _connectionLog;
-        private EncryptorT _encryptor;
-        private EncryptionBase _fallbackEncryptor;
-        private IScsServer _server;
+        private readonly TEncryptorT _encryptor;
+        private readonly EncryptionBase _fallbackEncryptor;
+        private readonly IScsServer _server;
 
         #endregion
 
@@ -37,7 +37,7 @@ namespace OpenNos.GameObject
 
         public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor, bool isWorldServer) : base(packetHandler, isWorldServer)
         {
-            _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
+            _encryptor = (TEncryptorT)Activator.CreateInstance(typeof(TEncryptorT));
 
             if (fallbackEncryptor != null)
             {
@@ -49,7 +49,7 @@ namespace OpenNos.GameObject
             // Register events of the server to be informed about clients
             _server.ClientConnected += OnServerClientConnected;
             _server.ClientDisconnected += OnServerClientDisconnected;
-            _server.WireProtocolFactory = new WireProtocolFactory<EncryptorT>();
+            _server.WireProtocolFactory = new WireProtocolFactory<TEncryptorT>();
 
             // Start the server
             _server.Start();
@@ -92,31 +92,30 @@ namespace OpenNos.GameObject
             }
 
             ClientSession session = new ClientSession(client);
-            session.Initialize(_encryptor, _packetHandler, IsWorldServer);
+            session.Initialize(_encryptor, PacketHandler, IsWorldServer);
 
             return session;
         }
 
         private bool CheckGeneralLog(INetworkClient client)
         {
-            if (!client.IpAddress.Contains("127.0.0.1"))
+            if (client.IpAddress.Contains("127.0.0.1"))
             {
-                if (ConnectionLog.Any())
-                {
-                    foreach (KeyValuePair<string, DateTime> item in ConnectionLog.Where(cl => cl.Key.Contains(client.IpAddress.Split(':')[1]) && (DateTime.Now - cl.Value).TotalSeconds > 3).ToList())
-                    {
-                        ConnectionLog.Remove(item.Key);
-                    }
-                }
-
-                if (ConnectionLog.Any(c => c.Key.Contains(client.IpAddress.Split(':')[1])))
-                {
-                    return false;
-                }
-                ConnectionLog.Add(client.IpAddress, DateTime.Now);
                 return true;
             }
+            if (ConnectionLog.Any())
+            {
+                foreach (KeyValuePair<string, DateTime> item in ConnectionLog.Where(cl => cl.Key.Contains(client.IpAddress.Split(':')[1]) && (DateTime.Now - cl.Value).TotalSeconds > 3).ToList())
+                {
+                    ConnectionLog.Remove(item.Key);
+                }
+            }
 
+            if (ConnectionLog.Any(c => c.Key.Contains(client.IpAddress.Split(':')[1])))
+            {
+                return false;
+            }
+            ConnectionLog.Add(client.IpAddress, DateTime.Now);
             return true;
         }
 

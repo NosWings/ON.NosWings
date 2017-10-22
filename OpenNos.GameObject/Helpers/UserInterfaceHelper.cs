@@ -14,7 +14,6 @@
 
 using OpenNos.Domain;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using OpenNos.Core;
@@ -140,24 +139,24 @@ namespace OpenNos.GameObject.Helpers
             return $"f_stash {GenerateRemovePacket(slot)}";
         }
 
-        public string GenerateGuri(byte type, byte argument, long CharacterId, int value = 0)
+        public string GenerateGuri(byte type, byte argument, long characterId, int value = 0)
         {
             switch (type)
             {
                 case 2:
-                    return $"guri 2 {argument} {CharacterId}";
+                    return $"guri 2 {argument} {characterId}";
 
                 case 6:
-                    return $"guri 6 1 {CharacterId} 0 0";
+                    return $"guri 6 1 {characterId} 0 0";
 
                 case 10:
-                    return $"guri 10 {argument} {value} {CharacterId}";
+                    return $"guri 10 {argument} {value} {characterId}";
 
                 case 15:
                     return $"guri 15 {argument} 0 0";
 
                 default:
-                    return $"guri {type} {argument} {CharacterId} {value}";
+                    return $"guri {type} {argument} {characterId} {value}";
             }
         }
 
@@ -171,9 +170,9 @@ namespace OpenNos.GameObject.Helpers
             return $"info {message}";
         }
 
-        public string GenerateInventoryRemove(InventoryType Type, short Slot)
+        public string GenerateInventoryRemove(InventoryType type, short slot)
         {
-            return $"ivn {(byte)Type} {GenerateRemovePacket(Slot)}";
+            return $"ivn {(byte)type} {GenerateRemovePacket(slot)}";
         }
 
         public string GenerateMapOut()
@@ -201,7 +200,7 @@ namespace OpenNos.GameObject.Helpers
             return $"pstash {GenerateRemovePacket(slot)}";
         }
 
-        public string GenerateRCBList(CBListPacket packet)
+        public string GenerateRcbList(CbListPacket packet)
         {
             string itembazar = string.Empty;
 
@@ -494,7 +493,7 @@ namespace OpenNos.GameObject.Helpers
                     if (bzlink.Item is WearableInstance wear)
                     {
                         wear.EquipmentOptions.Clear();
-                        wear.EquipmentOptions.AddRange(DAOFactory.EquipmentOptionDAO.GetOptionsByWearableInstanceId(wear.Id));
+                        wear.EquipmentOptions.AddRange(DaoFactory.EquipmentOptionDao.GetOptionsByWearableInstanceId(wear.Id));
                     }
                     info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
                         (bzlink.Item as WearableInstance).GenerateEInfo() : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
@@ -512,7 +511,7 @@ namespace OpenNos.GameObject.Helpers
             string str = $"rl {type}";
             ServerManager.Instance.GroupList.ForEach(s =>
             {
-                ClientSession leader = s.Characters.ElementAt(0);
+                ClientSession leader = s.Characters.OrderBy(m => m.Character.LastGroupJoin).ElementAt(0);
                 str += $" {s.Raid.Id}.{s.Raid?.LevelMinimum}.{s.Raid?.LevelMaximum}.{leader.Character.Name}.{leader.Character.Level}.{(leader.Character.UseSp ? leader.Character.Morph : -1)}.{(byte)leader.Character.Class}.{(byte)leader.Character.Gender}.{s.CharacterCount}.{leader.Character.HeroLevel}";
             });
             return str;

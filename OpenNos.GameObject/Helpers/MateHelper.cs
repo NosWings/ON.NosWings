@@ -13,12 +13,23 @@ namespace OpenNos.GameObject.Helpers
 
         public MateHelper()
         {
-            LoadXPData();
+            LoadXpData();
+            LoadPrimaryMpData();
+            LoadSecondaryMpData();
+            LoadHpData();
         }
 
         #endregion
 
         #region Properties
+
+        public double[] HpData { get; private set; }
+
+        // Race == 0
+        public double[] PrimaryMpData { get; private set; }
+
+        // Race == 2
+        public double[] SecondaryMpData { get; private set; }
 
         public double[] XpData { get; private set; }
 
@@ -26,7 +37,106 @@ namespace OpenNos.GameObject.Helpers
 
         #region Methods
 
-        private void LoadXPData()
+        private void LoadPrimaryMpData()
+        {
+            PrimaryMpData = new double[256];
+            PrimaryMpData[0] = 10;
+            PrimaryMpData[1] = 10;
+            PrimaryMpData[2] = 15;
+
+            int basup = 5;
+            byte count = 0;
+            bool isStable = true;
+            bool isDouble = false;
+
+            for (int i = 3; i < PrimaryMpData.Length; i++)
+            {
+                if (i % 10 == 1)
+                {
+                    PrimaryMpData[i] += PrimaryMpData[i - 1] + basup * 2;
+                    continue;
+                }
+                if (!isStable)
+                {
+                    basup++;
+                    count++;
+
+                    if (count == 2)
+                    {
+                        if (isDouble)
+                        { isDouble = false; }
+                        else
+                        { isStable = true; isDouble = true; count = 0; }
+                    }
+
+                    if (count == 4)
+                    { isStable = true; count = 0; }
+                }
+                else
+                {
+                    count++;
+                    if (count == 2)
+                    { isStable = false; count = 0; }
+                }
+                PrimaryMpData[i] = PrimaryMpData[i - (i % 10 == 2 ? 2 : 1)] + basup;
+            }
+        }
+
+        private void LoadSecondaryMpData()
+        {
+            SecondaryMpData = new double[256];
+            SecondaryMpData[0] = 60;
+            SecondaryMpData[1] = 60;
+            SecondaryMpData[2] = 78;
+
+            int basup = 18;
+            bool boostup = false;
+
+            for (int i = 3; i < SecondaryMpData.Length; i++)
+            {
+                if (i % 10 == 1)
+                {
+                    SecondaryMpData[i] += SecondaryMpData[i - 1] + i + 10;
+                    continue;
+                }
+
+                if(boostup)
+                { basup += 3; boostup = false; }
+                else
+                { basup++; boostup = true; }
+
+                SecondaryMpData[i] = SecondaryMpData[i - (i % 10 == 2 ? 2 : 1)] + basup;
+            }
+        }
+
+        private void LoadHpData()
+        {
+            HpData = new double[256];
+            int baseHp = 138;
+            int HPbasup = 18;
+            for (int i = 0; i < HpData.Length; i++)
+            {
+                HpData[i] = baseHp;
+                HPbasup++;
+                baseHp += HPbasup;
+
+                if (i == 37)
+                {
+                    baseHp = 1765;
+                    HPbasup = 65;
+                }
+                if (i < 41)
+                {
+                    continue;
+                }
+                if (((99 - i) % 8) == 0)
+                {
+                    HPbasup++;
+                }
+            }
+        }
+
+        private void LoadXpData()
         {
             // Load XpData
             XpData = new double[256];

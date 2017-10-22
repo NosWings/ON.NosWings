@@ -18,9 +18,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -51,12 +49,15 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
-                    else if (session.GetType() == typeof(MapNpc))
+                    /*
+                    else if (session is Mate mate)
                     {
+                        if (ServerManager.Instance.RandomNumber() < FirstData)
+                        {
+                            mate?.AddBuff(new Buff(SecondData, (byte)(caster is Character character ? character.Level : 1)));
+                        }
                     }
-                    else if (session.GetType() == typeof(Mate))
-                    {
-                    }
+                    */
                     break;
 
                 case BCardType.CardType.Move:
@@ -65,6 +66,7 @@ namespace OpenNos.GameObject
                         if (session is Character character)
                         {
                             character.LastSpeedChange = DateTime.Now;
+                            character.LoadSpeed();
                         }
                         Character o = session as Character;
                         o?.Session.SendPacket(o.GenerateCond());
@@ -106,7 +108,7 @@ namespace OpenNos.GameObject
                                         EventHelper.Instance.RunEvent(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     break;
                                 default:
-                                    if (monster.OnDeathEvents.All(s => s.EventActionType != EventActionType.SPAWNMONSTERS))
+                                    if (monster.OnDeathEvents.All(s => s?.EventActionType != EventActionType.SPAWNMONSTERS))
                                     {
                                         monster.OnDeathEvents.Add(new EventContainer(monster.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                                     }
@@ -204,18 +206,18 @@ namespace OpenNos.GameObject
                                     }
                                 }
                                 sess.Session?.CurrentMapInstance?.Broadcast(sess.GenerateRc(heal));
-                                if (sess.Hp + heal < sess.HPLoad())
+                                if (sess.Hp + heal < sess.HpLoad())
                                 {
                                     sess.Hp += heal;
                                     change = true;
                                 }
                                 else
                                 {
-                                    if (sess.Hp != (int)sess.HPLoad())
+                                    if (sess.Hp != (int)sess.HpLoad())
                                     {
                                         change = true;
                                     }
-                                    sess.Hp = (int)sess.HPLoad();
+                                    sess.Hp = (int)sess.HpLoad();
                                 }
                                 if (change)
                                 {
@@ -266,7 +268,7 @@ namespace OpenNos.GameObject
                                                     NpcMonster mateNpc = ServerManager.Instance.GetNpc(monster.Monster.NpcMonsterVNum);
                                                     byte lvl = 0;
                                                     lvl += monster.Monster.Level;
-                                                    lvl -= 10;
+                                                    lvl -= 15;
                                                     if (lvl <= 0)
                                                     {
                                                         lvl = 1;

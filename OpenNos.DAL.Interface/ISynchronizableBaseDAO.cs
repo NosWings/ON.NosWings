@@ -12,6 +12,8 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult Delete(Guid id);
 
+        DeleteResult Delete(IEnumerable<Guid> ids);
+
         TDTO InsertOrUpdate(TDTO dto);
 
         IEnumerable<TDTO> InsertOrUpdate(IEnumerable<TDTO> dtos);

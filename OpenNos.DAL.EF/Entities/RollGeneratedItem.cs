@@ -12,11 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.DAL.EF
 {
@@ -47,9 +43,9 @@ namespace OpenNos.DAL.EF
 
         public bool IsRareRandom { get; set; }
 
-        public byte MinimumOriginalItemRare { get; set; }
+        public short MinimumOriginalItemRare { get; set; }
 
-        public byte MaximumOriginalItemRare { get; set; }
+        public short MaximumOriginalItemRare { get; set; }
 
         public virtual Item ItemGenerated { get; set; }
 

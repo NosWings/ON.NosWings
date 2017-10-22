@@ -8,9 +8,9 @@ namespace OpenNos.Core
 
         public static void Clear<T>(this ConcurrentQueue<T> queue)
         {
-            while (queue.Count > 0)
+            while (queue.TryDequeue(out T item))
             {
-                queue.TryDequeue(out T item);
+                // API
             }
         }
 

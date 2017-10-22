@@ -22,7 +22,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        protected ItemInstance _itemInstance;
+        protected ItemInstance ItemInstance;
         private long _transportId;
 
         #endregion

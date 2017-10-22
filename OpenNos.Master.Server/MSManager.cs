@@ -15,7 +15,6 @@
 using Hik.Communication.ScsServices.Service;
 using OpenNos.Master.Library.Data;
 using System.Collections.Generic;
-using OpenNos.Core;
 using System.Collections.Concurrent;
 
 namespace OpenNos.Master.Server

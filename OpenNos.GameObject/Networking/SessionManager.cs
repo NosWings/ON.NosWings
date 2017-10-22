@@ -24,8 +24,8 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        protected Type _packetHandler;
-        protected ConcurrentDictionary<long, ClientSession> _sessions = new ConcurrentDictionary<long, ClientSession>();
+        protected Type PacketHandler;
+        protected ConcurrentDictionary<long, ClientSession> Sessions = new ConcurrentDictionary<long, ClientSession>();
 
         #endregion
 
@@ -33,7 +33,7 @@ namespace OpenNos.GameObject
 
         public SessionManager(Type packetHandler, bool isWorldServer)
         {
-            _packetHandler = packetHandler;
+            PacketHandler = packetHandler;
             IsWorldServer = isWorldServer;
         }
 
@@ -56,18 +56,18 @@ namespace OpenNos.GameObject
 
             if (session != null && IsWorldServer)
             {
-                if (!_sessions.TryAdd(customClient.ClientId, session))
+                if (!Sessions.TryAdd(customClient.ClientId, session))
                 {
                     Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                     customClient.Disconnect();
-                    _sessions.TryRemove(customClient.ClientId, out session);
+                    Sessions.TryRemove(customClient.ClientId, out session);
                 }
             }
         }
 
         public virtual void StopServer()
         {
-            _sessions.Clear();
+            Sessions.Clear();
             ServerManager.Instance.StopServer();
         }
 
@@ -80,7 +80,7 @@ namespace OpenNos.GameObject
 
         protected void RemoveSession(INetworkClient client)
         {
-            _sessions.TryRemove(client.ClientId, out ClientSession session);
+            Sessions.TryRemove(client.ClientId, out ClientSession session);
 
             // check if session hasnt been already removed
             if (session != null)

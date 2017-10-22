@@ -92,10 +92,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// </summary>
         public virtual void Stop()
         {
-            if (_connectionListener != null)
-            {
-                _connectionListener.Stop();
-            }
+            _connectionListener?.Stop();
 
             foreach (IScsServerClient client in Clients.Select(s=>s.Value))
             {

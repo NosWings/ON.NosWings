@@ -38,6 +38,7 @@ namespace OpenNos.GameObject
             switch (Effect)
             {
                 case 0:
+                case 999:
                     if (option == 0)
                     {
                         if (packetsplit != null && packetsplit.Length == 9)
@@ -84,7 +85,66 @@ namespace OpenNos.GameObject
                                     {
                                         continue;
                                     }
-                                    newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, Rare: box.Rare, Upgrade: rollitem.ItemGeneratedUpgrade);
+                                    switch (rollitem.ItemGeneratedVNum)
+                                    {
+                                        case 565:
+                                        case 566:
+                                        case 567:
+                                        case 577:
+                                        case 578:
+                                        case 579:
+                                        case 568:
+                                        case 569:
+                                        case 570:
+                                        case 580:
+                                        case 551:
+                                        case 582:
+                                        case 571:
+                                        case 572:
+                                        case 573:
+                                        case 583:
+                                        case 584:
+                                        case 585:
+                                        case 574:
+                                        case 575:
+                                        case 576:/* ARMOR */
+                                        case 586:
+                                        case 587:
+                                        case 588:
+                                        case 589:
+                                        case 590:
+                                        case 591:
+                                        case 592:
+                                        case 593:
+                                        case 594:
+                                        case 595:
+                                        case 596:
+                                        case 597:
+                                        case 598: /* HALF SHELL */
+                                        case 599:
+                                        case 600:
+                                        case 601:
+                                        case 602:
+                                        case 603:
+                                        case 604:
+                                        case 605:
+                                        case 606:
+                                        case 607:
+                                        case 608: /* HALF SHELL */
+                                            rollitem.ItemGeneratedUpgrade = (byte)ServerManager.Instance.RandomNumber();
+                                            if (rollitem.ItemGeneratedUpgrade > 95)
+                                            {
+                                                rollitem.ItemGeneratedUpgrade =
+                                                    (byte)ServerManager.Instance.RandomNumber(76, 90);
+                                            }
+                                            rollitem.ItemGeneratedUpgrade =
+                                                (byte)ServerManager.Instance.RandomNumber(25, 75);
+
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, rare: box.Rare, upgrade: rollitem.ItemGeneratedUpgrade);
                                     if (!newInv.Any())
                                     {
                                         continue;

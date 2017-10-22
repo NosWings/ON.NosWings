@@ -21,9 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenNos.DAL;
-using OpenNos.DAL.EF;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
+using System.Reactive.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -48,6 +48,15 @@ namespace OpenNos.GameObject
                 case 0:
                     switch (VNum)
                     {
+                        case 5370:
+                            if (session.Character.Buff.Any(s => s.Card.CardId == 393))
+                            {
+                                session.SendPacket(session.Character.GenerateSay((Language.Instance.GetMessageFromKey("ALREADY_GOT_FAIRY_POTION")), 10));
+                                return;
+                            }
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                            session.Character.AddStaticBuff(new StaticBuffDTO {CardId = 393});
+                            break;
                         case 1428:
                             session.SendPacket("guri 18 1");
                             break;
@@ -87,7 +96,7 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
                             break;
                         case 1904:
-                            short[] items = {1894, 1895, 1896, 1897, 1898, 1899, 1900, 1901, 1902, 1903, 1972, 1973};
+                            short[] items = {1894, 1895, 1896, 1897, 1898, 1899, 1900, 1901, 1902, 1903};
                             for (int i = 0; i < 5; i++)
                             {
                                 session.Character.GiftAdd(items[ServerManager.Instance.RandomNumber(0, items.Length)], 1);
@@ -115,7 +124,7 @@ namespace OpenNos.GameObject
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             break;
                         default:
-                            IEnumerable<RollGeneratedItemDTO> roll = DAOFactory.RollGeneratedItemDAO.LoadByItemVNum(VNum);
+                            IEnumerable<RollGeneratedItemDTO> roll = DaoFactory.RollGeneratedItemDao.LoadByItemVNum(VNum);
                             IEnumerable<RollGeneratedItemDTO> rollGeneratedItemDtos = roll as IList<RollGeneratedItemDTO> ?? roll.ToList();
                             if (!rollGeneratedItemDtos.Any())
                             {
@@ -154,6 +163,7 @@ namespace OpenNos.GameObject
                             break;
                     }
                     break;
+
                 // sp point potions
                 case 150:
                 case 151:
@@ -186,7 +196,7 @@ namespace OpenNos.GameObject
                 case 250:
                     if (session.Character.Buff.Any(s => s.Card.CardId == 131))
                     {
-                        //TODO ADD MESSAGE ALREADY GOT BUFF
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ALREADY_GOT_BOOSTER"), 10));
                         return;
                     }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -198,7 +208,7 @@ namespace OpenNos.GameObject
                 case 208:
                     if (session.Character.Buff.Any(s => s.Card.CardId == 121))
                     {
-                        //TODO ADD MESSAGE ALREADY GOT BUFF
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ALREADY_GOT_ANCELLOAN"), 10));
                         return;
                     }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -248,6 +258,104 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                //speed booster
+                case 998:
+                    if (!session.Character.IsVehicled || session.Character.IsOnBoost)
+                    {
+                        return;
+                    }
+                    session.Character.IsOnBoost = true;
+                    session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(885), session.Character.MapX, session.Character.MapY);
+                    session.Character.AddBuff(new Buff(336));
+                    session.Character.Speed += 5;
+                    switch (session.Character.Morph)
+                    {
+                        case 2517: // Nossi M
+                        case 2518: // Nossi F
+                        case 2522: // Roller M
+                        case 2523: // Roller F
+                                // Removes <= lv 4 debuffs
+                            List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad };
+                            session.Character.DisableBuffs(bufftodisable, 4);
+                            break;
+                            
+                    }
+                    Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(o =>
+                    {
+                        session.Character.Speed -= 5;
+                        session.Character.IsOnBoost = false;
+                        switch (session.Character.Morph)
+                        {
+                            case 2526: // White male unicorn
+                            case 2527: // White female unicorn
+                            case 2528: // Pink male unicorn
+                            case 2529: // Pink female unicorn
+                            case 2530: // Black male unicorn
+                            case 2531: // Black Female Unicorn
+                            case 2928: // Male UFO
+                            case 2929: // Female UFO
+                            case 3679: // Male squelettic dragon
+                            case 3680: // Female squelettic dragon
+                                ServerManager.Instance.TeleportOnRandomPlaceInMap(session, session.Character.MapInstanceId, true);
+                                break;
+
+                            case 2432: // Magic broom
+                            case 2433: // Magic broom F
+                            case 2520: // VTT M
+                            case 2521: // VTT F
+                                switch (session.Character.Direction)
+                                {
+                                    case 0:
+                                        // -y
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, session.Character.PositionX, (short)(session.Character.PositionY - 5));
+                                        break;
+                                    case 1:
+                                        // +x
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX + 5), session.Character.PositionY);
+                                        break;
+                                    case 2:
+                                        // +y
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, session.Character.PositionX, (short)(session.Character.PositionY + 5));
+                                        break;
+                                    case 3:
+                                        // -x
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX - 5), session.Character.PositionY);
+                                        break;
+                                    case 4:
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX - 5), (short)(session.Character.PositionY - 5));
+                                        // -x -y
+                                        break;
+                                    case 5:
+                                        // +x +y
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX - 5), (short)(session.Character.PositionY - 5));
+                                        break;
+                                    case 6:
+                                        // +x -y
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX + 5), (short)(session.Character.PositionY + 5));
+                                        break;
+                                    case 7:
+                                        // -x +y
+                                        ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId, (short)(session.Character.PositionX - 5), (short)(session.Character.PositionY + 5));
+                                        break;
+                                }
+                                break;
+
+                            case 2524:
+                            case 2525:
+                                if (session.Character.Hp > 0)
+                                {
+                                    session.Character.Hp += session.Character.Level * 15;
+                                    if (session.Character.Hp > session.Character.HpLoad())
+                                    {
+                                        session.Character.Hp = (int)session.Character.HpLoad();
+                                    }
+                                }
+                                break;
+                        }
+                    });
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    break;
+
                 //Atk/Def/HP/Exp potions
                 case 6600:
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -264,7 +372,7 @@ namespace OpenNos.GameObject
                     break;
 
                 // Cupid's arrow
-                case 34: // this is imaginary number I = √(-1)
+                case 34:
                     if (packetsplit != null && packetsplit.Length > 3)
                     {
                         if (long.TryParse(packetsplit[3], out long characterId))
@@ -274,34 +382,49 @@ namespace OpenNos.GameObject
                                 session.SendPacket($"info {Language.Instance.GetMessageFromKey("ALREADY_MARRIED")}");
                                 return;
                             }
-                            if (session.Character.IsFriendOfCharacter(characterId))
+                            ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
+                            if (otherSession != null)
                             {
-                                ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
-                                if (otherSession != null)
-                                {
-                                    otherSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(
-                                        $"#fins^-34^{session.Character.CharacterId} #fins^-69^{session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("MARRY_REQUEST"), session.Character.Name)}"));
-                                    session.Character.FriendRequestCharacters.Add(characterId);
-                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                otherSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(
+                                    $"#fins^-34^{session.Character.CharacterId} #fins^-69^{session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("MARRY_REQUEST"), session.Character.Name)}"));
+                                session.Character.FriendRequestCharacters.Add(characterId);
+                                //session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
 
-                                }
-                            }
-                            else
-                            {
-                                session.SendPacket($"info {Language.Instance.GetMessageFromKey("NOT_FRIEND")}");
                             }
                         }
                     }
                     break;
 
                 case 570:
-                    if (session.Character.Faction == (FactionType)EffectValue)
+                    if (EffectValue < 3)
                     {
-                        return;
+                        if (session.Character.Faction == (FactionType) EffectValue)
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SAME_FACTION"), 0));
+                            return;
+                        }
+                        session.SendPacket(session.Character.Family == null
+                            ? $"qna #guri^750^{EffectValue} {Language.Instance.GetMessageFromKey($"ASK_CHANGE_FACTION{EffectValue}")}"
+                            : UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("IN_FAMILY"),
+                                0));
                     }
-                    session.SendPacket(session.Character.Family == null
-                        ? $"qna #guri^750^{EffectValue} {Language.Instance.GetMessageFromKey($"ASK_CHANGE_FACTION{EffectValue}")}"
-                        : UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("IN_FAMILY"), 0));
+                    else
+                    {
+                        if (session.Character.Family == null)
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_FAMILY"), 0));
+                            return;
+                        }
+                        if (session.Character.Family.FamilyFaction / 2 == EffectValue)
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SAME_FACTION"), 0));
+                            return;
+                        }
+                        session.SendPacket(session.Character.Family != null
+                            ? $"qna #guri^750^{EffectValue} {Language.Instance.GetMessageFromKey($"ASK_CHANGE_FACTION{EffectValue}")}"
+                            : UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_FAMILY"),
+                                0));
+                    }
                     break;
 
                 // wings
@@ -399,7 +522,7 @@ namespace OpenNos.GameObject
                             }
                             else if (session.Character.IsVehicled)
                             {
-                                session.Character.Mates?.ForEach(x =>
+                                session.Character.Mates?.Where(s => s.IsTeamMember).ToList().ForEach(x =>
                                 {
                                     x.PositionX = session.Character.PositionX;
                                     x.PositionY = session.Character.PositionY;
@@ -497,9 +620,6 @@ namespace OpenNos.GameObject
                 case 789:
                     session.Character.GiftAdd((short)inv.Item.EffectValue, 1);
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                    break;
-
-                case 790:
                     break;
 
                 case 1003:

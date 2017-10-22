@@ -112,7 +112,7 @@ namespace OpenNos.GameObject.Event
                 }
                 else
                 {
-                    Observable.Timer(TimeSpan.FromMinutes(12)).Subscribe(X =>
+                    Observable.Timer(TimeSpan.FromMinutes(12)).Subscribe(x =>
                     {
                         for (int d = 0; d < 180; d++)
                         {

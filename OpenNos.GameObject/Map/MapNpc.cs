@@ -287,13 +287,7 @@ namespace OpenNos.GameObject
                         LastEffect = DateTime.Now;
                         if (monster.CurrentHp < 1)
                         {
-                            RemoveTarget();
-                            monster.IsAlive = false;
-                            monster.LastMove = DateTime.Now;
-                            monster.CurrentHp = 0;
-                            monster.CurrentMp = 0;
-                            monster.Death = DateTime.Now;
-                            Target = -1;
+                            monster.KillMonster();
                         }
                     }
                 }

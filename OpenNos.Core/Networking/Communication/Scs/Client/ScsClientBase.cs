@@ -16,7 +16,6 @@ using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
-using OpenNos.Core.Networking.Communication.Scs.Threading;
 using System;
 using System.Threading.Tasks;
 

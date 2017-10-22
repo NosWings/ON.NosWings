@@ -13,9 +13,7 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Core.Handling;
 using OpenNos.GameObject;
-using OpenNos.Master.Library.Client;
 
 namespace OpenNos.Handler
 {
@@ -80,11 +78,6 @@ namespace OpenNos.Handler
             // Not needed for now. (pictures)
         }
 
-        [Packet("%Nosmall")]
-        public void UpdateMails()
-        {
-            CommunicationServiceClient.Instance.UpdateMails(Session.Character.AccountId);
-        }
 
         #endregion
     }

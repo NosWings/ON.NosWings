@@ -58,15 +58,15 @@ namespace OpenNos.GameObject
                 }
                 session.Character.Hp += session.Character.SnackHp;
                 session.Character.Mp += session.Character.SnackMp;
-                if (session.Character.Mp > session.Character.MPLoad())
+                if (session.Character.Mp > session.Character.MpLoad())
                 {
-                    session.Character.Mp = (int)session.Character.MPLoad();
+                    session.Character.Mp = (int)session.Character.MpLoad();
                 }
-                if (session.Character.Hp > session.Character.HPLoad())
+                if (session.Character.Hp > session.Character.HpLoad())
                 {
-                    session.Character.Hp = (int)session.Character.HPLoad();
+                    session.Character.Hp = (int)session.Character.HpLoad();
                 }
-                if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
+                if (session.Character.Hp < session.Character.HpLoad() || session.Character.Mp < session.Character.MpLoad())
                 {
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp));
                 }
@@ -82,7 +82,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
             if ((DateTime.Now - session.Character.LastPotion).TotalMilliseconds < 750)
             {

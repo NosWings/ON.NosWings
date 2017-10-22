@@ -51,6 +51,10 @@ namespace OpenNos.Domain
         EFFECT,
         MOVE,
         ONTARGET,
-        CONTROLEMONSTERINRANGE
+        CONTROLEMONSTERINRANGE,
+        MAPGIVE,
+        REMOVEPORTAL,
+        ACT4RAIDEND,
+        CLEARMAPMONSTERS
     }
 }

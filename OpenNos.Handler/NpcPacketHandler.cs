@@ -157,7 +157,7 @@ namespace OpenNos.Handler
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
                                 }
-                                else if (Session.Character.GetCP() < skillinfo.CPCost)
+                                else if (Session.Character.GetCp() < skillinfo.CPCost)
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_CP"), 0));
                                 }
@@ -307,7 +307,7 @@ namespace OpenNos.Handler
                                     }
                                 }
 
-                                List<ItemInstance> newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount, Rare: rare, Upgrade: item.Upgrade, Design: item.Color);
+                                List<ItemInstance> newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount, rare: rare, upgrade: item.Upgrade, design: item.Color);
                                 if (!newItem.Any())
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE")));
@@ -634,7 +634,7 @@ namespace OpenNos.Handler
                 }
                 mate.PositionX = positionX;
                 mate.PositionY = positionY;
-                Session.CurrentMapInstance.Broadcast($"mv 2 {petId} {positionX} {positionY} {mate.Monster.Speed}");
+                Session.CurrentMapInstance.Broadcast($"mv 2 {petId} {positionX} {positionY} {mate.Speed}");
             }
         }
 
@@ -705,7 +705,11 @@ namespace OpenNos.Handler
             else
             {
                 short vnum = sellPacket.Data;
-                CharacterSkill skill = Session.Character.Skills[vnum];
+                CharacterSkill skill = null;
+                if (Session.Character.Skills.ContainsKey(vnum))
+                {
+                    skill = Session.Character.Skills[vnum];
+                }
                 if (skill == null || vnum == 200 + 20 * (byte)Session.Character.Class || vnum == 201 + 20 * (byte)Session.Character.Class)
                 {
                     return;

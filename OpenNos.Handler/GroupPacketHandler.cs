@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
@@ -48,11 +43,11 @@ namespace OpenNos.Handler
                     ClientSession target = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
                     if (rdPacket.Parameter == null && target?.Character?.Group == null && Session?.Character?.Group?.IsLeader(Session) == true)
                     {
-                        GroupJoin(new PJoinPacket { RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId });
+                        GroupJoin(new PJoinPacket {RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId});
                     }
                     else if (Session?.Character?.Group == null)
                     {
-                        GroupJoin(new PJoinPacket { RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId });
+                        GroupJoin(new PJoinPacket {RequestType = GroupRequestType.Accepted, CharacterId = rdPacket.CharacterId});
                     }
                     break;
 
@@ -75,7 +70,7 @@ namespace OpenNos.Handler
                     grp?.Characters?.ToList().ForEach(s =>
                     {
                         s.SendPacket(grp.GenerateRdlst());
-                        s.SendPacket(grp.GeneraterRaidmbf());
+                        s.SendPacket(grp.GeneraterRaidmbf(s.CurrentMapInstance));
                         s.SendPacket(s.Character.GenerateRaid(0, false));
                         if (!grp.IsLeader(s))
                         {
@@ -136,9 +131,8 @@ namespace OpenNos.Handler
                             grp.LeaveGroup(targetSession);
                         }
                         ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                        ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group _);
+                        ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
                     }
-
                     break;
             }
         }

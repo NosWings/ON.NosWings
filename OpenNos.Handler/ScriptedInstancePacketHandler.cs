@@ -275,7 +275,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (Session.Character.Group.CharacterCount > 4)
+            if (Session.Character.Group.CharacterCount > 4 || Session.Character.Authority == AuthorityType.GameMaster)
             {
                 if (Session.Character.Group.Raid.FirstMap == null)
                 {
@@ -303,7 +303,7 @@ namespace OpenNos.Handler
                     ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Group.Raid.FirstMap.MapInstanceId, session.Character.Group.Raid.StartX,
                         session.Character.Group.Raid.StartY);
                     session.SendPacket("raidbf 0 0 25");
-                    session.SendPacket(session.Character.Group.GeneraterRaidmbf());
+                    session.SendPacket(session.Character.Group.GeneraterRaidmbf(session.CurrentMapInstance));
                     session.SendPacket(session.Character.GenerateRaid(5, false));
                     session.SendPacket(session.Character.GenerateRaid(4, false));
                     session.SendPacket(session.Character.GenerateRaid(3, false));
@@ -343,7 +343,7 @@ namespace OpenNos.Handler
 
                     case 1:
                         byte.TryParse(packet.Param.ToString(), out byte record);
-                        GetTreq(new TreqPacket()
+                        GetTreq(new TreqPacket
                         {
                             X = portal.PositionX,
                             Y = portal.PositionY,
@@ -412,10 +412,6 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance.InstanceBag.DeadList.Add(Session.Character.CharacterId);
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DIGNITY_LOST"), 20), 11));
                     Session.Character.Dignity = Session.Character.Dignity < -980 ? -1000 : Session.Character.Dignity - 20;
-                }
-                else
-                {
-                    //1seed
                 }
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
             }

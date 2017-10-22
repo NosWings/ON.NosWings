@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Reactive.Linq;
+using OpenNos.Data;
 
 namespace OpenNos.Master.Server
 {
@@ -81,7 +81,7 @@ namespace OpenNos.Master.Server
             }
 
             //Multiple WorldGroups not yet supported by DAOFactory
-            long accountId = DAOFactory.CharacterDAO.LoadById(characterId)?.AccountId ?? 0;
+            long accountId = DaoFactory.CharacterDao.LoadById(characterId)?.AccountId ?? 0;
 
             AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && a.ConnectedWorld?.Id.Equals(worldId) == true);
             if (account == null)
@@ -446,7 +446,7 @@ namespace OpenNos.Master.Server
             }
         }
 
-        public void UpdateFamily(string worldGroup, long familyId)
+        public void UpdateFamily(string worldGroup, long familyId, bool changeFaction)
         {
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
             {
@@ -455,7 +455,7 @@ namespace OpenNos.Master.Server
 
             foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldGroup)))
             {
-                world.ServiceClient.GetClientProxy<ICommunicationClient>().UpdateFamily(familyId);
+                world.ServiceClient.GetClientProxy<ICommunicationClient>().UpdateFamily(familyId, changeFaction);
             }
         }
 
@@ -495,20 +495,8 @@ namespace OpenNos.Master.Server
             }
         }
 
-        public void UpdateMails(long accountId)
-        {
-            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
-            {
-                return;
-            }
-
-            AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(s => s.AccountId == accountId);
-            account?.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().UpdateMails(accountId);
-        }
-
         public void PulseAccount(long accountId)
         {
-            Logger.Log.Debug("PulseAccount");
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
             {
                 return;
@@ -532,6 +520,26 @@ namespace OpenNos.Master.Server
                 KickSession(account.AccountId, null);
             }
         }
+
+        public void SendMail(string worldGroup, MailDTO mail)
+        {
+            if (!IsCharacterConnected(worldGroup, mail.ReceiverId))
+            {
+                CharacterDTO chara = DaoFactory.CharacterDao.LoadById(mail.ReceiverId);
+                DaoFactory.MailDao.InsertOrUpdate(ref mail);
+            }
+            else
+            {
+                AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.CharacterId.Equals(mail.ReceiverId));
+                if (account == null || account.ConnectedWorld == null)
+                {
+                    DaoFactory.MailDao.InsertOrUpdate(ref mail);
+                    return;
+                }
+                account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().SendMail(mail);
+            }
+        }
+
 
         #endregion
     }

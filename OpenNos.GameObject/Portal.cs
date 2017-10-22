@@ -22,8 +22,8 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private Guid destinationMapInstanceId;
-        private Guid sourceMapInstanceId;
+        private Guid _destinationMapInstanceId;
+        private Guid _sourceMapInstanceId;
 
         #endregion
 
@@ -42,13 +42,13 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (destinationMapInstanceId == default(Guid) && DestinationMapId != -1)
+                if (_destinationMapInstanceId == default(Guid) && DestinationMapId != -1)
                 {
-                    destinationMapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(DestinationMapId);
+                    _destinationMapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(DestinationMapId);
                 }
-                return destinationMapInstanceId;
+                return _destinationMapInstanceId;
             }
-            set { destinationMapInstanceId = value; }
+            set { _destinationMapInstanceId = value; }
         }
 
         public List<EventContainer> OnTraversalEvents { get; set; }
@@ -57,13 +57,13 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (sourceMapInstanceId == default(Guid))
+                if (_sourceMapInstanceId == default(Guid))
                 {
-                    sourceMapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(SourceMapId);
+                    _sourceMapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(SourceMapId);
                 }
-                return sourceMapInstanceId;
+                return _sourceMapInstanceId;
             }
-            set { sourceMapInstanceId = value; }
+            set { _sourceMapInstanceId = value; }
         }
 
         #endregion

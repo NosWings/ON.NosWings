@@ -19,14 +19,12 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
-using OpenNos.Master.Library;
 using OpenNos.Master.Library.Client;
 using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using System.Threading;
 
 namespace OpenNos.Login
 {
@@ -98,8 +96,8 @@ namespace OpenNos.Login
         private static void RegisterMappings()
         {
             // entities
-            DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
-            DAOFactory.PenaltyLogDAO.RegisterMapping(typeof(PenaltyLogDTO)).InitializeMapper();
+            DaoFactory.AccountDao.RegisterMapping(typeof(Account)).InitializeMapper();
+            DaoFactory.PenaltyLogDao.RegisterMapping(typeof(PenaltyLogDTO)).InitializeMapper();
         }
 
         #endregion

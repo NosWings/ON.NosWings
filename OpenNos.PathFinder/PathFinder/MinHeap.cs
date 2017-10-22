@@ -6,7 +6,7 @@ namespace OpenNos.PathFinder
     {
         #region Members
 
-        private List<Node> array = new List<Node>();
+        private readonly List<Node> array = new List<Node>();
 
         #endregion
 
@@ -34,13 +34,13 @@ namespace OpenNos.PathFinder
             while (c < array.Count)
             {
                 int min = c;
-                if (2 * c + 1 < array.Count && array[2 * c + 1].CompareTo(array[min]) == -1)
+                if ((2 * c) + 1 < array.Count && array[(2 * c) + 1].CompareTo(array[min]) == -1)
                 {
-                    min = 2 * c + 1;
+                    min = (2 * c) + 1;
                 }
-                if (2 * c + 2 < array.Count && array[2 * c + 2].CompareTo(array[min]) == -1)
+                if ((2 * c) + 2 < array.Count && array[(2 * c) + 2].CompareTo(array[min]) == -1)
                 {
-                    min = 2 * c + 2;
+                    min = (2 * c) + 2;
                 }
 
                 if (min == c)

@@ -37,7 +37,7 @@ namespace OpenNos.Core.Handling
             HandlerMethod = handlerMethod;
             ParentHandler = parentHandler;
             PacketDefinitionParameterType = packetBaseParameterType;
-            PacketHeaderAttribute headerAttribute = (PacketHeaderAttribute)PacketDefinitionParameterType.GetCustomAttributes(true).FirstOrDefault(ca => ca.GetType().Equals(typeof(PacketHeaderAttribute)));
+            PacketHeaderAttribute headerAttribute = (PacketHeaderAttribute)PacketDefinitionParameterType.GetCustomAttributes(true).FirstOrDefault(ca => ca.GetType() == typeof(PacketHeaderAttribute));
             Identification = headerAttribute?.Identification;
             PassNonParseablePacket = headerAttribute?.PassNonParseablePacket ?? false;
             Authority = headerAttribute?.Authority ?? AuthorityType.User;

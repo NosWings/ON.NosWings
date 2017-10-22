@@ -45,6 +45,7 @@ namespace OpenNos.GameObject
             _random = new Random();
             Map = map;
             MapInstanceId = guid;
+            UnlockEvents = new ConcurrentBag<EventContainer>();
             ScriptedInstances = new List<ScriptedInstance>();
             OnCharacterDiscoveringMapEvents = new List<Tuple<EventContainer, List<long>>>();
             OnMoveOnMapEvents = new List<EventContainer>();
@@ -58,6 +59,9 @@ namespace OpenNos.GameObject
             DroppedList = new ConcurrentDictionary<long, MapItem>();
             Portals = new List<Portal>();
             UserShops = new Dictionary<long, MapShop>();
+            MapDesignObjects = new ConcurrentBag<MapDesignObject>();
+            MonsterLocker = new Locker();
+            ButtonLocker = new Locker();
             StartLife();
         }
 
@@ -85,6 +89,8 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public Locker ButtonLocker { get; set; }
+
         public List<MapButton> Buttons { get; set; }
 
         public Clock Clock { get; set; }
@@ -93,19 +99,21 @@ namespace OpenNos.GameObject
 
         public int DropRate { get; set; }
 
-        public ConcurrentBag<MapDesignObject> MapDesignObjects = new ConcurrentBag<MapDesignObject>();
+        public ConcurrentBag<MapDesignObject> MapDesignObjects { get; set; }
+
+        public Locker MonsterLocker { get; set; }
 
         public InstanceBag InstanceBag { get; set; }
 
         public bool IsDancing { get; set; }
 
-        public bool IsPVP { get; set; }
+        public bool IsPvp { get; set; }
 
         public bool IsSleeping
         {
             get
             {
-                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(30) >= DateTime.Now)
+                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(20) >= DateTime.Now)
                 {
                     return _isSleeping;
                 }
@@ -165,6 +173,8 @@ namespace OpenNos.GameObject
 
         public List<ScriptedInstance> ScriptedInstances { get; }
 
+        public ConcurrentBag<EventContainer> UnlockEvents { get; set; }
+
         public Dictionary<long, MapShop> UserShops { get; }
 
         public int XpRate { get; set; }
@@ -180,7 +190,7 @@ namespace OpenNos.GameObject
             _monsters[monster.MapMonsterId] = monster;
         }
 
-        public void AddNPC(MapNpc monster)
+        public void AddNpc(MapNpc monster)
         {
             _npcs[monster.MapNpcId] = monster;
         }
@@ -225,8 +235,7 @@ namespace OpenNos.GameObject
 
                 MonsterMapItem droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, owner ?? -1);
                 DroppedList[droppedItem.TransportId] = droppedItem;
-                Broadcast(
-                    $"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
+                Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
             }
             catch (Exception e)
             {
@@ -246,7 +255,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private IEnumerable<string> GenerateNPCShopOnMap()
+        private IEnumerable<string> GenerateNpcShopOnMap()
         {
             return (from npc in Npcs where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
         }
@@ -274,7 +283,6 @@ namespace OpenNos.GameObject
         public List<string> GetMapItems()
         {
             List<string> packets = new List<string>();
-            // TODO: Parallelize getting of items of mapinstance
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
             ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));
             Monsters.ForEach(s =>
@@ -285,10 +293,19 @@ namespace OpenNos.GameObject
                     packets.Add(s.GenerateBoss());
                 }
             });
-            Npcs.ForEach(s => packets.Add(s.GenerateIn()));
-            packets.AddRange(GenerateNPCShopOnMap());
-            Parallel.ForEach(DroppedList.Select(s => s.Value), session => packets.Add(session.GenerateIn()));
-            Buttons.ForEach(s => packets.Add(s.GenerateIn()));
+            Npcs.ForEach(s =>
+            {
+                packets.Add(s.GenerateIn());
+            });
+            packets.AddRange(GenerateNpcShopOnMap());
+            Parallel.ForEach(DroppedList.Select(s => s.Value), session =>
+            {
+                packets.Add(session.GenerateIn());
+            });
+            Buttons.ForEach(s =>
+            {
+                packets.Add(s.GenerateIn());
+            });
             packets.AddRange(GenerateUserShops());
             packets.AddRange(GeneratePlayerShopOnMap());
             return packets;
@@ -317,7 +334,7 @@ namespace OpenNos.GameObject
 
         public void LoadMonsters()
         {
-            OrderablePartitioner<MapMonsterDTO> partitioner = Partitioner.Create(DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<MapMonsterDTO> partitioner = Partitioner.Create(DaoFactory.MapMonsterDao.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, monster =>
             {
                 if (!(monster is MapMonster mapMonster))
@@ -333,7 +350,7 @@ namespace OpenNos.GameObject
 
         public void LoadNpcs()
         {
-            OrderablePartitioner<MapNpcDTO> partitioner = Partitioner.Create(DAOFactory.MapNpcDAO.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<MapNpcDTO> partitioner = Partitioner.Create(DaoFactory.MapNpcDao.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, npc =>
             {
                 if (!(npc is MapNpc mapNpc))
@@ -349,7 +366,7 @@ namespace OpenNos.GameObject
 
         public void LoadPortals()
         {
-            OrderablePartitioner<PortalDTO> partitioner = Partitioner.Create(DAOFactory.PortalDAO.LoadByMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<PortalDTO> partitioner = Partitioner.Create(DaoFactory.PortalDao.LoadByMap(Map.MapId), EnumerablePartitionerOptions.None);
             ConcurrentDictionary<int, Portal> portalList = new ConcurrentDictionary<int, Portal>();
             Parallel.ForEach(partitioner, portal =>
             {
@@ -389,7 +406,6 @@ namespace OpenNos.GameObject
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
         {
             Guid random2 = Guid.NewGuid();
-            MapItem droppedItem = null;
             List<GridPos> possibilities = new List<GridPos>();
 
             for (short x = -2; x < 3; x++)
@@ -426,7 +442,7 @@ namespace OpenNos.GameObject
             ItemInstance newItemInstance = inv.DeepCopy();
             newItemInstance.Id = random2;
             newItemInstance.Amount = amount;
-            droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
+            MapItem droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
             DroppedList[droppedItem.TransportId] = droppedItem;
             inv.Amount -= amount;
             return droppedItem;
@@ -434,7 +450,6 @@ namespace OpenNos.GameObject
 
         private void RemoveMapItem()
         {
-            // take the data from list to remove it without having enumeration problems (ToList)
             try
             {
                 List<MapItem> dropsToRemove = DroppedList.Select(s => s.Value).Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
@@ -466,22 +481,14 @@ namespace OpenNos.GameObject
         {
             Parallel.ForEach(_monsters.Select(s => s.Value).Where(s => s.MonsterVNum == monsterVnum), monster =>
             {
-                monster.IsAlive = false;
-                monster.LastMove = DateTime.Now;
-                monster.CurrentHp = 0;
-                monster.CurrentMp = 0;
-                monster.Death = DateTime.Now;
+                monster.KillMonster();
                 Broadcast(monster.GenerateOut());
             });
         }
 
         public void DespawnMonster(MapMonster monster)
         {
-            monster.IsAlive = false;
-            monster.LastMove = DateTime.Now;
-            monster.CurrentHp = 0;
-            monster.CurrentMp = 0;
-            monster.Death = DateTime.Now;
+            monster.KillMonster();
             Broadcast(monster.GenerateOut());
         }
 
@@ -530,12 +537,16 @@ namespace OpenNos.GameObject
             }
             for (int i = 0; i < parameter.Item3; i++)
             {
+                positionRandomizer:
                 short destX = (short) (originX + ServerManager.Instance.RandomNumber(-10, 10));
                 short destY = (short) (originY + ServerManager.Instance.RandomNumber(-10, 10));
+                if (Map.IsBlockedZone(destX, destY))
+                {
+                    goto positionRandomizer;
+                }
                 MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item2, amount);
                 DroppedList[droppedItem.TransportId] = droppedItem;
-                Broadcast(
-                    $"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
+                Broadcast($"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
             }
         }
 
@@ -549,7 +560,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (s.Offset == 0)
+                    if (s.Offset == 0 && Sessions.Any())
                     {
                         s.Events.ToList().ForEach(e => EventHelper.Instance.RunEvent(e));
                     }
@@ -634,7 +645,7 @@ namespace OpenNos.GameObject
                     IsProtected = mon.IsProtected
                 };
                 npc.Initialize(this);
-                AddNPC(npc);
+                AddNpc(npc);
                 Broadcast(npc.GenerateIn());
             }
         }

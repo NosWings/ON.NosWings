@@ -1,7 +1,7 @@
-﻿using System;
-using OpenNos.Master.Library.Data;
+﻿using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 using System.Threading.Tasks;
+using OpenNos.Data;
 
 namespace OpenNos.Master.Library.Client
 {
@@ -24,6 +24,11 @@ namespace OpenNos.Master.Library.Client
             Task.Run(() => CommunicationServiceClient.Instance.OnKickSession(accountId, sessionId));
         }
 
+        public void SendMail(MailDTO mail)
+        {
+            Task.Run(() => CommunicationServiceClient.Instance.OnSendMail(mail));
+        }
+
         public void SendMessageToCharacter(SCSCharacterMessage message)
         {
             Task.Run(() => CommunicationServiceClient.Instance.OnSendMessageToCharacter(message));
@@ -39,9 +44,9 @@ namespace OpenNos.Master.Library.Client
             Task.Run(() => CommunicationServiceClient.Instance.OnUpdateBazaar(bazaarItemId));
         }
 
-        public void UpdateFamily(long familyId)
+        public void UpdateFamily(long familyId, bool changeFaction)
         {
-            Task.Run(() => CommunicationServiceClient.Instance.OnUpdateFamily(familyId));
+            Task.Run(() => CommunicationServiceClient.Instance.OnUpdateFamily(familyId, changeFaction));
         }
 
         public void UpdatePenaltyLog(int penaltyLogId)
@@ -54,11 +59,7 @@ namespace OpenNos.Master.Library.Client
             Task.Run(() => CommunicationServiceClient.Instance.OnUpdateRelation(relationId));
         }
 
-        public void UpdateMails(long accountId)
-        {
-            Task.Run(() => CommunicationServiceClient.Instance.OnMailRefresh(accountId));
-        }
-
+      
         #endregion
     }
 }

@@ -721,12 +721,7 @@ namespace OpenNos.GameObject.Helpers
             int letterMultiplier = 1;
             List<EquipmentOptionDTO> shellOptions = new List<EquipmentOptionDTO>();
             List<object> optionsAlreadyOn = new List<object>();
-
-            if (shellLevel < 30)
-            {
-                shellLevel = 30;
-            }
-
+            
             if (shellType < 8)
             {
                 letterMultiplier = shellLevel <= 70 ? 1 : shellLevel <= 80 ? 3 : shellLevel <= 90 ? 5 : 1;
@@ -770,14 +765,14 @@ namespace OpenNos.GameObject.Helpers
                     break;
                 case 10:
                     factor = new List<int> {1, 43, 85, 127};
-                    w = factor[_rand.Next(factor.Count)] + shellRarity;
+                    w = factor[_rand.Next(factor.Count)] + 7 * letterMultiplier - 8 + shellRarity;
                     break;
                 case 11:
                     factor = new List<int> {8, 50, 92, 134};
-                    w = factor[_rand.Next(factor.Count)] + shellRarity;
+                    w = factor[_rand.Next(factor.Count)] + 7 * letterMultiplier - 8 + shellRarity;
                     break;
                 default:
-                    throw new Exception("Incorrect shellType");
+                    return null;
             }
 
             if (!ShellType.ContainsKey(w))
@@ -825,7 +820,8 @@ namespace OpenNos.GameObject.Helpers
 
                 object generatedOption = possibleOptions[_rand.Next(possibleOptions.Count)];
 
-                if ((int) ShellType[w][g + 1] != 1 && _rand.Next(2) != 0)
+                int? shellTyp = (int?)ShellType[w][g + 1];
+                if (shellTyp.HasValue && shellTyp.Value != 1 && _rand.Next(2) != 0)
                 {
                     continue;
                 }

@@ -15,6 +15,7 @@
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.Interface
 {
@@ -23,6 +24,8 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         IEnumerable<EquipmentOptionDTO> GetOptionsByWearableInstanceId(Guid inventoryitemId);
+
+        DeleteResult DeleteByWearableInstanceId(Guid wearableInstanceId);
 
         #endregion
     }

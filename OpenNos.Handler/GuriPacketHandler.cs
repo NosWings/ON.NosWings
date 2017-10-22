@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.DAL;
@@ -61,7 +59,7 @@ namespace OpenNos.Handler
             else
             {
                 switch (guriPacket.Type)
-                {
+                { 
                     // SHELL IDENTIFYING
                     case 204:
                         if (guriPacket.User == null)
@@ -95,7 +93,7 @@ namespace OpenNos.Handler
 
                         if (shellType != 8 && shellType != 9)
                         {
-                            if (shell.Upgrade < 50 || shell.Upgrade > 90)
+                            if (shell.Upgrade < 50)
                             {
                                 return;
                             }
@@ -202,6 +200,19 @@ namespace OpenNos.Handler
                         if (ServerManager.Instance.IceBreakerInWaiting && IceBreaker.Map.Sessions.Count() < IceBreaker.MaxAllowedPlayers)
                         {
                             ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, IceBreaker.Map.MapInstanceId);
+                            Group group = new Group(GroupType.IceBreaker);
+                            if (Session.Character.Group != null)
+                            {
+                                foreach (var session in Session.Character.Group.Characters)
+                                {
+                                    group.Characters.Add(session);
+                                }
+                            }
+                            else
+                            {
+                                group.Characters.Add(Session);
+                            }
+                            IceBreaker.AddGroup(group);
                         }
                         break;
                     case 502:
@@ -213,8 +224,16 @@ namespace OpenNos.Handler
                         ClientSession target = ServerManager.Instance.GetSessionByCharacterId(charid.Value);
                         IceBreaker.FrozenPlayers.Remove(target);
                         IceBreaker.AlreadyFrozenPlayers.Add(target);
-                        target?.CurrentMapInstance?.Broadcast(
+                        target.Character.NoMove = false;
+                        target.Character.NoAttack = false;
+                        target.SendPacket(target.Character?.GenerateCond());
+                        target.CurrentMapInstance?.Broadcast(
                             UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_UNFROZEN"), target.Character?.Name), 0));
+                        if (!IceBreaker.SessionsHaveSameGroup(Session, target))
+                        {
+                            Group[] groups = { IceBreaker.GetGroupByClientSession(Session), IceBreaker.GetGroupByClientSession(target) };
+                            IceBreaker.MergeGroups(groups);
+                        }
                         break;
                     case 506:
                         if (ServerManager.Instance.EventInWaiting)
@@ -333,8 +352,7 @@ namespace OpenNos.Handler
                                                             return;
                                                         }
                                                         Session.CurrentMapInstance.Broadcast(npc.GenerateOut());
-                                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
-                                                            string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
+                                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
                                                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 11));
                                                         return;
                                                     }
@@ -388,17 +406,66 @@ namespace OpenNos.Handler
                                     if (!guriPacket.User.HasValue)
                                     {
                                         const short baseVnum = 1623;
-                                        if (short.TryParse(guriPacket.Argument.ToString(), out short faction))
+                                        if (!short.TryParse(guriPacket.Argument.ToString(), out short faction))
                                         {
-                                            if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0)
+                                            // WRONG PACKET
+                                            return;
+                                        }
+                                        if (Session.Character.Inventory.CountItem(baseVnum + faction) < 1)
+                                        {
+                                            // NO EGG
+                                            return;
+                                        }
+                                        if (faction > 4)
+                                        {
+                                            /*
+                                             * Character faction : 1 - 2
+                                             * Family faction : 3 - 4
+                                             */
+                                            return;
+                                        }
+                                        if (faction < 3)
+                                        {
+                                            if (Session.Character.Family != null)
                                             {
-                                                Session.Character.Faction = (FactionType) faction;
-                                                Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
-                                                Session.SendPacket("scr 0 0 0 0 0 0 0");
-                                                Session.SendPacket(Session.Character.GenerateFaction());
-                                                Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
-                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                                                // CAN'T USE PERSONAL EGG IF IN FAMILY
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_CHARACTER_FACTION_IN_FAM"), 0));
+                                                return;
                                             }
+                                            Session.Character.Faction = (FactionType)faction;
+                                            Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
+                                            Session.SendPacket("scr 0 0 0 0 0 0 0");
+                                            Session.SendPacket(Session.Character.GenerateFaction());
+                                            Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                                Language.Instance.GetMessageFromKey(
+                                                    $"GET_PROTECTION_POWER_{faction}"), 0));
+                                        }
+                                        else
+                                        {
+                                            if (Session.Character.Family == null)
+                                            {
+                                                // IF CHARACTER HAS NO FAMILY
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
+                                                return;
+                                            }
+                                            if (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
+                                            {
+                                                // IF IS NOT HEAD OF FAMILY
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_FAMILYHEAD"), 0));
+                                                return;
+                                            }
+                                            FamilyDTO fam = Session.Character.Family;
+                                            fam.FamilyFaction = (byte)(faction / 2);
+                                            Session.Character.Faction = (FactionType) (faction / 2);
+                                            Session.SendPacket(Session.Character.GenerateFaction());
+                                            DaoFactory.FamilyDao.InsertOrUpdate(ref fam);
+                                            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                                            Session.SendPacket(Session.Character.GenerateEff(4799 + faction / 2));
+                                            Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                                Language.Instance.GetMessageFromKey(
+                                                    $"GET_PROTECTION_POWER_{faction / 2}"), 0));
                                         }
                                     }
                                     break;

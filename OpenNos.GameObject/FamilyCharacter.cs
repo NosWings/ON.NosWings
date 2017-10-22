@@ -33,7 +33,7 @@ namespace OpenNos.GameObject
             {
                 if (_character == null)
                 {
-                    _character = DAOFactory.CharacterDAO.LoadById(CharacterId);
+                    _character = DaoFactory.CharacterDao.LoadById(CharacterId);
                 }
                 return _character;
             }

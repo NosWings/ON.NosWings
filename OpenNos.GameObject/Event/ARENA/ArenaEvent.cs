@@ -154,8 +154,8 @@ namespace OpenNos.GameObject.Event.ARENA
                                         List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
                                         o.Session.Character.DisableBuffs(bufftodisable);
                                         int i = Array.IndexOf(arenamembers, o) + 1;
-                                        o.Session.Character.Hp = (int) o.Session.Character.HPLoad();
-                                        o.Session.Character.Mp = (int) o.Session.Character.MPLoad();
+                                        o.Session.Character.Hp = (int) o.Session.Character.HpLoad();
+                                        o.Session.Character.Mp = (int) o.Session.Character.MpLoad();
                                         ServerManager.Instance.ChangeMapInstance(o.Session.Character.CharacterId, map.MapInstanceId, o.GroupId == member.GroupId ? 125 : 14,
                                             (o.GroupId == member.GroupId ? 37 : 38) + i % 3 * 2);
                                         o.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SELECT_ORDER_ARENA_TIME"), 0));
@@ -333,7 +333,7 @@ namespace OpenNos.GameObject.Event.ARENA
 
                                     if (tm != null && tm2 != null)
                                     {
-                                        map.IsPVP = false;
+                                        map.IsPvp = false;
                                         arenaTeam.Where(at => at.LastSummoned != null).ToList().ForEach(at =>
                                         {
                                             at.LastSummoned = null;
@@ -374,7 +374,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                         tm2.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Call));
 
                                         map.Broadcast("ta_s");
-                                        Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(start4 => { map.IsPVP = true; });
+                                        Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(start4 => { map.IsPvp = true; });
                                     }
                                     else
                                     {
@@ -512,7 +512,7 @@ namespace OpenNos.GameObject.Event.ARENA
         {
             if (win)
             {
-                member.Session.Character.GetXp(RewardsHelper.Instance.ArenaXpReward(member.Session.Character.Level));
+                member.Session.Character.GetXp(RewardsHelper.Instance.ArenaXpReward(member.Session.Character.Level) / ServerManager.Instance.XpRate);
                 member.Session.Character.GetReput(500);
                 member.Session.Character.GiftAdd(2800, 1);
                 member.Session.Character.GetGold(member.Session.Character.Level * 1000);
@@ -520,7 +520,7 @@ namespace OpenNos.GameObject.Event.ARENA
             }
             else
             {
-                member.Session.Character.GetXp(RewardsHelper.Instance.ArenaXpReward(member.Session.Character.Level) / 2);
+                member.Session.Character.GetXp(RewardsHelper.Instance.ArenaXpReward(member.Session.Character.Level) / 2 / ServerManager.Instance.XpRate);
                 member.Session.Character.GetReput(200);
                 member.Session.Character.GiftAdd(2801, 3);
                 member.Session.Character.GetGold(member.Session.Character.Level * 500);

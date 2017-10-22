@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
 
         private Dictionary<int, MapInstance> _mapinstancedictionary = new Dictionary<int, MapInstance>();
 
-        private IDisposable obs;
+        private IDisposable _obs;
 
         #endregion
 
@@ -68,6 +68,8 @@ namespace OpenNos.GameObject
 
         public short StartY { get; set; }
 
+        public string Title { get; set; }
+
         public List<Gift> RequieredItems { get; set; }
 
         public int RoomAmount { get; internal set; }
@@ -91,7 +93,7 @@ namespace OpenNos.GameObject
 
         public List<string> GenerateMinimap()
         {
-            List<string> lst = new List<string> { "rsfm 0 0 4 12" };
+            List<string> lst = new List<string> {"rsfm 0 0 4 12"};
             _mapinstancedictionary.Values.ToList().ForEach(s => lst.Add(s.GenerateRsfn(true)));
             return lst;
         }
@@ -120,9 +122,10 @@ namespace OpenNos.GameObject
                 bonusitems += $"{(i == 0 ? "" : " ")}{(gift == null ? "-1.0" : $"{gift.VNum}.{gift.Amount}")}";
             }
             // TODO FINISH THIS
-            const int WinnerScore = 0;
-            const string Winner = "";
-            return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} {RequieredItems.Sum(s => s.Amount)} {drawgift} {specialitems} {bonusitems} {WinnerScore}.{(WinnerScore > 0 ? Winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
+            const int winnerScore = 0;
+            const string winner = "";
+            return
+                $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} {RequieredItems.Sum(s => s.Amount)} {drawgift} {specialitems} {bonusitems} {winnerScore}.{(winnerScore > 0 ? winner : "")} 0 0 {(Title != string.Empty ? Title : Language.Instance.GetMessageFromKey("TS_TUTORIAL"))}\n{Label}";
         }
 
         public string GenerateWp()
@@ -146,6 +149,7 @@ namespace OpenNos.GameObject
                 LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum")?.Attributes["Value"].Value);
                 LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum")?.Attributes["Value"].Value);
                 Label = def.SelectSingleNode("Label")?.Attributes["Value"].Value;
+                Title = def.SelectSingleNode("Title")?.Attributes["Value"].Value;
                 byte.TryParse(def.SelectSingleNode("Id")?.Attributes["Value"].Value, out byte id);
                 Id = id;
                 long.TryParse(def.SelectSingleNode("Gold")?.Attributes["Value"].Value, out long gold);
@@ -172,9 +176,9 @@ namespace OpenNos.GameObject
                 {
                     foreach (XmlNode node in def.SelectSingleNode("DrawItems")?.ChildNodes)
                     {
-                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool IsRandomRare);
+                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool isRandomRare);
                         short.TryParse(node.Attributes["Design"]?.Value, out short design);
-                        DrawItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, IsRandomRare));
+                        DrawItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, isRandomRare));
                     }
                 }
                 if (def.SelectSingleNode("SpecialItems")?.ChildNodes != null)
@@ -182,18 +186,19 @@ namespace OpenNos.GameObject
                     foreach (XmlNode node in def.SelectSingleNode("SpecialItems")?.ChildNodes)
                     {
                         short.TryParse(node.Attributes["Design"]?.Value, out short design);
-                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool IsRandomRare);
-                        SpecialItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, IsRandomRare));
+                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool isRandomRare);
+                        SpecialItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, isRandomRare));
                     }
                 }
-                if (def.SelectSingleNode("GiftItems")?.ChildNodes != null)
+                if (def.SelectSingleNode("GiftItems")?.ChildNodes == null)
                 {
-                    foreach (XmlNode node in def.SelectSingleNode("GiftItems")?.ChildNodes)
-                    {
-                        bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool IsRandomRare);
-                        short.TryParse(node.Attributes["Design"]?.Value, out short design);
-                        GiftItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, IsRandomRare));
-                    }
+                    return;
+                }
+                foreach (XmlNode node in def.SelectSingleNode("GiftItems")?.ChildNodes)
+                {
+                    bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool isRandomRare);
+                    short.TryParse(node.Attributes["Design"]?.Value, out short design);
+                    GiftItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value), byte.Parse(node.Attributes["Amount"].Value), design, isRandomRare));
                 }
             }
         }
@@ -234,30 +239,30 @@ namespace OpenNos.GameObject
             }
 
             FirstMap = _mapinstancedictionary.Values.FirstOrDefault();
-            Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(
-                x =>
-                {
-                    if (FirstMap.InstanceBag.Lock)
-                    {
-                        return;
-                    }
-                    _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
-                    Dispose();
-                });
-            obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
+            Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(x =>
             {
-                if (_instancebag.Lives - _instancebag.DeadList.Count() < 0)
+                if (FirstMap.InstanceBag.Lock)
                 {
-                    _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)3)));
-                    Dispose();
-                    obs.Dispose();
+                    return;
                 }
-                if (_instancebag.Clock.DeciSecondRemaining <= 0)
+                _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
+                Dispose();
+            });
+            _obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
+            {
+                if (_instancebag.Lives - _instancebag.DeadList.Count < 0)
                 {
-                    _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
+                    _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 3)));
                     Dispose();
-                    obs.Dispose();
+                    _obs.Dispose();
                 }
+                if (_instancebag.Clock.DeciSecondRemaining > 0)
+                {
+                    return;
+                }
+                _mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
+                Dispose();
+                _obs.Dispose();
             });
             GenerateEvent(instanceEvents, FirstMap);
         }
@@ -327,11 +332,14 @@ namespace OpenNos.GameObject
                     //master events
                     case "CreateMap":
                     case "InstanceEvents":
-                        GenerateEvent(mapevent, mapinstance).ToList().ForEach(e => EventHelper.Instance.RunEvent(e));
+                        foreach (EventContainer i in GenerateEvent(mapevent, mapinstance))
+                        {
+                            EventHelper.Instance.RunEvent(i);
+                        }
                         break;
 
                     case "End":
-                        _mapinstancedictionary.Values.ToList().ForEach(m => evts.Add(new EventContainer(m, EventActionType.SCRIPTEND, byte.Parse(mapevent?.Attributes["Type"].Value))));
+                        _mapinstancedictionary.Values.ToList().ForEach(m => evts.Add(new EventContainer(m, EventActionType.SCRIPTEND, byte.Parse(mapevent.Attributes?["Type"]?.Value ?? "0"))));
                         break;
 
                     //register events
@@ -343,12 +351,14 @@ namespace OpenNos.GameObject
                         break;
 
                     case "OnAreaEntry":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.SETAREAENTRY, new ZoneEvent() { X = positionX, Y = positionY, Range = byte.Parse(mapevent?.Attributes["Range"]?.Value), Events = GenerateEvent(mapevent, mapinstance) }));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SETAREAENTRY,
+                            new ZoneEvent {X = positionX, Y = positionY, Range = byte.Parse(mapevent?.Attributes["Range"]?.Value), Events = GenerateEvent(mapevent, mapinstance)}));
                         break;
 
                     case "Wave":
-                        byte.TryParse(mapevent?.Attributes["Offset"]?.Value, out byte Offset);
-                        evts.Add(new EventContainer(mapinstance, EventActionType.REGISTERWAVE, new EventWave(byte.Parse(mapevent?.Attributes["Delay"]?.Value), GenerateEvent(mapevent, mapinstance), Offset)));
+                        byte.TryParse(mapevent?.Attributes["Offset"]?.Value, out byte offset);
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REGISTERWAVE,
+                            new EventWave(byte.Parse(mapevent?.Attributes["Delay"]?.Value), GenerateEvent(mapevent, mapinstance), offset)));
                         break;
 
                     case "SetMonsterLockers":
@@ -360,7 +370,8 @@ namespace OpenNos.GameObject
                         break;
                     case "ControlMonsterInRange":
                         short.TryParse(mapevent?.Attributes["VNum"]?.Value, out short vnum);
-                        evts.Add(new EventContainer(mapinstance, EventActionType.CONTROLEMONSTERINRANGE, new Tuple<short, byte, ConcurrentBag<EventContainer>>(vnum, byte.Parse(mapevent?.Attributes["Range"]?.Value), GenerateEvent(mapevent, mapinstance))));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.CONTROLEMONSTERINRANGE,
+                            new Tuple<short, byte, ConcurrentBag<EventContainer>>(vnum, byte.Parse(mapevent?.Attributes["Range"]?.Value), GenerateEvent(mapevent, mapinstance))));
                         //Tuple<short, byte, List<EventContainer>>
                         break;
                     //child events
@@ -369,7 +380,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case "OnTarget":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.ONTARGET,  GenerateEvent(mapevent, mapinstance)));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.ONTARGET, GenerateEvent(mapevent, mapinstance)));
                         break;
 
                     case "Effect":
@@ -378,7 +389,9 @@ namespace OpenNos.GameObject
 
                     case "SummonMonsters":
                         MonsterAmount += short.Parse(mapevent?.Attributes["Amount"].Value);
-                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), move, new List<EventContainer>(), isBonus, isHostile, isBoss)));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS,
+                            mapinstance.Map.GenerateMonsters(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), move, new List<EventContainer>(),
+                                isBonus, isHostile, isBoss)));
                         break;
 
                     case "SummonMonster":
@@ -407,12 +420,11 @@ namespace OpenNos.GameObject
                                     byte.TryParse(var?.Attributes["Range"]?.Value, out noticerange);
                                     notice.AddRange(GenerateEvent(var, mapinstance));
                                     break;
-
                             }
                         }
-                        List<MonsterToSummon> lst = new List<MonsterToSummon>
+                        ConcurrentBag<MonsterToSummon> lst = new ConcurrentBag<MonsterToSummon>
                         {
-                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, isTarget, isBonus, isHostile, isBoss)
+                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell {X = positionX, Y = positionY}, -1, move, isTarget, isBonus, isHostile, isBoss)
                             {
                                 DeathEvents = death,
                                 NoticingEvents = notice,
@@ -423,10 +435,11 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonNps":
-                        NpcAmount += short.Parse(mapevent?.Attributes["Amount"].Value); ;
+                        NpcAmount += short.Parse(mapevent?.Attributes["Amount"].Value);
+                        ;
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS,
                             mapinstance.Map.GenerateNpcs(short.Parse(mapevent?.Attributes["VNum"].Value),
-                            short.Parse(mapevent?.Attributes["Amount"].Value), new ConcurrentBag<EventContainer>(), isMate, isProtected)));
+                                short.Parse(mapevent?.Attributes["Amount"].Value), new ConcurrentBag<EventContainer>(), isMate, isProtected)));
                         break;
 
                     case "RefreshRaidGoals":
@@ -439,7 +452,7 @@ namespace OpenNos.GameObject
                         {
                             moveevents.Add(eventContainer);
                         }
-                        evts.Add(new EventContainer(mapinstance, EventActionType.MOVE, new ZoneEvent() { X = positionX, Y = positionY, Events = moveevents }));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.MOVE, new ZoneEvent() {X = positionX, Y = positionY, Events = moveevents}));
                         break;
 
                     case "SummonNpc":
@@ -455,7 +468,8 @@ namespace OpenNos.GameObject
                         NpcAmount++;
                         List<NpcToSummon> lstn = new List<NpcToSummon>
                         {
-                            new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, GenerateEvent(mapevent, mapinstance), isMate, isProtected)
+                            new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() {X = positionX, Y = positionY}, -1, GenerateEvent(mapevent, mapinstance), isMate,
+                                isProtected)
                         };
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, lstn.AsEnumerable()));
                         break;
@@ -515,7 +529,8 @@ namespace OpenNos.GameObject
                         byte.TryParse(mapevent?.Attributes["PackAmount"]?.Value, out byte packAmount);
                         int.TryParse(mapevent?.Attributes["MinAmount"]?.Value, out int minAmount);
                         int.TryParse(mapevent?.Attributes["MaxAmount"]?.Value, out int maxAmount);
-                        evts.Add(new EventContainer(mapinstance, EventActionType.THROWITEMS, new Tuple<int, short, byte, int, int>(-1, vnum2, packAmount == 0 ? (byte)1 : packAmount, minAmount == 0 ? 1 : minAmount, maxAmount == 0 ? 1 : maxAmount)));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.THROWITEMS,
+                            new Tuple<int, short, byte, int, int>(-1, vnum2, packAmount == 0 ? (byte) 1 : packAmount, minAmount == 0 ? 1 : minAmount, maxAmount == 0 ? 1 : maxAmount)));
                         break;
 
                     case "RemoveButtonLocker":
@@ -524,7 +539,7 @@ namespace OpenNos.GameObject
 
                     case "ChangePortalType":
                         evts.Add(new EventContainer(mapinstance, EventActionType.CHANGEPORTALTYPE,
-                            new Tuple<int, PortalType>(int.Parse(mapevent?.Attributes["IdOnMap"].Value), (PortalType)sbyte.Parse(mapevent?.Attributes["Type"].Value))));
+                            new Tuple<int, PortalType>(int.Parse(mapevent?.Attributes["IdOnMap"].Value), (PortalType) sbyte.Parse(mapevent?.Attributes["Type"].Value))));
                         break;
 
                     case "SendPacket":
@@ -536,7 +551,8 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SendMessage":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(mapevent?.Attributes["Value"].Value, byte.Parse(mapevent?.Attributes["Type"].Value))));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SENDPACKET,
+                            UserInterfaceHelper.Instance.GenerateMsg(mapevent?.Attributes["Value"].Value, byte.Parse(mapevent?.Attributes["Type"].Value))));
                         break;
 
                     case "GenerateClock":
@@ -548,21 +564,30 @@ namespace OpenNos.GameObject
                         break;
 
                     case "Teleport":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.TELEPORT, new Tuple<short, short, short, short>(short.Parse(mapevent?.Attributes["PositionX"].Value), short.Parse(mapevent?.Attributes["PositionY"].Value), short.Parse(mapevent?.Attributes["DestinationX"].Value), short.Parse(mapevent?.Attributes["DestinationY"].Value))));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.TELEPORT,
+                            new Tuple<short, short, short, short>(short.Parse(mapevent?.Attributes["PositionX"].Value), short.Parse(mapevent?.Attributes["PositionY"].Value),
+                                short.Parse(mapevent?.Attributes["DestinationX"].Value), short.Parse(mapevent?.Attributes["DestinationY"].Value))));
                         break;
 
                     case "StartClock":
-                        Tuple<List<EventContainer>, List<EventContainer>> eve = new Tuple<List<EventContainer>, List<EventContainer>>(new List<EventContainer>(), new List<EventContainer>());
+                        Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>> eve =
+                            new Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>(new ConcurrentBag<EventContainer>(), new ConcurrentBag<EventContainer>());
                         foreach (XmlNode var in mapevent.ChildNodes)
                         {
                             switch (var.Name)
                             {
                                 case "OnTimeout":
-                                    eve.Item1.AddRange(GenerateEvent(var, mapinstance));
+                                    foreach (EventContainer i in GenerateEvent(var, mapinstance))
+                                    {
+                                        eve.Item1.Add(i);
+                                    }
                                     break;
 
                                 case "OnStop":
-                                    eve.Item2.AddRange(GenerateEvent(var, mapinstance));
+                                    foreach (EventContainer i in GenerateEvent(var, mapinstance))
+                                    {
+                                        eve.Item2.Add(i);
+                                    }
                                     break;
                             }
                         }
@@ -570,17 +595,23 @@ namespace OpenNos.GameObject
                         break;
 
                     case "StartMapClock":
-                        eve = new Tuple<List<EventContainer>, List<EventContainer>>(new List<EventContainer>(), new List<EventContainer>());
+                        eve = new Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>(new ConcurrentBag<EventContainer>(), new ConcurrentBag<EventContainer>());
                         foreach (XmlNode var in mapevent.ChildNodes)
                         {
                             switch (var.Name)
                             {
                                 case "OnTimeout":
-                                    eve.Item1.AddRange(GenerateEvent(var, mapinstance));
+                                    foreach (EventContainer i in GenerateEvent(var, mapinstance))
+                                    {
+                                        eve.Item1.Add(i);
+                                    }
                                     break;
 
                                 case "OnStop":
-                                    eve.Item2.AddRange(GenerateEvent(var, mapinstance));
+                                    foreach (EventContainer i in GenerateEvent(var, mapinstance))
+                                    {
+                                        eve.Item2.Add(i);
+                                    }
                                     break;
                             }
                         }
@@ -588,7 +619,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SpawnPortal":
-                        Portal portal = new Portal()
+                        Portal portal = new Portal
                         {
                             PortalId = byte.Parse(mapevent?.Attributes["IdOnMap"].Value),
                             SourceX = positionX,
@@ -596,7 +627,7 @@ namespace OpenNos.GameObject
                             Type = short.Parse(mapevent?.Attributes["Type"].Value),
                             DestinationX = toX,
                             DestinationY = toY,
-                            DestinationMapId = (short)(destmapInstanceId == default(Guid) ? -1 : 0),
+                            DestinationMapId = (short) (destmapInstanceId == default(Guid) ? -1 : 0),
                             SourceMapInstanceId = mapinstance.MapInstanceId,
                             DestinationMapInstanceId = destmapInstanceId,
                         };
@@ -608,6 +639,10 @@ namespace OpenNos.GameObject
                             }
                         }
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNPORTAL, portal));
+                        break;
+
+                    case "ClearMapMonsters":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.CLEARMAPMONSTERS, null));
                         break;
                 }
             }

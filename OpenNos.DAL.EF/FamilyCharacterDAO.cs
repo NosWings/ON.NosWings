@@ -21,7 +21,6 @@ using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 
 namespace OpenNos.DAL.EF

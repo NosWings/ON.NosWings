@@ -12,1005 +12,286 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
 using OpenNos.DAL.Interface;
-using System;
-using System.Configuration;
 using OpenNos.DAL.EF;
-using AccountDAO = OpenNos.DAL.Mock.AccountDAO;
-using BazaarItemDAO = OpenNos.DAL.Mock.BazaarItemDAO;
-using BCardDAO = OpenNos.DAL.Mock.BCardDAO;
-using CardDAO = OpenNos.DAL.Mock.CardDAO;
-using CharacterDAO = OpenNos.DAL.Mock.CharacterDAO;
-using CharacterRelationDAO = OpenNos.DAL.Mock.CharacterRelationDAO;
-using CharacterSkillDAO = OpenNos.DAL.Mock.CharacterSkillDAO;
-using ComboDAO = OpenNos.DAL.Mock.ComboDAO;
-using DropDAO = OpenNos.DAL.Mock.DropDAO;
-using EquipmentOptionDAO = OpenNos.DAL.Mock.EquipmentOptionDAO;
-using FamilyCharacterDAO = OpenNos.DAL.Mock.FamilyCharacterDAO;
-using FamilyDAO = OpenNos.DAL.Mock.FamilyDAO;
-using FamilyLogDAO = OpenNos.DAL.Mock.FamilyLogDAO;
-using GeneralLogDAO = OpenNos.DAL.Mock.GeneralLogDAO;
-using ItemDAO = OpenNos.DAL.Mock.ItemDAO;
-using ItemInstanceDAO = OpenNos.DAL.Mock.ItemInstanceDAO;
-using LogChatDAO = OpenNos.DAL.Mock.LogChatDAO;
-using LogCommandsDAO = OpenNos.DAL.Mock.LogCommandsDAO;
-using MailDAO = OpenNos.DAL.Mock.MailDAO;
-using MapDAO = OpenNos.DAL.Mock.MapDAO;
-using MapMonsterDAO = OpenNos.DAL.Mock.MapMonsterDAO;
-using MapNpcDAO = OpenNos.DAL.Mock.MapNpcDAO;
-using MapTypeDAO = OpenNos.DAL.Mock.MapTypeDAO;
-using MapTypeMapDAO = OpenNos.DAL.Mock.MapTypeMapDAO;
-using MateDAO = OpenNos.DAL.Mock.MateDAO;
-using MinilandObjectDAO = OpenNos.DAL.Mock.MinilandObjectDAO;
-using NpcMonsterDAO = OpenNos.DAL.Mock.NpcMonsterDAO;
-using NpcMonsterSkillDAO = OpenNos.DAL.Mock.NpcMonsterSkillDAO;
-using PenaltyLogDAO = OpenNos.DAL.Mock.PenaltyLogDAO;
-using PortalDAO = OpenNos.DAL.Mock.PortalDAO;
-using QuicklistEntryDAO = OpenNos.DAL.Mock.QuicklistEntryDAO;
-using RecipeDAO = OpenNos.DAL.Mock.RecipeDAO;
-using RecipeItemDAO = OpenNos.DAL.Mock.RecipeItemDAO;
-using RespawnDAO = OpenNos.DAL.Mock.RespawnDAO;
-using RespawnMapTypeDAO = OpenNos.DAL.Mock.RespawnMapTypeDAO;
-using RollGeneratedItemDAO = OpenNos.DAL.Mock.RollGeneratedItemDAO;
-using ScriptedInstanceDAO = OpenNos.DAL.Mock.ScriptedInstanceDAO;
-using ShopDAO = OpenNos.DAL.Mock.ShopDAO;
-using ShopItemDAO = OpenNos.DAL.Mock.ShopItemDAO;
-using ShopSkillDAO = OpenNos.DAL.Mock.ShopSkillDAO;
-using SkillDAO = OpenNos.DAL.Mock.SkillDAO;
-using StaticBonusDAO = OpenNos.DAL.Mock.StaticBonusDAO;
-using StaticBuffDAO = OpenNos.DAL.Mock.StaticBuffDAO;
-using TeleporterDAO = OpenNos.DAL.Mock.TeleporterDAO;
 
 namespace OpenNos.DAL
 {
-    public class DAOFactory
+    public class DaoFactory
     {
         #region Members
 
-        private static readonly bool _useMock;
-        private static IAccountDAO _accountDAO;
-        private static IBazaarItemDAO _bazaarItemDAO;
-        private static ICardDAO _cardDAO;
-        private static IBCardDAO _bcardDAO;
-        private static IRollGeneratedItemDAO _rollGeneratedItemDAO;
-        private static IEquipmentOptionDAO _equipmentOptionDAO;
-        private static ICharacterDAO _characterDAO;
-        private static ICharacterRelationDAO _characterRelationDAO;
-        private static ICharacterSkillDAO _characterskillDAO;
-        private static IComboDAO _comboDAO;
-        private static IDropDAO _dropDAO;
-        private static IFamilyCharacterDAO _familycharacterDAO;
-        private static IFamilyDAO _familyDAO;
-        private static IFamilyLogDAO _familylogDAO;
-        private static IGeneralLogDAO _generallogDAO;
-        private static IItemDAO _itemDAO;
-        private static IItemInstanceDAO _iteminstanceDAO;
-        private static ILogChatDAO _logChatDAO;
-        private static ILogCommandsDAO _logCommandsDAO;
-        private static IMailDAO _mailDAO;
-        private static IMapDAO _mapDAO;
-        private static IMapMonsterDAO _mapmonsterDAO;
-        private static IMapNpcDAO _mapnpcDAO;
-        private static IMapTypeDAO _maptypeDAO;
-        private static IMapTypeMapDAO _maptypemapDAO;
-        private static IMateDAO _mateDAO;
-        private static IMinilandObjectDAO _minilandobjectDAO;
-        private static INpcMonsterDAO _npcmonsterDAO;
-        private static INpcMonsterSkillDAO _npcmonsterskillDAO;
-        private static IPenaltyLogDAO _penaltylogDAO;
-        private static IPortalDAO _portalDAO;
-        private static IQuicklistEntryDAO _quicklistDAO;
-        private static IRecipeDAO _recipeDAO;
-        private static IRecipeItemDAO _recipeitemDAO;
-        private static IRespawnDAO _respawnDAO;
-        private static IRespawnMapTypeDAO _respawnMapTypeDAO;
-        private static IScriptedInstanceDAO _scriptedinstanceDAO;
-        private static IShopDAO _shopDAO;
-        private static IShopItemDAO _shopitemDAO;
-        private static IShopSkillDAO _shopskillDAO;
-        private static ISkillDAO _skillDAO;
-        private static IStaticBonusDAO _staticBonusDAO;
-        private static IStaticBuffDAO _staticBuffDAO;
-        private static ITeleporterDAO _teleporterDAO;
+        private static IAccountDAO _accountDao;
+        private static IBazaarItemDAO _bazaarItemDao;
+        private static ICardDAO _cardDao;
+        private static IBCardDAO _bcardDao;
+        private static IRollGeneratedItemDAO _rollGeneratedItemDao;
+        private static IEquipmentOptionDAO _equipmentOptionDao;
+        private static ICharacterDAO _characterDao;
+        private static ICharacterRelationDAO _characterRelationDao;
+        private static ICharacterSkillDAO _characterskillDao;
+        private static IComboDAO _comboDao;
+        private static IDropDAO _dropDao;
+        private static IFamilyCharacterDAO _familycharacterDao;
+        private static IFamilyDAO _familyDao;
+        private static IFamilyLogDAO _familylogDao;
+        private static IGeneralLogDAO _generallogDao;
+        private static IItemDAO _itemDao;
+        private static IItemInstanceDAO _iteminstanceDao;
+        private static ILogChatDAO _logChatDao;
+        private static ILogCommandsDAO _logCommandsDao;
+        private static IMailDAO _mailDao;
+        private static IMapDAO _mapDao;
+        private static IMapMonsterDAO _mapmonsterDao;
+        private static IMapNpcDAO _mapnpcDao;
+        private static IMapTypeDAO _maptypeDao;
+        private static IMapTypeMapDAO _maptypemapDao;
+        private static IMateDAO _mateDao;
+        private static IMinilandObjectDAO _minilandobjectDao;
+        private static INpcMonsterDAO _npcmonsterDao;
+        private static INpcMonsterSkillDAO _npcmonsterskillDao;
+        private static IPenaltyLogDAO _penaltylogDao;
+        private static IPortalDAO _portalDao;
+        private static IQuicklistEntryDAO _quicklistDao;
+        private static IRecipeDAO _recipeDao;
+        private static IRecipeItemDAO _recipeitemDao;
+        private static IRespawnDAO _respawnDao;
+        private static IRespawnMapTypeDAO _respawnMapTypeDao;
+        private static IScriptedInstanceDAO _scriptedinstanceDao;
+        private static IShopDAO _shopDao;
+        private static IShopItemDAO _shopitemDao;
+        private static IShopSkillDAO _shopskillDao;
+        private static ISkillDAO _skillDao;
+        private static IStaticBonusDAO _staticBonusDao;
+        private static IStaticBuffDAO _staticBuffDao;
+        private static ITeleporterDAO _teleporterDao;
 
         #endregion
 
         #region Instantiation
 
-        static DAOFactory()
-        {
-            try
-            {
-                _useMock = Convert.ToBoolean(ConfigurationManager.AppSettings["UseMock"]);
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.Error("Database Error Server", ex);
-            }
-        }
-
         #endregion
 
         #region Properties
 
-        public static IAccountDAO AccountDAO
+        public static IAccountDAO AccountDao
         {
-            get
-            {
-                if (_accountDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _accountDAO = new AccountDAO();
-                    }
-                    else
-                    {
-                        _accountDAO = new EF.AccountDAO();
-                    }
-                }
-
-                return _accountDAO;
-            }
+            get { return _accountDao ?? (_accountDao = new AccountDAO()); }
         }
 
-        public static IBazaarItemDAO BazaarItemDAO
+        public static IBazaarItemDAO BazaarItemDao
         {
-            get
-            {
-                if (_bazaarItemDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _bazaarItemDAO = new BazaarItemDAO();
-                    }
-                    else
-                    {
-                        _bazaarItemDAO = new EF.BazaarItemDAO();
-                    }
-                }
-
-                return _bazaarItemDAO;
-            }
+            get { return _bazaarItemDao ?? (_bazaarItemDao = new BazaarItemDAO()); }
         }
 
-        public static ICardDAO CardDAO
+        public static ICardDAO CardDao
         {
-            get
-            {
-                if (_cardDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _cardDAO = new CardDAO();
-                    }
-                    else
-                    {
-                        _cardDAO = new EF.CardDAO();
-                    }
-                }
-
-                return _cardDAO;
-            }
+            get { return _cardDao ?? (_cardDao = new CardDAO()); }
         }
 
-        public static IEquipmentOptionDAO EquipmentOptionDAO
+        public static IEquipmentOptionDAO EquipmentOptionDao
         {
-            get
-            {
-                if (_equipmentOptionDAO != null)
-                {
-                    return _equipmentOptionDAO;
-                }
-                if (_useMock)
-                {
-                    _equipmentOptionDAO = new EquipmentOptionDAO();
-                }
-                else
-                {
-                    _equipmentOptionDAO = new EF.EquipmentOptionDAO();
-                }
-
-                return _equipmentOptionDAO;
-            }
+            get { return _equipmentOptionDao ?? (_equipmentOptionDao = new EquipmentOptionDAO()); }
         }
 
-        public static ICharacterDAO CharacterDAO
+        public static ICharacterDAO CharacterDao
         {
-            get
-            {
-                if (_characterDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _characterDAO = new CharacterDAO();
-                    }
-                    else
-                    {
-                        _characterDAO = new EF.CharacterDAO();
-                    }
-                }
-
-                return _characterDAO;
-            }
+            get { return _characterDao ?? (_characterDao = new CharacterDAO()); }
         }
 
-        public static ICharacterRelationDAO CharacterRelationDAO
+        public static ICharacterRelationDAO CharacterRelationDao
         {
-            get
-            {
-                if (_characterRelationDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _characterRelationDAO = new CharacterRelationDAO();
-                    }
-                    else
-                    {
-                        _characterRelationDAO = new EF.CharacterRelationDAO();
-                    }
-                }
-
-                return _characterRelationDAO;
-            }
+            get { return _characterRelationDao ?? (_characterRelationDao = new CharacterRelationDAO()); }
         }
 
-        public static ICharacterSkillDAO CharacterSkillDAO
+        public static ICharacterSkillDAO CharacterSkillDao
         {
-            get
-            {
-                if (_characterskillDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _characterskillDAO = new CharacterSkillDAO();
-                    }
-                    else
-                    {
-                        _characterskillDAO = new EF.CharacterSkillDAO();
-                    }
-                }
-
-                return _characterskillDAO;
-            }
+            get { return _characterskillDao ?? (_characterskillDao = new CharacterSkillDAO()); }
         }
 
-        public static IComboDAO ComboDAO
+        public static IComboDAO ComboDao
         {
-            get
-            {
-                if (_comboDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _comboDAO = new ComboDAO();
-                    }
-                    else
-                    {
-                        _comboDAO = new EF.ComboDAO();
-                    }
-                }
-
-                return _comboDAO;
-            }
+            get { return _comboDao ?? (_comboDao = new ComboDAO()); }
         }
 
-        public static IDropDAO DropDAO
+        public static IDropDAO DropDao
         {
-            get
-            {
-                if (_dropDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _dropDAO = new DropDAO();
-                    }
-                    else
-                    {
-                        _dropDAO = new EF.DropDAO();
-                    }
-                }
-
-                return _dropDAO;
-            }
+            get { return _dropDao ?? (_dropDao = new DropDAO()); }
         }
 
-        public static IFamilyCharacterDAO FamilyCharacterDAO
+        public static IFamilyCharacterDAO FamilyCharacterDao
         {
-            get
-            {
-                if (_familycharacterDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _familycharacterDAO = new FamilyCharacterDAO();
-                    }
-                    else
-                    {
-                        _familycharacterDAO = new EF.FamilyCharacterDAO();
-                    }
-                }
-
-                return _familycharacterDAO;
-            }
+            get { return _familycharacterDao ?? (_familycharacterDao = new FamilyCharacterDAO()); }
         }
 
-        public static IFamilyDAO FamilyDAO
+        public static IFamilyDAO FamilyDao
         {
-            get
-            {
-                if (_familyDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _familyDAO = new FamilyDAO();
-                    }
-                    else
-                    {
-                        _familyDAO = new EF.FamilyDAO();
-                    }
-                }
-
-                return _familyDAO;
-            }
+            get { return _familyDao ?? (_familyDao = new FamilyDAO()); }
         }
 
-        public static IFamilyLogDAO FamilyLogDAO
+        public static IFamilyLogDAO FamilyLogDao
         {
-            get
-            {
-                if (_familylogDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _familylogDAO = new FamilyLogDAO();
-                    }
-                    else
-                    {
-                        _familylogDAO = new EF.FamilyLogDAO();
-                    }
-                }
-
-                return _familylogDAO;
-            }
+            get { return _familylogDao ?? (_familylogDao = new FamilyLogDAO()); }
         }
 
-        public static IGeneralLogDAO GeneralLogDAO
+        public static IGeneralLogDAO GeneralLogDao
         {
-            get
-            {
-                if (_generallogDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _generallogDAO = new GeneralLogDAO();
-                    }
-                    else
-                    {
-                        _generallogDAO = new EF.GeneralLogDAO();
-                    }
-                }
-
-                return _generallogDAO;
-            }
+            get { return _generallogDao ?? (_generallogDao = new GeneralLogDAO()); }
         }
 
-        public static IItemDAO ItemDAO
+        public static IItemDAO ItemDao
         {
-            get
-            {
-                if (_itemDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _itemDAO = new ItemDAO();
-                    }
-                    else
-                    {
-                        _itemDAO = new EF.ItemDAO();
-                    }
-                }
-
-                return _itemDAO;
-            }
+            get { return _itemDao ?? (_itemDao = new ItemDAO()); }
         }
 
-        public static IItemInstanceDAO IteminstanceDAO
+        public static IItemInstanceDAO IteminstanceDao
         {
-            get
-            {
-                if (_iteminstanceDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _iteminstanceDAO = new ItemInstanceDAO();
-                    }
-                    else
-                    {
-                        _iteminstanceDAO = new EF.ItemInstanceDAO();
-                    }
-                }
-
-                return _iteminstanceDAO;
-            }
+            get { return _iteminstanceDao ?? (_iteminstanceDao = new ItemInstanceDAO()); }
         }
 
-        public static ILogChatDAO LogChatDAO
+        public static ILogChatDAO LogChatDao
         {
-            get
-            {
-                if (_logChatDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _logChatDAO = new LogChatDAO();
-                    }
-                    else
-                    {
-                        _logChatDAO = new EF.LogChatDAO();
-                    }
-                }
-                return _logChatDAO;
-            }
+            get { return _logChatDao ?? (_logChatDao = new LogChatDAO()); }
         }
 
-        public static ILogCommandsDAO LogCommandsDAO
+        public static ILogCommandsDAO LogCommandsDao
         {
-            get
-            {
-                if (_logCommandsDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _logCommandsDAO = new LogCommandsDAO();
-                    }
-                    else
-                    {
-                        _logCommandsDAO = new EF.LogCommandsDAO();
-                    }
-                }
-                return _logCommandsDAO;
-            }
+            get { return _logCommandsDao ?? (_logCommandsDao = new LogCommandsDAO()); }
         }
 
-        public static IMailDAO MailDAO
+        public static IMailDAO MailDao
         {
-            get
-            {
-                if (_mailDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _mailDAO = new MailDAO();
-                    }
-                    else
-                    {
-                        _mailDAO = new EF.MailDAO();
-                    }
-                }
-
-                return _mailDAO;
-            }
+            get { return _mailDao ?? (_mailDao = new MailDAO()); }
         }
 
-        public static IMapDAO MapDAO
+        public static IMapDAO MapDao
         {
-            get
-            {
-                if (_mapDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _mapDAO = new MapDAO();
-                    }
-                    else
-                    {
-                        _mapDAO = new EF.MapDAO();
-                    }
-                }
-
-                return _mapDAO;
-            }
+            get { return _mapDao ?? (_mapDao = new MapDAO()); }
         }
 
-        public static IMapMonsterDAO MapMonsterDAO
+        public static IMapMonsterDAO MapMonsterDao
         {
-            get
-            {
-                if (_mapmonsterDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _mapmonsterDAO = new MapMonsterDAO();
-                    }
-                    else
-                    {
-                        _mapmonsterDAO = new EF.MapMonsterDAO();
-                    }
-                }
-
-                return _mapmonsterDAO;
-            }
+            get { return _mapmonsterDao ?? (_mapmonsterDao = new MapMonsterDAO()); }
         }
 
-        public static IMapNpcDAO MapNpcDAO
+        public static IMapNpcDAO MapNpcDao
         {
-            get
-            {
-                if (_mapnpcDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _mapnpcDAO = new MapNpcDAO();
-                    }
-                    else
-                    {
-                        _mapnpcDAO = new EF.MapNpcDAO();
-                    }
-                }
-
-                return _mapnpcDAO;
-            }
+            get { return _mapnpcDao ?? (_mapnpcDao = new MapNpcDAO()); }
         }
 
-        public static IMapTypeDAO MapTypeDAO
+        public static IMapTypeDAO MapTypeDao
         {
-            get
-            {
-                if (_maptypeDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _maptypeDAO = new MapTypeDAO();
-                    }
-                    else
-                    {
-                        _maptypeDAO = new EF.MapTypeDAO();
-                    }
-                }
-
-                return _maptypeDAO;
-            }
+            get { return _maptypeDao ?? (_maptypeDao = new MapTypeDAO()); }
         }
 
-        public static IMapTypeMapDAO MapTypeMapDAO
+        public static IMapTypeMapDAO MapTypeMapDao
         {
-            get
-            {
-                if (_maptypemapDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _maptypemapDAO = new MapTypeMapDAO();
-                    }
-                    else
-                    {
-                        _maptypemapDAO = new EF.MapTypeMapDAO();
-                    }
-                }
-
-                return _maptypemapDAO;
-            }
+            get { return _maptypemapDao ?? (_maptypemapDao = new MapTypeMapDAO()); }
         }
 
-        public static IMateDAO MateDAO
+        public static IMateDAO MateDao
         {
-            get
-            {
-                if (_mateDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _mateDAO = new MateDAO();
-                    }
-                    else
-                    {
-                        _mateDAO = new EF.MateDAO();
-                    }
-                }
-
-                return _mateDAO;
-            }
+            get { return _mateDao ?? (_mateDao = new MateDAO()); }
         }
 
-        public static IMinilandObjectDAO MinilandObjectDAO
+        public static IMinilandObjectDAO MinilandObjectDao
         {
-            get
-            {
-                if (_minilandobjectDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _minilandobjectDAO = new MinilandObjectDAO();
-                    }
-                    else
-                    {
-                        _minilandobjectDAO = new EF.MinilandObjectDAO();
-                    }
-                }
-
-                return _minilandobjectDAO;
-            }
+            get { return _minilandobjectDao ?? (_minilandobjectDao = new MinilandObjectDAO()); }
         }
 
-        public static INpcMonsterDAO NpcMonsterDAO
+        public static INpcMonsterDAO NpcMonsterDao
         {
-            get
-            {
-                if (_npcmonsterDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _npcmonsterDAO = new NpcMonsterDAO();
-                    }
-                    else
-                    {
-                        _npcmonsterDAO = new EF.NpcMonsterDAO();
-                    }
-                }
-
-                return _npcmonsterDAO;
-            }
+            get { return _npcmonsterDao ?? (_npcmonsterDao = new NpcMonsterDAO()); }
         }
 
-        public static INpcMonsterSkillDAO NpcMonsterSkillDAO
+        public static INpcMonsterSkillDAO NpcMonsterSkillDao
         {
-            get
-            {
-                if (_npcmonsterskillDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _npcmonsterskillDAO = new NpcMonsterSkillDAO();
-                    }
-                    else
-                    {
-                        _npcmonsterskillDAO = new EF.NpcMonsterSkillDAO();
-                    }
-                }
-
-                return _npcmonsterskillDAO;
-            }
+            get { return _npcmonsterskillDao ?? (_npcmonsterskillDao = new NpcMonsterSkillDAO()); }
         }
 
-        public static IPenaltyLogDAO PenaltyLogDAO
+        public static IPenaltyLogDAO PenaltyLogDao
         {
-            get
-            {
-                if (_penaltylogDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _penaltylogDAO = new PenaltyLogDAO();
-                    }
-                    else
-                    {
-                        _penaltylogDAO = new EF.PenaltyLogDAO();
-                    }
-                }
-
-                return _penaltylogDAO;
-            }
+            get { return _penaltylogDao ?? (_penaltylogDao = new PenaltyLogDAO()); }
         }
 
-        public static IPortalDAO PortalDAO
+        public static IPortalDAO PortalDao
         {
-            get
-            {
-                if (_portalDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _portalDAO = new PortalDAO();
-                    }
-                    else
-                    {
-                        _portalDAO = new EF.PortalDAO();
-                    }
-                }
-
-                return _portalDAO;
-            }
+            get { return _portalDao ?? (_portalDao = new PortalDAO()); }
         }
 
-        public static IQuicklistEntryDAO QuicklistEntryDAO
+        public static IQuicklistEntryDAO QuicklistEntryDao
         {
-            get
-            {
-                if (_quicklistDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _quicklistDAO = new QuicklistEntryDAO();
-                    }
-                    else
-                    {
-                        _quicklistDAO = new EF.QuicklistEntryDAO();
-                    }
-                }
-
-                return _quicklistDAO;
-            }
+            get { return _quicklistDao ?? (_quicklistDao = new QuicklistEntryDAO()); }
         }
 
-        public static IRecipeDAO RecipeDAO
+        public static IRecipeDAO RecipeDao
         {
-            get
-            {
-                if (_recipeDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _recipeDAO = new RecipeDAO();
-                    }
-                    else
-                    {
-                        _recipeDAO = new EF.RecipeDAO();
-                    }
-                }
-
-                return _recipeDAO;
-            }
+            get { return _recipeDao ?? (_recipeDao = new RecipeDAO()); }
         }
 
-        public static IRecipeItemDAO RecipeItemDAO
+        public static IRecipeItemDAO RecipeItemDao
         {
-            get
-            {
-                if (_recipeitemDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _recipeitemDAO = new RecipeItemDAO();
-                    }
-                    else
-                    {
-                        _recipeitemDAO = new EF.RecipeItemDAO();
-                    }
-                }
-
-                return _recipeitemDAO;
-            }
+            get { return _recipeitemDao ?? (_recipeitemDao = new RecipeItemDAO()); }
         }
 
-        public static IRespawnDAO RespawnDAO
+        public static IRespawnDAO RespawnDao
         {
-            get
-            {
-                if (_respawnDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _respawnDAO = new RespawnDAO();
-                    }
-                    else
-                    {
-                        _respawnDAO = new EF.RespawnDAO();
-                    }
-                }
-
-                return _respawnDAO;
-            }
+            get { return _respawnDao ?? (_respawnDao = new RespawnDAO()); }
         }
 
-        public static IRespawnMapTypeDAO RespawnMapTypeDAO
+        public static IRespawnMapTypeDAO RespawnMapTypeDao
         {
-            get
-            {
-                if (_respawnMapTypeDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _respawnMapTypeDAO = new RespawnMapTypeDAO();
-                    }
-                    else
-                    {
-                        _respawnMapTypeDAO = new EF.RespawnMapTypeDAO();
-                    }
-                }
-
-                return _respawnMapTypeDAO;
-            }
+            get { return _respawnMapTypeDao ?? (_respawnMapTypeDao = new RespawnMapTypeDAO()); }
         }
 
-        public static IShopDAO ShopDAO
+        public static IShopDAO ShopDao
         {
-            get
-            {
-                if (_shopDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _shopDAO = new ShopDAO();
-                    }
-                    else
-                    {
-                        _shopDAO = new EF.ShopDAO();
-                    }
-                }
-
-                return _shopDAO;
-            }
+            get { return _shopDao ?? (_shopDao = new ShopDAO()); }
         }
 
-        public static IShopItemDAO ShopItemDAO
+        public static IShopItemDAO ShopItemDao
         {
-            get
-            {
-                if (_shopitemDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _shopitemDAO = new ShopItemDAO();
-                    }
-                    else
-                    {
-                        _shopitemDAO = new EF.ShopItemDAO();
-                    }
-                }
-
-                return _shopitemDAO;
-            }
+            get { return _shopitemDao ?? (_shopitemDao = new ShopItemDAO()); }
         }
 
-        public static IShopSkillDAO ShopSkillDAO
+        public static IShopSkillDAO ShopSkillDao
         {
-            get
-            {
-                if (_shopskillDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _shopskillDAO = new ShopSkillDAO();
-                    }
-                    else
-                    {
-                        _shopskillDAO = new EF.ShopSkillDAO();
-                    }
-                }
-
-                return _shopskillDAO;
-            }
+            get { return _shopskillDao ?? (_shopskillDao = new ShopSkillDAO()); }
         }
 
-        public static ISkillDAO SkillDAO
+        public static ISkillDAO SkillDao
         {
-            get
-            {
-                if (_skillDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _skillDAO = new SkillDAO();
-                    }
-                    else
-                    {
-                        _skillDAO = new EF.SkillDAO();
-                    }
-                }
-
-                return _skillDAO;
-            }
+            get { return _skillDao ?? (_skillDao = new SkillDAO()); }
         }
 
-        public static IStaticBonusDAO StaticBonusDAO
+        public static IStaticBonusDAO StaticBonusDao
         {
-            get
-            {
-                if (_staticBonusDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _staticBonusDAO = new StaticBonusDAO();
-                    }
-                    else
-                    {
-                        _staticBonusDAO = new EF.StaticBonusDAO();
-                    }
-                }
-
-                return _staticBonusDAO;
-            }
+            get { return _staticBonusDao ?? (_staticBonusDao = new StaticBonusDAO()); }
         }
 
-        public static IStaticBuffDAO StaticBuffDAO
+        public static IStaticBuffDAO StaticBuffDao
         {
-            get
-            {
-                if (_staticBuffDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _staticBuffDAO = new StaticBuffDAO();
-                    }
-                    else
-                    {
-                        _staticBuffDAO = new EF.StaticBuffDAO();
-                    }
-                }
-
-                return _staticBuffDAO;
-            }
+            get { return _staticBuffDao ?? (_staticBuffDao = new StaticBuffDAO()); }
         }
 
-        public static ITeleporterDAO TeleporterDAO
+        public static ITeleporterDAO TeleporterDao
         {
-            get
-            {
-                if (_teleporterDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _teleporterDAO = new TeleporterDAO();
-                    }
-                    else
-                    {
-                        _teleporterDAO = new EF.TeleporterDAO();
-                    }
-                }
-
-                return _teleporterDAO;
-            }
+            get { return _teleporterDao ?? (_teleporterDao = new TeleporterDAO()); }
         }
 
-        public static IScriptedInstanceDAO ScriptedInstanceDAO
+        public static IScriptedInstanceDAO ScriptedInstanceDao
         {
-            get
-            {
-                if (_scriptedinstanceDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _scriptedinstanceDAO = new ScriptedInstanceDAO();
-                    }
-                    else
-                    {
-                        _scriptedinstanceDAO = new EF.ScriptedInstanceDAO();
-                    }
-                }
-
-                return _scriptedinstanceDAO;
-            }
+            get { return _scriptedinstanceDao ?? (_scriptedinstanceDao = new ScriptedInstanceDAO()); }
         }
 
-        public static IBCardDAO BCardDAO
+        public static IBCardDAO BCardDao
         {
-            get
-            {
-                if (_bcardDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _bcardDAO = new BCardDAO();
-                    }
-                    else
-                    {
-                        _bcardDAO = new EF.BCardDAO();
-                    }
-                }
-
-                return _bcardDAO;
-            }
+            get { return _bcardDao ?? (_bcardDao = new BCardDAO()); }
         }
 
-        public static IRollGeneratedItemDAO RollGeneratedItemDAO
+        public static IRollGeneratedItemDAO RollGeneratedItemDao
         {
-            get
-            {
-                if (_rollGeneratedItemDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _rollGeneratedItemDAO = new RollGeneratedItemDAO();
-                    }
-                    else
-                    {
-                        _rollGeneratedItemDAO = new EF.RollGeneratedItemDAO();
-                    }
-                }
-
-                return _rollGeneratedItemDAO;
-            }
+            get { return _rollGeneratedItemDao ?? (_rollGeneratedItemDao = new RollGeneratedItemDAO()); }
         }
 
         #endregion

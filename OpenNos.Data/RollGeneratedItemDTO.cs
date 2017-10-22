@@ -12,10 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
-using OpenNos.GameObject;
-using System.Collections.Generic;
-
 namespace OpenNos.Data
 {
     public class RollGeneratedItemDTO : MappingBaseDTO
@@ -36,9 +32,9 @@ namespace OpenNos.Data
 
         public bool IsRareRandom { get; set; }
 
-        public byte MinimumOriginalItemRare { get; set; }
+        public short MinimumOriginalItemRare { get; set; }
 
-        public byte MaximumOriginalItemRare { get; set; }
+        public short MaximumOriginalItemRare { get; set; }
 
         public bool IsSuperReward { get; set; }
 

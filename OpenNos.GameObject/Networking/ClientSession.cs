@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
-using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.Master.Library.Client;
 using System;
@@ -25,7 +24,6 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
-using OpenNos.Master.Library.Data;
 
 namespace OpenNos.GameObject
 {
@@ -48,7 +46,7 @@ namespace OpenNos.GameObject
         private int? _waitForPacketsAmount;
 
         // private byte countPacketReceived;
-        private long lastPacketReceive;
+        private long _lastPacketReceive;
 
         #endregion
 
@@ -57,7 +55,7 @@ namespace OpenNos.GameObject
         public ClientSession(INetworkClient client)
         {
             // set last received
-            lastPacketReceive = DateTime.Now.Ticks;
+            _lastPacketReceive = DateTime.Now.Ticks;
 
             // lag mode
             _random = new Random((int)client.ClientId);
@@ -181,8 +179,8 @@ namespace OpenNos.GameObject
                     {
                         Character?.Group?.Characters.ToList().ForEach(s =>
                         {
-                            s.SendPacket(s.Character.Group.GeneraterRaidmbf());
-                            s.SendPacket(s.Character.Group.GenerateRdlst());
+                            s.SendPacket(s.Character?.Group?.GeneraterRaidmbf(s.CurrentMapInstance));
+                            s.SendPacket(s.Character?.Group?.GenerateRdlst());
                         });
                     }
                 }
@@ -502,7 +500,7 @@ namespace OpenNos.GameObject
                 _receiveQueue.Enqueue(message.MessageData);
             }
 
-            lastPacketReceive = e.ReceivedTimestamp.Ticks;
+            _lastPacketReceive = e.ReceivedTimestamp.Ticks;
         }
 
         private void OnOtherCharacterConnected(object sender, EventArgs e)

@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Event;
-using OpenNos.GameObject.Event.ARENA;
 using OpenNos.PathFinder;
 using System;
 using System.Collections.Concurrent;
@@ -23,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using OpenNos.GameObject.CommandPackets;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -58,7 +56,7 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case EventType.LOD:
-                            LOD.GenerateLod();
+                            Lod.GenerateLod();
                             break;
 
                         case EventType.MINILANDREFRESHEVENT:
@@ -69,10 +67,10 @@ namespace OpenNos.GameObject.Helpers
                             InstantBattle.GenerateInstantBattle(useTimer);
                             break;
                         case EventType.TALENTARENA:
-                            ArenaEvent.GenerateTalentArena();
+                            //ArenaEvent.GenerateTalentArena();
                             break;
                         case EventType.LODDH:
-                            LOD.GenerateLod(35);
+                            Lod.GenerateLod(35);
                             break;
 
                         case EventType.ICEBREAKER:
@@ -161,6 +159,11 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case "OnLockerOpen":
+                            if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                            {
+                                even.Item2.ToList().ForEach(s => evt.MapInstance.UnlockEvents.Add(s));
+                                break;
+                            }
                             even.Item2.ToList().ForEach(s => evt.MapInstance.InstanceBag.UnlockEvents.Add(s));
                             break;
                     }
@@ -168,12 +171,28 @@ namespace OpenNos.GameObject.Helpers
                 case EventActionType.REGISTERWAVE:
                     evt.MapInstance.WaveEvents.Add((EventWave)evt.Parameter);
                     break;
+
                 case EventActionType.SETAREAENTRY:
                     ZoneEvent even2 = (ZoneEvent)evt.Parameter;
                     evt.MapInstance.OnAreaEntryEvents.Add(even2);
-
                     break;
+
                 case EventActionType.REMOVEMONSTERLOCKER:
+                    session = evt.MapInstance.Sessions.FirstOrDefault();
+                    if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        if (evt.MapInstance.MonsterLocker.Current > 0)
+                        {
+                            evt.MapInstance.MonsterLocker.Current--;
+                        }
+                        if (evt.MapInstance.MonsterLocker.Current == 0 && evt.MapInstance.ButtonLocker.Current == 0)
+                        {
+                            evt.MapInstance.UnlockEvents.ToList().ForEach(s => RunEvent(s));
+                            evt.MapInstance.UnlockEvents.Clear();
+                        }
+                        evt.MapInstance.Broadcast(session?.Character?.Group?.GeneraterRaidmbf(evt.MapInstance));
+                        break;
+                    }
                     if (evt.MapInstance.InstanceBag.MonsterLocker.Current > 0)
                     {
                         evt.MapInstance.InstanceBag.MonsterLocker.Current--;
@@ -186,6 +205,21 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.REMOVEBUTTONLOCKER:
+                    session = evt.MapInstance.Sessions.FirstOrDefault();
+                    if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        if (evt.MapInstance.ButtonLocker.Current > 0)
+                        {
+                            evt.MapInstance.ButtonLocker.Current--;
+                        }
+                        if (evt.MapInstance.MonsterLocker.Current == 0 && evt.MapInstance.ButtonLocker.Current == 0)
+                        {
+                            evt.MapInstance.UnlockEvents.ToList().ForEach(s => RunEvent(s));
+                            evt.MapInstance.UnlockEvents.Clear();
+                        }
+                        evt.MapInstance.Broadcast(session?.Character?.Group?.GeneraterRaidmbf(evt.MapInstance));
+                        break;
+                    }
                     if (evt.MapInstance.InstanceBag.ButtonLocker.Current > 0)
                     {
                         evt.MapInstance.InstanceBag.ButtonLocker.Current--;
@@ -222,7 +256,9 @@ namespace OpenNos.GameObject.Helpers
                 case EventActionType.ONTARGET:
                     if (monster?.MoveEvent != null && monster.MoveEvent.InZone(monster.MapX, monster.MapY))
                     {
-                        ((ConcurrentBag<EventContainer>)evt.Parameter).ToList().ForEach(s => RunEvent(s, monster: monster));
+                        monster.MoveEvent = null;
+                        monster.Path = null;
+                        ((List<EventContainer>)evt.Parameter).ForEach(s => RunEvent(s, monster: monster));
                     }
                     break;
 
@@ -230,9 +266,6 @@ namespace OpenNos.GameObject.Helpers
                     ZoneEvent evt4 = (ZoneEvent)evt.Parameter;
                     if (monster != null)
                     {
-
-                        monster.FirstX = evt4.X;
-                        monster.FirstY = evt4.Y;
                         monster.MoveEvent = evt4;
                         monster.Path = BestFirstSearch.FindPath(new Node { X = monster.MapX, Y = monster.MapY }, new Node { X = evt4.X, Y = evt4.Y }, evt.MapInstance?.Map.Grid);
                     }
@@ -244,14 +277,27 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.SETMONSTERLOCKERS:
+                    if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        evt.MapInstance.MonsterLocker.Current = Convert.ToByte(evt.Parameter);
+                        evt.MapInstance.MonsterLocker.Initial = Convert.ToByte(evt.Parameter);
+                        break;
+                    }
                     evt.MapInstance.InstanceBag.MonsterLocker.Current = Convert.ToByte(evt.Parameter);
                     evt.MapInstance.InstanceBag.MonsterLocker.Initial = Convert.ToByte(evt.Parameter);
                     break;
 
                 case EventActionType.SETBUTTONLOCKERS:
+                    if (evt.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        evt.MapInstance.ButtonLocker.Current = Convert.ToByte(evt.Parameter);
+                        evt.MapInstance.ButtonLocker.Initial = Convert.ToByte(evt.Parameter);
+                        break;
+                    }
                     evt.MapInstance.InstanceBag.ButtonLocker.Current = Convert.ToByte(evt.Parameter);
                     evt.MapInstance.InstanceBag.ButtonLocker.Initial = Convert.ToByte(evt.Parameter);
                     break;
+
                 case EventActionType.SCRIPTEND:
                     switch (evt.MapInstance.MapInstanceType)
                     {
@@ -285,7 +331,6 @@ namespace OpenNos.GameObject.Helpers
                         case MapInstanceType.RaidInstance:
                             evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
                             client = evt.MapInstance.Sessions.FirstOrDefault();
-                            List<ClientSession> toBan = new List<ClientSession>();
                             if (client != null)
                             {
                                 Group grp = client.Character?.Group;
@@ -300,7 +345,6 @@ namespace OpenNos.GameObject.Helpers
                                         // TODO REMOTE THAT FOR PUBLIC RELEASE
                                         if (grp.Characters.Count(s => s.IpAddress.Equals(sess.IpAddress)) > 2)
                                         {
-                                            toBan.Add(sess);
                                             continue;
                                         }
                                         if (grp.Raid?.GiftItems == null)
@@ -331,7 +375,18 @@ namespace OpenNos.GameObject.Helpers
                                                 sbyte rare = 0;
                                                 if (gift.IsRandomRare)
                                                 {
-                                                    rare = (sbyte) ServerManager.Instance.RandomNumber(-2, 7);
+                                                    switch (gift.VNum)
+                                                    {
+                                                        case 302:
+                                                            rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
+                                                            break;
+                                                        case 185:
+                                                        case 999:
+                                                        case 882:
+                                                        case 942:
+                                                            rare = (sbyte) ServerManager.Instance.RandomNumber(1, 7);
+                                                            break;
+                                                    }
                                                 }
                                                 //TODO add random rarity for some object
                                                 sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
@@ -339,9 +394,9 @@ namespace OpenNos.GameObject.Helpers
                                         }
                                     }
                                     // Remove monster when raid is over
-                                    foreach (MapMonster e in evt.MapInstance.Monsters.Where(s => !s.IsBoss))
+                                    foreach (MapMonster mapMonster in evt.MapInstance.Monsters.Where(s => !s.IsBoss))
                                     {
-                                        evt.MapInstance.DespawnMonster(e.MonsterVNum);
+                                        evt.MapInstance.DespawnMonster(mapMonster);
                                     }
                                     evt.MapInstance.WaveEvents.Clear();
 
@@ -374,7 +429,7 @@ namespace OpenNos.GameObject.Helpers
                                             grp.LeaveGroup(targetSession);
                                         }
                                         ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                                        ServerManager.Instance.GroupsThreadSafe.TryRemove(grp.GroupId, out Group _);
+                                        ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
                                         mapinstances.ForEach(s => s.Dispose());
                                     });
                                 }
@@ -389,11 +444,11 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.STARTCLOCK:
-                    Tuple<List<EventContainer>, List<EventContainer>> eve = (Tuple<List<EventContainer>, List<EventContainer>>)evt.Parameter;
+                    Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>> eve = (Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>)evt.Parameter;
                     if (eve != null)
                     {
-                        evt.MapInstance.InstanceBag.Clock.StopEvents = eve.Item2;
-                        evt.MapInstance.InstanceBag.Clock.TimeoutEvents = eve.Item1;
+                        evt.MapInstance.InstanceBag.Clock.StopEvents = eve.Item2.ToList();
+                        evt.MapInstance.InstanceBag.Clock.TimeoutEvents = eve.Item1.ToList();
                         evt.MapInstance.InstanceBag.Clock.StartClock();
                         evt.MapInstance.Broadcast(evt.MapInstance.InstanceBag.Clock.GetClock());
                     }
@@ -416,11 +471,11 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.STARTMAPCLOCK:
-                    eve = (Tuple<List<EventContainer>, List<EventContainer>>)evt.Parameter;
+                    eve = (Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>)evt.Parameter;
                     if (eve != null)
                     {
-                        evt.MapInstance.Clock.StopEvents = eve.Item2;
-                        evt.MapInstance.Clock.TimeoutEvents = eve.Item1;
+                        evt.MapInstance.Clock.StopEvents = eve.Item2.ToList();
+                        evt.MapInstance.Clock.TimeoutEvents = eve.Item1.ToList();
                         evt.MapInstance.Clock.StartClock();
                         evt.MapInstance.Broadcast(evt.MapInstance.Clock.GetClock());
                     }
@@ -479,7 +534,7 @@ namespace OpenNos.GameObject.Helpers
                     ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();
                     if (cl?.Character != null)
                     {
-                        ServerManager.Instance.Broadcast(cl, cl.Character?.Group?.GeneraterRaidmbf(), ReceiverType.Group);
+                        evt.MapInstance.Broadcast(cl.Character?.Group?.GeneraterRaidmbf(evt.MapInstance));
                         ServerManager.Instance.Broadcast(cl, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEW_MISSION"), 0), ReceiverType.Group);
                     }
                     break;
@@ -513,7 +568,58 @@ namespace OpenNos.GameObject.Helpers
                     evt.MapInstance.SummonMonsters(summonParameters);
                     break;
 
-                #endregion
+                case EventActionType.MAPGIVE:
+                    // 1 = isRandomRare // 2 = VNum // 3 = Amount // 4 = Design //
+                    Tuple<bool, short, byte, short> giveParameters = (Tuple<bool, short, byte, short>)evt.Parameter;
+                    foreach (ClientSession cli in evt.MapInstance.Sessions)
+                    {
+                        sbyte rare = 0;
+                        if (giveParameters.Item1)
+                        {
+                            rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
+                        }
+                        cli.Character.GiftAdd(giveParameters.Item2, giveParameters.Item3, giveParameters.Item4, rare: rare);
+                    }
+                    break;
+
+                case EventActionType.REMOVEPORTAL:
+                    Portal portalToRemove;
+                    if (evt.Parameter is Portal p)
+                    {
+                        portalToRemove = evt.MapInstance.Portals.FirstOrDefault(s => s == p);
+                    }
+                    else
+                    {
+                        portalToRemove = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == (int) evt.Parameter);
+                    }
+                    if (portalToRemove != null)
+                    {
+                        evt.MapInstance.Portals.Remove(portalToRemove);
+                        evt.MapInstance.MapClear();
+                    }
+                    break;
+
+                case EventActionType.ACT4RAIDEND:
+                    // tp // tp X // tp Y
+                    Tuple<MapInstance, short, short> endParameters = (Tuple<MapInstance, short, short>)evt.Parameter;
+                    Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(a =>
+                    {
+                        evt.MapInstance.Broadcast($"{UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TELEPORTED_IN"), 10), 0)}");
+
+                        Observable.Timer(TimeSpan.FromSeconds(10)).Subscribe(s =>
+                        {
+                            evt.MapInstance.Sessions.ToList().ForEach(cli =>
+                                ServerManager.Instance.ChangeMapInstance(cli.Character.CharacterId, endParameters.Item1.MapInstanceId, endParameters.Item2, endParameters.Item3));
+                        });
+
+                    });
+                    break;
+
+                case EventActionType.CLEARMAPMONSTERS:
+                    evt.MapInstance.Monsters.ForEach(m => evt.MapInstance.DespawnMonster(m));
+                    break;
+
+                    #endregion
             }
         }
 

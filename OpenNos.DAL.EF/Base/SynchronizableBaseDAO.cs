@@ -16,16 +16,36 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
+
+        public virtual DeleteResult Delete(IEnumerable<Guid> ids)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (Guid id in ids)
+                { 
+                    TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
+                    if (entity != null)
+                    {
+                        context.Set<TEntity>().Remove(entity);
+                    }
+                }
+                context.SaveChanges();
+                return DeleteResult.Deleted;
+            }
+        }
+
         public virtual DeleteResult Delete(Guid id)
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
-                if (entity != null)
+                if (entity == null)
                 {
-                    context.Set<TEntity>().Remove(entity);
-                    context.SaveChanges();
+                    return DeleteResult.Deleted;
                 }
+                context.Set<TEntity>().Remove(entity);
+                context.SaveChanges();
 
                 return DeleteResult.Deleted;
             }
@@ -38,6 +58,7 @@ namespace OpenNos.DAL.EF
                 IList<TDTO> results = new List<TDTO>();
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
+                    context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (TDTO dto in dtos)
                     {
                         results.Add(InsertOrUpdate(context, dto));

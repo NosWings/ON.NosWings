@@ -62,7 +62,7 @@ namespace OpenNos.DAL.EF
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority <= AuthorityType.Moderator).OrderByDescending(c => c.Compliment).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
             }
         }
 
@@ -74,7 +74,7 @@ namespace OpenNos.DAL.EF
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority <= AuthorityType.Moderator).OrderByDescending(c => c.Act4Points).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
             }
         }
 
@@ -86,7 +86,7 @@ namespace OpenNos.DAL.EF
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority <= AuthorityType.Moderator).OrderByDescending(c => c.Reput).Take(43).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
             }
         }
 
@@ -193,11 +193,12 @@ namespace OpenNos.DAL.EF
 
         private CharacterDTO Update(Character entity, CharacterDTO character, OpenNosContext context)
         {
-            if (entity != null)
+            if (entity == null)
             {
-                _mapper.Map(character, entity);
-                context.SaveChanges();
+                return null;
             }
+            _mapper.Map(character, entity);
+            context.SaveChanges();
 
             return _mapper.Map<CharacterDTO>(entity);
         }

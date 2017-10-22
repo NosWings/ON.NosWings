@@ -115,8 +115,8 @@ namespace OpenNos.GameObject
             WaterElement = item.WaterElement;
             WaterResistance = item.WaterResistance;
             BCards = new List<BCard>();
-            DAOFactory.BCardDAO.LoadByItemVNum(item.VNum).ToList().ForEach(o => BCards.Add((BCard)o));
-            RollGeneratedItems = DAOFactory.RollGeneratedItemDAO.LoadByItemVNum(item.VNum).ToList();
+            DaoFactory.BCardDao.LoadByItemVNum(item.VNum).ToList().ForEach(o => BCards.Add((BCard)o));
+            RollGeneratedItems = DaoFactory.RollGeneratedItemDao.LoadByItemVNum(item.VNum).ToList();
         }
 
         //TODO: Convert to PacketDefinition

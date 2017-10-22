@@ -6,7 +6,7 @@ using OpenNos.Domain;
 namespace OpenNos.GameObject.CommandPackets
 {
     [PacketHeader("$BlockPM", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
-    public class BlockPMPacket : PacketDefinition
+    public class BlockPmPacket : PacketDefinition
     {
         public static string ReturnHelp()
         {

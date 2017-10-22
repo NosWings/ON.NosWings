@@ -74,16 +74,16 @@ namespace OpenNos.Handler
                 Name = loginPacket.Name,
                 Password = ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.Sha512(LoginEncryption.GetPassword(loginPacket.Password)).ToUpper() : loginPacket.Password
             };
-            AccountDTO loadedAccount = DAOFactory.AccountDAO.LoadByName(user.Name);
+            AccountDTO loadedAccount = DaoFactory.AccountDao.LoadByName(user.Name);
             if (loadedAccount != null && loadedAccount.Password.ToUpper().Equals(user.Password))
             {
-                DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.IpAddress, null, GeneralLogType.Connection, "LoginServer");
+                DaoFactory.AccountDao.WriteGeneralLog(loadedAccount.AccountId, _session.IpAddress, null, GeneralLogType.Connection, "LoginServer");
 
                 //check if the account is connected
                 if (!CommunicationServiceClient.Instance.IsAccountConnected(loadedAccount.AccountId))
                 {
                     AuthorityType type = loadedAccount.Authority;
-                    PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
+                    PenaltyLogDTO penalty = DaoFactory.PenaltyLogDao.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
                     if (penalty != null)
                     {
                         _session.SendPacket($"failc 7");
@@ -95,19 +95,19 @@ namespace OpenNos.Handler
                             // TODO TO ENUM
                             case AuthorityType.Unconfirmed:
                                 {
-                                    _session.SendPacket($"failc {LoginFailType.CantConnect}");
+                                    _session.SendPacket($"failc {(byte)LoginFailType.CantConnect}");
                                 }
                                 break;
 
                             case AuthorityType.Banned:
                                 {
-                                    _session.SendPacket($"failc {LoginFailType.Banned}");
+                                    _session.SendPacket($"failc {(byte)LoginFailType.Banned}");
                                 }
                                 break;
 
                             case AuthorityType.Closed:
                                 {
-                                    _session.SendPacket($"failc {LoginFailType.CantConnect}");
+                                    _session.SendPacket($"failc {(byte)LoginFailType.CantConnect}");
                                 }
                                 break;
 
@@ -136,12 +136,12 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    _session.SendPacket($"failc {LoginFailType.AlreadyConnected}");
+                    _session.SendPacket($"failc {(byte)LoginFailType.AlreadyConnected}");
                 }
             }
             else
             {
-                _session.SendPacket($"failc {LoginFailType.AccountOrPasswordWrong}");
+                _session.SendPacket($"failc {(byte)LoginFailType.AccountOrPasswordWrong}");
             }
         }
 
