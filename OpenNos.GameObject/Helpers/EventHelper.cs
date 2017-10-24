@@ -258,7 +258,10 @@ namespace OpenNos.GameObject.Helpers
                     {
                         monster.MoveEvent = null;
                         monster.Path = null;
-                        ((List<EventContainer>)evt.Parameter).ForEach(s => RunEvent(s, monster: monster));
+                        foreach (EventContainer s in ((ConcurrentBag<EventContainer>) evt.Parameter))
+                        {
+                            RunEvent(s, monster: monster);
+                        }
                     }
                     break;
 
@@ -324,7 +327,7 @@ namespace OpenNos.GameObject.Helpers
                                 if (si != null)
                                 {
                                     evt.MapInstance.Broadcast(
-                                        $"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count()} {evt.MapInstance.InstanceBag.MonstersKilled} {si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
+                                        $"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count} {evt.MapInstance.InstanceBag.MonstersKilled} {si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
                                 }
                             }
                             break;
@@ -402,37 +405,31 @@ namespace OpenNos.GameObject.Helpers
 
                                     ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
                                         string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
-
-                                    Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(obj =>
-                                    {
-                                        ClientSession[] grpmembers = new ClientSession[40];
-                                        grp.Characters.ToList().CopyTo(grpmembers);
-                                        List<MapInstance> mapinstances = new List<MapInstance>();
-                                        foreach (ClientSession targetSession in grpmembers)
-                                        {
-                                            if (targetSession == null)
-                                            {
-                                                continue;
-                                            }
-                                            if (targetSession.Character.Hp <= 0)
-                                            {
-                                                targetSession.Character.Hp = 1;
-                                                targetSession.Character.Mp = 1;
-                                            }
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
-                                            if (!mapinstances.Any(s => s.MapInstanceId == targetSession?.CurrentMapInstance.MapInstanceId && s.MapInstanceType == MapInstanceType.RaidInstance))
-                                            {
-                                                mapinstances.Add(targetSession.CurrentMapInstance);
-                                            }
-                                            grp.LeaveGroup(targetSession);
-                                        }
-                                        ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                                        ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
-                                        mapinstances.ForEach(s => s.Dispose());
-                                    });
                                 }
+                                Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(obj =>
+                                {
+                                    ClientSession[] grpmembers = new ClientSession[40];
+                                    grp.Characters.ToList().CopyTo(grpmembers);
+                                    foreach (ClientSession targetSession in grpmembers)
+                                    {
+                                        if (targetSession == null)
+                                        {
+                                            continue;
+                                        }
+                                        if (targetSession.Character.Hp <= 0)
+                                        {
+                                            targetSession.Character.Hp = 1;
+                                            targetSession.Character.Mp = 1;
+                                        }
+                                        targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
+                                        targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
+                                        targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
+                                        grp.LeaveGroup(targetSession);
+                                    }
+                                    ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
+                                    ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
+                                    grp.Raid.Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
+                                });
                             }
                             break;
                     }

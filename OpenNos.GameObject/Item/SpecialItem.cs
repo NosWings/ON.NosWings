@@ -396,6 +396,11 @@ namespace OpenNos.GameObject
                     break;
 
                 case 570:
+                    if (session.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance)
+                    {
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MUST_BE_IN_CLASSIC_MAP"), 0));
+                        return;
+                    }
                     if (EffectValue < 3)
                     {
                         if (session.Character.Faction == (FactionType) EffectValue)

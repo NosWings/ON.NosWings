@@ -48,7 +48,6 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     if ((int)session.Character.HpLoad() - session.Character.Hp < Hp)
                     {
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HpLoad() - session.Character.Hp));
@@ -89,6 +88,7 @@ namespace OpenNos.GameObject
                         session.Character.Hp = (int)session.Character.HpLoad();
                         session.Character.Mp = (int)session.Character.MpLoad();
                     }
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     session.SendPacket(session.Character.GenerateStat());
                     break;
             }
