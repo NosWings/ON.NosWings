@@ -1331,6 +1331,7 @@ namespace OpenNos.GameObject
             //Register the new created TCPIP server to the api
             Guid serverIdentification = Guid.NewGuid();
             WorldId = serverIdentification;
+            LodProcess();
         }
 
         public bool IsCharacterMemberOfGroup(long characterId)
@@ -1712,7 +1713,7 @@ namespace OpenNos.GameObject
             Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x => { BotProcess(); });
 
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { RemoveItemProcess(); });
-
+            
             Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
             {
                 LodProcess();
@@ -1720,8 +1721,10 @@ namespace OpenNos.GameObject
 
             foreach (Schedule schedule in Schedules)
             {
-                Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedule.Time).TotalSeconds), TimeSpan.FromDays(1))
-                    .Subscribe(e => { EventHelper.Instance.GenerateEvent(schedule.Event); });
+                Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedule.Time).TotalSeconds), TimeSpan.FromDays(1)).Subscribe(e =>
+                {
+                    EventHelper.Instance.GenerateEvent(schedule.Event);
+                });
             }
 
             CommunicationServiceClient.Instance.SessionKickedEvent += OnSessionKicked;
