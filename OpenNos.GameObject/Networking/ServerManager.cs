@@ -423,12 +423,12 @@ namespace OpenNos.GameObject
                     else
                     {
                         List<long> save = session.CurrentMapInstance.InstanceBag.DeadList.ToList();
-                        if (session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count() < 0)
+                        if (session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count < 0)
                         {
                             session.Character.Hp = 1;
                             session.Character.Mp = 1;
                         }
-                        else if (2 - save.Count(s => s == session.Character.CharacterId) > 0)
+                        if (2 - save.Count(s => s == session.Character.CharacterId) > 0)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"),
                                 2 - session.CurrentMapInstance.InstanceBag.DeadList.Count(s => s == session.Character.CharacterId))));
@@ -1655,6 +1655,11 @@ namespace OpenNos.GameObject
             Instance.TaskShutdown = null;
         }
 
+        private void LodProcess()
+        {
+            Lod.GenerateLod();
+        }
+
         // Server
         private void BotProcess()
         {
@@ -1708,7 +1713,11 @@ namespace OpenNos.GameObject
 
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { RemoveItemProcess(); });
 
-            EventHelper.Instance.RunEvent(new EventContainer(Instance.GetMapInstance(Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, false));
+            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
+            {
+                LodProcess();
+            });
+
             foreach (Schedule schedule in Schedules)
             {
                 Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedule.Time).TotalSeconds), TimeSpan.FromDays(1))
