@@ -1331,7 +1331,6 @@ namespace OpenNos.GameObject
             //Register the new created TCPIP server to the api
             Guid serverIdentification = Guid.NewGuid();
             WorldId = serverIdentification;
-            LodProcess();
         }
 
         public bool IsCharacterMemberOfGroup(long characterId)
@@ -1656,11 +1655,6 @@ namespace OpenNos.GameObject
             Instance.TaskShutdown = null;
         }
 
-        private void LodProcess()
-        {
-            Lod.GenerateLod();
-        }
-
         // Server
         private void BotProcess()
         {
@@ -1713,11 +1707,6 @@ namespace OpenNos.GameObject
             Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x => { BotProcess(); });
 
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { RemoveItemProcess(); });
-            
-            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
-            {
-                LodProcess();
-            });
 
             foreach (Schedule schedule in Schedules)
             {
@@ -1906,6 +1895,7 @@ namespace OpenNos.GameObject
                         family.Warehouse[inventory.Id] = (ItemInstance) inventory;
                     }
                 }
+                family.LandOfDeath = Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
                 family.FamilyLogs = DaoFactory.FamilyLogDao.LoadByFamilyId(family.FamilyId).ToList();
                 families[family.FamilyId] = family;
             });

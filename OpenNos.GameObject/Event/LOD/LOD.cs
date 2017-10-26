@@ -71,7 +71,7 @@ namespace OpenNos.GameObject.Event
                 if (lodTime == hornTime || lodTime == hornTime - hornRespawn * dhspawns)
                 {
                     SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-                    foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+                    foreach (Family fam in ServerManager.Instance.FamilyList)
                     {
                         if (fam.LandOfDeath == null)
                         {
@@ -85,7 +85,7 @@ namespace OpenNos.GameObject.Event
                 else if (lodTime == hornTime - hornRespawn * dhspawns - hornStay)
                 {
                     SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-                    foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+                    foreach (Family fam in ServerManager.Instance.FamilyList)
                     {
                         if (fam.LandOfDeath == null)
                         {
@@ -112,7 +112,7 @@ namespace OpenNos.GameObject.Event
         private void EndLod()
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-            foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+            foreach (Family fam in ServerManager.Instance.FamilyList)
             {
                 if (fam.LandOfDeath == null)
                 {
@@ -128,7 +128,7 @@ namespace OpenNos.GameObject.Event
         private void RefreshLod(int remaining)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-            foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+            foreach (Family fam in ServerManager.Instance.FamilyList)
             {
                 if (fam.LandOfDeath == null)
                 {
