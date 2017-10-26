@@ -86,13 +86,14 @@ namespace OpenNos.Handler
                         HairColor = characterCreatePacket.HairColor,
                         HairStyle = characterCreatePacket.HairStyle,
                         Hp = 221,
-                        JobLevel = 1,
-                        Level = 1,
+                        JobLevel = 20,
+                        Level = 15,
                         MapId = 1,
                         MapX = (short) ServerManager.Instance.RandomNumber(78, 81),
                         MapY = (short) ServerManager.Instance.RandomNumber(114, 118),
                         Mp = 221,
                         MaxMateCount = 10,
+                        Gold = 15000,
                         SpPoint = 10000,
                         SpAdditionPoint = 0,
                         Name = characterName,
@@ -144,9 +145,6 @@ namespace OpenNos.Handler
                     DaoFactory.CharacterSkillDao.InsertOrUpdate(sk3);
 
                     Inventory startupInventory = new Inventory((Character) newCharacter);
-                    startupInventory.AddNewToInventory(1, 1, InventoryType.Wear, 5, 5);
-                    startupInventory.AddNewToInventory(8, 1, InventoryType.Wear, 5, 5);
-                    startupInventory.AddNewToInventory(12, 1, InventoryType.Wear, 5, 5);
                     startupInventory.AddNewToInventory(2024, 10, InventoryType.Etc);
                     startupInventory.AddNewToInventory(2081, 1, InventoryType.Etc);
                     startupInventory.AddNewToInventory(1907, 1, InventoryType.Main);
