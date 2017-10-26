@@ -19,6 +19,7 @@ using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Reactive.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -417,7 +418,43 @@ namespace OpenNos.GameObject
                     break;
 
                 case BCardType.CardType.MeditationSkill:
-                 
+                    if (session.GetType() == typeof(Character))
+                    {
+                        if (SubType.Equals((byte)AdditionalTypes.MeditationSkill.CausingChance))
+                        {
+                            if (ServerManager.Instance.RandomNumber() < FirstData)
+                            {
+                                Character character = (session as Character);
+                                if (character == null)
+                                {
+                                    break;
+                                }
+                                if (SkillVNum.HasValue)
+                                {
+                                    character.LastSkillCombo = DateTime.Now;
+                                    Skill skill = ServerManager.Instance.GetSkill(SkillVNum.Value);
+                                    Skill newSkill = ServerManager.Instance.GetSkill((short)SecondData);
+                                    Observable.Timer(TimeSpan.FromMilliseconds(100)).Subscribe(observer =>
+                                    {
+                                        foreach (QuicklistEntryDTO qe in character.QuicklistEntries.Where(s => s.Pos.Equals(skill.CastId)))
+                                        {
+                                            character.Session.SendPacket($"qset {qe.Q1} {qe.Q2} {qe.Type}.{qe.Slot}.{newSkill.CastId}.0");
+                                        }
+                                        character.Session.SendPacket($"mslot {newSkill.CastId} -1");
+                                    });
+
+                                    if (skill.CastId > 10)
+                                    {
+                                        // HACK this way
+                                        Observable.Timer(TimeSpan.FromMilliseconds(skill.Cooldown * 100 + 500)).Subscribe(observer =>
+                                        {
+                                            character.Session.SendPacket($"sr {skill.CastId}");
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
                     break;
 
                 case BCardType.CardType.FalconSkill:

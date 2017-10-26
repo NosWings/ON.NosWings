@@ -61,6 +61,8 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public DateTime LastSkillCombo { get; set; }
+
         public ConcurrentBag<BCard> EquipmentBCards { get; set; }
 
         public ConcurrentBag<BCard> PassiveSkillBcards { get; set; }
@@ -4046,7 +4048,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HpLoad() * 100)} {(int)(Mp / (float)MpLoad() * 100)} {Hp} {Mp}{Buff.Where(s => !s.StaticBuff).Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}")}";
+            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HpLoad() * 100)} {(int)(Mp / (float)MpLoad() * 100)} {Hp} {Mp}{(Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}"))}";
         }
 
         public TalkPacket GenerateTalk(string message)
