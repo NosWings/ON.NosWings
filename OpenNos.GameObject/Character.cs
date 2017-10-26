@@ -53,6 +53,7 @@ namespace OpenNos.GameObject
             Mates = new List<Mate>();
             EquipmentBCards = new ConcurrentBag<BCard>();
             LastMonsterAggro = DateTime.Now;
+            MeditationDictionary = new Dictionary<short, DateTime>();
             SkillBcards = new ConcurrentBag<BCard>();
             PassiveSkillBcards = new ConcurrentBag<BCard>();
         }
@@ -210,6 +211,10 @@ namespace OpenNos.GameObject
         public DateTime LastMonsterAggro { get; set; }
 
         public int LastMonsterId { get; set; }
+
+        public Dictionary<short, DateTime> MeditationDictionary { get; set; }
+
+        public ConcurrentBag<IDisposable> BuffObservables { get; internal set; }
 
         public DateTime LastMove { get; set; }
 
@@ -827,6 +832,32 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
+
+                if (MeditationDictionary.Count != 0)
+                {
+                    if (MeditationDictionary.ContainsKey(534) && MeditationDictionary[534] < DateTime.Now)
+                    {
+                        Session.SendPacket(GenerateEff(4344));
+                        AddBuff(new Buff(534, Level));
+                        RemoveBuff(533);
+                        MeditationDictionary.Remove(534);
+                    }
+                    else if (MeditationDictionary.ContainsKey(533) && MeditationDictionary[533] < DateTime.Now)
+                    {
+                        Session.SendPacket(GenerateEff(4343));
+                        AddBuff(new Buff(533, Level));
+                        RemoveBuff(532);
+                        MeditationDictionary.Remove(533);
+                    }
+                    else if (MeditationDictionary.ContainsKey(532) && MeditationDictionary[532] < DateTime.Now)
+                    {
+                        Session.SendPacket(GenerateEff(4343));
+                        AddBuff(new Buff(532, Level));
+                        RemoveBuff(534);
+                        MeditationDictionary.Remove(532);
+                    }
+                }
+
                 if (!UseSp)
                 {
                     return;

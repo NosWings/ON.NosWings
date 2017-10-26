@@ -420,7 +420,7 @@ namespace OpenNos.GameObject
                 case BCardType.CardType.MeditationSkill:
                     if (session.GetType() == typeof(Character))
                     {
-                        if (SubType.Equals((byte)AdditionalTypes.MeditationSkill.CausingChance))
+                        if (SubType.Equals((byte) AdditionalTypes.MeditationSkill.CausingChance))
                         {
                             if (ServerManager.Instance.RandomNumber() < FirstData)
                             {
@@ -433,12 +433,14 @@ namespace OpenNos.GameObject
                                 {
                                     character.LastSkillCombo = DateTime.Now;
                                     Skill skill = ServerManager.Instance.GetSkill(SkillVNum.Value);
-                                    Skill newSkill = ServerManager.Instance.GetSkill((short)SecondData);
+                                    Skill newSkill = ServerManager.Instance.GetSkill((short) SecondData);
                                     Observable.Timer(TimeSpan.FromMilliseconds(100)).Subscribe(observer =>
                                     {
-                                        foreach (QuicklistEntryDTO qe in character.QuicklistEntries.Where(s => s.Pos.Equals(skill.CastId)))
+                                        foreach (QuicklistEntryDTO qe in character.QuicklistEntries.Where(s =>
+                                            s.Pos.Equals(skill.CastId)))
                                         {
-                                            character.Session.SendPacket($"qset {qe.Q1} {qe.Q2} {qe.Type}.{qe.Slot}.{newSkill.CastId}.0");
+                                            character.Session.SendPacket(
+                                                $"qset {qe.Q1} {qe.Q2} {qe.Type}.{qe.Slot}.{newSkill.CastId}.0");
                                         }
                                         character.Session.SendPacket($"mslot {newSkill.CastId} -1");
                                     });
@@ -446,12 +448,33 @@ namespace OpenNos.GameObject
                                     if (skill.CastId > 10)
                                     {
                                         // HACK this way
-                                        Observable.Timer(TimeSpan.FromMilliseconds(skill.Cooldown * 100 + 500)).Subscribe(observer =>
-                                        {
-                                            character.Session.SendPacket($"sr {skill.CastId}");
-                                        });
+                                        Observable.Timer(TimeSpan.FromMilliseconds(skill.Cooldown * 100 + 500))
+                                            .Subscribe(observer =>
+                                            {
+                                                character.Session.SendPacket($"sr {skill.CastId}");
+                                            });
                                     }
                                 }
+                            }
+                        }
+                        else
+                        {
+                            Character character = (session as Character);
+                            if (character == null)
+                            {
+                                break;
+                            }
+                            switch (SubType)
+                            {
+                                case 21:
+                                    character.MeditationDictionary[(short)SecondData] = DateTime.Now.AddSeconds(4);
+                                    break;
+                                case 31:
+                                    character.MeditationDictionary[(short)SecondData] = DateTime.Now.AddSeconds(8);
+                                    break;
+                                case 41:
+                                    character.MeditationDictionary[(short)SecondData] = DateTime.Now.AddSeconds(12);
+                                    break;
                             }
                         }
                     }

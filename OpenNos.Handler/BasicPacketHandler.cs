@@ -741,6 +741,10 @@ namespace OpenNos.Handler
         /// <param name="sitpacket"></param>
         public void Rest(SitPacket sitpacket)
         {
+            if (Session.Character.MeditationDictionary.Count != 0)
+            {
+                Session.Character.MeditationDictionary.Clear();
+            }
             sitpacket?.Users.ForEach(u =>
             {
                 if (u.UserType == 1)
@@ -1274,6 +1278,10 @@ namespace OpenNos.Handler
         {
             if (!Session.Character.NoMove)
             {
+                if (Session.Character.MeditationDictionary.Count != 0)
+                {
+                    Session.Character.MeditationDictionary.Clear();
+                }
                 double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                 double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
                 int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
