@@ -2046,6 +2046,10 @@ namespace OpenNos.GameObject
                         Parallel.ForEach(Sessions.Where(s => fami.FamilyCharacters.Any(m => m.CharacterId == s.Character.CharacterId)), session =>
                         {
                             session.Character.Family = fami;
+                            if (tuple.Item2)
+                            {
+                                session.Character.ChangeFaction((FactionType)fami.FamilyFaction);
+                            }
                             session.CurrentMapInstance.Broadcast(session.Character.GenerateGidx());
                         });
                     }

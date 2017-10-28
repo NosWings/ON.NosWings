@@ -112,32 +112,34 @@ namespace OpenNos.GameObject.Event
                 }
                 else
                 {
+                    // THIS SHOULD BE EVENT DRIVEN INSTEAD OF USING THAT SHIT BUT IT WILL WORK AT LEAST.
+                    IDisposable endDisposable = null;
                     Observable.Timer(TimeSpan.FromMinutes(12)).Subscribe(x =>
                     {
-                        for (int d = 0; d < 180; d++)
+                        endDisposable = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(m =>
                         {
-                            if (!mapinstance.Item1.Monsters.Any(s => s.CurrentHp > 0))
+                            if (mapinstance.Item1.Monsters.Any(s => s.CurrentHp > 0))
                             {
-                                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(0),
-                                    new EventContainer(mapinstance.Item1, EventActionType.SPAWNPORTAL, new Portal {SourceX = 47, SourceY = 33, DestinationMapId = 1}));
-                                mapinstance.Item1.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
-                                foreach (ClientSession cli in mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList())
-                                {
-                                    cli.Character.GetReput(cli.Character.Level * 50);
-                                    cli.Character.GetGold(cli.Character.Level * 1000);
-                                    cli.Character.SpAdditionPoint += cli.Character.Level * 100;
-                                    cli.Character.SpAdditionPoint = cli.Character.SpAdditionPoint > 1000000 ? 1000000 : cli.Character.SpAdditionPoint;
-                                    cli.SendPacket(cli.Character.GenerateSpPoint());
-                                    cli.SendPacket(cli.Character.GenerateGold());
-                                    cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_SP_POINT"), cli.Character.Level * 100), 10));
-                                }
-                                break;
+                                return;
                             }
-                            Thread.Sleep(1000);
-                        }
+                            EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(0),
+                                new EventContainer(mapinstance.Item1, EventActionType.SPAWNPORTAL, new Portal { SourceX = 47, SourceY = 33, DestinationMapId = 1 }));
+                            mapinstance.Item1.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
+                            foreach (ClientSession cli in mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList())
+                            {
+                                cli.Character.GetReput(cli.Character.Level * 50);
+                                cli.Character.GetGold(cli.Character.Level * 1000);
+                                cli.Character.SpAdditionPoint += cli.Character.Level * 100;
+                                cli.Character.SpAdditionPoint = cli.Character.SpAdditionPoint > 1000000 ? 1000000 : cli.Character.SpAdditionPoint;
+                                cli.SendPacket(cli.Character.GenerateSpPoint());
+                                cli.SendPacket(cli.Character.GenerateGold());
+                                cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_SP_POINT"), cli.Character.Level * 100), 10));
+                            }
+                        });
                     });
 
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(15), new EventContainer(mapinstance.Item1, EventActionType.DISPOSEMAP, null));
+                    Observable.Timer(TimeSpan.FromMinutes(15)).Subscribe(x => endDisposable.Dispose());
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(3),
                         new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET,
                             UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0)));
