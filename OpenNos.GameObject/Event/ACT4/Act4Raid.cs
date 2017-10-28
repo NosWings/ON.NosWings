@@ -137,7 +137,7 @@ namespace OpenNos.GameObject.Event
                 if (_raidTime == BossSpawn)
                 {
                     SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-                    foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+                    foreach (Family fam in ServerManager.Instance.FamilyList)
                     {
                         if (fam.Act4Raid == null || fam.Act4RaidBossMap == null)
                         {
@@ -158,7 +158,7 @@ namespace OpenNos.GameObject.Event
             _lobby.Portals.RemoveAll(s => _faction == (byte) FactionType.Angel ? s.Type.Equals(10) : s.Type.Equals(11));
 
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-            foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+            foreach (Family fam in ServerManager.Instance.FamilyList)
             {
                 foreach (ClientSession session in fam.Act4Raid.Sessions.Concat(fam.Act4RaidBossMap.Sessions))
                 {
@@ -185,7 +185,7 @@ namespace OpenNos.GameObject.Event
         private void RefreshAct4Raid(Act4RaidType type, short raidMap, short sourceX, short sourceY)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-            foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+            foreach (Family fam in ServerManager.Instance.FamilyList)
             {
                 if (fam.Act4Raid == null)
                 {

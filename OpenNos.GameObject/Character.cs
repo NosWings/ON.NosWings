@@ -2575,8 +2575,9 @@ namespace OpenNos.GameObject
 
         public string GenerateLev()
         {
-            return
-                $"lev {Level} {LevelXp} {(!UseSp || SpInstance == null ? JobLevel : SpInstance.SpLevel)} {(!UseSp || SpInstance == null ? JobLevelXp : SpInstance.XP)} {XpLoad()} {(!UseSp || SpInstance == null ? JobXpLoad() : SpxpLoad())} {Reput} {GetCp()} {HeroXp} {HeroLevel} {HeroXpLoad()} {0}";
+            return Level < 100
+                ? $"lev {Level} {LevelXp} {(!UseSp || SpInstance == null ? JobLevel : SpInstance.SpLevel)} {(!UseSp || SpInstance == null ? JobLevelXp : SpInstance.XP)} {XpLoad()} {(!UseSp || SpInstance == null ? JobXpLoad() : SpxpLoad())} {Reput} {GetCp()} {HeroXp} {HeroLevel} {HeroXpLoad()} {0}"
+                : $"lev {Level} {(short) (LevelXp / XpLoad() * 10000)} {(!UseSp || SpInstance == null ? JobLevel : SpInstance.SpLevel)} {(!UseSp || SpInstance == null ? JobLevelXp : SpInstance.XP)} {10000} {(!UseSp || SpInstance == null ? JobXpLoad() : SpxpLoad())} {Reput} {GetCp()} {HeroXp} {HeroLevel} {HeroXpLoad()}";
         }
 
         public string GenerateLevelUp()
