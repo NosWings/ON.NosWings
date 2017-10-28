@@ -505,6 +505,7 @@ namespace OpenNos.Handler
 
         private void TargetHit(int castingId, int targetId, bool isPvp = false)
         {
+            bool noComboReset = false;
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
                 Session.SendPacket("cancel 0 0");
@@ -524,12 +525,20 @@ namespace OpenNos.Handler
                     Session.SendPacket($"cancel 2 {targetId}");
                     return;
                 }
+                if (ski != null)
+                {
+                    foreach (BCard bc in ski.Skill.BCards.Where(s => s.Type.Equals((byte)BCardType.CardType.MeditationSkill)))
+                    {
+                        noComboReset = true;
+                        bc.ApplyBCards(Session.Character);
+                    }
+                }
+
                 if (ski != null && Session.Character.Mp >= ski.Skill.MpCost)
                 {
                     // AOE Target hit
                     if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1)
                     {
-                        Session.Character.LastSkillUse = DateTime.Now;
                         if (!Session.Character.HasGodMode)
                         {
                             Session.Character.Mp -= ski.Skill.MpCost;
@@ -739,7 +748,6 @@ namespace OpenNos.Handler
                                 if (Map.GetDistance(new MapCell {X = Session.Character.PositionX, Y = Session.Character.PositionY},
                                         new MapCell {X = playerToAttack.Character.PositionX, Y = playerToAttack.Character.PositionY}) <= ski.Skill.Range + 1)
                                 {
-                                    Session.Character.LastSkillUse = DateTime.Now;
                                     ski.LastUse = DateTime.Now;
                                     if (!Session.Character.HasGodMode)
                                     {
@@ -818,6 +826,7 @@ namespace OpenNos.Handler
                                             {
                                                 Session.SendPacket($"cancel 2 {targetId}");
                                             }
+
                                         }
                                         else
                                         {
@@ -978,7 +987,6 @@ namespace OpenNos.Handler
                                 if (Map.GetDistance(new MapCell {X = Session.Character.PositionX, Y = Session.Character.PositionY},
                                         new MapCell {X = monsterToAttack.MapX, Y = monsterToAttack.MapY}) <= ski.Skill.Range + 1 + monsterToAttack.Monster.BasicArea)
                                 {
-                                    Session.Character.LastSkillUse = DateTime.Now;
                                     ski.LastUse = DateTime.Now;
                                     if (!Session.Character.HasGodMode)
                                     {
@@ -1114,6 +1122,12 @@ namespace OpenNos.Handler
                     Session.SendPacket($"cancel 2 {targetId}");
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MP"), 10));
                 }
+                if (castingId < 11 && Session.Character.LastSkillUse.AddSeconds(1) < DateTime.Now && !noComboReset)
+                {
+                    Session.SendPackets(Session.Character.GenerateQuicklist());
+                    Session.SendPacket("mslot 0 -1");
+                }
+                Session.Character.LastSkillUse = DateTime.Now;
             }
             else
             {

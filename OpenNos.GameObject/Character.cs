@@ -53,6 +53,7 @@ namespace OpenNos.GameObject
             Mates = new List<Mate>();
             EquipmentBCards = new ConcurrentBag<BCard>();
             LastMonsterAggro = DateTime.Now;
+            MeditationDictionary = new Dictionary<short, DateTime>();
             SkillBcards = new ConcurrentBag<BCard>();
             PassiveSkillBcards = new ConcurrentBag<BCard>();
         }
@@ -60,6 +61,8 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
+
+        public DateTime LastSkillCombo { get; set; }
 
         public ConcurrentBag<BCard> EquipmentBCards { get; set; }
 
@@ -208,6 +211,10 @@ namespace OpenNos.GameObject
         public DateTime LastMonsterAggro { get; set; }
 
         public int LastMonsterId { get; set; }
+
+        public Dictionary<short, DateTime> MeditationDictionary { get; set; }
+
+        public ConcurrentBag<IDisposable> BuffObservables { get; internal set; }
 
         public DateTime LastMove { get; set; }
 
@@ -825,6 +832,32 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
+
+                if (MeditationDictionary.Count != 0)
+                {
+                    if (MeditationDictionary.ContainsKey(534) && MeditationDictionary[534] < DateTime.Now)
+                    {
+                        Session.SendPacket(GenerateEff(4344));
+                        AddBuff(new Buff(534, Level));
+                        RemoveBuff(533);
+                        MeditationDictionary.Remove(534);
+                    }
+                    else if (MeditationDictionary.ContainsKey(533) && MeditationDictionary[533] < DateTime.Now)
+                    {
+                        Session.SendPacket(GenerateEff(4343));
+                        AddBuff(new Buff(533, Level));
+                        RemoveBuff(532);
+                        MeditationDictionary.Remove(533);
+                    }
+                    else if (MeditationDictionary.ContainsKey(532) && MeditationDictionary[532] < DateTime.Now)
+                    {
+                        Session.SendPacket(GenerateEff(4343));
+                        AddBuff(new Buff(532, Level));
+                        RemoveBuff(534);
+                        MeditationDictionary.Remove(532);
+                    }
+                }
+
                 if (!UseSp)
                 {
                     return;
@@ -4046,7 +4079,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HpLoad() * 100)} {(int)(Mp / (float)MpLoad() * 100)} {Hp} {Mp}{Buff.Where(s => !s.StaticBuff).Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}")}";
+            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HpLoad() * 100)} {(int)(Mp / (float)MpLoad() * 100)} {Hp} {Mp}{(Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}"))}";
         }
 
         public TalkPacket GenerateTalk(string message)
@@ -5903,12 +5936,12 @@ namespace OpenNos.GameObject
             if (indicator.StaticBuff)
             {
                 Session.SendPacket($"vb {indicator.Card.CardId} 0 {indicator.Card.Duration}");
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 11));
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 11));
             }
             else
             {
                 Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), Name), 20));
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 20));
             }
             if (Buff.Contains(indicator))
             {
