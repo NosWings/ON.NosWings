@@ -193,6 +193,8 @@ namespace OpenNos.GameObject
 
         public Act4Stat Act4DemonStat { get; set; }
 
+        public Act6Stats Act6Stat { get; set; }
+
         public DateTime Act4RaidStart { get; set; }
 
         public int AccountLimit { get; set; }
@@ -202,6 +204,8 @@ namespace OpenNos.GameObject
         public short Port { get; set; }
 
         public bool InShutdown { get; set; }
+
+        public short Test { get; set; }
 
         #endregion
 
@@ -589,9 +593,12 @@ namespace OpenNos.GameObject
                     s.PositionY = (short) (session.Character.PositionY + 1);
                     session.SendPacket(s.GenerateIn());
                 });
+                session.SendPacket(
+                    session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short) MapTypeEnum.Act61)
+                        ? session.Character.GenerateAct6()
+                        : session.Character.GenerateAct());
                 session.SendPacket(session.Character.GeneratePinit());
                 session.Character.Mates.ForEach(s => session.SendPacket(s.GenerateScPacket()));
-                session.SendPacket(session.Character.GenerateAct());
                 session.SendPacket(session.Character.GenerateScpStc());
                 if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
                 {
@@ -960,6 +967,7 @@ namespace OpenNos.GameObject
             Act4RaidStart = DateTime.Now;
             Act4AngelStat = new Act4Stat();
             Act4DemonStat = new Act4Stat();
+            Act6Stat = new Act6Stats();
 
             OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DaoFactory.ItemDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
             ConcurrentDictionary<short, Item> item = new ConcurrentDictionary<short, Item>();
@@ -1702,6 +1710,8 @@ namespace OpenNos.GameObject
         {
             _groups = new ConcurrentDictionary<long, Group>();
 
+            Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(x => { Act6Process(); });
+
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { Act4Process(); });
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { Act4ShipProcess(); });
@@ -1862,6 +1872,11 @@ namespace OpenNos.GameObject
             }
 
             Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance), sess => sess.SendPacket(sess.Character.GenerateFc()));
+        }
+
+        public void Act6Process()
+        {
+            Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.Map.MapId >= 228 && s.CurrentMapInstance?.Map.MapId < 238), sess => sess.SendPacket(sess.Character.GenerateAct6()));
         }
 
         private void LoadBazaar()

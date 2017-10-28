@@ -1286,7 +1286,9 @@ namespace OpenNos.Handler
         {
             if (Session.Character.NoMove)
             {
-                if (Session.Character.MeditationDictionary.Count != 0)
+                return;
+            }
+            if (Session.Character.MeditationDictionary.Count != 0)
                 {
                     Session.Character.MeditationDictionary.Clear();
                 }

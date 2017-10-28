@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Act4Stat.cs" />
+    <Compile Include="Act6Stats.cs" />
     <Compile Include="ArenaTeamMember.cs" />
     <Compile Include="ArenaMember.cs" />
     <Compile Include="Buff\Buff.cs" />
