@@ -1876,6 +1876,16 @@ namespace OpenNos.GameObject
 
         public void Act6Process()
         {
+            if (Act6Stat.ZenasPercentage >= 100 && !Act6Stat.IsZenas)
+            {
+                Act6Stat.TotalTime = 3600;
+                Act6Stat.IsZenas = true;
+            }
+            else if (Act6Stat.EreniaPercentage >= 100 && !Act6Stat.IsErenia)
+            {
+                Act6Stat.TotalTime = 3600;
+                Act6Stat.IsErenia = true;
+            }
             Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.Map.MapId >= 228 && s.CurrentMapInstance?.Map.MapId < 238), sess => sess.SendPacket(sess.Character.GenerateAct6()));
         }
 

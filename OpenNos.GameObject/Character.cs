@@ -2420,7 +2420,7 @@ namespace OpenNos.GameObject
                     return;
                 }
                 //Quand on me dit "Maintenant OpenNos, c'est du bricolage"
-                if (!ServerManager.Instance.Act6Stat.IsRaidActive)
+                if (!ServerManager.Instance.Act6Stat.IsZenas && !ServerManager.Instance.Act6Stat.IsErenia)
                 {
                     if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232)
                     {
