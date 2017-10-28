@@ -1996,7 +1996,7 @@ namespace OpenNos.GameObject
                         FamilyList.Remove(fam);
                         fam = (Family) famdto;
                         fam.FamilyCharacters = new List<FamilyCharacter>();
-                        foreach (FamilyCharacterDTO famchar in DaoFactory.FamilyCharacterDao.LoadByFamilyId(fam.FamilyId).ToList())
+                        foreach (FamilyCharacterDTO famchar in DaoFactory.FamilyCharacterDao.LoadByFamilyId(fam.FamilyId))
                         {
                             fam.FamilyCharacters.Add((FamilyCharacter) famchar);
                         }
@@ -2004,7 +2004,7 @@ namespace OpenNos.GameObject
                         if (familyLeader != null)
                         {
                             fam.Warehouse = new Inventory((Character) familyLeader.Character);
-                            foreach (ItemInstanceDTO inventory in DaoFactory.IteminstanceDao.LoadByCharacterId(familyLeader.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                            foreach (ItemInstanceDTO inventory in DaoFactory.IteminstanceDao.LoadByCharacterId(familyLeader.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse))
                             {
                                 inventory.CharacterId = familyLeader.CharacterId;
                                 fam.Warehouse[inventory.Id] = (ItemInstance) inventory;
@@ -2027,7 +2027,7 @@ namespace OpenNos.GameObject
                     {
                         Family fami = (Family) famdto;
                         fami.FamilyCharacters = new List<FamilyCharacter>();
-                        foreach (FamilyCharacterDTO famchar in DaoFactory.FamilyCharacterDao.LoadByFamilyId(fami.FamilyId).ToList())
+                        foreach (FamilyCharacterDTO famchar in DaoFactory.FamilyCharacterDao.LoadByFamilyId(fami.FamilyId))
                         {
                             fami.FamilyCharacters.Add((FamilyCharacter) famchar);
                         }
@@ -2035,7 +2035,7 @@ namespace OpenNos.GameObject
                         if (familyCharacter != null)
                         {
                             fami.Warehouse = new Inventory((Character) familyCharacter.Character);
-                            foreach (ItemInstanceDTO inventory in DaoFactory.IteminstanceDao.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                            foreach (ItemInstanceDTO inventory in DaoFactory.IteminstanceDao.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse))
                             {
                                 inventory.CharacterId = familyCharacter.CharacterId;
                                 fami.Warehouse[inventory.Id] = (ItemInstance) inventory;
