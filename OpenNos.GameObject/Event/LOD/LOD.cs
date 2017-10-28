@@ -33,23 +33,7 @@ namespace OpenNos.GameObject.Event
             const int hornStay = 1;
             EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
             LodThread lodThread = new LodThread();
-            // TODO CONVERT TO RESSOURCES
-            ServerManager.Instance.Shout("LE LOD EST OUVERT");
             Observable.Timer(TimeSpan.FromMinutes(0)).Subscribe(x => lodThread.Run(lodtime * 60, hornTime * 60, hornRepawn * 60, hornStay * 60));
-            Observable.Timer(TimeSpan.FromMinutes(120)).Subscribe(x =>
-            {
-                // TODO LOD_OPENING_HOURS
-                ServerManager.Instance.Shout("LE LOD VA OUVRIR DANS 1H");
-            });
-            Observable.Timer(TimeSpan.FromMinutes(150)).Subscribe(x =>
-            {
-                // TODO LOD_OPENING_MINS
-                ServerManager.Instance.Shout("LE LOD VA OUVRIR DANS 30MINUTES");
-            });
-            Observable.Timer(TimeSpan.FromMinutes(170)).Subscribe(x =>
-            {
-                ServerManager.Instance.Shout("LE LOD VA OUVRIR DANS 10MINUTES");
-            });
         }
 
         #endregion
