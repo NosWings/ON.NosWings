@@ -118,7 +118,7 @@ namespace OpenNos.GameObject.Event
                     {
                         endDisposable = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(m =>
                         {
-                            if (mapinstance.Item1.Monsters.Any(s => s.CurrentHp > 0))
+                            if (mapinstance.Item1.Monsters.Any(s => s.IsAlive))
                             {
                                 return;
                             }
