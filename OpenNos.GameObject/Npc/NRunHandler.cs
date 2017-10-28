@@ -402,14 +402,7 @@ namespace OpenNos.GameObject
                         {
                             if (session.Character.Family.LandOfDeath != null && npc.EffectActivated)
                             {
-                                if (session.Character.Level >= 55)
-                                {
-                                    ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
-                                }
-                                else
-                                {
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOD_REQUIERE_LVL"), 0));
-                                }
+                                ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
                             }
                             else
                             {
