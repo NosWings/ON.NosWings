@@ -1120,7 +1120,6 @@ namespace OpenNos.Handler
         /// <param name="characterStatsPacket"></param>
         public void CharStat(CharacterStatsPacket characterStatsPacket)
         {
-            string returnHelp = CharacterStatsPacket.ReturnHelp();
             if (characterStatsPacket != null)
             {
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, characterStatsPacket, Session.IpAddress);
@@ -1156,12 +1155,12 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(returnHelp, 10));
+                    Session.SendPacket(Session.Character.GenerateSay(CharacterStatsPacket.ReturnHelp(), 10));
                 }
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay(returnHelp, 10));
+                Session.SendPacket(Session.Character.GenerateSay(CharacterStatsPacket.ReturnHelp(), 10));
             }
         }
 
@@ -1228,7 +1227,7 @@ namespace OpenNos.Handler
             {
                 short vnum = createItemPacket.VNum;
                 sbyte rare = 0;
-                short boxEffect = 999;
+                const short boxEffect = 999;
                 byte amount = 1, design = 0;
                 short upgrade = 0;
                 if (vnum == 1046)
