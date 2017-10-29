@@ -1876,8 +1876,6 @@ namespace OpenNos.GameObject
 
         public void Act6Process()
         {
-            Character c = new Character();
-            Console.WriteLine(Act6Stat.CurrentTime);
             if (Act6Stat.ZenasPercentage >= 100 && !Act6Stat.IsRaidActive)
             {
                 Act6Stat.TotalTime = 3600;
