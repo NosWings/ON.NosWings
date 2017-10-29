@@ -121,7 +121,8 @@ namespace OpenNos.GameObject
                 _isSleepingRequest = false;
                 Parallel.ForEach(Monsters, m =>
                 {
-                    m.Life.Dispose();
+                    m.Life?.Dispose();
+                    m.Life = null;
                 });
                 return true;
             }
@@ -666,7 +667,7 @@ namespace OpenNos.GameObject
             }
             Clock.Dispose();
             Life.Dispose();
-            _monsters.Select(s => s.Value).ToList().ForEach(monster => monster.Life.Dispose());
+            _monsters.Select(s => s.Value).ToList().ForEach(monster => monster.Life?.Dispose());
             _npcs.Select(s => s.Value).ToList().ForEach(npc => npc.Life.Dispose());
 
             foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceId == MapInstanceId))

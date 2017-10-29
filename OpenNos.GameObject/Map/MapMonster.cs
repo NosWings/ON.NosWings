@@ -126,7 +126,8 @@ namespace OpenNos.GameObject
         public short FirstX { get; set; }
 
         public short FirstY { get; set; }
-        public IDisposable Life { get; private set; }
+
+        public IDisposable Life { get; set; }
 
         #endregion
 
