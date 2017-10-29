@@ -1942,18 +1942,34 @@ namespace OpenNos.Handler
             {
                 string name = promotePacket.CharacterName;
                 AccountDTO account = DaoFactory.AccountDao.LoadById(DaoFactory.CharacterDao.LoadByName(name).AccountId);
+                AuthorityType authority = AuthorityType.GameMaster;
+                switch (promotePacket.Authority)
+                {
+                    case "ADMIN":
+                        authority = AuthorityType.Administrator;
+                        break;
+                    case "SGM":
+                        authority = AuthorityType.SuperGameMaster;
+                        break;
+                    case "GM":
+                        authority = AuthorityType.GameMaster;
+                        break;
+                    case "WH":
+                        authority = AuthorityType.Moderator;
+                        break;
+                }
                 if (account != null && account.Authority >= AuthorityType.User && account.Authority < AuthorityType.GameMaster)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, promotePacket, Session.IpAddress);
-                    account.Authority += 1;
+                    account.Authority = authority;
                     DaoFactory.AccountDao.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                     if (session != null)
                     {
-                        session.Account.Authority += 1;
-                        session.Character.Authority += 1;
+                        session.Account.Authority = authority;
+                        session.Character.Authority = authority;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-                        DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
+                        DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion, $"by: {Session.Character.Name} to : {authority.ToString()}");
                     }
                     else
                     {

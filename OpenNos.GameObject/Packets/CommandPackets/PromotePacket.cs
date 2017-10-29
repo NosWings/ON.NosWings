@@ -13,9 +13,12 @@ namespace OpenNos.GameObject.CommandPackets
         [PacketIndex(0)]
         public string CharacterName { get; set; }
 
+        [PacketIndex(1)]
+        public string Authority { get; set; }
+
         public static string ReturnHelp()
         {
-            return "$Promote CHARACTERNAME";
+            return "$Promote CHARACTERNAME ROLE(WH/GM/SGM/ADMIN)";
         }
 
         #endregion
