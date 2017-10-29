@@ -1710,7 +1710,7 @@ namespace OpenNos.GameObject
         {
             _groups = new ConcurrentDictionary<long, Group>();
 
-            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { Act6Process(); });
+            Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(x => { Act6Process(); });
 
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { Act4Process(); });
 
