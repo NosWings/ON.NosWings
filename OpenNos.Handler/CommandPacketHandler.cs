@@ -55,33 +55,32 @@ namespace OpenNos.Handler
         /// <param name="createRaidPacket"></param>
         public void CreateRaid(CreateRaidPacket createRaidPacket)
         {
-            if (createRaidPacket != null)
+            if (createRaidPacket == null)
             {
-                if (!int.TryParse(createRaidPacket.FactionType, out int faction))
-                {
-                    return;
-                }
-                if (!int.TryParse(createRaidPacket.RaidType, out int raidType))
-                {
-                    return;
-                }
-                switch (faction)
-                {
-                    case 1:
-                        ServerManager.Instance.Act4AngelStat.Percentage = 10001;
-                        ServerManager.Instance.Act4AngelStat.Mode = 1;
-                        break;
-                    case 2:
-                        ServerManager.Instance.Act4DemonStat.Percentage = 10001;
-                        ServerManager.Instance.Act4DemonStat.Mode = 1;
-                        break;
-                    default:
-                        break;
-                }
-                if (createRaidPacket.RaidType != null)
-                {
-                    ServerManager.Instance.RaidType = raidType;
-                }
+                return;
+            }
+            if (!int.TryParse(createRaidPacket.FactionType, out int faction))
+            {
+                return;
+            }
+            if (!int.TryParse(createRaidPacket.RaidType, out int raidType))
+            {
+                return;
+            }
+            switch (faction)
+            {
+                case 1:
+                    ServerManager.Instance.Act4AngelStat.Percentage = 10001;
+                    ServerManager.Instance.Act4AngelStat.Mode = 1;
+                    break;
+                case 2:
+                    ServerManager.Instance.Act4DemonStat.Percentage = 10001;
+                    ServerManager.Instance.Act4DemonStat.Mode = 1;
+                    break;
+            }
+            if (createRaidPacket.RaidType != null)
+            {
+                ServerManager.Instance.RaidType = raidType;
             }
         }
 
@@ -91,65 +90,66 @@ namespace OpenNos.Handler
         /// <param name="stuffPackPacket"></param>
         public void StuffPack(StuffPackPacket stuffPackPacket)
         {
-            if (stuffPackPacket != null)
+            if (stuffPackPacket == null)
             {
-                switch (stuffPackPacket.Type)
-                {
-                    case "Archer":
-                    case "archer":
-                        Session.Character.GiftAdd(4986, 1, rare:8, upgrade:10); // HERO 50 ARMOR
-                        Session.Character.GiftAdd(4983, 1, rare:8, upgrade:10); // HERO 50 WEAPON
-                        Session.Character.GiftAdd(4980, 1, rare:8, upgrade:10); // HERO 50 SECOND WEAPON
-                        Session.Character.GiftAdd(903, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(904, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(911, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(912, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4501, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4498, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4492, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4488, 1, 0, 15, 15);
-                        break;
-                    case "Mage":
-                    case "mage":
-                        Session.Character.GiftAdd(4985, 1, rare:8, upgrade:10); // HERO 50 ARMOR
-                        Session.Character.GiftAdd(4982, 1, rare: 8, upgrade: 10); // HERO 50 WEAPON
-                        Session.Character.GiftAdd(4979, 1, rare: 8, upgrade: 10); // HERO 50 SECOND WEAPON
-                        Session.Character.GiftAdd(905, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(906, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(913, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(914, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4502, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4499, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4491, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4487, 1, 0, 15, 15);
-                        break;
-                    case "Sword":
-                    case "sword":
-                        Session.Character.GiftAdd(4984, 1, 0, 10, 8); // HERO 50 ARMOR
-                        Session.Character.GiftAdd(4981, 1, 0, 10, 8); // HERO 50 WEAPON
-                        Session.Character.GiftAdd(4978, 1, 0, 10, 8); // HERO 50 SECOND WEAPON
-                        Session.Character.GiftAdd(901, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(902, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(909, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(910, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4500, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4497, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4493, 1, 0, 15, 15);
-                        Session.Character.GiftAdd(4489, 1, 0, 15, 15);
-                        break;
-                    case "Mount":
-                    case "mount":
-                        Session.Character.GiftAdd(5196, 1); // Nossi
-                        Session.Character.GiftAdd(5330, 1); // Soucoupe
-                        Session.Character.GiftAdd(5360, 1); // Planche à voile
-                        break;
-                    case "Resists":
-                    case "resists":
-                        break;
-                    default:
-                        Session.SendPacket(Session.Character.GenerateSay("Use : \"Archer\", \"Sword\" \"Mage\" or \"Mount\"", 10));
-                        break;
-                }
+                return;
+            }
+            switch (stuffPackPacket.Type)
+            {
+                case "Archer":
+                case "archer":
+                    Session.Character.GiftAdd(4986, 1, rare: 8, upgrade: 10); // HERO 50 ARMOR
+                    Session.Character.GiftAdd(4983, 1, rare: 8, upgrade: 10); // HERO 50 WEAPON
+                    Session.Character.GiftAdd(4980, 1, rare: 8, upgrade: 10); // HERO 50 SECOND WEAPON
+                    Session.Character.GiftAdd(903, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(904, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(911, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(912, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4501, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4498, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4492, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4488, 1, 0, 15, 15);
+                    break;
+                case "Mage":
+                case "mage":
+                    Session.Character.GiftAdd(4985, 1, rare: 8, upgrade: 10); // HERO 50 ARMOR
+                    Session.Character.GiftAdd(4982, 1, rare: 8, upgrade: 10); // HERO 50 WEAPON
+                    Session.Character.GiftAdd(4979, 1, rare: 8, upgrade: 10); // HERO 50 SECOND WEAPON
+                    Session.Character.GiftAdd(905, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(906, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(913, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(914, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4502, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4499, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4491, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4487, 1, 0, 15, 15);
+                    break;
+                case "Sword":
+                case "sword":
+                    Session.Character.GiftAdd(4984, 1, 0, 10, 8); // HERO 50 ARMOR
+                    Session.Character.GiftAdd(4981, 1, 0, 10, 8); // HERO 50 WEAPON
+                    Session.Character.GiftAdd(4978, 1, 0, 10, 8); // HERO 50 SECOND WEAPON
+                    Session.Character.GiftAdd(901, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(902, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(909, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(910, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4500, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4497, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4493, 1, 0, 15, 15);
+                    Session.Character.GiftAdd(4489, 1, 0, 15, 15);
+                    break;
+                case "Mount":
+                case "mount":
+                    Session.Character.GiftAdd(5196, 1); // Nossi
+                    Session.Character.GiftAdd(5330, 1); // Soucoupe
+                    Session.Character.GiftAdd(5360, 1); // Planche à voile
+                    break;
+                case "Resists":
+                case "resists":
+                    break;
+                default:
+                    Session.SendPacket(Session.Character.GenerateSay("Use : \"Archer\", \"Sword\" \"Mage\" or \"Mount\"", 10));
+                    break;
             }
         }
 
@@ -176,7 +176,10 @@ namespace OpenNos.Handler
                         Session.SendPacket("[Types] : Dignity Stats Class");
                         break;
                     case "Name":
-                        if (DaoFactory.CharacterDao.LoadByName(characterPacket.Value) != null) return;
+                        if (DaoFactory.CharacterDao.LoadByName(characterPacket.Value) != null)
+                        {
+                            return;
+                        }
                         CharacterDTO character = session.Character;
                         character.Name = characterPacket.Value;
                         DaoFactory.CharacterDao.InsertOrUpdate(ref character);
@@ -261,7 +264,10 @@ namespace OpenNos.Handler
 
         private void ChangeCharacterReputation(ClientSession session, long reput)
         {
-            if (session == null || reput < 0) return;
+            if (session == null || reput < 0)
+            {
+                return;
+            }
             session.Character.Reput = reput;
             session.SendPacket(session.Character.GenerateFd());
             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
@@ -270,10 +276,12 @@ namespace OpenNos.Handler
 
         private void ChangeCompliment(ClientSession session, short compliment)
         {
-            if (session == null || compliment < 0) return;
+            if (session == null || compliment < 0)
+            {
+                return;
+            }
             session.Character.Compliment = compliment;
             ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-
         }
 
         /// <summary>
@@ -283,7 +291,10 @@ namespace OpenNos.Handler
         /// <param name="gold"></param>
         private void ChangeGold(ClientSession session, long gold)
         {
-            if (session == null || gold < 0) return;
+            if (session == null || gold < 0)
+            {
+                return;
+            }
             long maxGold = ServerManager.Instance.MaxGold;
             gold = gold > maxGold ? maxGold : gold;
             if (gold >= 0)
@@ -310,7 +321,10 @@ namespace OpenNos.Handler
         /// <param name="type"></param>
         private void ChangeCharacterLevel(ClientSession session, byte level, byte type)
         {
-            if (session == null || level <= 0) return;
+            if (session == null || level <= 0)
+            {
+                return;
+            }
             switch (type)
             {
                 case 1:
@@ -374,24 +388,24 @@ namespace OpenNos.Handler
                     }
                     break;
                 case 3:
-                    {
-                        session.Character.HeroLevel = level;
-                        session.Character.HeroXp = 0;
-                        Session.SendPacket(
-                            UserInterfaceHelper.Instance.GenerateMsg(
-                                Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
-                        session.SendPacket(session.Character.GenerateLev());
-                        session.SendPacket(session.Character.GenerateStatInfo());
-                        session.SendPacket(session.Character.GenerateStatChar());
-                        session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
-                            ReceiverType.AllExceptMe);
-                        session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
-                            ReceiverType.AllExceptMe);
-                        session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX,
-                            Session.Character.PositionY);
-                        session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198),
-                            Session.Character.PositionX, Session.Character.PositionY);
-                    }
+                {
+                    session.Character.HeroLevel = level;
+                    session.Character.HeroXp = 0;
+                    Session.SendPacket(
+                        UserInterfaceHelper.Instance.GenerateMsg(
+                            Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
+                    session.SendPacket(session.Character.GenerateLev());
+                    session.SendPacket(session.Character.GenerateStatInfo());
+                    session.SendPacket(session.Character.GenerateStatChar());
+                    session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
+                        ReceiverType.AllExceptMe);
+                    session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
+                        ReceiverType.AllExceptMe);
+                    session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX,
+                        Session.Character.PositionY);
+                    session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198),
+                        Session.Character.PositionX, Session.Character.PositionY);
+                }
                     break;
             }
         }
@@ -452,7 +466,7 @@ namespace OpenNos.Handler
                     MapY = Session.Character.PositionY,
                     MapX = Session.Character.PositionX,
                     MapId = Session.Character.MapInstance.Map.MapId,
-                    Position = (byte) Session.Character.Direction,
+                    Position = (byte)Session.Character.Direction,
                     IsMoving = addMonsterPacket.IsMoving,
                     MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId()
                 };
@@ -530,7 +544,7 @@ namespace OpenNos.Handler
                     {
                         if (skillinfo.CastId == skill.Skill.CastId && skill.Skill.SkillVNum < 200)
                         {
-                            Session.Character.Skills.TryRemove(skill.SkillVNum, out CharacterSkill value);
+                            Session.Character.Skills.TryRemove(skill.SkillVNum, out CharacterSkill _);
                         }
                     }
                 }
@@ -548,11 +562,11 @@ namespace OpenNos.Handler
                             s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
                         if (oldupgrade != null)
                         {
-                            Session.Character.Skills.TryRemove(oldupgrade.SkillVNum, out CharacterSkill value);
+                            Session.Character.Skills.TryRemove(oldupgrade.SkillVNum, out CharacterSkill _);
                         }
                     }
                 }
-                Session.Character.Skills[skillVNum] = new CharacterSkill {SkillVNum = skillVNum, CharacterId = Session.Character.CharacterId};
+                Session.Character.Skills[skillVNum] = new CharacterSkill { SkillVNum = skillVNum, CharacterId = Session.Character.CharacterId };
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
@@ -819,7 +833,7 @@ namespace OpenNos.Handler
         /// <param name="changeFairyLevelPacket"></param>
         public void ChangeFairyLevel(ChangeFairyLevelPacket changeFairyLevelPacket)
         {
-            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Fairy, InventoryType.Wear);
+            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (changeFairyLevelPacket != null)
             {
                 if (fairy != null)
@@ -905,14 +919,14 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), Session.Character.PositionX, Session.Character.PositionY);
-                    Session.Character.Skills[(short) (200 + 20 * (byte) Session.Character.Class)] = new CharacterSkill
+                    Session.Character.Skills[(short)(200 + 20 * (byte)Session.Character.Class)] = new CharacterSkill
                     {
-                        SkillVNum = (short) (200 + 20 * (byte) Session.Character.Class),
+                        SkillVNum = (short)(200 + 20 * (byte)Session.Character.Class),
                         CharacterId = Session.Character.CharacterId
                     };
-                    Session.Character.Skills[(short) (201 + 20 * (byte) Session.Character.Class)] = new CharacterSkill
+                    Session.Character.Skills[(short)(201 + 20 * (byte)Session.Character.Class)] = new CharacterSkill
                     {
-                        SkillVNum = (short) (201 + 20 * (byte) Session.Character.Class),
+                        SkillVNum = (short)(201 + 20 * (byte)Session.Character.Class),
                         CharacterId = Session.Character.CharacterId
                     };
                     Session.Character.Skills[236] = new CharacterSkill
@@ -950,8 +964,8 @@ namespace OpenNos.Handler
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeLevelPacket, Session.IpAddress);
                     Session.Character.Level = changeLevelPacket.Level;
                     Session.Character.LevelXp = 0;
-                    Session.Character.Hp = (int) Session.Character.HpLoad();
-                    Session.Character.Mp = (int) Session.Character.MpLoad();
+                    Session.Character.Hp = (int)Session.Character.HpLoad();
+                    Session.Character.Mp = (int)Session.Character.MpLoad();
                     Session.SendPacket(Session.Character.GenerateStat());
                     Session.SendPacket(Session.Character.GenerateStatInfo());
                     Session.SendPacket(Session.Character.GenerateStatChar());
@@ -1023,7 +1037,7 @@ namespace OpenNos.Handler
         {
             if (changeSpecialistLevelPacket != null)
             {
-                SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
+                SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (sp != null && Session.Character.UseSp)
                 {
                     if (changeSpecialistLevelPacket.SpecialistLevel <= 255 && changeSpecialistLevelPacket.SpecialistLevel > 0)
@@ -1231,7 +1245,7 @@ namespace OpenNos.Handler
                         {
                             design = createItemPacket.Design.Value;
                         }
-                        rare = createItemPacket.Upgrade.HasValue && iteminfo.Effect == boxEffect ? (sbyte) createItemPacket.Upgrade.Value : rare;
+                        rare = createItemPacket.Upgrade.HasValue && iteminfo.Effect == boxEffect ? (sbyte)createItemPacket.Upgrade.Value : rare;
                     }
                     else if (iteminfo.Type == 0)
                     {
@@ -1258,13 +1272,13 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                rare = (sbyte) createItemPacket.Design.Value;
+                                rare = (sbyte)createItemPacket.Design.Value;
                             }
                         }
                     }
                     if (createItemPacket.Design.HasValue && !createItemPacket.Upgrade.HasValue)
                     {
-                        amount = createItemPacket.Design.Value > 99 ? (byte) 99 : createItemPacket.Design.Value;
+                        amount = createItemPacket.Design.Value > 99 ? (byte)99 : createItemPacket.Design.Value;
                     }
                     ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, rare: rare, upgrade: upgrade, design: design).FirstOrDefault();
                     if (inv != null)
@@ -1282,10 +1296,10 @@ namespace OpenNos.Handler
 
                                 case EquipmentType.Boots:
                                 case EquipmentType.Gloves:
-                                    wearable.FireResistance = (short) (wearable.Item.FireResistance * upgrade);
-                                    wearable.DarkResistance = (short) (wearable.Item.DarkResistance * upgrade);
-                                    wearable.LightResistance = (short) (wearable.Item.LightResistance * upgrade);
-                                    wearable.WaterResistance = (short) (wearable.Item.WaterResistance * upgrade);
+                                    wearable.FireResistance = (short)(wearable.Item.FireResistance * upgrade);
+                                    wearable.DarkResistance = (short)(wearable.Item.DarkResistance * upgrade);
+                                    wearable.LightResistance = (short)(wearable.Item.LightResistance * upgrade);
+                                    wearable.WaterResistance = (short)(wearable.Item.WaterResistance * upgrade);
                                     break;
                             }
                         }
@@ -1328,7 +1342,7 @@ namespace OpenNos.Handler
                     DestinationMapId = portalToPacket.DestinationMapId,
                     DestinationX = portalToPacket.DestinationX,
                     DestinationY = portalToPacket.DestinationY,
-                    Type = portalToPacket.PortalType == null ? (short) -1 : (short) portalToPacket.PortalType
+                    Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
                 };
                 Session.CurrentMapInstance.Portals.Add(portal);
                 Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
@@ -1746,17 +1760,17 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    int? hp = ServerManager.Instance.GetProperty<int?>((long) id, nameof(Character.Hp));
+                    int? hp = ServerManager.Instance.GetProperty<int?>((long)id, nameof(Character.Hp));
                     if (hp == 0)
                     {
                         return;
                     }
-                    ServerManager.Instance.SetProperty((long) id, nameof(Character.Hp), 0);
-                    ServerManager.Instance.SetProperty((long) id, nameof(Character.LastDefence), DateTime.Now);
+                    ServerManager.Instance.SetProperty((long)id, nameof(Character.Hp), 0);
+                    ServerManager.Instance.SetProperty((long)id, nameof(Character.LastDefence), DateTime.Now);
                     Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 60000 3 0");
-                    Session.CurrentMapInstance?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long) id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, string.Empty,
-                        (long) id);
-                    ServerManager.Instance.AskRevive((long) id);
+                    Session.CurrentMapInstance?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, string.Empty,
+                        (long)id);
+                    ServerManager.Instance.AskRevive((long)id);
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
                 else
@@ -1818,7 +1832,7 @@ namespace OpenNos.Handler
                 if (morphPacket.MorphId < 30 && morphPacket.MorphId > 0)
                 {
                     Session.Character.UseSp = true;
-                    Session.Character.SpInstance = Session.Character.Inventory?.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
+                    Session.Character.SpInstance = Session.Character.Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                     Session.Character.Morph = morphPacket.MorphId;
                     Session.Character.MorphUpgrade = morphPacket.Upgrade;
                     Session.Character.MorphUpgrade2 = morphPacket.MorphDesign;
@@ -1857,11 +1871,12 @@ namespace OpenNos.Handler
         {
             if (musicPacket != null)
             {
-                if (musicPacket.Music >= 0)
+                if (musicPacket.Music < 0)
                 {
-                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, musicPacket, Session.IpAddress);
-                    Session.CurrentMapInstance?.Broadcast($"bgm {musicPacket.Music}");
+                    return;
                 }
+                LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, musicPacket, Session.IpAddress);
+                Session.CurrentMapInstance?.Broadcast($"bgm {musicPacket.Music}");
             }
             else
             {
@@ -1973,7 +1988,8 @@ namespace OpenNos.Handler
                         session.Account.Authority = authority;
                         session.Character.Authority = authority;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-                        DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion, $"by: {Session.Character.Name} to : {authority.ToString()}");
+                        DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion,
+                            $"by: {Session.Character.Name} to : {authority.ToString()}");
                     }
                     else
                     {
@@ -2062,7 +2078,7 @@ namespace OpenNos.Handler
             }
             Portal portal = Session.CurrentMapInstance.Portals.FirstOrDefault(s =>
                 s.SourceMapInstanceId == Session.Character.MapInstanceId &&
-                Map.GetDistance(new MapCell {X = s.SourceX, Y = s.SourceY}, new MapCell {X = Session.Character.PositionX, Y = Session.Character.PositionY}) < 10);
+                Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
             if (portal != null)
             {
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, removePortalPacket, Session.IpAddress);
@@ -2337,14 +2353,14 @@ namespace OpenNos.Handler
                     {
                         for (short y = -4; y < 5; y++)
                         {
-                            possibilities.Add(new MapCell {X = x, Y = y});
+                            possibilities.Add(new MapCell { X = x, Y = y });
                         }
                     }
                     // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
                     foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                     {
-                        short mapx = (short) (Session.Character.PositionX + possibilitie.X);
-                        short mapy = (short) (Session.Character.PositionY + possibilitie.Y);
+                        short mapx = (short)(Session.Character.PositionX + possibilitie.X);
+                        short mapy = (short)(Session.Character.PositionY + possibilitie.Y);
                         if (!Session.CurrentMapInstance?.Map.IsBlockedZone(mapx, mapy) ?? false)
                         {
                             break;
@@ -2361,7 +2377,7 @@ namespace OpenNos.Handler
                         MapY = Session.Character.PositionY,
                         MapX = Session.Character.PositionX,
                         MapId = Session.Character.MapInstance.Map.MapId,
-                        Position = (byte) Session.Character.Direction,
+                        Position = (byte)Session.Character.Direction,
                         IsMoving = summonPacket.IsMoving,
                         MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(),
                         ShouldRespawn = false
@@ -2404,14 +2420,14 @@ namespace OpenNos.Handler
                     {
                         for (short y = -4; y < 5; y++)
                         {
-                            possibilities.Add(new MapCell {X = x, Y = y});
+                            possibilities.Add(new MapCell { X = x, Y = y });
                         }
                     }
                     // TODO: Find a fancy way to parallelize as we dont care about order it needs to be randomized
                     foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                     {
-                        short mapx = (short) (Session.Character.PositionX + possibilitie.X);
-                        short mapy = (short) (Session.Character.PositionY + possibilitie.Y);
+                        short mapx = (short)(Session.Character.PositionX + possibilitie.X);
+                        short mapy = (short)(Session.Character.PositionY + possibilitie.Y);
                         if (!Session.CurrentMapInstance?.Map.IsBlockedZone(mapx, mapy) ?? false)
                         {
                             break;
@@ -2427,7 +2443,7 @@ namespace OpenNos.Handler
                         MapY = Session.Character.PositionY,
                         MapX = Session.Character.PositionX,
                         MapId = Session.Character.MapInstance.Map.MapId,
-                        Position = (byte) Session.Character.Direction,
+                        Position = (byte)Session.Character.Direction,
                         IsMoving = summonNpcPacket.IsMoving,
                         MapNpcId = Session.CurrentMapInstance.GetNextMonsterId()
                     };
@@ -2523,7 +2539,7 @@ namespace OpenNos.Handler
                         {
                             for (short y = -6; y < 6; y++)
                             {
-                                possibilities.Add(new MapCell {X = x, Y = y});
+                                possibilities.Add(new MapCell { X = x, Y = y });
                             }
                         }
 
@@ -2531,8 +2547,8 @@ namespace OpenNos.Handler
                         short mapYPossibility = Session.Character.PositionY;
                         foreach (MapCell possibility in possibilities.OrderBy(s => random.Next()))
                         {
-                            mapXPossibility = (short) (Session.Character.PositionX + possibility.X);
-                            mapYPossibility = (short) (Session.Character.PositionY + possibility.Y);
+                            mapXPossibility = (short)(Session.Character.PositionX + possibility.X);
+                            mapYPossibility = (short)(Session.Character.PositionY + possibility.Y);
                             if (!Session.CurrentMapInstance.Map.IsBlockedZone(mapXPossibility, mapYPossibility))
                             {
                                 break;
@@ -2557,8 +2573,8 @@ namespace OpenNos.Handler
                         // clear any shop or trade on target character
                         targetSession.Character.DisposeShopAndExchange();
                         targetSession.Character.IsSitting = false;
-                        ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short) (Session.Character.PositionX + 1),
-                            (short) (Session.Character.PositionY + 1));
+                        ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short)(Session.Character.PositionX + 1),
+                            (short)(Session.Character.PositionY + 1));
                     }
                     else
                     {
@@ -2633,10 +2649,10 @@ namespace OpenNos.Handler
                 CharacterDTO chara = DaoFactory.CharacterDao.LoadByName(name);
                 if (chara != null)
                 {
-                    if (ServerManager.Instance.PenaltyLogs.Any(s => s.AccountId == chara.AccountId && s.Penalty == (byte) PenaltyType.Muted && s.DateEnd > DateTime.Now))
+                    if (ServerManager.Instance.PenaltyLogs.Any(s => s.AccountId == chara.AccountId && s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now))
                     {
                         LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, unmutePacket, Session.IpAddress);
-                        PenaltyLogDTO log = ServerManager.Instance.PenaltyLogs.FirstOrDefault(s => s.AccountId == chara.AccountId && s.Penalty == (byte) PenaltyType.Muted && s.DateEnd > DateTime.Now);
+                        PenaltyLogDTO log = ServerManager.Instance.PenaltyLogs.FirstOrDefault(s => s.AccountId == chara.AccountId && s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now);
                         if (log != null)
                         {
                             log.DateEnd = DateTime.Now.AddSeconds(-1);
@@ -2743,7 +2759,7 @@ namespace OpenNos.Handler
         {
             if (wigColorPacket != null)
             {
-                WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Hat, InventoryType.Wear);
+                WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                 if (wig != null)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, wigColorPacket, Session.IpAddress);
