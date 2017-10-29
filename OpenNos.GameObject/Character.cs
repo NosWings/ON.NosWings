@@ -3122,7 +3122,7 @@ namespace OpenNos.GameObject
 
             #region Base Damage
 
-            int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg, mainMaxDmg + 1);
+            int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg > mainMaxDmg ? mainMaxDmg : mainMinDmg, mainMaxDmg + 1);
             baseDamage += morale - enemymoral;
 
             switch (mainUpgrade)
@@ -3130,7 +3130,6 @@ namespace OpenNos.GameObject
                 case -10:
                     enemydefense += enemydefense * 2;
                     break;
-
                 case -9:
                     enemydefense += (int)(enemydefense * 1.2);
                     break;
