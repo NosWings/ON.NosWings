@@ -1704,7 +1704,7 @@ namespace OpenNos.GameObject
 
             Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(x => { Act6Process(); });
 
-            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { Act4Process(); });
+            Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(x => { Act4Process(); });
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { Act4ShipProcess(); });
 
@@ -1964,7 +1964,6 @@ namespace OpenNos.GameObject
                     };
                     if (Act6Stat.EreniaPercentage >= 100 && portal.SourceMapId == 236)
                     {
-                        ClientSession s = map.Value.Sessions.FirstOrDefault();
                         map.Value.Portals.Add(portal);
                         map.Value.Broadcast(portal.GenerateGp());
                         Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o =>
@@ -1973,16 +1972,17 @@ namespace OpenNos.GameObject
                             map.Value.MapClear();
                         });
                     }
-                    if (Act6Stat.ZenasPercentage >= 100 && portal.SourceMapId == 232)
+                    if (Act6Stat.ZenasPercentage < 100 || portal.SourceMapId != 232)
                     {
+                        continue;
+                    }
                         map.Value.Portals.Add(portal);
                         map.Value.Broadcast(portal.GenerateGp());
-                        Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o =>
-                        {
-                            map.Value.Portals.Remove(portal);
-                            map.Value.MapClear();
-                        });
-                    }
+                    Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o =>
+                    {
+                        map.Value.Portals.Remove(portal);
+                        map.Value.MapClear();
+                    });
                 }
             });
         }
