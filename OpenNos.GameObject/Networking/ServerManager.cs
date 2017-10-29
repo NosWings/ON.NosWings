@@ -1879,14 +1879,14 @@ namespace OpenNos.GameObject
             if (Act6Stat.ZenasPercentage >= 100 && !Act6Stat.IsRaidActive)
             {
                 LoadAct6ScriptedInstance();
-                Act6Stat.TotalTime = 60;
+                Act6Stat.TotalTime = 3600;
                 Act6Stat.IsZenas = true;
                 Act6Stat.IsRaidActive = true;
             }
             else if (Act6Stat.EreniaPercentage >= 100 && !Act6Stat.IsRaidActive)
             {
                 LoadAct6ScriptedInstance();
-                Act6Stat.TotalTime = 60;
+                Act6Stat.TotalTime = 3600;
                 Act6Stat.IsErenia = true;
                 Act6Stat.IsRaidActive = true;
             }
@@ -1979,7 +1979,7 @@ namespace OpenNos.GameObject
                         ClientSession s = map.Value.Sessions.FirstOrDefault();
                         map.Value.Portals.Add(portal);
                         map.Value.Broadcast(portal.GenerateGp());
-                        Observable.Timer(TimeSpan.FromSeconds(60)).Subscribe(o =>
+                        Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o =>
                         {
                             map.Value.Portals.Remove(portal);
                             map.Value.MapClear();
@@ -1989,7 +1989,7 @@ namespace OpenNos.GameObject
                     {
                         map.Value.Portals.Add(portal);
                         map.Value.Broadcast(portal.GenerateGp());
-                        Observable.Timer(TimeSpan.FromSeconds(60)).Subscribe(o =>
+                        Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o =>
                         {
                             map.Value.Portals.Remove(portal);
                             map.Value.MapClear();
