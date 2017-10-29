@@ -2789,6 +2789,22 @@ namespace OpenNos.Import.Console
             }
             listtimespace.Add(new ScriptedInstanceDTO
             {
+                Name = "Zenas",
+                MapId = 232,
+                PositionX = 103,
+                PositionY = 125,
+                Type = ScriptedInstanceType.RaidAct6
+            });
+            listtimespace.Add(new ScriptedInstanceDTO
+            {
+                Name = "Erenia",
+                MapId = 236,
+                PositionX = 130,
+                PositionY = 117,
+                Type = ScriptedInstanceType.RaidAct6,
+            });
+            listtimespace.Add(new ScriptedInstanceDTO
+            {
                 Name = "Hatus",
                 MapId = 134,
                 PositionX = 53,

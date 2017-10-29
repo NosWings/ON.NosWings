@@ -1878,13 +1878,15 @@ namespace OpenNos.GameObject
         {
             if (Act6Stat.ZenasPercentage >= 100 && !Act6Stat.IsRaidActive)
             {
-                Act6Stat.TotalTime = 3600;
+                LoadAct6ScriptedInstance();
+                Act6Stat.TotalTime = 60;
                 Act6Stat.IsZenas = true;
                 Act6Stat.IsRaidActive = true;
             }
             else if (Act6Stat.EreniaPercentage >= 100 && !Act6Stat.IsRaidActive)
             {
-                Act6Stat.TotalTime = 3600;
+                LoadAct6ScriptedInstance();
+                Act6Stat.TotalTime = 60;
                 Act6Stat.IsErenia = true;
                 Act6Stat.IsRaidActive = true;
             }
@@ -1953,6 +1955,48 @@ namespace OpenNos.GameObject
                 families[family.FamilyId] = family;
             });
             FamilyList.AddRange(families.Select(s => s.Value));
+        }
+
+        private void LoadAct6ScriptedInstance()
+        {
+            Raids = new List<ScriptedInstance>();
+            Parallel.ForEach(Mapinstances, map =>
+            {
+                foreach (ScriptedInstanceDTO scriptedInstanceDto in DaoFactory.ScriptedInstanceDao.LoadByMap(map.Value.Map.MapId).ToList())
+                {
+                    ScriptedInstance si = (ScriptedInstance)scriptedInstanceDto;
+                    si.LoadGlobals();
+                    Raids.Add(si);
+                    Portal portal = new Portal
+                    {
+                        Type = (byte)PortalType.Raid,
+                        SourceMapId = si.MapId,
+                        SourceX = si.PositionX,
+                        SourceY = si.PositionY
+                    };
+                    if (Act6Stat.EreniaPercentage >= 100 && portal.SourceMapId == 236)
+                    {
+                        ClientSession s = map.Value.Sessions.FirstOrDefault();
+                        map.Value.Portals.Add(portal);
+                        map.Value.Broadcast(portal.GenerateGp());
+                        Observable.Timer(TimeSpan.FromSeconds(60)).Subscribe(o =>
+                        {
+                            map.Value.Portals.Remove(portal);
+                            map.Value.MapClear();
+                        });
+                    }
+                    if (Act6Stat.ZenasPercentage >= 100 && portal.SourceMapId == 232)
+                    {
+                        map.Value.Portals.Add(portal);
+                        map.Value.Broadcast(portal.GenerateGp());
+                        Observable.Timer(TimeSpan.FromSeconds(60)).Subscribe(o =>
+                        {
+                            map.Value.Portals.Remove(portal);
+                            map.Value.MapClear();
+                        });
+                    }
+                }
+            });
         }
 
         private void LoadScriptedInstances()
