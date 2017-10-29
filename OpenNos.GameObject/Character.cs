@@ -436,7 +436,7 @@ namespace OpenNos.GameObject
         public string GenerateAct6()
         {
             return
-                $"act6 1 0 {ServerManager.Instance.Act6Stat.ZenasPercentage} {Convert.ToByte(ServerManager.Instance.Act6Stat.IsZenas)} 0 0 {ServerManager.Instance.Act6Stat.EreniaPercentage} {Convert.ToByte(ServerManager.Instance.Act6Stat.IsErenia)} 0 0";
+                $"act6 1 0 {ServerManager.Instance.Act6Stat.ZenasPercentage} {Convert.ToByte(ServerManager.Instance.Act6Stat.IsZenas)} {ServerManager.Instance.Act6Stat.CurrentTime} {ServerManager.Instance.Act6Stat.TotalTime} {ServerManager.Instance.Act6Stat.EreniaPercentage} {Convert.ToByte(ServerManager.Instance.Act6Stat.IsErenia)} {ServerManager.Instance.Act6Stat.CurrentTime} {ServerManager.Instance.Act6Stat.TotalTime}";
         }
 
         public string GenerateFc()
@@ -2433,10 +2433,12 @@ namespace OpenNos.GameObject
                     if (ServerManager.Instance.Act6Stat.TotalAngelsKilled > 0 && ServerManager.Instance.Act6Stat.TotalAngelsKilled % 10 == 0)
                     {
                         ServerManager.Instance.Act6Stat.ZenasPercentage++;
+                        ServerManager.Instance.Act6Process();
                     }
                     if (ServerManager.Instance.Act6Stat.TotalDemonsKilled > 0 && ServerManager.Instance.Act6Stat.TotalDemonsKilled % 10 == 0)
                     {
                         ServerManager.Instance.Act6Stat.EreniaPercentage++;
+                        ServerManager.Instance.Act6Process();
                     }
                 }
                 #region item drop

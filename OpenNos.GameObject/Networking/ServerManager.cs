@@ -1710,7 +1710,7 @@ namespace OpenNos.GameObject
         {
             _groups = new ConcurrentDictionary<long, Group>();
 
-            Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(x => { Act6Process(); });
+            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { Act6Process(); });
 
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { Act4Process(); });
 
@@ -1876,15 +1876,35 @@ namespace OpenNos.GameObject
 
         public void Act6Process()
         {
-            if (Act6Stat.ZenasPercentage >= 100 && !Act6Stat.IsZenas)
+            Character c = new Character();
+            Console.WriteLine(Act6Stat.CurrentTime);
+            if (Act6Stat.ZenasPercentage >= 100 && !Act6Stat.IsRaidActive)
             {
                 Act6Stat.TotalTime = 3600;
                 Act6Stat.IsZenas = true;
+                Act6Stat.IsRaidActive = true;
             }
-            else if (Act6Stat.EreniaPercentage >= 100 && !Act6Stat.IsErenia)
+            else if (Act6Stat.EreniaPercentage >= 100 && !Act6Stat.IsRaidActive)
             {
                 Act6Stat.TotalTime = 3600;
                 Act6Stat.IsErenia = true;
+                Act6Stat.IsRaidActive = true;
+            }
+            if (Act6Stat.CurrentTime <= 0)
+            {
+                if (Act6Stat.IsZenas)
+                {
+                    Act6Stat.TotalAngelsKilled = 0;
+                    Act6Stat.ZenasPercentage = 0;
+                    Act6Stat.IsZenas = false;
+                }
+                if (Act6Stat.IsErenia)
+                {
+                    Act6Stat.TotalDemonsKilled = 0;
+                    Act6Stat.EreniaPercentage = 0;
+                    Act6Stat.IsErenia = false;
+                }
+                Act6Stat.IsRaidActive = false;
             }
             Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.Map.MapId >= 228 && s.CurrentMapInstance?.Map.MapId < 238), sess => sess.SendPacket(sess.Character.GenerateAct6()));
         }
