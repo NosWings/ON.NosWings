@@ -1911,9 +1911,13 @@ namespace OpenNos.Handler
 
         public void PetExp(PetExpPacket petExpPacket)
         {
-            var pet = Session?.Character?.Mates?.Where(x => x.IsTeamMember && x.MateType == MateType.Pet).First();
+            Mate pet = Session?.Character?.Mates?.Where(x => x.IsTeamMember && x.MateType == MateType.Pet).First();
+            if (pet == null)
+            {
+                return;
+            }
             pet.Experience = petExpPacket.Amount;
-            Session?.SendPacket(pet?.GenerateScPacket());
+            Session?.SendPacket(pet.GenerateScPacket());
         }
 
         /// <summary>
