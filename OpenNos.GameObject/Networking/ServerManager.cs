@@ -26,7 +26,6 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.Domain;
-using OpenNos.GameObject.CommandPackets;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
 using OpenNos.Master.Library.Client;
@@ -34,7 +33,7 @@ using OpenNos.Master.Library.Data;
 
 namespace OpenNos.GameObject
 {
-    public class ServerManager : BroadcastableBase, IDisposable
+    public class ServerManager : BroadcastableBase
     {
         #region Instantiation
 
@@ -970,7 +969,7 @@ namespace OpenNos.GameObject
 
             OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DaoFactory.ItemDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
             ConcurrentDictionary<short, Item> item = new ConcurrentDictionary<short, Item>();
-            Parallel.ForEach(itemPartitioner, new ParallelOptions {MaxDegreeOfParallelism = 4}, itemDto =>
+            Parallel.ForEach(itemPartitioner, itemDto =>
             {
                 switch (itemDto.ItemType)
                 {
@@ -1179,7 +1178,7 @@ namespace OpenNos.GameObject
                 int monstercount = 0;
                 OrderablePartitioner<MapDTO> mapPartitioner = Partitioner.Create(DaoFactory.MapDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
                 ConcurrentDictionary<short, Map> mapList = new ConcurrentDictionary<short, Map>();
-                Parallel.ForEach(mapPartitioner, new ParallelOptions {MaxDegreeOfParallelism = 8}, map =>
+                Parallel.ForEach(mapPartitioner, map =>
                 {
                     Guid guid = Guid.NewGuid();
                     Map mapinfo = new Map(map.MapId, map.Data)
