@@ -1184,7 +1184,7 @@ namespace OpenNos.GameObject
 
         public string GenerateAct()
         {
-            return "act 6";
+            return "act6";
         }
 
         public string GenerateAt()
