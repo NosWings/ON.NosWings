@@ -1,4 +1,5 @@
 ﻿using OpenNos.Data;
+using OpenNos.Domain;
 using OpenNos.Master.Library.Data;
 
 namespace OpenNos.Master.Library.Interface
@@ -24,5 +25,6 @@ namespace OpenNos.Master.Library.Interface
 
         void KickSession(long? accountId, long? sessionId);
         void SendMail(MailDTO mail);
+        void ChangeAuthority(long accountAccountId, AuthorityType authority);
     }
 }

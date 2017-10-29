@@ -211,6 +211,8 @@
     <Compile Include="AuthorizationServerProvider.cs" />
     <Compile Include="AuthorizeRoleAttribute.cs" />
     <Compile Include="CommunicationService.cs" />
+    <Compile Include="Controllers\AuthorityController.cs" />
+    <Compile Include="Controllers\ControllersParameters\ChangeAuthorityParameter.cs" />
     <Compile Include="Controllers\ControllersParameters\MailPostParameter.cs" />
     <Compile Include="Controllers\MailController.cs" />
     <Compile Include="MSManager.cs" />

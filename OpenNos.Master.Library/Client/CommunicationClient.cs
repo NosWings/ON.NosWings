@@ -2,6 +2,7 @@
 using OpenNos.Master.Library.Interface;
 using System.Threading.Tasks;
 using OpenNos.Data;
+using OpenNos.Domain;
 
 namespace OpenNos.Master.Library.Client
 {
@@ -27,6 +28,10 @@ namespace OpenNos.Master.Library.Client
         public void SendMail(MailDTO mail)
         {
             Task.Run(() => CommunicationServiceClient.Instance.OnSendMail(mail));
+        }
+        public void ChangeAuthority(long accountId, AuthorityType authority)
+        {
+            Task.Run(() => CommunicationServiceClient.Instance.OnAuthorityChange(accountId, authority));
         }
 
         public void SendMessageToCharacter(SCSCharacterMessage message)

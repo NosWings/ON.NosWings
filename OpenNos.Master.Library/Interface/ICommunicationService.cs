@@ -3,6 +3,7 @@ using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
 using OpenNos.Data;
+using OpenNos.Domain;
 
 namespace OpenNos.Master.Library.Interface
 {
@@ -185,5 +186,7 @@ namespace OpenNos.Master.Library.Interface
         bool IsCrossServerLoginPermitted(long accountId, int sessionId);
 
         void SendMail(string worldGroup, MailDTO mail);
+
+        bool ChangeAuthority(string worldGroup, string characterName, AuthorityType authority);
     }
 }

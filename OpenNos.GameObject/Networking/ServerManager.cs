@@ -26,6 +26,7 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.Domain;
+using OpenNos.GameObject.CommandPackets;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
 using OpenNos.Master.Library.Client;
@@ -1719,6 +1720,7 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.SessionKickedEvent += OnSessionKicked;
             CommunicationServiceClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
             CommunicationServiceClient.Instance.MailSent += OnMailSent;
+            CommunicationServiceClient.Instance.AuthorityChange += OnAuthorityChange;
             CommunicationServiceClient.Instance.FamilyRefresh += OnFamilyRefresh;
             CommunicationServiceClient.Instance.RelationRefresh += OnRelationRefresh;
             CommunicationServiceClient.Instance.BazaarRefresh += OnBazaarRefresh;
@@ -2060,6 +2062,22 @@ namespace OpenNos.GameObject
                 }
             }
             InFamilyRefreshMode = false;
+        }
+
+        private void OnAuthorityChange(object sender, EventArgs e)
+        {
+            if (sender == null)
+            {
+                return;
+            }
+            Tuple<long, AuthorityType> args = (Tuple<long, AuthorityType>)sender;
+            ClientSession account = Sessions.FirstOrDefault(s => s.Account.AccountId == args.Item1);
+            if (account == null)
+            {
+                return;
+            }
+            account.Account.Authority = args.Item2;
+            account.SendPacket($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}) You are now {account.Account.Authority.ToString()}");
         }
 
         private void OnMailSent(object sender, EventArgs e)

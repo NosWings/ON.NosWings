@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using OpenNos.Data;
+using OpenNos.Domain;
 
 namespace OpenNos.Master.Library.Client
 {
@@ -60,6 +61,8 @@ namespace OpenNos.Master.Library.Client
 
         public event EventHandler MailSent;
 
+        public event EventHandler AuthorityChange;
+
         public event EventHandler PenaltyLogRefresh;
 
         public event EventHandler RelationRefresh;
@@ -96,6 +99,11 @@ namespace OpenNos.Master.Library.Client
         public void Cleanup()
         {
             _client.ServiceProxy.Cleanup();
+        }
+
+        public bool ChangeAuthority(string worldGroup, string characterName, AuthorityType authority)
+        {
+            return _client.ServiceProxy.ChangeAuthority(worldGroup, characterName, authority);
         }
 
         public bool ConnectAccount(Guid worldId, long accountId, long sessionId)
@@ -279,6 +287,12 @@ namespace OpenNos.Master.Library.Client
         internal void OnSendMail(MailDTO mail)
         {
             MailSent?.Invoke(mail, null);
+        }
+
+        internal void OnAuthorityChange(long accountId, AuthorityType authority)
+        {
+            Tuple<long, AuthorityType> tu = new Tuple<long, AuthorityType>(accountId, authority);
+            AuthorityChange?.Invoke(tu, null);
         }
 
         public void SendMail(string worldGroup, MailDTO mail)
