@@ -239,10 +239,7 @@ namespace OpenNos.GameObject
             {
                 try
                 {
-                    if (!MapInstance.IsSleeping)
-                    {
-                        MonsterLife();
-                    }
+                    MonsterLife();
                 }
                 catch (Exception e)
                 {

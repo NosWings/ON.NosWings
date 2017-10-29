@@ -119,6 +119,10 @@ namespace OpenNos.GameObject
                 }
                 _isSleeping = true;
                 _isSleepingRequest = false;
+                Parallel.ForEach(Monsters, m =>
+                {
+                    m.Life.Dispose();
+                });
                 return true;
             }
             set
@@ -129,6 +133,10 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
+                    Parallel.ForEach(Monsters, m =>
+                    {
+                        m.StartLife();
+                    });
                     _isSleeping = false;
                     _isSleepingRequest = false;
                 }
