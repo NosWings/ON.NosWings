@@ -72,6 +72,10 @@ namespace OpenNos.Data
 
         public bool HpBlocked { get; set; }
 
+        public bool IsPetAutoRelive { get; set; }
+
+        public bool IsPartnerAutoRelive { get; set; }
+
         public byte JobLevel { get; set; }
 
         public long JobLevelXp { get; set; }
