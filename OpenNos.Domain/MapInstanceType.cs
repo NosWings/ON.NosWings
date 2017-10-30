@@ -26,6 +26,7 @@ namespace OpenNos.Domain
         Act4Instance,
         IceBreakerInstance,
         RainbowBattleInstance,
-        ArenaInstance
+        ArenaInstance,
+        PersonalMapInstance
     }
 }

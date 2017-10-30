@@ -245,8 +245,8 @@ namespace OpenNos.GameObject
                             team.ToList().Where(s => s.LastSummoned != null).ToList().ForEach(s =>
                             {
                                 s.LastSummoned = null;
-                                s.Session.Character.PositionX = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short) 120 : (short) 19;
-                                s.Session.Character.PositionY = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short) 39 : (short) 40;
+                                s.Session.Character.PositionX = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
+                                s.Session.Character.PositionY = s.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
                                 session.CurrentMapInstance.Broadcast(s.Session.Character.GenerateTp());
                                 s.Session.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
                             });
