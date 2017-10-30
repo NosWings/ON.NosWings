@@ -121,7 +121,6 @@ namespace OpenNos.GameObject.Event
                 level = s.Character.Level;
             }
             ServerManager.Instance.Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.Character.IsWaitingForEvent = false);
-            long maxGold = ServerManager.Instance.MaxGold;
             foreach (Tuple<MapInstance, byte> mapinstance in maps)
             {
                 ServerManager.Instance.StartedEvents.Remove(EventType.INSTANTBATTLE);
