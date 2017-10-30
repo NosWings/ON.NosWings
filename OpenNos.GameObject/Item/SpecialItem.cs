@@ -227,7 +227,17 @@ namespace OpenNos.GameObject
                     if (raid != null)
                     {
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
-                        Group group = new Group(GroupType.Team);
+                        GroupType groupType = GroupType.Team;
+                        if (raidSeal.Item.EffectValue == 20)
+                        {
+                            groupType = GroupType.GiantTeam;
+                        }
+                        else if (raidSeal.Item.EffectValue == 23)
+                        {
+                            groupType = GroupType.BigTeam;
+                        }
+
+                        Group group = new Group(groupType);
                         group.Raid = raid;
                         group.JoinGroup(session.Character.CharacterId);
                         ServerManager.Instance.AddGroup(group);
