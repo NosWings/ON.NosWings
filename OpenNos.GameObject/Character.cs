@@ -2738,7 +2738,7 @@ namespace OpenNos.GameObject
                 foreach (Mate mate in mates.Where(s => s.IsTeamMember).OrderBy(s => s.MateType))
                 {
                     i++;
-                    str += $" 2|{mate.MateTransportId}|{(int)mate.MateType}|{mate.Level}|{(mate.IsUsingSp && mate.SpInstance != null ? "SP_NAME" : mate.Name.Replace(' ', '^'))}|-1|{(mate.IsUsingSp && mate.SpInstance != null ? mate.SpInstance.Item.Morph : mate.Monster.NpcMonsterVNum)}|0";
+                    str += $" 2|{mate.MateTransportId}|{(int)mate.MateType}|{mate.Level}|{mate.Name.Replace(' ', '^')}|-1|{(mate.IsUsingSp && mate.SpInstance != null ? mate.SpInstance.Item.Morph : mate.Monster.NpcMonsterVNum)}|0";
                 }
             }
             if (grp == null)
