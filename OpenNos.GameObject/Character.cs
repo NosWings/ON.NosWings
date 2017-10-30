@@ -3806,7 +3806,9 @@ namespace OpenNos.GameObject
                 + (BuffBlocked ? Math.Pow(2, (int)CharacterOption.BuffBlocked - 1) : 0)
                 + (GroupRequestBlocked ? Math.Pow(2, (int)CharacterOption.GroupRequestBlocked - 1) : 0)
                 + (HeroChatBlocked ? Math.Pow(2, (int)CharacterOption.HeroChatBlocked - 1) : 0)
-                + (QuickGetUp ? Math.Pow(2, (int)CharacterOption.QuickGetUp - 1) : 0);
+                + (QuickGetUp ? Math.Pow(2, (int)CharacterOption.QuickGetUp - 1) : 0)
+                + (!IsPetAutoRelive ? 64 : 0)
+                + (!IsPartnerAutoRelive ? 128 : 0);
             return $"stat {Hp} {HpLoad()} {Mp} {MpLoad()} 0 {option}";
         }
 
