@@ -120,7 +120,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.SendPacket("pdelay 5000 3 #psl^1 ");
+                    Session.SendPacket("delay 5000 3 #psl^1 ");
                     Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 2, mate.MateTransportId), mate.PositionX, mate.PositionY);
                 }
             }
