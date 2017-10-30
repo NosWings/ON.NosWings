@@ -194,6 +194,8 @@ namespace OpenNos.GameObject
 
         public Act4Stat Act4DemonStat { get; set; }
 
+        public Act6Stats Act6Stat { get; set; }
+
         public DateTime Act4RaidStart { get; set; }
 
         public int AccountLimit { get; set; }
@@ -590,9 +592,12 @@ namespace OpenNos.GameObject
                     s.PositionY = (short) (session.Character.PositionY + 1);
                     session.SendPacket(s.GenerateIn());
                 });
+                session.SendPacket(
+                    session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short) MapTypeEnum.Act61)
+                        ? session.Character.GenerateAct6()
+                        : session.Character.GenerateAct());
                 session.SendPacket(session.Character.GeneratePinit());
                 session.Character.Mates.ForEach(s => session.SendPacket(s.GenerateScPacket()));
-                session.SendPacket(session.Character.GenerateAct());
                 session.SendPacket(session.Character.GenerateScpStc());
                 if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
                 {
@@ -961,6 +966,7 @@ namespace OpenNos.GameObject
             Act4RaidStart = DateTime.Now;
             Act4AngelStat = new Act4Stat();
             Act4DemonStat = new Act4Stat();
+            Act6Stat = new Act6Stats();
 
             OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DaoFactory.ItemDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
             ConcurrentDictionary<short, Item> item = new ConcurrentDictionary<short, Item>();
@@ -1697,6 +1703,8 @@ namespace OpenNos.GameObject
         {
             _groups = new ConcurrentDictionary<long, Group>();
 
+            Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(x => { Act6Process(); });
+
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { Act4Process(); });
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { Act4ShipProcess(); });
@@ -1855,6 +1863,41 @@ namespace OpenNos.GameObject
             Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance), sess => sess.SendPacket(sess.Character.GenerateFc()));
         }
 
+        public void Act6Process()
+        {
+            if (Act6Stat.ZenasPercentage >= 100 && !Act6Stat.IsRaidActive)
+            {
+                LoadAct6ScriptedInstance();
+                Act6Stat.TotalTime = 3600;
+                Act6Stat.IsZenas = true;
+                Act6Stat.IsRaidActive = true;
+            }
+            else if (Act6Stat.EreniaPercentage >= 100 && !Act6Stat.IsRaidActive)
+            {
+                LoadAct6ScriptedInstance();
+                Act6Stat.TotalTime = 3600;
+                Act6Stat.IsErenia = true;
+                Act6Stat.IsRaidActive = true;
+            }
+            if (Act6Stat.CurrentTime <= 0)
+            {
+                if (Act6Stat.IsZenas)
+                {
+                    Act6Stat.TotalAngelsKilled = 0;
+                    Act6Stat.ZenasPercentage = 0;
+                    Act6Stat.IsZenas = false;
+                }
+                if (Act6Stat.IsErenia)
+                {
+                    Act6Stat.TotalDemonsKilled = 0;
+                    Act6Stat.EreniaPercentage = 0;
+                    Act6Stat.IsErenia = false;
+                }
+                Act6Stat.IsRaidActive = false;
+            }
+            Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.Map.MapId >= 228 && s.CurrentMapInstance?.Map.MapId < 238), sess => sess.SendPacket(sess.Character.GenerateAct6()));
+        }
+
         private void LoadBazaar()
         {
             BazaarList = new List<BazaarItemLink>();
@@ -1902,6 +1945,48 @@ namespace OpenNos.GameObject
                 families[family.FamilyId] = family;
             });
             FamilyList.AddRange(families.Select(s => s.Value));
+        }
+
+        private void LoadAct6ScriptedInstance()
+        {
+            Raids = new List<ScriptedInstance>();
+            Parallel.ForEach(Mapinstances, map =>
+            {
+                foreach (ScriptedInstanceDTO scriptedInstanceDto in DaoFactory.ScriptedInstanceDao.LoadByMap(map.Value.Map.MapId).ToList())
+                {
+                    ScriptedInstance si = (ScriptedInstance)scriptedInstanceDto;
+                    si.LoadGlobals();
+                    Raids.Add(si);
+                    Portal portal = new Portal
+                    {
+                        Type = (byte)PortalType.Raid,
+                        SourceMapId = si.MapId,
+                        SourceX = si.PositionX,
+                        SourceY = si.PositionY
+                    };
+                    if (Act6Stat.EreniaPercentage >= 100 && portal.SourceMapId == 236)
+                    {
+                        ClientSession s = map.Value.Sessions.FirstOrDefault();
+                        map.Value.Portals.Add(portal);
+                        map.Value.Broadcast(portal.GenerateGp());
+                        Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o =>
+                        {
+                            map.Value.Portals.Remove(portal);
+                            map.Value.MapClear();
+                        });
+                    }
+                    if (Act6Stat.ZenasPercentage >= 100 && portal.SourceMapId == 232)
+                    {
+                        map.Value.Portals.Add(portal);
+                        map.Value.Broadcast(portal.GenerateGp());
+                        Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o =>
+                        {
+                            map.Value.Portals.Remove(portal);
+                            map.Value.MapClear();
+                        });
+                    }
+                }
+            });
         }
 
         private void LoadScriptedInstances()

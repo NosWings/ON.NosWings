@@ -30,7 +30,8 @@ namespace OpenNos.GameObject
 
         private const short DefaultBackpackSize = 48;
 
-        private readonly Dictionary<AuthorityType, byte> _maxItemAmounts = new Dictionary<AuthorityType, byte>
+        private static readonly Dictionary<AuthorityType, byte> _maxItemAmounts =
+        new Dictionary<AuthorityType, byte>
         {
             {AuthorityType.User, 99},
             {AuthorityType.Vip, 125},
@@ -72,7 +73,7 @@ namespace OpenNos.GameObject
 
         public static ItemInstance InstantiateItemInstance(short vnum, long ownerId, byte amount = 1, sbyte rare = 0)
         {
-            ItemInstance newItem = new ItemInstance {ItemVNum = vnum, Amount = amount, CharacterId = ownerId, Rare = rare};
+            ItemInstance newItem = new ItemInstance { ItemVNum = vnum, Amount = amount, CharacterId = ownerId, Rare = rare };
             if (newItem.Item != null)
             {
                 switch (newItem.Item.Type)
@@ -83,10 +84,10 @@ namespace OpenNos.GameObject
 
                     case InventoryType.Equipment:
                         newItem = newItem.Item.ItemType == ItemType.Specialist
-                            ? new SpecialistInstance {ItemVNum = vnum, SpLevel = 1, Amount = amount}
+                            ? new SpecialistInstance { ItemVNum = vnum, SpLevel = 1, Amount = amount }
                             : newItem.Item.ItemType == ItemType.Box
-                                ? new BoxInstance {ItemVNum = vnum, Amount = amount}
-                                : new WearableInstance {ItemVNum = vnum, Amount = amount, DurabilityPoint = newItem.Item.Effect != 790 ? newItem.Item.EffectValue : 0};
+                                ? new BoxInstance { ItemVNum = vnum, Amount = amount }
+                                : new WearableInstance { ItemVNum = vnum, Amount = amount, DurabilityPoint = newItem.Item.Effect != 790 ? newItem.Item.EffectValue : 0 };
                         break;
                 }
             }
@@ -174,7 +175,7 @@ namespace OpenNos.GameObject
             }
             ItemInstance newItem = InstantiateItemInstance(vnum, Owner.CharacterId, amount);
             newItem.Rare = rare;
-            newItem.Upgrade = (byte) upgrade;
+            newItem.Upgrade = (byte)upgrade;
             newItem.Design = design;
             if (newItem.Rare != 0 && newItem is WearableInstance wearable)
             {
@@ -196,6 +197,12 @@ namespace OpenNos.GameObject
             {
                 newItem.Type = type.Value;
             }
+            
+
+            if (!_maxItemAmounts.TryGetValue(Owner.Session?.Account?.Authority ?? AuthorityType.User, out byte maxAmount))
+            {
+                maxAmount = 99;
+            }
 
             // check if item can be stapled
             if (newItem.Type != InventoryType.Bazaar && (newItem.Item.Type == InventoryType.Etc || newItem.Item.Type == InventoryType.Main))
@@ -204,18 +211,18 @@ namespace OpenNos.GameObject
                     i.Type != InventoryType.Bazaar && i.Type != InventoryType.PetWarehouse &&
                     i.Type != InventoryType.Warehouse && i.Type != InventoryType.FamilyWareHouse &&
                     i.ItemVNum.Equals(newItem.ItemVNum) &&
-                    i.Amount < _maxItemAmounts[Owner.Session.Account.Authority]);
+                    i.Amount < maxAmount);
                 int freeslot = DefaultBackpackSize + (Owner.HaveBackpack() ? 1 : 0) * 12 - this.Count(s => s.Value.Type == newItem.Type);
                 IEnumerable<ItemInstance> itemInstances = slotNotFull as IList<ItemInstance> ?? slotNotFull.ToList();
-                if (newItem.Amount <= freeslot * _maxItemAmounts[Owner.Session.Account.Authority] + itemInstances.Sum(s => _maxItemAmounts[Owner.Session.Account.Authority] - s.Amount))
+                if (newItem.Amount <= freeslot * maxAmount + itemInstances.Sum(s => maxAmount - s.Amount))
                 {
                     foreach (ItemInstance slot in itemInstances)
                     {
                         int max = slot.Amount + newItem.Amount;
-                        max = max > _maxItemAmounts[Owner.Session.Account.Authority] ? _maxItemAmounts[Owner.Session.Account.Authority] : max;
-                        newItem.Amount = (byte) (slot.Amount + newItem.Amount - max);
+                        max = max > maxAmount ? maxAmount : max;
+                        newItem.Amount = (byte)(slot.Amount + newItem.Amount - max);
                         newItem.Amount = newItem.Amount;
-                        slot.Amount = (byte) max;
+                        slot.Amount = (byte)max;
                         invlist.Add(slot);
                         Owner.Session?.SendPacket(slot.GenerateInventoryAdd());
                     }
@@ -227,8 +234,8 @@ namespace OpenNos.GameObject
             }
             // create new item
             short? freeSlot = newItem.Type == InventoryType.Wear
-                ? (LoadBySlotAndType((short) newItem.Item.EquipmentSlot, InventoryType.Wear) == null
-                    ? (short?) newItem.Item.EquipmentSlot
+                ? (LoadBySlotAndType((short)newItem.Item.EquipmentSlot, InventoryType.Wear) == null
+                    ? (short?)newItem.Item.EquipmentSlot
                     : null)
                 : GetFreeSlot(newItem.Type, Owner.HaveBackpack() ? 1 : 0);
             if (!freeSlot.HasValue)
@@ -372,9 +379,16 @@ namespace OpenNos.GameObject
                 }
 
                 int amount = itemgroup.Sum(s => s.Amount);
-                int rest = amount % (type == InventoryType.Equipment ? 1 : _maxItemAmounts[Owner.Session.Account.Authority]);
-                bool needanotherslot = listitem.Where(s => s.ItemVNum == itemgroup.Key).Sum(s => _maxItemAmounts[Owner.Session.Account.Authority] - s.Amount) <= rest;
-                place[itemgroup.FirstOrDefault().Type] -= amount / (type == InventoryType.Equipment ? 1 : _maxItemAmounts[Owner.Session.Account.Authority]) + (needanotherslot ? 1 : 0);
+
+
+                if (!_maxItemAmounts.TryGetValue(Owner.Session?.Account?.Authority ?? AuthorityType.User, out byte maxAmount))
+                {
+                    maxAmount = 99;
+                }
+
+                int rest = amount % (type == InventoryType.Equipment ? 1 : maxAmount);
+                bool needanotherslot = listitem.Where(s => s.ItemVNum == itemgroup.Key).Sum(s => maxAmount - s.Amount) <= rest;
+                place[itemgroup.FirstOrDefault().Type] -= amount / (type == InventoryType.Equipment ? 1 : maxAmount) + (needanotherslot ? 1 : 0);
 
                 if (place[itemgroup.FirstOrDefault().Type] < 0)
                 {
@@ -418,7 +432,7 @@ namespace OpenNos.GameObject
 
         public T LoadByItemInstance<T>(Guid id) where T : ItemInstance
         {
-            return (T) this[id];
+            return (T)this[id];
         }
 
         public T LoadBySlotAndType<T>(short slot, InventoryType type) where T : ItemInstance
@@ -426,7 +440,7 @@ namespace OpenNos.GameObject
             T retItem = null;
             try
             {
-                retItem = (T) this.Select(s => s.Value).SingleOrDefault(i => i != null && i.GetType() == typeof(T) && i.Slot == slot && i.Type == type);
+                retItem = (T)this.Select(s => s.Value).SingleOrDefault(i => i != null && i.GetType() == typeof(T) && i.Slot == slot && i.Type == type);
             }
             catch (InvalidOperationException ioEx)
             {
@@ -436,7 +450,7 @@ namespace OpenNos.GameObject
                 {
                     if (isFirstItem)
                     {
-                        retItem = (T) item;
+                        retItem = (T)item;
                         isFirstItem = false;
                         continue;
                     }
@@ -531,9 +545,9 @@ namespace OpenNos.GameObject
                     case InventoryType.SecondPartnerInventory:
                     case InventoryType.ThirdPartnerInventory:
                     case InventoryType.Wear:
-                        nextFreeSlot = LoadBySlotAndType((short) sourceInstance.Item.EquipmentSlot, targetType) == null
-                            ? (short) sourceInstance.Item.EquipmentSlot
-                            : (short) -1;
+                        nextFreeSlot = LoadBySlotAndType((short)sourceInstance.Item.EquipmentSlot, targetType) == null
+                            ? (short)sourceInstance.Item.EquipmentSlot
+                            : (short)-1;
                         break;
 
                     default:
@@ -584,13 +598,17 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    if (destinationInventory.ItemVNum == sourceInventory.ItemVNum && (byte) sourceInventory.Item.Type != 0)
+                    if (!_maxItemAmounts.TryGetValue(Owner.Session?.Account?.Authority ?? AuthorityType.User, out byte maxAmount))
                     {
-                        if (destinationInventory.Amount + amount > _maxItemAmounts[Owner.Session.Account.Authority])
+                        maxAmount = 99;
+                    }
+                    if (destinationInventory.ItemVNum == sourceInventory.ItemVNum && (byte)sourceInventory.Item.Type != 0)
+                    {
+                        if (destinationInventory.Amount + amount > maxAmount)
                         {
                             int saveItemCount = destinationInventory.Amount;
-                            destinationInventory.Amount = _maxItemAmounts[Owner.Session.Account.Authority];
-                            sourceInventory.Amount = (byte) (saveItemCount + sourceInventory.Amount - _maxItemAmounts[Owner.Session.Account.Authority]);
+                            destinationInventory.Amount = maxAmount;
+                            sourceInventory.Amount = (byte)(saveItemCount + sourceInventory.Amount - maxAmount);
                         }
                         else
                         {
@@ -647,7 +665,7 @@ namespace OpenNos.GameObject
                     if (inventory.Amount > remainingAmount)
                     {
                         // amount completely removed
-                        inventory.Amount -= (byte) remainingAmount;
+                        inventory.Amount -= (byte)remainingAmount;
                         remainingAmount = 0;
                         Owner.Session.SendPacket(inventory.GenerateInventoryAdd());
                     }
@@ -784,12 +802,12 @@ namespace OpenNos.GameObject
 
         private short? GetFreeSlot(InventoryType type, int backPack)
         {
-            IEnumerable<int> itemInstanceSlotsByType = this.Select(s => s.Value).Where(i => i.Type == type).OrderBy(i => i.Slot).Select(i => (int) i.Slot);
+            IEnumerable<int> itemInstanceSlotsByType = this.Select(s => s.Value).Where(i => i.Type == type).OrderBy(i => i.Slot).Select(i => (int)i.Slot);
             IEnumerable<int> instanceSlotsByType = itemInstanceSlotsByType as int[] ?? itemInstanceSlotsByType.ToArray();
             int nextFreeSlot = instanceSlotsByType.Any()
                 ? Enumerable.Range(0, (type != InventoryType.Miniland ? DefaultBackpackSize + backPack * 12 : 50) + 1).Except(instanceSlotsByType).FirstOrDefault()
                 : 0;
-            return (short?) nextFreeSlot < (type != InventoryType.Miniland ? DefaultBackpackSize + backPack * 12 : 50) ? (short?) nextFreeSlot : null;
+            return (short?)nextFreeSlot < (type != InventoryType.Miniland ? DefaultBackpackSize + backPack * 12 : 50) ? (short?)nextFreeSlot : null;
         }
 
         /// <summary>

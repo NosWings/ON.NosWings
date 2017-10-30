@@ -433,6 +433,12 @@ namespace OpenNos.GameObject
 
         #region Methods
 
+        public string GenerateAct6()
+        {
+            return
+                $"act6 1 0 {ServerManager.Instance.Act6Stat.ZenasPercentage} {Convert.ToByte(ServerManager.Instance.Act6Stat.IsZenas)} {ServerManager.Instance.Act6Stat.CurrentTime} {ServerManager.Instance.Act6Stat.TotalTime} {ServerManager.Instance.Act6Stat.EreniaPercentage} {Convert.ToByte(ServerManager.Instance.Act6Stat.IsErenia)} {ServerManager.Instance.Act6Stat.CurrentTime} {ServerManager.Instance.Act6Stat.TotalTime}";
+        }
+
         public string GenerateFc()
         {
             return $"fc {(byte)Faction} {ServerManager.Instance.Act4AngelStat.MinutesUntilReset} {ServerManager.Instance.Act4AngelStat.Percentage / 100} {ServerManager.Instance.Act4AngelStat.Mode}" +
@@ -2413,7 +2419,28 @@ namespace OpenNos.GameObject
                     // NOSVILLE DISABLE DROPS
                     return;
                 }
-
+                //Quand on me dit "Maintenant OpenNos, c'est du bricolage"
+                if (!ServerManager.Instance.Act6Stat.IsZenas && !ServerManager.Instance.Act6Stat.IsErenia)
+                {
+                    if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232)
+                    {
+                        ServerManager.Instance.Act6Stat.TotalAngelsKilled++;
+                    }
+                    if (monsterToAttack.MapInstance.Map.MapId >= 233 && monsterToAttack.MapInstance.Map.MapId <= 236)
+                    {
+                        ServerManager.Instance.Act6Stat.TotalDemonsKilled++;
+                    }
+                    if (ServerManager.Instance.Act6Stat.TotalAngelsKilled > 0 && ServerManager.Instance.Act6Stat.TotalAngelsKilled % 10 == 0)
+                    {
+                        ServerManager.Instance.Act6Stat.ZenasPercentage++;
+                        ServerManager.Instance.Act6Process();
+                    }
+                    if (ServerManager.Instance.Act6Stat.TotalDemonsKilled > 0 && ServerManager.Instance.Act6Stat.TotalDemonsKilled % 10 == 0)
+                    {
+                        ServerManager.Instance.Act6Stat.EreniaPercentage++;
+                        ServerManager.Instance.Act6Process();
+                    }
+                }
                 #region item drop
 
                 int dropRate = ServerManager.Instance.DropRate * MapInstance.DropRate;
@@ -3098,7 +3125,7 @@ namespace OpenNos.GameObject
 
             #region Base Damage
 
-            int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg, mainMaxDmg + 1);
+            int baseDamage = ServerManager.Instance.RandomNumber(mainMinDmg > mainMaxDmg ? mainMaxDmg : mainMinDmg, mainMaxDmg + 1);
             baseDamage += morale - enemymoral;
 
             switch (mainUpgrade)
@@ -3106,7 +3133,6 @@ namespace OpenNos.GameObject
                 case -10:
                     enemydefense += enemydefense * 2;
                     break;
-
                 case -9:
                     enemydefense += (int)(enemydefense * 1.2);
                     break;
