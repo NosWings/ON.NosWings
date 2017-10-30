@@ -134,12 +134,12 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
+                    _isSleeping = false;
+                    _isSleepingRequest = false;
                     Parallel.ForEach(Monsters, m =>
                     {
                         m.StartLife();
                     });
-                    _isSleeping = false;
-                    _isSleepingRequest = false;
                 }
             }
         }
