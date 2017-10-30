@@ -259,7 +259,7 @@ namespace OpenNos.GameObject
                                                 int capturerate = ((character.Level / monster.Monster.Level) / (monster.CurrentHp / monster.Monster.MaxHP) * 3);
                                                 if (ServerManager.Instance.RandomNumber() <= capturerate)
                                                 {
-                                                    Mate currentmate = character.Mates.FirstOrDefault(m => m.IsTeamMember == true);
+                                                    Mate currentmate = character.Mates.FirstOrDefault(m => m.IsTeamMember);
                                                     if (currentmate != null)
                                                     {
                                                         currentmate.IsTeamMember = false;
