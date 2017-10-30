@@ -256,18 +256,48 @@ namespace OpenNos.GameObject
                     break;
 
                 case 305:
-                    if (packetsplit == null || packetsplit.Length < 3)
+                    Mate partner = session.Character.Mates
+                            .FirstOrDefault(x => x.IsTeamMember && (x.NpcMonsterVNum == 317 || x.NpcMonsterVNum == 318 || x.NpcMonsterVNum == 319) && x.MateType == MateType.Partner);
+                    if (partner == null)
                     {
                         return;
                     }
-                    Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == int.Parse(packetsplit[3]));
-                    if (mate != null && EffectValue == mate.NpcMonsterVNum && mate.Skin == 0)
+                    switch (partner.NpcMonsterVNum)
                     {
-                        mate.Skin = Morph;
-                        session.SendPacket(mate.GenerateCMode(mate.Skin));
-                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                        case 317:
+                            if (inv.Item.VNum == 1103 && partner.Skin != inv.Item.Morph)
+                            {
+                                partner.Skin = inv.Item.Morph;
+                            }
+                            else
+                            {
+                                return;
+                            }
+                            break;
+                        case 318:
+                            if (inv.Item.VNum == 1141 && partner.Skin != inv.Item.Morph)
+                            {
+                                partner.Skin = inv.Item.Morph;
+                            }
+                            else
+                            {
+                                return;
+                            }
+                            break;
+                        case 319:
+                            if (inv.Item.VNum == 1142 && partner.Skin != inv.Item.Morph)
+                            {
+                                partner.Skin = inv.Item.Morph;
+                            }
+                            else
+                            {
+                                return;
+                            }
+                            break;
                     }
-                    break;
+                    session.Character?.Inventory?.RemoveItemAmountFromInventory(1, inv.Id);
+                    session.CurrentMapInstance?.Broadcast(partner.GenerateCMode(partner.Skin));
+                    break; 
 
                 //speed booster
                 case 998:
