@@ -1939,7 +1939,6 @@ namespace OpenNos.GameObject
                         family.Warehouse[inventory.Id] = (ItemInstance) inventory;
                     }
                 }
-                family.LandOfDeath = Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
                 family.FamilyLogs = DaoFactory.FamilyLogDao.LoadByFamilyId(family.FamilyId).ToList();
                 families[family.FamilyId] = family;
             });

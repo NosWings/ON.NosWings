@@ -39,11 +39,7 @@ namespace OpenNos.GameObject
 
         public List<FamilyLogDTO> FamilyLogs { get; set; }
 
-        public MapInstance LandOfDeath
-        {
-            get { return LandOfDeath ?? (LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag())); }
-            set { LandOfDeath = value; }
-        }
+        public MapInstance LandOfDeath { get; set; }
 
         public Act4RaidType Act4RaidType { get; set; }
 

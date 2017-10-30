@@ -317,8 +317,8 @@ namespace OpenNos.GameObject
         /// <summary>
         /// Follow the Monsters target to it's position.
         /// </summary>
-        /// <param name="targetSession">The TargetSession to follow</param>
         private void FollowTarget(ClientSession targetSession)
+        /// <param name="targetSession">The TargetSession to follow</param>
         {
             if (targetSession == null)
             {

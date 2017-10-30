@@ -400,14 +400,11 @@ namespace OpenNos.GameObject
                     {
                         if (session.Character.Family != null)
                         {
-                            if (session.Character.Family.LandOfDeath != null && npc.EffectActivated)
+                            if (session.Character.Family.LandOfDeath == null)
                             {
-                                ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
+                                session.Character.Family.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
                             }
-                            else
-                            {
-                                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOD_CLOSED"), 0));
-                            }
+                            ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
                         }
                         else
                         {
