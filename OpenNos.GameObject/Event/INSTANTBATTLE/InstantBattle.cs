@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject.Event
 {
@@ -32,10 +33,11 @@ namespace OpenNos.GameObject.Event
 
         private static void GetRewards(MapInstance mapInstance)
         {
+            _endCheck.Dispose();
             EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(0),
                 new EventContainer(mapInstance, EventActionType.SPAWNPORTAL, new Portal {SourceX = 47, SourceY = 33, DestinationMapId = 1}));
             mapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
-            foreach (ClientSession cli in mapInstance.Sessions.Where(s => s.Character != null).ToList())
+            Parallel.ForEach(mapInstance.Sessions.Where(s => s.Character != null), cli =>
             {
                 cli.Character.GetReput(cli.Character.Level * 50);
                 cli.Character.GetGold(cli.Character.Level * 1000);
@@ -44,8 +46,7 @@ namespace OpenNos.GameObject.Event
                 cli.SendPacket(cli.Character.GenerateSpPoint());
                 cli.SendPacket(cli.Character.GenerateGold());
                 cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_SP_POINT"), cli.Character.Level * 100), 10));
-            }
-            _endCheck.Dispose();
+            });
         }
 
         public static void GenerateInstantBattle(bool useTimer = true)
