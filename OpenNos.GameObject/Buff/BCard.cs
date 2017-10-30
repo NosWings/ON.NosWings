@@ -245,7 +245,7 @@ namespace OpenNos.GameObject
                         {
                             MapMonster monster = session as MapMonster;
                             Character character = caster as Character;
-                            if (monster != null && character != null)
+                            if (monster != null)
                             {
                                 if (monster.Monster.RaceType == 1 && (character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || character.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
                                 {
