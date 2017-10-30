@@ -256,33 +256,27 @@ namespace OpenNos.GameObject
                                             if (character.MaxMateCount > character.Mates.Count())
                                             {
                                                 // Algo  
-                                                int capturerate = ((character.Level / monster.Monster.Level) / (monster.CurrentHp / monster.Monster.MaxHP) * 3);
+                                                int capturerate = 100 - (monster.CurrentHp / monster.Monster.MaxHP + 1) / 2;
                                                 if (ServerManager.Instance.RandomNumber() <= capturerate)
                                                 {
-                                                    Mate currentmate = character.Mates.FirstOrDefault(m => m.IsTeamMember);
-                                                    if (currentmate != null)
-                                                    {
-                                                        currentmate.IsTeamMember = false;
-                                                        character.Session.CurrentMapInstance.Broadcast(currentmate.GenerateOut());
-                                                    }
+                                                    Mate currentmate = character.Mates?.FirstOrDefault(m => m.IsTeamMember && m.MateType == MateType.Pet);
                                                     monster.MapInstance.DespawnMonster(monster);
                                                     NpcMonster mateNpc = ServerManager.Instance.GetNpc(monster.Monster.NpcMonsterVNum);
-                                                    byte lvl = 0;
-                                                    lvl += monster.Monster.Level;
-                                                    lvl -= 15;
-                                                    if (lvl <= 0)
-                                                    {
-                                                        lvl = 1;
-                                                    }
-                                                    Mate mate = new Mate(character, mateNpc, lvl, MateType.Pet);
+                                                    Mate mate = new Mate(character, mateNpc, 1, MateType.Pet);
                                                     character.Mates.Add(mate);
-                                                    mate.IsTeamMember = true;
-                                                    character.Session.SendPacket($"ctl 2 {mate.PetId} 3");
-                                                    character.MapInstance.Broadcast(mate.GenerateIn());
+                                                    if (currentmate == null)
+                                                    {
+                                                        mate.IsTeamMember = true;
+                                                        character.Session.SendPacket($"ctl 2 {mate.PetId} 3");
+                                                        character.MapInstance.Broadcast(mate.GenerateIn());
+                                                    }
+                                                    else
+                                                    {
+                                                        MapCell pos = character.Miniland.Map.GetRandomPosition();
+                                                        mate.PositionX = pos.X;
+                                                        mate.PositionY = pos.Y;
+                                                    }
                                                     character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 0));
-                                                    character.Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
-                                                    character.Session.SendPackets(character.GenerateScP());
-                                                    character.Session.SendPackets(character.GenerateScN());
                                                     character.Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                                                     character.Session.SendPackets(character.GenerateScP());
                                                     character.Session.SendPackets(character.GenerateScN());
