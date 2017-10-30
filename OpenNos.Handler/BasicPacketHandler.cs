@@ -83,6 +83,16 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.GroupRequestBlocked ? "GROUP_REQ_BLOCKED" : "GROUP_REQ_UNLOCKED"), 0));
                     break;
 
+                case CharacterOption.PetAutoRelive:
+                    Session.Character.IsPetAutoRelive = characterOptionPacket.IsActive;
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.IsPetAutoRelive ? "PET_AUTO_RELIVE_ENABLED" : "PET_AUTO_RELIVE_DISABLED"), 0));
+                    break;
+
+                case CharacterOption.PartnerAutoRelive:
+                    Session.Character.IsPartnerAutoRelive = characterOptionPacket.IsActive;
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.IsPartnerAutoRelive ? "PARTNER_AUTO_RELIVE_ENABLED" : "PARTNER_AUTO_RELIVE_DISABLED"), 0));
+                    break;
+
                 case CharacterOption.HeroChatBlocked:
                     Session.Character.HeroChatBlocked = characterOptionPacket.IsActive;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.HeroChatBlocked ? "HERO_CHAT_BLOCKED" : "HERO_CHAT_UNLOCKED"), 0));
