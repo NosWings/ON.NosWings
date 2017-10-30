@@ -437,11 +437,15 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), session.Character.Name)));
 
                             session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
-                            session.Character.Group?.Characters.ToList().ForEach(player =>
+                            if (session.Character.Group.Characters != null)
                             {
-                                player.SendPacket(player.Character.Group.GeneraterRaidmbf(player.CurrentMapInstance));
-                                player.SendPacket(player.Character.Group.GenerateRdlst());
-                            });
+                                foreach (ClientSession player in session.Character.Group?.Characters)
+                                {
+
+                                    player?.SendPacket(player?.Character?.Group?.GeneraterRaidmbf(player?.CurrentMapInstance));
+                                    player?.SendPacket(player?.Character?.Group?.GenerateRdlst());
+                                }
+                            }
                             Task.Factory.StartNew(async () =>
                             {
                                 await Task.Delay(20000);
