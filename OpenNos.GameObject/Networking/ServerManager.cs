@@ -588,8 +588,8 @@ namespace OpenNos.GameObject
                 session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
                 {
                     s.PositionX = (short) (session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
-                    s.PositionY = (short) (session.Character.PositionY + 1);
                     session.SendPacket(s.GenerateIn());
+                    s.PositionY = (short) (session.Character.PositionY + 1);
                 });
                 session.SendPacket(
                     session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short) MapTypeEnum.Act61)
