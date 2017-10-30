@@ -2977,6 +2977,24 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string PARTNER_AUTO_RELIVE_DISABLED {
+            get {
+                return ResourceManager.GetString("PARTNER_AUTO_RELIVE_DISABLED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string PARTNER_AUTO_RELIVE_ENABLED {
+            get {
+                return ResourceManager.GetString("PARTNER_AUTO_RELIVE_ENABLED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attack.
         /// </summary>
         internal static string PERFECTSP_ATTACK {
@@ -3063,6 +3081,24 @@ namespace OpenNos.World.Resource {
         internal static string PERFECTSP_WATER {
             get {
                 return ResourceManager.GetString("PERFECTSP_WATER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string PET_AUTO_RELIVE_DISABLED {
+            get {
+                return ResourceManager.GetString("PET_AUTO_RELIVE_DISABLED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string PET_AUTO_RELIVE_ENABLED {
+            get {
+                return ResourceManager.GetString("PET_AUTO_RELIVE_ENABLED", resourceCulture);
             }
         }
         
