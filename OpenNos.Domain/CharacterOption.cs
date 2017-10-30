@@ -21,6 +21,8 @@ namespace OpenNos.Domain
         FamilyRequestBlocked = 3,
         WhisperBlocked = 4,
         GroupRequestBlocked = 5,
+        PetAutoRelive = 6,
+        PartnerAutoRelive = 7,
         GroupSharing = 8,
         MouseAimLock = 9,
         HeroChatBlocked = 10,
