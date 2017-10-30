@@ -228,13 +228,14 @@ namespace OpenNos.GameObject
                     {
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
                         GroupType groupType = GroupType.Team;
-                        if (raidSeal.Item.EffectValue == 20)
+                        switch (raidSeal.Item.EffectValue)
                         {
-                            groupType = GroupType.GiantTeam;
-                        }
-                        else if (raidSeal.Item.EffectValue == 23)
-                        {
-                            groupType = GroupType.BigTeam;
+                            case 20:
+                                groupType = GroupType.GiantTeam;
+                                break;
+                            case 23:
+                                groupType = GroupType.BigTeam;
+                                break;
                         }
 
                         Group group = new Group(groupType);

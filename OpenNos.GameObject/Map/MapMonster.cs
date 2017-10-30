@@ -908,7 +908,7 @@ namespace OpenNos.GameObject
 
         public void KillMonster(FactionType faction = FactionType.Neutral)
         {
-            if (IsFactionTargettable(faction) && (MonsterVNum != 679 && MonsterVNum != 680))
+            if (IsFactionTargettable(faction) && MonsterVNum != 679 && MonsterVNum != 680)
             {
                 IsAlive = false;
                 CurrentHp = 0;
@@ -975,8 +975,8 @@ namespace OpenNos.GameObject
                         Observable.Timer(TimeSpan.FromMilliseconds(350)).Subscribe(o =>
                         {
                             MapInstance.Broadcast($"su 3 {onyxId} 3 {MapMonsterId} -1 0 -1 {request.Skill.Effect} -1 -1 1 92 {onyxDamage} 0 0");
+                            MapInstance.DespawnMonster(onyx);
                             MapInstance.RemoveMonster(onyx);
-                            MapInstance.Broadcast(onyx.GenerateOut());
                         });
                     }
                     switch (hitRequest.TargetHitType)

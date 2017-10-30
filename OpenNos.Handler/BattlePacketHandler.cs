@@ -290,8 +290,8 @@ namespace OpenNos.Handler
                     Observable.Timer(TimeSpan.FromMilliseconds(350)).Subscribe(o =>
                     {
                         target.CurrentMapInstance.Broadcast($"su 3 {onyxId} 3 {target.Character.CharacterId} -1 0 -1 {request.Skill.Effect} -1 -1 1 92 {damage / 2} 0 0");
+                        target.CurrentMapInstance.DespawnMonster(onyx);
                         target.CurrentMapInstance.RemoveMonster(onyx);
-                        target.CurrentMapInstance.Broadcast(onyx.GenerateOut());
                     });
                 }
                 target.Character.GetDamage(damage);
