@@ -217,6 +217,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string GeneratePst()
+        {
+            return $"pst 2 {MateTransportId} {(int)MateType} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} {Hp} {Mp} 0 0 0";
+        }
+
         public string GenerateRest()
         {
             IsSitting = !IsSitting;

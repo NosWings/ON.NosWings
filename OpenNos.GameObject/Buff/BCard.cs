@@ -287,7 +287,9 @@ namespace OpenNos.GameObject
                                                     character.Session.SendPackets(character.GenerateScP());
                                                     character.Session.SendPackets(character.GenerateScN());
                                                     character.Session.SendPacket(character.GeneratePinit());
-                                                    character.Session.SendPackets(character.GeneratePst());
+                                                    character.Session.SendPackets(character.Mates.Where(s => s.IsTeamMember)
+                                                        .OrderBy(s => s.MateType)
+                                                        .Select(s => s.GeneratePst()));
                                                 }
                                                 else { character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CAPTURE_FAILED"), 0)); }
                                             }

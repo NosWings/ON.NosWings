@@ -588,7 +588,9 @@ namespace OpenNos.GameObject
                 session.SendPacket(session.Character.GenerateCMap());
                 session.SendPacket(session.Character.GenerateStatChar());
                 session.SendPacket(session.Character.GeneratePairy());
-                session.SendPackets(session.Character.GeneratePst());
+                session.SendPackets(session.Character.Mates.Where(s => s.IsTeamMember)
+                    .OrderBy(s => s.MateType)
+                    .Select(s => s.GeneratePst()));
                 session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
                 {
                     s.PositionX = (short) (session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
@@ -657,7 +659,9 @@ namespace OpenNos.GameObject
                                 continue;
                             }
                             groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                            groupSession.SendPackets(groupSession.Character.GeneratePst());
+                            groupSession.SendPackets(groupSession.Character.Mates.Where(s => s.IsTeamMember)
+                                .OrderBy(s => s.MateType)
+                                .Select(s => s.GeneratePst()));
                         }
                     });
                 }
@@ -900,11 +904,15 @@ namespace OpenNos.GameObject
                     foreach (ClientSession groupSession in grp.Characters)
                     {
                         groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                        groupSession.SendPackets(session.Character.GeneratePst());
+                        groupSession.SendPackets(session.Character.Mates.Where(s => s.IsTeamMember)
+                            .OrderBy(s => s.MateType)
+                            .Select(s => s.GeneratePst()));
                         groupSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                     }
                     session.SendPacket(session.Character.GeneratePinit());
-                    session.SendPackets(session.Character.GeneratePst());
+                    session.SendPackets(session.Character.Mates.Where(s => s.IsTeamMember)
+                        .OrderBy(s => s.MateType)
+                        .Select(s => s.GeneratePst()));
                     Broadcast(session.Character.GeneratePidx(true));
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                 }
@@ -938,7 +946,9 @@ namespace OpenNos.GameObject
                     Broadcast(targetSession.Character.GeneratePidx(true));
                     grp.LeaveGroup(targetSession);
                     targetSession.SendPacket(targetSession.Character.GeneratePinit());
-                    targetSession.SendPackets(targetSession.Character.GeneratePst());
+                    targetSession.SendPackets(targetSession.Character.Mates.Where(s => s.IsTeamMember)
+                        .OrderBy(s => s.MateType)
+                        .Select(s => s.GeneratePst()));
                 }
                 GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
                 _groups.TryRemove(grp.GroupId, out Group value);
@@ -1621,7 +1631,9 @@ namespace OpenNos.GameObject
                 foreach (ClientSession session in groupMembers)
                 {
                     session.SendPacket(session.Character.GeneratePinit());
-                    session.SendPackets(session.Character.GeneratePst());
+                    session.SendPackets(session.Character.Mates.Where(s => s.IsTeamMember)
+                        .OrderBy(s => s.MateType)
+                        .Select(s => s.GeneratePst()));
                 }
             }
             catch (Exception e)

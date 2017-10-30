@@ -196,7 +196,9 @@ namespace OpenNos.GameObject
                             break;
                     }
                     session.SendPacket(session.Character.GeneratePinit());
-                    session.SendPackets(session.Character.GeneratePst());
+                    session.SendPackets(session.Character.Mates.Where(s => s.IsTeamMember)
+                        .OrderBy(s => s.MateType)
+                        .Select(s => s.GeneratePst()));
                     break;
 
                 case 10:

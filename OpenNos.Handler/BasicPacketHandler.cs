@@ -1185,7 +1185,9 @@ namespace OpenNos.Handler
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
 
             Session.SendPacket(Session.Character.GeneratePinit());
-            Session.SendPackets(Session.Character.GeneratePst());
+            Session.SendPackets(Session.Character.Mates.Where(s => s.IsTeamMember)
+                .OrderBy(s => s.MateType)
+                .Select(s => s.GeneratePst()));
 
             Session.SendPacket("zzim");
             Session.SendPacket($"twk 2 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");

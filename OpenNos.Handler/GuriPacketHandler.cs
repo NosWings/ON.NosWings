@@ -492,7 +492,9 @@ namespace OpenNos.Handler
                                                 Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
                                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_NAME_PET")));
                                                 Session.SendPacket(Session.Character.GeneratePinit());
-                                                Session.SendPackets(Session.Character.GeneratePst());
+                                                Session.SendPackets(Session.Character.Mates.Where(s => s.IsTeamMember)
+                                                    .OrderBy(s => s.MateType)
+                                                    .Select(s => s.GeneratePst()));
                                                 Session.SendPackets(Session.Character.GenerateScP());
                                                 Session.Character.Inventory.RemoveItemAmount(petnameVNum);
                                             }

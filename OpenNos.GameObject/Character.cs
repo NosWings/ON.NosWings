@@ -2770,11 +2770,6 @@ namespace OpenNos.GameObject
             return $"post 5 {type} {MailList.First(s => s.Value == mailDto).Key} 0 0 {(byte)mailDto.SenderClass} {(byte)mailDto.SenderGender} {mailDto.SenderMorphId} {(byte)mailDto.SenderHairStyle} {(byte)mailDto.SenderHairColor} {mailDto.EqPacket} {sender.Name} {mailDto.Title} {mailDto.Message}";
         }
 
-        public List<string> GeneratePst()
-        {
-            return Mates.Where(s => s.IsTeamMember).OrderBy(s => s.MateType).Select(mate => $"pst 2 {mate.MateTransportId} {(int)mate.MateType} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0").ToList();
-        }
-
         public string GeneratePStashAll()
         {
             string stash = $"pstash_all {(StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)}";
