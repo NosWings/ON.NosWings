@@ -593,15 +593,18 @@ namespace OpenNos.GameObject
                     .Select(s => s.GeneratePst()));
                 session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
                 {
-                    s.PositionX = (short) (session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
-                    s.PositionY = (short)(session.Character.PositionY + 1);
-                    bool isBlocked = session.Character.MapInstance.Map.IsBlockedZone(s.PositionX, s.PositionY);
-                    if (isBlocked)
+                    if (!session.Character.IsVehicled)
                     {
-                        s.PositionX = session.Character.PositionX;
-                        s.PositionY = session.Character.PositionY;
+                        s.PositionX = (short)(session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
+                        s.PositionY = (short)(session.Character.PositionY + 1);
+                        bool isBlocked = session.Character.MapInstance.Map.IsBlockedZone(s.PositionX, s.PositionY);
+                        if (isBlocked)
+                        {
+                            s.PositionX = session.Character.PositionX;
+                            s.PositionY = session.Character.PositionY;
+                        }
+                        session.SendPacket(s.GenerateIn());
                     }
-                    session.SendPacket(s.GenerateIn());
                 });
                 session.SendPacket(
                     session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short) MapTypeEnum.Act61)
