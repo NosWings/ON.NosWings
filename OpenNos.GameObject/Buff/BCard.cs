@@ -253,7 +253,7 @@ namespace OpenNos.GameObject
                                     {
                                         if (monster.CurrentHp < (monster.Monster.MaxHP / 2))
                                         {
-                                            if (character.MaxMateCount == character.Mates.Count())
+                                            if (character.MaxMateCount > character.Mates.Count())
                                             {
                                                 // Algo  
                                                 int capturerate = ((character.Level / monster.Monster.Level) / (monster.CurrentHp / monster.Monster.MaxHP) * 3);
