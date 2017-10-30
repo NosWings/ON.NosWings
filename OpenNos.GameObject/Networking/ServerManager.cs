@@ -595,6 +595,12 @@ namespace OpenNos.GameObject
                 {
                     s.PositionX = (short) (session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
                     s.PositionY = (short)(session.Character.PositionY + 1);
+                    bool isBlocked = session.Character.MapInstance.Map.IsBlockedZone(s.PositionX, s.PositionY);
+                    if (isBlocked)
+                    {
+                        s.PositionX = session.Character.PositionX;
+                        s.PositionY = session.Character.PositionY;
+                    }
                     session.SendPacket(s.GenerateIn());
                 });
                 session.SendPacket(
