@@ -138,7 +138,10 @@ namespace OpenNos.GameObject
                     _isSleepingRequest = false;
                     Parallel.ForEach(Monsters, m =>
                     {
-                        m.StartLife();
+                        if (m.Life != null)
+                        {
+                            m.StartLife();
+                        }
                     });
                 }
             }
