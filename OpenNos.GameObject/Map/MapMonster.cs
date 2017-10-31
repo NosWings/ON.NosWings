@@ -1052,6 +1052,10 @@ namespace OpenNos.GameObject
                             break;
                     }
 
+                    if (hitmode != 1)
+                    {
+                        hitRequest.Session.Character.RemoveBuff(85);
+                    }
                     // generate the kill bonus
                     hitRequest.Session.Character.GenerateKillBonus(this);
                 }

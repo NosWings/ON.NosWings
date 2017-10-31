@@ -265,6 +265,10 @@ namespace OpenNos.Handler
                     damage = 0;
                     hitmode = 1;
                 }
+                if (hitmode != 1)
+                {
+                    Session.Character.RemoveBuff(85);
+                }
                 // TODO IMPROVE THAT
                 if (onyxWings && target.CurrentMapInstance != null)
                 {
