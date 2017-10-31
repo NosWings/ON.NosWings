@@ -108,7 +108,8 @@ namespace OpenNos.GameObject
         public bool IsDancing { get; set; }
 
         public bool IsPvp { get; set; }
-
+        
+        // TODO NEED A REVIEW
         public bool IsSleeping
         {
             get
@@ -138,7 +139,7 @@ namespace OpenNos.GameObject
                     _isSleepingRequest = false;
                     Parallel.ForEach(Monsters, m =>
                     {
-                        if (m.Life != null)
+                        if (m.Life == null)
                         {
                             m.StartLife();
                         }

@@ -247,6 +247,12 @@ namespace OpenNos.GameObject
                         {
                             MonsterLife();
                         }
+                        else
+                        {
+                            IDisposable tmp = Life;
+                            Life = null;
+                            tmp.Dispose();
+                        }
                     }
                     catch (Exception e)
                     {
