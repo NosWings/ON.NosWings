@@ -174,6 +174,7 @@ namespace OpenNos.GameObject
         {
             FirstX = MapX;
             FirstY = MapY;
+            Life = null;
             LastSkill = LastMove = LastEffect = DateTime.Now;
             Target = -1;
             Path = new List<Node>();
@@ -236,7 +237,7 @@ namespace OpenNos.GameObject
         /// </summary>
         public void StartLife()
         {
-            if (!MapInstance.IsSleeping)
+            if (!MapInstance.IsSleeping && Life == null)
             {
                 Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
                 {
