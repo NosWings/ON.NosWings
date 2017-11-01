@@ -1959,7 +1959,12 @@ namespace OpenNos.Handler
             if (promotePacket != null)
             {
                 string name = promotePacket.CharacterName;
-                AccountDTO account = DaoFactory.AccountDao.LoadById(DaoFactory.CharacterDao.LoadByName(name).AccountId);
+                CharacterDTO character = DaoFactory.CharacterDao.LoadByName(name);
+                if (character == null)
+                {
+                    return;
+                }
+                AccountDTO account = DaoFactory.AccountDao.LoadById(character.AccountId);
                 AuthorityType authority = AuthorityType.GameMaster;
                 switch (promotePacket.Authority)
                 {
