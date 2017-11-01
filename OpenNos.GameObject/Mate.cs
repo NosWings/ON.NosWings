@@ -863,6 +863,10 @@ namespace OpenNos.GameObject
 
         public string GenerateIn(bool foe = false, bool isAct4 = false)
         {
+            if (_owner.Invisible || _owner.InvisibleGm)
+            {
+                return ""; //Maybe have to implement the exception on each mate.GenerateIn call.
+            }
             string name = Name.Replace(' ', '^');
             if (foe)
             {

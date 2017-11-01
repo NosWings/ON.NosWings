@@ -1728,6 +1728,11 @@ namespace OpenNos.GameObject
                                 $"su 2 {mate.MateTransportId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} 0 0 {(IsAlive ? 1 : 0)} {(int) ((float) CurrentHp / (float) Monster.MaxHP * 100)} {mateDmg} {hitmode} 0");
                             break;
                     }
+                    }
+                        hitRequest.Session.Character.RemoveBuff(85);
+                    {
+                    if (hitmode != 1)
+
                     // generate the kill bonus
                     hitRequest.Session.Character.GenerateKillBonus(this);
                 }

@@ -333,6 +333,15 @@ namespace OpenNos.GameObject
                     break;
 
                 case BCardType.CardType.SpecialActions:
+                    if (session is Character charact)
+                    {
+                        if (SubType.Equals((byte) AdditionalTypes.SpecialActions.Hide))
+                        {
+                            charact.Invisible = true;
+                            charact.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => charact.Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
+                            charact.Session.CurrentMapInstance?.Broadcast(charact.GenerateInvisible());
+                        }
+                    }
                     break;
 
                 case BCardType.CardType.Mode:
