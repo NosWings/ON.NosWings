@@ -540,9 +540,22 @@ namespace OpenNos.GameObject
             return characters;
         }
 
-        internal void RemoveMonstersTarget(long characterId)
+        internal IEnumerable<Mate> GetMatesInRange(short mapX, short mapY, byte distance)
         {
-            Parallel.ForEach(Monsters.Where(m => m.Target == characterId), monster => { monster.RemoveTarget(); });
+            List<Mate> mates = new List<Mate>();
+            foreach (Mate mate in Mates)
+            {
+                if (Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = mate.PositionX, Y = mate.PositionY }) <= distance + 1)
+                {
+                    mates.Add(mate);
+                }
+            }
+            return mates;
+        }
+
+        internal void RemoveMonstersTarget(object target)
+        {
+            Parallel.ForEach(Monsters.Where(m => m.Target == target), monster => { monster.RemoveTarget(); });
         }
 
         public void ThrowItems(Tuple<int, short, byte, int, int> parameter)

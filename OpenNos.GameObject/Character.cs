@@ -1909,7 +1909,7 @@ namespace OpenNos.GameObject
             }
 
             // only set the hit delay if we become the monsters target with this hit
-            if (monsterToAttack.Target == -1)
+            if (monsterToAttack.Target == null)
             {
                 monsterToAttack.LastSkill = DateTime.Now;
             }

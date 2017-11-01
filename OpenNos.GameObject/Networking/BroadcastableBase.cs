@@ -62,7 +62,7 @@ namespace OpenNos.GameObject
             get
             {
                 ConcurrentBag<Mate> mate = new ConcurrentBag<Mate>();
-                Sessions.ToList().ForEach(s => s.Character.Mates.ToList().ForEach(o => mate.Add(s.Character.Mates.FirstOrDefault(m => m.IsTeamMember))));
+                Sessions.ToList().ForEach(s => s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => mate.Add(m)));
                 return mate;
             }
         }
@@ -134,6 +134,11 @@ namespace OpenNos.GameObject
         public ClientSession GetSessionByCharacterId(long characterId)
         {
             return _sessions.ContainsKey(characterId) ? _sessions[characterId] : null;
+        }
+
+        public Mate GetMateByMateTransportId(long mateTransportId)
+        {
+            return Mates.FirstOrDefault(m => m.MateTransportId == mateTransportId);
         }
 
         public void RegisterSession(ClientSession session)

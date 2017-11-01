@@ -551,7 +551,7 @@ namespace OpenNos.GameObject
                     session.Character.CloseShop();
                 }
                 session.Character.LeaveTalentArena();
-                session.CurrentMapInstance.RemoveMonstersTarget(session.Character.CharacterId);
+                session.CurrentMapInstance.RemoveMonstersTarget(session.Character);
                 session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(mate => session.CurrentMapInstance.RemoveMonstersTarget(mate));
                 session.CurrentMapInstance.UnregisterSession(session.Character.CharacterId);
                 LeaveMap(session.Character.CharacterId);

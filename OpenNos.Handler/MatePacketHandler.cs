@@ -40,14 +40,27 @@ namespace OpenNos.Handler
                 return;
             }
             Mate attacker = Session.Character.Mates.First(x => x.MateTransportId == suctlPacket.MateTransportId);
+            NpcMonsterSkill mateSkill = null;
+            if (attacker.Monster.Skills.Count <= 0)
+            {
+                mateSkill = new NpcMonsterSkill();
+                mateSkill.SkillVNum = 200;
+            }
+            else
+            {
+                mateSkill = attacker.Monster.Skills.FirstOrDefault(x => x.Skill.CastId == suctlPacket.CastId);
+            }
+            if (attacker.IsSitting)
+            {
+                return;
+            }
             switch (suctlPacket.TargetType)
             {
                 case UserType.Monster:
                     /*if (attacker.Hp > 0)
                     {
                         MapMonster target = Session?.CurrentMapInstance?.GetMonster(suctlPacket.TargetId);
-                        NpcMonsterSkill skill = attacker.Monster.Skills.FirstOrDefault(x => x.NpcMonsterSkillId == suctlPacket.CastId);
-                        AttackMonster(attacker, skill, target);
+                        AttackMonster(attacker, mateSkill, target);
                     }*/
                     return;
 
@@ -111,7 +124,7 @@ namespace OpenNos.Handler
                     mate.Skills = null;
                     Session.Character.MapInstance.Broadcast(mate.GenerateCMode(-1));
                     Session.SendPacket(mate.GenerateCond());
-                    Session.SendPacket(mate.GenPski());
+                    Session.SendPacket(mate.GeneratePski());
                     Session.SendPacket(mate.GenerateScPacket());
                     Session.Character.MapInstance.Broadcast(mate.GenerateOut());
                     Session.Character.MapInstance.Broadcast(mate.GenerateIn());
@@ -134,7 +147,7 @@ namespace OpenNos.Handler
                 //TODO: update pet skills
                 Session.SendPacket(mate.GenerateCond());
                 Session.Character.MapInstance.Broadcast(mate.GenerateCMode(mate.SpInstance.Item.Morph));
-                Session.SendPacket(mate.GenPski());
+                Session.SendPacket(mate.GeneratePski());
                 Session.SendPacket(mate.GenerateScPacket());
                 Session.Character.MapInstance.Broadcast(mate.GenerateOut());
                 Session.Character.MapInstance.Broadcast(mate.GenerateIn());

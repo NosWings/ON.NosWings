@@ -22,8 +22,10 @@ namespace OpenNos.GameObject.Networking
     {
         #region Instantiation
 
-        public HitRequest(TargetHitType targetHitType, ClientSession session, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false)
+        public HitRequest(UserType casterType, long id, TargetHitType targetHitType, ClientSession session, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false)
         {
+            CasterType = casterType;
+            CasterId = id;
             HitTimestamp = DateTime.Now;
             Session = session;
             Skill = skill;
@@ -50,6 +52,10 @@ namespace OpenNos.GameObject.Networking
         #endregion
 
         #region Properties
+
+        public UserType CasterType { get; set; }
+
+        public long CasterId { get; set; }
 
         public DateTime HitTimestamp { get; set; }
 
