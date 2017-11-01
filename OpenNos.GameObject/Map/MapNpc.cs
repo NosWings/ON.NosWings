@@ -71,7 +71,7 @@ namespace OpenNos.GameObject
 
         public List<TeleporterDTO> Teleporters { get; set; }
 
-        public IDisposable Life { get; private set; }
+        public IDisposable Life { get; set; }
 
         public bool IsOut { get; set; }
 
@@ -168,7 +168,7 @@ namespace OpenNos.GameObject
             OnDeathEvents.Clear();
         }
 
-        private void StartLife()
+        public void StartLife()
         {
             if (!MapInstance.IsSleeping && Life == null)
             {

@@ -125,6 +125,11 @@ namespace OpenNos.GameObject
                     m.Life?.Dispose();
                     m.Life = null;
                 });
+                Parallel.ForEach(Npcs, m =>
+                {
+                    m.Life?.Dispose();
+                    m.Life = null;
+                });
                 return true;
             }
             set
@@ -138,6 +143,13 @@ namespace OpenNos.GameObject
                     _isSleeping = false;
                     _isSleepingRequest = false;
                     Parallel.ForEach(Monsters, m =>
+                    {
+                        if (m.Life == null)
+                        {
+                            m.StartLife();
+                        }
+                    });
+                    Parallel.ForEach(Npcs, m =>
                     {
                         if (m.Life == null)
                         {
