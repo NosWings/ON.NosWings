@@ -478,6 +478,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
             Session.SendPackets(GenerateScP());
             Session.SendPackets(GenerateScN());
+            mate.RefreshStats();
             return true;
         }
 
