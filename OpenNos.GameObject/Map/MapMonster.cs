@@ -1899,38 +1899,10 @@ namespace OpenNos.GameObject
             if (IsMoving && Monster.Speed > 0)
             {
                 double time = (DateTime.Now - LastMove).TotalMilliseconds;
-
-                if (Path.Any()) // move back to initial position after following target
-                {
-                    int timetowalk = 2000 / Monster.Speed;
-                    if (time > timetowalk)
-                    {
-                        int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                        short mapX = Path[maxindex - 1].X;
-                        short mapY = Path[maxindex - 1].Y;
-                        double waitingtime =
-                            Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) /
-                            (double)Monster.Speed;
-                        LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
-
-                        Observable.Timer(TimeSpan.FromMilliseconds(timetowalk)).Subscribe(x =>
-                        {
-                            MapX = mapX;
-                            MapY = mapY;
-
-                            MoveEvent?.Events.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
-                        });
-                        Path.RemoveRange(0, maxindex);
-                        MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All,
-                            xCoordinate: mapX, yCoordinate: mapY));
-                        return;
-                    }
-                }
-                else if (time > _movetime)
+                if (!Path.Any() && time > _movetime && Target == null)
                 {
                     short mapX = FirstX, mapY = FirstY;
-                    if (MapInstance.Map?.GetFreePosition(ref mapX, ref mapY,
-                        (byte)ServerManager.Instance.RandomNumber(0, 2), (byte)_random.Next(0, 2)) ?? false)
+                    if (MapInstance.Map?.GetFreePosition(ref mapX, ref mapY, (byte)ServerManager.Instance.RandomNumber(0, 2), (byte)_random.Next(0, 2)) ?? false)
                     {
                         int distance = Map.GetDistance(new MapCell
                         {
@@ -1943,11 +1915,13 @@ namespace OpenNos.GameObject
                         });
 
                         double value = 1000d * distance / (2 * Monster.Speed);
-                        Observable.Timer(TimeSpan.FromMilliseconds(value)).Subscribe(x =>
-                        {
-                            MapX = mapX;
-                            MapY = mapY;
-                        });
+                        Observable.Timer(TimeSpan.FromMilliseconds(value))
+                            .Subscribe(
+                                x =>
+                                {
+                                    MapX = mapX;
+                                    MapY = mapY;
+                                });
 
                         LastMove = DateTime.Now.AddMilliseconds(value);
                         MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All));
