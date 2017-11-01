@@ -56,11 +56,14 @@ namespace OpenNos.GameObject
             MeditationDictionary = new Dictionary<short, DateTime>();
             SkillBcards = new ConcurrentBag<BCard>();
             PassiveSkillBcards = new ConcurrentBag<BCard>();
+            ObservableBag = new Dictionary<short, IDisposable>();
         }
 
         #endregion
 
         #region Properties
+
+        public Dictionary<short, IDisposable> ObservableBag { get; set; }
 
         public DateTime LastSkillCombo { get; set; }
 
@@ -5918,6 +5921,7 @@ namespace OpenNos.GameObject
 
         public void AddBuff(Buff indicator, bool notify = true)
         {
+            int buffTime = 0;
             if (indicator?.Card == null)
             {
                 return;
@@ -5927,7 +5931,12 @@ namespace OpenNos.GameObject
                 return;
             }
             Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
-            indicator.RemainingTime = indicator.Card.Duration;
+            //TODO: Find a better way to do this
+            if (indicator.Card.CardId == 85)
+            {
+                buffTime = ServerManager.Instance.RandomNumber(50, 350);
+            }
+            indicator.RemainingTime = indicator.Card.Duration == 0 ? buffTime : indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
 
@@ -5940,8 +5949,12 @@ namespace OpenNos.GameObject
             {
                 GenerateEff(indicator.Card.EffectId);
             }
+            if (ObservableBag.ContainsKey(indicator.Card.CardId))
+            {
+                ObservableBag[indicator.Card.CardId]?.Dispose();
+            }
 
-            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o =>
+            ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds((indicator.Card.Duration == 0 ? buffTime : indicator.Card.Duration) * 100)).Subscribe(o =>
             {
                 RemoveBuff(indicator.Card.CardId);
                 if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
