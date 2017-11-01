@@ -13,23 +13,32 @@ namespace OpenNos.GameObject.Helpers
 
         public MateHelper()
         {
-            LoadXpData();
+            LoadConcentrate();
+            LoadHpData();
+            LoadMinDamageData();
+            LoadMaxDamageData();
             LoadPrimaryMpData();
             LoadSecondaryMpData();
-            LoadHpData();
+            LoadXpData();
         }
 
         #endregion
 
         #region Properties
 
-        public double[] HpData { get; private set; }
+        public short[,] Concentrate { get; private set; }
+
+        public int[] HpData { get; private set; }
+
+        public short[,] MinDamageData { get; private set; }
+
+        public short[,] MaxDamageData { get; private set; }
 
         // Race == 0
-        public double[] PrimaryMpData { get; private set; }
+        public int[] PrimaryMpData { get; private set; }
 
         // Race == 2
-        public double[] SecondaryMpData { get; private set; }
+        public int[] SecondaryMpData { get; private set; }
 
         public double[] XpData { get; private set; }
 
@@ -37,14 +46,135 @@ namespace OpenNos.GameObject.Helpers
 
         #region Methods
 
+        #region Concentrate
+
+        private void LoadConcentrate()
+        {
+            Concentrate = new short[2, 256];
+
+            short baseConcentrate = 27;
+            short baseUp = 6;
+
+            Concentrate[0, 0] = baseConcentrate;
+
+            for (int i = 1; i < Concentrate.GetLength(1); i++)
+            {
+                Concentrate[0, i] = baseConcentrate;
+                baseConcentrate += (short)(i % 5 == 2 ? 5 : baseUp);
+            }
+
+            baseConcentrate = 70;
+
+            Concentrate[1, 0] = baseConcentrate;
+
+            for (int i = 1; i < Concentrate.GetLength(1); i++)
+            {
+                Concentrate[1, i] = baseConcentrate;
+            }
+        }
+
+        #endregion
+
+        #region HP
+
+        private void LoadHpData()
+        {
+            HpData = new int[256];
+            int baseHp = 138;
+            int hpBaseUp = 18;
+            for (int i = 0; i < HpData.Length; i++)
+            {
+                HpData[i] = baseHp;
+                hpBaseUp++;
+                baseHp += hpBaseUp;
+
+                if (i == 37)
+                {
+                    baseHp = 1765;
+                    hpBaseUp = 65;
+                }
+                if (i < 41)
+                {
+                    continue;
+                }
+                if (((99 - i) % 8) == 0)
+                {
+                    hpBaseUp++;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Damage
+
+        private void LoadMinDamageData()
+        {
+            MinDamageData = new short[2, 256];
+
+            short baseDamage = 37;
+            short baseUp = 4;
+
+            MinDamageData[0, 0] = baseDamage;
+
+            for (int i = 1; i < MinDamageData.GetLength(1); i++)
+            {
+                MinDamageData[0, i] = baseDamage;
+                baseDamage += (short)(i % 5 == 0 ? 5 : baseUp);
+            }
+
+            baseDamage = 23;
+            baseUp = 6;
+
+            MinDamageData[1, 0] = baseDamage;
+
+            for (int i = 1; i < MinDamageData.GetLength(1); i++)
+            {
+                MinDamageData[1, i] = baseDamage;
+                baseDamage += (short)(i % 5 == 0 ? 5 : baseUp);
+                baseDamage += (short)(i % 2 == 0 ? 1 : 0);
+            }
+        }
+
+        private void LoadMaxDamageData()
+        {
+            MaxDamageData = new short[2, 256];
+
+            short baseDamage = 40;
+            short baseUp = 6;
+
+            MaxDamageData[0, 0] = baseDamage;
+
+            for (int i = 1; i < MaxDamageData.GetLength(1); i++)
+            {
+                MaxDamageData[0, i] = baseDamage;
+                baseDamage += (short)(i % 5 == 0 ? 5 : baseUp);
+            }
+
+            MaxDamageData[1, 0] = baseDamage;
+
+            baseDamage = 38;
+            baseUp = 8;
+
+            for (int i = 1; i < MaxDamageData.GetLength(1); i++)
+            {
+                MaxDamageData[1, i] = baseDamage;
+                baseDamage += (short)(i % 5 == 0 ? 5 : baseUp);
+            }
+        }
+
+        #endregion
+
+        #region MP
+
         private void LoadPrimaryMpData()
         {
-            PrimaryMpData = new double[256];
+            PrimaryMpData = new int[256];
             PrimaryMpData[0] = 10;
             PrimaryMpData[1] = 10;
             PrimaryMpData[2] = 15;
 
-            int basup = 5;
+            int baseUp = 5;
             byte count = 0;
             bool isStable = true;
             bool isDouble = false;
@@ -53,44 +183,56 @@ namespace OpenNos.GameObject.Helpers
             {
                 if (i % 10 == 1)
                 {
-                    PrimaryMpData[i] += PrimaryMpData[i - 1] + basup * 2;
+                    PrimaryMpData[i] += PrimaryMpData[i - 1] + baseUp * 2;
                     continue;
                 }
                 if (!isStable)
                 {
-                    basup++;
+                    baseUp++;
                     count++;
 
                     if (count == 2)
                     {
                         if (isDouble)
-                        { isDouble = false; }
+                        {
+                            isDouble = false;
+                        }
                         else
-                        { isStable = true; isDouble = true; count = 0; }
+                        {
+                            isStable = true;
+                            isDouble = true;
+                            count = 0;
+                        }
                     }
 
                     if (count == 4)
-                    { isStable = true; count = 0; }
+                    {
+                        isStable = true;
+                        count = 0;
+                    }
                 }
                 else
                 {
                     count++;
                     if (count == 2)
-                    { isStable = false; count = 0; }
+                    {
+                        isStable = false;
+                        count = 0;
+                    }
                 }
-                PrimaryMpData[i] = PrimaryMpData[i - (i % 10 == 2 ? 2 : 1)] + basup;
+                PrimaryMpData[i] = PrimaryMpData[i - (i % 10 == 2 ? 2 : 1)] + baseUp;
             }
         }
 
         private void LoadSecondaryMpData()
         {
-            SecondaryMpData = new double[256];
+            SecondaryMpData = new int[256];
             SecondaryMpData[0] = 60;
             SecondaryMpData[1] = 60;
             SecondaryMpData[2] = 78;
 
-            int basup = 18;
-            bool boostup = false;
+            int baseUp = 18;
+            bool boostUp = false;
 
             for (int i = 3; i < SecondaryMpData.Length; i++)
             {
@@ -100,41 +242,24 @@ namespace OpenNos.GameObject.Helpers
                     continue;
                 }
 
-                if(boostup)
-                { basup += 3; boostup = false; }
+                if (boostUp)
+                {
+                    baseUp += 3;
+                    boostUp = false;
+                }
                 else
-                { basup++; boostup = true; }
+                {
+                    baseUp++;
+                    boostUp = true;
+                }
 
-                SecondaryMpData[i] = SecondaryMpData[i - (i % 10 == 2 ? 2 : 1)] + basup;
+                SecondaryMpData[i] = SecondaryMpData[i - (i % 10 == 2 ? 2 : 1)] + baseUp;
             }
         }
 
-        private void LoadHpData()
-        {
-            HpData = new double[256];
-            int baseHp = 138;
-            int HPbasup = 18;
-            for (int i = 0; i < HpData.Length; i++)
-            {
-                HpData[i] = baseHp;
-                HPbasup++;
-                baseHp += HPbasup;
+        #endregion
 
-                if (i == 37)
-                {
-                    baseHp = 1765;
-                    HPbasup = 65;
-                }
-                if (i < 41)
-                {
-                    continue;
-                }
-                if (((99 - i) % 8) == 0)
-                {
-                    HPbasup++;
-                }
-            }
-        }
+        #region XP
 
         private void LoadXpData()
         {
@@ -186,6 +311,8 @@ namespace OpenNos.GameObject.Helpers
                 XpData[i] = Convert.ToInt64(XpData[i - 1] + var * (i + 2) * (i + 2));
             }
         }
+
+        #endregion
 
         #endregion
 

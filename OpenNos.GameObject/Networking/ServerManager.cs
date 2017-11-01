@@ -153,6 +153,10 @@ namespace OpenNos.GameObject
 
         public byte MaxSpLevel { get; set; }
 
+        public byte RateMateXp { get; set; }
+
+        public byte MaxMateLevel { get; set; }
+
         public List<PenaltyLogDTO> PenaltyLogs { get; set; }
 
         public List<Schedule> Schedules { get; set; }
@@ -548,6 +552,7 @@ namespace OpenNos.GameObject
                 }
                 session.Character.LeaveTalentArena();
                 session.CurrentMapInstance.RemoveMonstersTarget(session.Character.CharacterId);
+                session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(mate => session.CurrentMapInstance.RemoveMonstersTarget(mate));
                 session.CurrentMapInstance.UnregisterSession(session.Character.CharacterId);
                 LeaveMap(session.Character.CharacterId);
                 session.Character.IsChangingMapInstance = true;
@@ -980,6 +985,8 @@ namespace OpenNos.GameObject
             GoldDropRate = int.Parse(ConfigurationManager.AppSettings["GoldRateDrop"]);
             GoldRate = int.Parse(ConfigurationManager.AppSettings["RateGold"]);
             MaxLevel = byte.Parse(ConfigurationManager.AppSettings["MaxLevel"]);
+            MaxMateLevel = byte.Parse(ConfigurationManager.AppSettings["MaxMateLevel"]);
+            RateMateXp = byte.Parse(ConfigurationManager.AppSettings["RateMateXp"]);
             MaxJobLevel = byte.Parse(ConfigurationManager.AppSettings["MaxJobLevel"]);
             MaxSpLevel = byte.Parse(ConfigurationManager.AppSettings["MaxSPLevel"]);
             MaxHeroLevel = byte.Parse(ConfigurationManager.AppSettings["MaxHeroLevel"]);
