@@ -138,10 +138,8 @@ namespace OpenNos.GameObject
                                                     (byte)ServerManager.Instance.RandomNumber(76, 90);
                                             }
                                             rollitem.ItemGeneratedUpgrade =
-                                                (byte)ServerManager.Instance.RandomNumber(25, 75);
+                                                (byte)ServerManager.Instance.RandomNumber(50, 75);
 
-                                            break;
-                                        default:
                                             break;
                                     }
                                     newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, rare: box.Rare, upgrade: rollitem.ItemGeneratedUpgrade);
@@ -154,7 +152,7 @@ namespace OpenNos.GameObject
                                     {
                                         continue;
                                     }
-                                    session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {rollitem.ItemGeneratedAmount})", 12));
+                                    session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.FirstOrDefault()?.Item.Name ?? ""} x {rollitem.ItemGeneratedAmount})", 12));
                                     session.SendPacket($"rdi {rollitem.ItemGeneratedVNum} {rollitem.ItemGeneratedAmount}");
                                     newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
                                     session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);

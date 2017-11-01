@@ -130,6 +130,7 @@ namespace OpenNos.GameObject
         public override void Initialize()
         {
             _random = new Random(MapNpcId);
+            Life = null;
             Npc = ServerManager.Instance.GetNpc(NpcVNum);
             LastEffect = DateTime.Now;
             LastMove = DateTime.Now;
@@ -144,11 +145,12 @@ namespace OpenNos.GameObject
             Target = -1;
             Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
             Shop shop = ServerManager.Instance.GetShopByMapNpcId(MapNpcId);
-            if (shop != null)
+            if (shop == null)
             {
-                shop.Initialize();
-                Shop = shop;
+                return;
             }
+            shop.Initialize();
+            Shop = shop;
         }
 
         public void RunDeathEvent()
@@ -168,21 +170,30 @@ namespace OpenNos.GameObject
 
         private void StartLife()
         {
-            Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+            if (!MapInstance.IsSleeping && Life == null)
             {
-                Started = true;
-                try
+                Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
                 {
-                    if (!MapInstance.IsSleeping)
+                    Started = true;
+                    try
                     {
-                        NpcLife();
+                        if (!MapInstance.IsSleeping)
+                        {
+                            NpcLife();
+                        }
+                        else
+                        {
+                            IDisposable tmp = Life;
+                            Life = null;
+                            tmp.Dispose();
+                        }
                     }
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e);
-                }
-            });
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                });
+            }
         }
 
         private string GenerateMv2()
