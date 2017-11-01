@@ -284,6 +284,8 @@ namespace OpenNos.GameObject
 
         public short PositionY { get; set; }
 
+        public int TotalTime { get; set; }
+
         public List<QuicklistEntryDTO> QuicklistEntries { get; private set; }
 
         public RespawnMapTypeDTO Respawn
@@ -5841,7 +5843,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket($"bf 1 {CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
                 Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 20));
             }
-
+            
             if (Buff.Contains(indicator))
             {
                 Buff = Buff.Where(s => s != indicator);
@@ -5879,9 +5881,16 @@ namespace OpenNos.GameObject
                 StaticBuff = true
             };
             Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
+            
             if (staticBuff.RemainingTime == -1)
             {
                 bf.RemainingTime = staticBuff.RemainingTime;
+                Buff.Add(bf);
+            }
+            else if (staticBuff.RemainingTime > 0 && staticBuff.CardId == 340)
+            {
+                TotalTime += staticBuff.RemainingTime;
+                bf.RemainingTime = TotalTime;
                 Buff.Add(bf);
             }
             else if (staticBuff.RemainingTime > 0)
@@ -5902,9 +5911,13 @@ namespace OpenNos.GameObject
                 Buff.Add(bf);
             }
             bf.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
+            if (ObservableBag.TryGetValue(bf.Card.CardId, out IDisposable value))
+            {
+                value?.Dispose();
+            }
             if (bf.RemainingTime > 0)
             {
-                Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime)).Subscribe(o =>
+                ObservableBag[bf.Card.CardId] =  Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime)).Subscribe(o =>
                 {
                     RemoveBuff(bf.Card.CardId);
                     if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
@@ -5949,9 +5962,9 @@ namespace OpenNos.GameObject
             {
                 GenerateEff(indicator.Card.EffectId);
             }
-            if (ObservableBag.ContainsKey(indicator.Card.CardId))
+            if (ObservableBag.TryGetValue(indicator.Card.CardId, out IDisposable value))
             {
-                ObservableBag[indicator.Card.CardId]?.Dispose();
+                value?.Dispose();
             }
 
             ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds((indicator.Card.Duration == 0 ? buffTime : indicator.Card.Duration) * 100)).Subscribe(o =>
