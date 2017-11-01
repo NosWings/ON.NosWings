@@ -424,7 +424,7 @@ namespace OpenNos.GameObject
                         }
                         ConcurrentBag<MonsterToSummon> lst = new ConcurrentBag<MonsterToSummon>
                         {
-                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell {X = positionX, Y = positionY}, -1, move, isTarget, isBonus, isHostile, isBoss)
+                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell {X = positionX, Y = positionY}, null, move, isTarget, isBonus, isHostile, isBoss)
                             {
                                 DeathEvents = death,
                                 NoticingEvents = notice,

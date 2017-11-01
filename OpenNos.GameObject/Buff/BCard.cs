@@ -98,7 +98,7 @@ namespace OpenNos.GameObject
                                 x = (short)(ServerManager.Instance.RandomNumber(-3, 3) + monster.MapX);
                                 y = (short)(ServerManager.Instance.RandomNumber(-3, 3) + monster.MapY);
                             }
-                            summonParameters.Add(new MonsterToSummon((short)SecondData, new MapCell { X = x, Y = y }, -1, true));
+                            summonParameters.Add(new MonsterToSummon((short)SecondData, new MapCell { X = x, Y = y }, null, true));
                         }
                         int rnd = ServerManager.Instance.RandomNumber();
                         if (rnd <= Math.Abs(ThirdData) || ThirdData == 0)
@@ -264,6 +264,7 @@ namespace OpenNos.GameObject
                                                     NpcMonster mateNpc = ServerManager.Instance.GetNpc(monster.Monster.NpcMonsterVNum);
                                                     Mate mate = new Mate(character, mateNpc, 1, MateType.Pet);
                                                     character.Mates.Add(mate);
+                                                    mate.RefreshStats();
                                                     if (currentmate == null)
                                                     {
                                                         mate.IsTeamMember = true;

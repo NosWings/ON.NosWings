@@ -1935,7 +1935,7 @@ namespace OpenNos.GameObject
                     continue;
                 }
                 nearestDistance = distance;
-                monsterToAttack.Target = session.Character.CharacterId;
+                monsterToAttack.Target = session.Character;
             }
 
 

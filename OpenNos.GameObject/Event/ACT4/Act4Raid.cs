@@ -65,7 +65,7 @@ namespace OpenNos.GameObject.Event
             switch (_type)
             {
                 case Act4RaidType.Morcos:
-                    bossParametter.Add(new MonsterToSummon(563, new MapCell { X = 56, Y = 11}, -1, false) { DeathEvents = new List<EventContainer>() });
+                    bossParametter.Add(new MonsterToSummon(563, new MapCell { X = 56, Y = 11}, null, false) { DeathEvents = new List<EventContainer>() });
                     raidMap = 135;
                     boxVnum = 882;
                     destX = 40;
@@ -76,7 +76,7 @@ namespace OpenNos.GameObject.Event
                     _bossPortalToY = 80;
                     break;
                 case Act4RaidType.Hatus:
-                    bossParametter.Add(new MonsterToSummon(577, new MapCell { X = 36, Y = 18 }, -1, false) { DeathEvents = new List<EventContainer>() });
+                    bossParametter.Add(new MonsterToSummon(577, new MapCell { X = 36, Y = 18 }, null, false) { DeathEvents = new List<EventContainer>() });
                     raidMap = 137;
                     boxVnum = 185;
                     destX = 14;
@@ -87,7 +87,7 @@ namespace OpenNos.GameObject.Event
                     _bossPortalToY = 59;
                     break;
                 case Act4RaidType.Calvina:
-                    bossParametter.Add(new MonsterToSummon(629, new MapCell { X = 26, Y = 25 }, -1, true) { DeathEvents = new List<EventContainer>() });
+                    bossParametter.Add(new MonsterToSummon(629, new MapCell { X = 26, Y = 25 }, null, true) { DeathEvents = new List<EventContainer>() });
                     raidMap = 139;
                     boxVnum = 942;
                     destX = 0;
@@ -96,7 +96,7 @@ namespace OpenNos.GameObject.Event
                     _bossPortalY = 93;
                     break;
                 case Act4RaidType.Berios:
-                    bossParametter.Add(new MonsterToSummon(624, new MapCell { X = 30, Y = 28 }, -1, true) { DeathEvents = new List<EventContainer>() });
+                    bossParametter.Add(new MonsterToSummon(624, new MapCell { X = 30, Y = 28 }, null, true) { DeathEvents = new List<EventContainer>() });
                     raidMap = 141;
                     boxVnum = 999;
                     destX = 17;
@@ -278,21 +278,21 @@ namespace OpenNos.GameObject.Event
                     break;
 
                 case Act4RaidType.Hatus:
-                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 20, Y = 22 }, -1, true));
-                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 22, Y = 25 }, -1, true));
-                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 31, Y = 29 }, -1, true));
-                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 36, Y = 30 }, -1, true));
-                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 42, Y = 29 }, -1, true));
-                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 48, Y = 27 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 20, Y = 22 }, null, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 22, Y = 25 }, null, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 31, Y = 29 }, null, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 36, Y = 30 }, null, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 42, Y = 29 }, null, true));
+                    summonParameters.Add(new MonsterToSummon(575, new MapCell { X = 48, Y = 27 }, null, true));
                     break;
 
                 case Act4RaidType.Morcos:
-                    summonParameters.Add(new MonsterToSummon(561, new MapCell { X = 37, Y = 25 }, -1, true));
-                    summonParameters.Add(new MonsterToSummon(561, new MapCell { X = 49, Y = 35 }, -1, true));
-                    summonParameters.Add(new MonsterToSummon(561, new MapCell { X = 63, Y = 24 }, -1, true));
-                    summonParameters.Add(new MonsterToSummon(562, new MapCell { X = 41, Y = 33 }, -1, true));
-                    summonParameters.Add(new MonsterToSummon(562, new MapCell { X = 56, Y = 34 }, -1, true));
-                    summonParameters.Add(new MonsterToSummon(562, new MapCell { X = 67, Y = 24 }, -1, true));
+                    summonParameters.Add(new MonsterToSummon(561, new MapCell { X = 37, Y = 25 }, null, true));
+                    summonParameters.Add(new MonsterToSummon(561, new MapCell { X = 49, Y = 35 }, null, true));
+                    summonParameters.Add(new MonsterToSummon(561, new MapCell { X = 63, Y = 24 }, null, true));
+                    summonParameters.Add(new MonsterToSummon(562, new MapCell { X = 41, Y = 33 }, null, true));
+                    summonParameters.Add(new MonsterToSummon(562, new MapCell { X = 56, Y = 34 }, null, true));
+                    summonParameters.Add(new MonsterToSummon(562, new MapCell { X = 67, Y = 24 }, null, true));
                     break;
             }
 
