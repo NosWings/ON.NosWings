@@ -2134,6 +2134,28 @@ namespace OpenNos.GameObject
                 RemoveTarget();
                 Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(characterInRange.CharacterId); });
             }
+
+            foreach (Mate mateInRange in MapInstance.GetMatesInRange(npcMonsterSkill.Skill.TargetRange == 0 ? MapX : posX,
+                    npcMonsterSkill.Skill.TargetRange == 0 ? MapY : posY, npcMonsterSkill.Skill.TargetRange)
+                .Where(s => s != Target && s.IsAlive))
+            {
+                if (mateInRange.IsSitting)
+                {
+                    mateInRange.IsSitting = false;
+                    MapInstance.Broadcast(mateInRange.GenerateRest());
+                }
+                mateInRange.GetDamage(damage);
+
+                MapInstance.Broadcast($"su 3 {MapMonsterId} 2 {mateInRange.MateTransportId} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(mateInRange.Hp > 0 ? 1 : 0)} {(int)(mateInRange.Hp / mateInRange.HpLoad() * 100)} {damage} {hitmode} 0");
+                npcMonsterSkill.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(mateInRange));
+                LastSkill = DateTime.Now;
+
+                if (mateInRange.Hp <= 0)
+                {
+                    RemoveTarget();
+                    mateInRange.GenerateDeath();
+                }
+            }
         }
 
         /// <summary>
