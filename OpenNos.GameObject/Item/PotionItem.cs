@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using System;
+using System.Linq;
 using OpenNos.Domain;
 
 namespace OpenNos.GameObject
@@ -37,56 +38,70 @@ namespace OpenNos.GameObject
                 return;
             }
             session.Character.LastPotion = DateTime.Now;
-            switch (Effect)
+            if (session.Character.Hp == session.Character.HpLoad() && session.Character.Mp == session.Character.MpLoad())
             {
-                default:
-                    if (session.Character.Hp == session.Character.HpLoad() && session.Character.Mp == session.Character.MpLoad())
-                    {
-                        return;
-                    }
-                    if (session.Character.Hp <= 0)
-                    {
-                        return;
-                    }
-                    if ((int)session.Character.HpLoad() - session.Character.Hp < Hp)
+                return;
+            }
+            if (session.Character.Hp <= 0)
+            {
+                return;
+            }
+            switch (VNum)
+            {
+                // Full HP
+                case 1242:
+                case 5582:
+                    if (session.CurrentMapInstance?.MapInstanceType != MapInstanceType.Act4Instance && session.CurrentMapInstance?.IsPvp != true)
                     {
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HpLoad() - session.Character.Hp));
-                    }
-                    else if ((int)session.Character.HpLoad() - session.Character.Hp > Hp)
-                    {
-                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc(Hp));
-                    }
-                    session.Character.Mp += Mp;
-                    session.Character.Hp += Hp;
-                    if (session.Character.Mp > session.Character.MpLoad())
-                    {
-                        session.Character.Mp = (int)session.Character.MpLoad();
-                    }
-                    if (session.Character.Hp > session.Character.HpLoad())
-                    {
                         session.Character.Hp = (int)session.Character.HpLoad();
-                    }
-                    if (session.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance || session.CurrentMapInstance?.IsPvp == true)
-                    {
-                        if (inv.ItemVNum == 1242 || inv.ItemVNum == 5582 || inv.ItemVNum == 1243 || inv.ItemVNum == 5583 || inv.ItemVNum == 1244 || inv.ItemVNum == 5584)
+                        foreach (Mate mate in session.Character.Mates.Where(m => m.IsTeamMember))
                         {
-                            return;
+                            mate.Hp = mate.HpLoad();
+                            session.CurrentMapInstance?.Broadcast(mate.GenerateRc(mate.HpLoad() - mate.Hp));
                         }
                     }
-                    if (inv.ItemVNum == 1242 || inv.ItemVNum == 5582)
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    session.SendPacket(session.Character.GenerateStat());
+                    break;
+
+                // Full MP
+                case 1243:
+                case 5583:
+                    if (session.CurrentMapInstance?.MapInstanceType != MapInstanceType.Act4Instance && session.CurrentMapInstance?.IsPvp != true)
+                    {
+                        session.Character.Mp = (int)session.Character.MpLoad();
+                        session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => m.Mp = m.MpLoad());
+                    }
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    session.SendPacket(session.Character.GenerateStat());
+                    break;
+
+                // Full Mp & Hp
+                case 1244:
+                case 5584:
+                    if (session.CurrentMapInstance?.MapInstanceType != MapInstanceType.Act4Instance && session.CurrentMapInstance?.IsPvp != true)
                     {
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HpLoad() - session.Character.Hp));
                         session.Character.Hp = (int)session.Character.HpLoad();
-                    }
-                    else if (inv.ItemVNum == 1243 || inv.ItemVNum == 5583)
-                    {
                         session.Character.Mp = (int)session.Character.MpLoad();
                     }
-                    else if (inv.ItemVNum == 1244 || inv.ItemVNum == 5584)
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    session.SendPacket(session.Character.GenerateStat());
+                    break;
+
+                default:
+                    int hpHeal = session.Character.Hp + Hp > session.Character.HpLoad() ? (int)session.Character.HpLoad() - session.Character.Hp : Hp;
+                    session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc(hpHeal));
+                    session.Character.Hp += hpHeal;
+                    session.Character.Mp += session.Character.Mp + Mp > session.Character.MpLoad() ? (int)session.Character.MpLoad() - session.Character.Mp : Mp;
+
+                    foreach (Mate mate in session.Character.Mates.Where(m => m.IsTeamMember))
                     {
-                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HpLoad() - session.Character.Hp));
-                        session.Character.Hp = (int)session.Character.HpLoad();
-                        session.Character.Mp = (int)session.Character.MpLoad();
+                        int mateHpHeal = mate.Hp + Hp > mate.HpLoad() ? mate.HpLoad() - mate.Hp : Hp;
+                        mate.Hp += mateHpHeal;
+                        mate.Mp += mate.Mp + Mp > mate.MpLoad() ? mate.MpLoad() : Mp;
+                        session.CurrentMapInstance?.Broadcast(mate.GenerateRc(mateHpHeal));
                     }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     session.SendPacket(session.Character.GenerateStat());

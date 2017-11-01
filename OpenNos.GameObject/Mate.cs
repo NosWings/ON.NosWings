@@ -917,6 +917,11 @@ namespace OpenNos.GameObject
             return "pski";
         }
 
+        public string GenerateRc(int heal)
+        {
+            return $"rc 2 {MateTransportId} {heal} 0";
+        }
+
         public string GenerateRest()
         {
             IsSitting = !IsSitting;
