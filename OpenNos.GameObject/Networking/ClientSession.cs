@@ -102,10 +102,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public long ClientId
-        {
-            get { return _client.ClientId; }
-        }
+        public long ClientId => _client.ClientId;
 
         public MapInstance CurrentMapInstance { get; set; }
 
@@ -121,29 +118,17 @@ namespace OpenNos.GameObject
                 _handlerMethods = value;
             }
         }
-        public bool HasCurrentMapInstance
-        {
-            get { return CurrentMapInstance != null; }
-        }
+        public bool HasCurrentMapInstance => CurrentMapInstance != null;
 
         public bool HasSelectedCharacter { get; set; }
 
-        public bool HasSession
-        {
-            get { return _client != null; }
-        }
+        public bool HasSession => _client != null;
 
-        public string IpAddress
-        {
-            get { return _client.IpAddress.Contains("tcp://") ? _client.IpAddress.Replace("tcp://", "") : _client.IpAddress; }
-        }
+        public string IpAddress => _client.IpAddress.Contains("tcp://") ? _client.IpAddress.Replace("tcp://", "") : _client.IpAddress;
 
         public bool IsAuthenticated { get; set; }
 
-        public bool IsConnected
-        {
-            get { return _client.IsConnected; }
-        }
+        public bool IsConnected => _client.IsConnected;
 
         public bool IsDisposing
         {
@@ -158,15 +143,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool IsLocalhost
-        {
-            get { return IpAddress.Contains("127.0.0.1"); }
-        }
+        public bool IsLocalhost => IpAddress.Contains("127.0.0.1");
 
-        public bool IsOnMap
-        {
-            get { return CurrentMapInstance != null; }
-        }
+        public bool IsOnMap => CurrentMapInstance != null;
 
         public int LastKeepAliveIdentity { get; set; }
 

@@ -112,30 +112,33 @@ namespace OpenNos.GameObject
         // TODO NEED A REVIEW
         public bool IsSleeping
         {
-            get { return _isSleeping; }
+            get
+            {
+                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(20) >= DateTime.Now)
+                {
+                    return _isSleeping;
+                }
+                _isSleeping = true;
+                _isSleepingRequest = false;
+                Parallel.ForEach(Monsters, m =>
+                {
+                    m.Life?.Dispose();
+                    m.Life = null;
+                });
+                Parallel.ForEach(Npcs, m =>
+                {
+                    m.Life?.Dispose();
+                    m.Life = null;
+                });
+                return true;
+            }
             set
             {
-                if (value && !Sessions.Any())
+                if (value)
                 {
-                    return;
+                    _isSleepingRequest = true;
                 }
-                if (value && LastUnregister.AddSeconds(20) <= DateTime.Now && !Sessions.Any())
-                {
-
-                    _isSleeping = true;
-                    _isSleepingRequest = false;
-                    Parallel.ForEach(Monsters, m =>
-                    {
-                        m.Life?.Dispose();
-                        m.Life = null;
-                    });
-                    Parallel.ForEach(Npcs, m =>
-                    {
-                        m.Life?.Dispose();
-                        m.Life = null;
-                    });
-                }
-                else if (_isSleeping)
+                else
                 {
                     _isSleeping = false;
                     _isSleepingRequest = false;
@@ -305,15 +308,9 @@ namespace OpenNos.GameObject
         public List<string> GetMapItems()
         {
             List<string> packets = new List<string>();
-            Parallel.ForEach(Portals, s =>
-            {
-                packets.Add(s.GenerateGp());
-            });
-            Parallel.ForEach(ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace), s =>
-            {
-                packets.Add(s.GenerateWp());
-            });
-            Parallel.ForEach(Monsters, s =>
+            Portals.ForEach(s => packets.Add(s.GenerateGp()));
+            ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));
+            Monsters.ForEach(s =>
             {
                 packets.Add(s.GenerateIn());
                 if (s.IsBoss)
@@ -321,7 +318,7 @@ namespace OpenNos.GameObject
                     packets.Add(s.GenerateBoss());
                 }
             });
-            Parallel.ForEach(Npcs, s =>
+            Npcs.ForEach(s =>
             {
                 packets.Add(s.GenerateIn());
             });
@@ -545,7 +542,15 @@ namespace OpenNos.GameObject
 
         internal IEnumerable<Mate> GetMatesInRange(short mapX, short mapY, byte distance)
         {
-            return Mates.Where(mate => Map.GetDistance(new MapCell {X = mapX, Y = mapY}, new MapCell {X = mate.PositionX, Y = mate.PositionY}) <= distance + 1).ToList();
+            List<Mate> mates = new List<Mate>();
+            foreach (Mate mate in Mates)
+            {
+                if (Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = mate.PositionX, Y = mate.PositionY }) <= distance + 1)
+                {
+                    mates.Add(mate);
+                }
+            }
+            return mates;
         }
 
         internal void RemoveMonstersTarget(object target)
@@ -600,6 +605,14 @@ namespace OpenNos.GameObject
                     s.Offset = s.Offset > 0 ? (byte) (s.Offset - 1) : (byte) 0;
                     s.LastStart = DateTime.Now;
                 });
+                if (!Sessions.Any() && LastUnregister.AddSeconds(20) <= DateTime.Now)
+                {
+                    IsSleeping = true;
+                }
+                else if (Sessions.Any() && IsSleeping)
+                {
+                    IsSleeping = false;
+                }
                 try
                 {
                     if (Monsters.Count(s => s.IsAlive) == 0)
