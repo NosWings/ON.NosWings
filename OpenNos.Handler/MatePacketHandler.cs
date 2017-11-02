@@ -39,7 +39,11 @@ namespace OpenNos.Handler
                 }
                 return;
             }
-            Mate attacker = Session.Character.Mates.First(x => x.MateTransportId == suctlPacket.MateTransportId);
+            Mate attacker = Session.Character.Mates.FirstOrDefault(x => x.MateTransportId == suctlPacket.MateTransportId);
+            if (attacker == null)
+            {
+                return;
+            }
             NpcMonsterSkill mateSkill = null;
             if (attacker.Monster.Skills.Count <= 0)
             {
