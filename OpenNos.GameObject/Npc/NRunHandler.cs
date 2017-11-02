@@ -276,6 +276,11 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                         return;
                     }
+                    if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    {
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_JOIN_ARENA_IN_RAID"), 10));
+                        return;
+                    }
                     if (session.Character.Gold >= 500 * (1 + packet.Type))
                     {
                         session.Character.LastPortal = currentRunningSeconds;
