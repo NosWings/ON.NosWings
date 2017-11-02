@@ -1004,6 +1004,15 @@ namespace OpenNos.GameObject
 
             #endregion
 
+            if (Monster.NpcMonsterVNum == 2309)
+            {
+                totalDamage = (int) (targetCharacter.HpLoad() / 10);
+            }
+            if (Monster.NpcMonsterVNum == 1381)
+            {
+                totalDamage = (int) (targetCharacter.HpLoad() / 15);
+            }
+
             return totalDamage;
         }
 

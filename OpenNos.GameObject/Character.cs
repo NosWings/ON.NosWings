@@ -1949,6 +1949,15 @@ namespace OpenNos.GameObject
 
             #endregion
 
+            if (monsterToAttack.MonsterVNum == 2309)
+            {
+                damage = (ushort) (monsterToAttack.Monster.MaxHP / 1000);
+            }
+            if (monsterToAttack.MonsterVNum == 1381)
+            {
+                damage = (ushort) (monsterToAttack.Monster.MaxHP / 500);
+            }
+
             SkillBcards.Clear();
 
             return damage;
