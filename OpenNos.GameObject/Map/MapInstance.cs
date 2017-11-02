@@ -605,6 +605,10 @@ namespace OpenNos.GameObject
                     s.Offset = s.Offset > 0 ? (byte) (s.Offset - 1) : (byte) 0;
                     s.LastStart = DateTime.Now;
                 });
+                if (!Sessions.Any() && LastUnregister.AddSeconds(20) <= DateTime.Now)
+                {
+                    IsSleeping = true;
+                }
                 try
                 {
                     if (Monsters.Count(s => s.IsAlive) == 0)
