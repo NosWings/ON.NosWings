@@ -2400,7 +2400,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId)
+                    if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId || Mates.Any(m => m.IsTeamMember && m.MateTransportId == monsterToAttack.MatesDamageList.FirstOrDefault().Key))
                     {
                         GenerateXp(monsterToAttack, true);
                     }
