@@ -2387,7 +2387,7 @@ namespace OpenNos.GameObject
                 {
                     foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
                     {
-                        if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
+                        if (grp.IsMemberOfGroup(monsterToAttack.DamageList?.FirstOrDefault().Key ?? -1))
                         {
                             targetSession.Character.GenerateXp(monsterToAttack, true);
                         }
@@ -2400,7 +2400,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId || Mates.Any(m => m.IsTeamMember && m.MateTransportId == monsterToAttack.MatesDamageList.FirstOrDefault().Key))
+                    if (monsterToAttack.DamageList?.FirstOrDefault().Key == CharacterId || Mates.Any(m => m.IsTeamMember && m.MateTransportId == monsterToAttack.MatesDamageList?.FirstOrDefault().Key))
                     {
                         GenerateXp(monsterToAttack, true);
                     }
