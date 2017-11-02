@@ -44,6 +44,8 @@ namespace OpenNos.GameObject
 
         public Mate(Character owner, NpcMonster npcMonster, byte level, MateType matetype)
         {
+            Buffs = new ConcurrentBag<Buff>();
+            SkillBcards = new ConcurrentBag<BCard>();
             NpcMonsterVNum = npcMonster.NpcMonsterVNum;
             Monster = npcMonster;
             Level = level;
