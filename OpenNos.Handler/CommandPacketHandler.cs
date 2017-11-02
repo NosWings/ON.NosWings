@@ -611,7 +611,7 @@ namespace OpenNos.Handler
                         Reason = banPacket.Reason,
                         Penalty = PenaltyType.Banned,
                         DateStart = DateTime.Now,
-                        DateEnd = banPacket.Duration == 0 ? DateTime.Now.AddYears(15) : DateTime.Now.AddDays(banPacket.Duration),
+                        DateEnd = banPacket.Duration == 0 ? DateTime.Now.AddYears(15) : DateTime.Now.AddDays(banPacket.Duration > 999 ? 999 : banPacket.Duration),
                         AdminName = Session.Character.Name
                     };
                     Session.Character.InsertOrUpdatePenalty(log);
