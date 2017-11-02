@@ -65,6 +65,7 @@ namespace OpenNos.GameObject.Helpers
         public BCard ShellToBCards(EquipmentOptionDTO option, short itemVNum)
         {
             BCard bCard = new BCard();
+            bCard.ItemVNum = itemVNum;
 
             switch ((ShellOptionType) option.Type)
             {
