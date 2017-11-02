@@ -5,6 +5,7 @@ using OpenNos.GameObject;
 using System;
 using System.Linq;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Packets.ClientPackets;
 
 namespace OpenNos.Handler
@@ -84,24 +85,22 @@ namespace OpenNos.Handler
 
         public void AttackMonster(Mate attacker, NpcMonsterSkill skill, MapMonster target)
         {
-            if (target == null || attacker == null)
+            if (target == null || attacker == null || !target.IsAlive || skill?.Skill?.MpCost > attacker.Mp)
             {
                 return;
             }
-            if (target.CurrentHp > 0)
+            if (skill == null)
             {
-                int dmg = 100; //TEST
-                if (skill == null)
+                skill = new NpcMonsterSkill
                 {
-                    Session?.CurrentMapInstance?.Broadcast($"ct 2 {attacker.MateTransportId} 3 {target.MapMonsterId} -1 -1 0");
-                    target.CurrentHp -= dmg;
-                    if (target.CurrentHp <= 0)
-                    {
-                            target.KillMonster(attacker.Owner?.Faction ?? FactionType.Neutral);
-                    }
-                    Session?.CurrentMapInstance?.Broadcast($"su 2 {attacker.MateTransportId} 3 {target.MapMonsterId} 0 12 11 200 0 0 {(target.IsAlive ? 1 : 0)} {(int) ((double) target.CurrentHp / target.Monster.MaxHP * 100)} {dmg} 0 0");
-                }
+                    SkillVNum = 200
+                };
             }
+            attacker.LastSkillUse = DateTime.Now;
+            attacker.Mp -= skill.Skill == null ? 0 : skill.Skill.MpCost;
+            target.Monster.BCards.Where(s => s.CastType == 1).ToList().ForEach(s => s.ApplyBCards(attacker));
+            Session.CurrentMapInstance?.Broadcast($"ct 2 {attacker.MateTransportId} 3 {target.MapMonsterId} {skill.Skill?.CastAnimation} {skill.Skill?.CastEffect} {skill.Skill?.SkillVNum}");
+            target.HitQueue.Enqueue(new HitRequest(UserType.Npc, attacker.MateTransportId,TargetHitType.SingleTargetHit, Session, skill.Skill, skill.Skill?.Effect));
         }
 
         public void AttackCharacter(Mate attacker, NpcMonsterSkill skill, Character target)
