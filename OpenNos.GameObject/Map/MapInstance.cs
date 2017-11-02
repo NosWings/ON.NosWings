@@ -119,7 +119,7 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                if (value && LastUnregister.AddSeconds(20) >= DateTime.Now && !Sessions.Any())
+                if (value && LastUnregister.AddSeconds(20) <= DateTime.Now && !Sessions.Any())
                 {
 
                     _isSleeping = true;
