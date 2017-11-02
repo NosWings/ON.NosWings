@@ -1968,6 +1968,8 @@ namespace OpenNos.GameObject
 
             int damage = 0;
 
+            long targetId = -1;
+            SessionType targetType = SessionType.Character;
             if (target is Character character)
             {
                 if (!character.HasGodMode)
@@ -1979,16 +1981,18 @@ namespace OpenNos.GameObject
                     character.IsSitting = false;
                     MapInstance.Broadcast(character.GenerateRest());
                 }
+                targetId = character.CharacterId;
             }
             else if (target is Mate mate)
             {
-
                 damage = npcMonsterSkill != null ? GenerateDamage(mate, npcMonsterSkill.Skill, ref hitmode) : GenerateDamage(mate, null, ref hitmode);
                 if (mate.IsSitting)
                 {
                     mate.IsSitting = false;
                     MapInstance.Broadcast(mate.GenerateRest());
                 }
+                targetType = SessionType.Mate;
+                targetId = mate.MateTransportId;
             }
 
             if (npcMonsterSkill != null)
@@ -2000,7 +2004,7 @@ namespace OpenNos.GameObject
                 }
                 npcMonsterSkill.LastSkillUse = DateTime.Now;
                 CurrentMp -= npcMonsterSkill.Skill.MpCost;
-                MapInstance.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
+                MapInstance.Broadcast($"ct 3 {MapMonsterId} {(byte) targetType} {targetId} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
             }
             LastMove = DateTime.Now;
 
