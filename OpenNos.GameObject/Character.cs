@@ -1230,6 +1230,14 @@ namespace OpenNos.GameObject
 
         public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
+            if (monsterToAttack.MonsterVNum == 2309)
+            {
+                return((ushort)(monsterToAttack.Monster.MaxHP / 1000));
+            }
+            if (monsterToAttack.MonsterVNum == 1381)
+            {
+                return ((ushort)(monsterToAttack.Monster.MaxHP / 500));
+            }
             #region Definitions
 
             if (monsterToAttack == null)
@@ -1948,15 +1956,6 @@ namespace OpenNos.GameObject
             }
 
             #endregion
-
-            if (monsterToAttack.MonsterVNum == 2309)
-            {
-                damage = (ushort) (monsterToAttack.Monster.MaxHP / 1000);
-            }
-            if (monsterToAttack.MonsterVNum == 1381)
-            {
-                damage = (ushort) (monsterToAttack.Monster.MaxHP / 500);
-            }
 
             SkillBcards.Clear();
 

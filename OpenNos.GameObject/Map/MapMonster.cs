@@ -472,6 +472,15 @@ namespace OpenNos.GameObject
         /// <returns></returns>
         private int GenerateDamage(Character targetCharacter, Skill skill, ref int hitmode)
         {
+            if (Monster.NpcMonsterVNum == 2309)
+            {
+                return((int)(targetCharacter.HpLoad() / 10));
+            }
+            if (Monster.NpcMonsterVNum == 1381)
+            {
+                return((int)(targetCharacter.HpLoad() / 15));
+            }
+
             #region Definitions
 
             if (targetCharacter == null)
@@ -1003,15 +1012,6 @@ namespace OpenNos.GameObject
             }
 
             #endregion
-
-            if (Monster.NpcMonsterVNum == 2309)
-            {
-                totalDamage = (int) (targetCharacter.HpLoad() / 10);
-            }
-            if (Monster.NpcMonsterVNum == 1381)
-            {
-                totalDamage = (int) (targetCharacter.HpLoad() / 15);
-            }
 
             return totalDamage;
         }
