@@ -19,6 +19,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -165,12 +166,12 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if (session.HasCurrentMapInstance && _sessions.Count == 0)
-            {
-                session.CurrentMapInstance.IsSleeping = true;
-            }
             Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             LastUnregister = DateTime.Now;
+            Observable.Timer(TimeSpan.FromSeconds(20)).Subscribe(s =>
+            {
+                session.CurrentMapInstance.IsSleeping = true;
+            });
         }
 
         private void SpreadBroadcastpacket(BroadcastPacket sentPacket)
