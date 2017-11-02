@@ -36,7 +36,7 @@ namespace OpenNos.Handler
             switch (rdPacket.Type)
             {
                 case 1: //Join
-                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance || Session.CurrentMapInstance.MapInstanceType == MapInstanceType.ArenaInstance)
                     {
                         return;
                     }
