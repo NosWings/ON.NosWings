@@ -57,11 +57,11 @@ namespace OpenNos.Handler
             switch (suctlPacket.TargetType)
             {
                 case UserType.Monster:
-                    /*if (attacker.Hp > 0)
+                    if (attacker.Hp > 0)
                     {
                         MapMonster target = Session?.CurrentMapInstance?.GetMonster(suctlPacket.TargetId);
                         AttackMonster(attacker, mateSkill, target);
-                    }*/
+                    }
                     return;
 
                 case UserType.Npc:
