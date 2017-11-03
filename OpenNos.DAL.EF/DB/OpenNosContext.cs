@@ -99,6 +99,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Portal> Portal { get; set; }
 
+        public virtual DbSet<Quest> Quest { get; set; }
+
         public virtual DbSet<QuicklistEntry> QuicklistEntry { get; set; }
 
         public virtual DbSet<Recipe> Recipe { get; set; }

@@ -154,6 +154,7 @@
     <Compile Include="BoxItemDTO.cs" />
     <Compile Include="LogChatDTO.cs" />
     <Compile Include="LogCommandsDTO.cs" />
+    <Compile Include="QuestDTO.cs" />
     <Compile Include="RollGeneratedItemDTO.cs" />
     <Compile Include="CardDTO.cs" />
     <Compile Include="EquipmentOptionDTO.cs" />
