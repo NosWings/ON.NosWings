@@ -4440,7 +4440,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_DECREASE"), val), 11));
         }
 
-        public void GetGold(long val)
+        public void GetGold(long val, bool isQuest = false)
         {
             Session.Character.Gold += val;
             if (Session.Character.Gold > ServerManager.Instance.MaxGold)
@@ -4448,7 +4448,14 @@ namespace OpenNos.GameObject
                 Session.Character.Gold = ServerManager.Instance.MaxGold;
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
             }
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(1046).Name} x {val}", 10));
+            if (isQuest)
+            {
+                Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("Quest reward : ")}: [ {ServerManager.Instance.GetItem(1046).Name} x {val} ]", 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(1046).Name} x {val}", 10));
+            }
             Session.SendPacket(Session.Character.GenerateGold());
         }
 
@@ -4578,7 +4585,7 @@ namespace OpenNos.GameObject
             return Reput <= 5000000 ? 26 : 27;
         }
 
-        public void GiftAdd(short itemVNum, byte amount, short design = 0, byte upgrade = 0, sbyte rare = 0)
+        public void GiftAdd(short itemVNum, byte amount, short design = 0, byte upgrade = 0, sbyte rare = 0, bool isQuest = false)
         {
             //TODO add the rare support
             if (Inventory == null)
@@ -4655,7 +4662,14 @@ namespace OpenNos.GameObject
                 List<ItemInstance> newInv = Inventory.AddToInventory(newItem);
                 if (newInv.Any())
                 {
-                    Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
+                    if (isQuest)
+                    {
+                        Session.SendPacket(GenerateSay($"Quest reward: [ {newItem.Item.Name} x {amount} ]", 10));
+                    }
+                    else
+                    {
+                        Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
+                    }
                 }
                 else
                 {
