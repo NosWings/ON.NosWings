@@ -444,7 +444,7 @@ namespace OpenNos.GameObject
         public void AddQuest(long questId)
         {
             Quest newQuest = ServerManager.Instance.Quests.FirstOrDefault(q => q.QuestId == questId).GetClone();
-            if (Quests.Any(q => q.QuestId == questId) || newQuest == null)
+            if (Quests.Any(q => q.QuestId == questId) || newQuest == null || Quests.Count >= 5)
             {
                 return;
             }
@@ -5117,6 +5117,25 @@ namespace OpenNos.GameObject
                 foreach (short bonusToDelete in currentlySavedBuff.Except(Buff.Select(s => s.Card.CardId)))
                 {
                     DaoFactory.StaticBuffDao.Delete(bonusToDelete, CharacterId);
+                }
+
+                //Quest
+                IEnumerable<long> currentlySavedQuest = DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).Select(s => s.QuestId);
+                foreach (long questToDelete in currentlySavedQuest.Except(Quests.Select(s => s.QuestId)))
+                {
+                    DaoFactory.CharacterQuestDao.Delete(CharacterId, questToDelete);
+                }
+                foreach (Quest qst in Quests)
+                {
+                    CharacterQuestDTO dto = new CharacterQuestDTO()
+                    {
+                        CharacterId = CharacterId,
+                        QuestId = qst.QuestId,
+                        FirstObjective = qst.FirstCurrentObjective,
+                        SecondObjective = qst.SecondCurrentObjective,
+                        ThirdObjective = qst.ThirdCurrentObjective
+                    };
+                    DaoFactory.CharacterQuestDao.InsertOrUpdate(dto);
                 }
 
                 foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
