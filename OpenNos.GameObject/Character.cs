@@ -571,7 +571,7 @@ namespace OpenNos.GameObject
                     break;
             }
 
-            if (quest.FirstCurrentObjective >= quest.FirstObjective && quest.SecondCurrentObjective >= quest.SecondObjective && quest.ThirdCurrentObjective >= quest.ThirdObjective)
+            if (quest.FirstCurrentObjective >= quest.FirstObjective && quest.SecondCurrentObjective >= (quest.SecondObjective ?? 0) && quest.ThirdCurrentObjective >= (quest.ThirdObjective ?? 0))
             {
                 isFinish = true;
             }
