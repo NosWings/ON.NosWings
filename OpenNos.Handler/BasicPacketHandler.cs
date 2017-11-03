@@ -720,6 +720,31 @@ namespace OpenNos.Handler
             }
         }
 
+        public void QtPacket(QtPacket qtPacket)
+        {
+            switch (qtPacket.Type)
+            {
+                // On Target Dest
+                case 1:
+                    Quest goToQuest = Session.Character.Quests.FirstOrDefault(q => q.QuestType == (int)QuestType.GoTo
+                    && q.FirstData == Session.CurrentMapInstance.Map.MapId
+                    && q.SecondData == Session.Character.PositionX
+                    && q.ThirdData == Session.Character.PositionY);
+
+                    if (goToQuest != null)
+                    {
+                        Session.Character.IncrementQuestObjective(goToQuest);
+                    }
+                    break;
+
+
+                // Ask for rewards
+                case 4:
+
+                    break;
+            }
+        }
+
         /// <summary>
         /// req_info packet
         /// </summary>
