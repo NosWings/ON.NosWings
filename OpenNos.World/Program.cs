@@ -194,6 +194,7 @@ namespace OpenNos.World
             DaoFactory.CharacterDao.RegisterMapping(typeof(Character)).InitializeMapper();
             DaoFactory.CharacterRelationDao.RegisterMapping(typeof(CharacterRelationDTO)).InitializeMapper();
             DaoFactory.CharacterSkillDao.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
+            DaoFactory.CharacterQuestDao.RegisterMapping(typeof(CharacterQuestDTO)).InitializeMapper();
             DaoFactory.ComboDao.RegisterMapping(typeof(ComboDTO)).InitializeMapper();
             DaoFactory.DropDao.RegisterMapping(typeof(DropDTO)).InitializeMapper();
             DaoFactory.GeneralLogDao.RegisterMapping(typeof(GeneralLogDTO)).InitializeMapper();
@@ -214,6 +215,9 @@ namespace OpenNos.World
             DaoFactory.PenaltyLogDao.RegisterMapping(typeof(PenaltyLogDTO)).InitializeMapper();
             DaoFactory.PortalDao.RegisterMapping(typeof(PortalDTO)).InitializeMapper();
             DaoFactory.PortalDao.RegisterMapping(typeof(Portal)).InitializeMapper();
+            DaoFactory.QuestDao.RegisterMapping(typeof(QuestDTO)).InitializeMapper();
+            DaoFactory.QuestDao.RegisterMapping(typeof(Quest)).InitializeMapper();
+            DaoFactory.QuestRewardDao.RegisterMapping(typeof(QuestRewardDTO)).InitializeMapper();
             DaoFactory.QuicklistEntryDao.RegisterMapping(typeof(QuicklistEntryDTO)).InitializeMapper();
             DaoFactory.RecipeDao.RegisterMapping(typeof(Recipe)).InitializeMapper();
             DaoFactory.RecipeItemDao.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
