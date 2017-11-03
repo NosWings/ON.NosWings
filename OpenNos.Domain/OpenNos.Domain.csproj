@@ -149,6 +149,7 @@
     <Compile Include="FactionType.cs" />
     <Compile Include="FixedUpMode.cs" />
     <Compile Include="LoginFailType.cs" />
+    <Compile Include="QuestRewardType.cs" />
     <Compile Include="QuestType.cs" />
     <Compile Include="SessionType.cs" />
     <Compile Include="ShellOptionType.cs" />
