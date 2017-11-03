@@ -441,6 +441,12 @@ namespace OpenNos.GameObject
 
         #region Methods
 
+        public string GenerateQuestsPacket()
+        {
+            byte i = 0;
+            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {i++}.{quest.QuestId}.{quest.QuestId}.{quest.QuestType}.{quest.FirstCurrentObjective}.{quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondCurrentObjective}.{quest.SecondObjective ?? 0}.{quest.ThirdCurrentObjective}.{quest.ThirdObjective ?? 0}.0.0.0.0.1")}";
+        }
+
         public void LoadQuests()
         {
             Quests = new List<Quest>();
