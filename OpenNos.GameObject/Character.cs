@@ -581,6 +581,26 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool CustomQuestRewards(QuestType type)
+        {
+            switch (type)
+            {
+                case QuestType.FlowerQuest:
+                    if (ServerManager.Instance.RandomNumber() < 50)
+                    {
+                        AddBuff(new Buff(378, Level));
+                    }
+                    else
+                    {
+                        AddBuff(new Buff(379, Level));
+                    }
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         public void LoadQuests()
         {
             Quests = new List<Quest>();
