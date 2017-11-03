@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public byte QuestTypeId { get; set; }
+        public Guid Id { get; set; }
 
         public int FirstCurrentObjective { get; set; }
 
@@ -32,6 +32,8 @@ namespace OpenNos.GameObject
         public bool RewardInWaiting { get; set; }
 
         public List<QuestRewardDTO> QuestRewards { get; set; }
+
+        public byte QuestTypeId { get; set; }
 
         #endregion
 

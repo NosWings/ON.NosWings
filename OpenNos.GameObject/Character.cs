@@ -620,6 +620,7 @@ namespace OpenNos.GameObject
                 {
                     continue;
                 }
+                quest.Id = characterQuest.Id;
                 quest.FirstCurrentObjective = characterQuest.FirstObjective ?? 0;
                 quest.FirstCurrentObjective = characterQuest.SecondObjective ?? 0;
                 quest.FirstCurrentObjective = characterQuest.ThirdObjective ?? 0;
@@ -5315,6 +5316,7 @@ namespace OpenNos.GameObject
                 {
                     CharacterQuestDTO dto = new CharacterQuestDTO()
                     {
+                        Id = qst.Id,
                         CharacterId = CharacterId,
                         QuestId = qst.QuestId,
                         FirstObjective = qst.FirstCurrentObjective,
