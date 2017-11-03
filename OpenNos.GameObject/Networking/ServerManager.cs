@@ -209,6 +209,8 @@ namespace OpenNos.GameObject
 
         public bool InShutdown { get; set; }
 
+        public List<Quest> Quests { get; set; }
+
         #endregion
 
         #region Methods
@@ -1194,6 +1196,19 @@ namespace OpenNos.GameObject
                 Cards.Add(card);
             }
 
+
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), Skills.Count));
+
+
+            // initialize quests
+            Quests = new List<Quest>();
+            foreach (QuestDTO questdto in DaoFactory.QuestDao.LoadAll())
+            {
+                Quest quest = (Quest)questdto;
+                quest.QuestRewards = new List<QuestRewardDTO>();
+                DaoFactory.QuestRewardDao.LoadByQuestId(quest.QuestId).ToList().ForEach(o => quest.QuestRewards.Add(o));
+                Quests.Add(quest);
+            }
 
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), Skills.Count));
 

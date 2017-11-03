@@ -62,6 +62,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<QuestRewardDTO> LoadByQuestId(long questId)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                foreach (QuestReward reward in context.QuestReward.Where(s => s.QuestId == questId))
+                {
+                    yield return _mapper.Map<QuestRewardDTO>(reward);
+                }
+            }
+        }
+
         #endregion
     }
 }
