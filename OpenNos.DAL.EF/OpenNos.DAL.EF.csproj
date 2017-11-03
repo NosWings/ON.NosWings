@@ -175,6 +175,8 @@
     <Compile Include="BazaarItemDAO.cs" />
     <Compile Include="BCardDAO.cs" />
     <Compile Include="CardDAO.cs" />
+    <Compile Include="CharacterQuestDAO.cs" />
+    <Compile Include="Entities\CharacterQuest.cs" />
     <Compile Include="Entities\LogChat.cs" />
     <Compile Include="Entities\LogCommands.cs" />
     <Compile Include="Entities\LogPlayerAction.cs" />

@@ -30,6 +30,7 @@ namespace OpenNos.DAL
         private static ICharacterDAO _characterDao;
         private static ICharacterRelationDAO _characterRelationDao;
         private static ICharacterSkillDAO _characterskillDao;
+        private static ICharacterQuestDAO _characterQuestDao;
         private static IComboDAO _comboDao;
         private static IDropDAO _dropDao;
         private static IFamilyCharacterDAO _familycharacterDao;
@@ -108,6 +109,11 @@ namespace OpenNos.DAL
         public static ICharacterSkillDAO CharacterSkillDao
         {
             get { return _characterskillDao ?? (_characterskillDao = new CharacterSkillDAO()); }
+        }
+
+        public static ICharacterQuestDAO CharacterQuestDao
+        {
+            get { return _characterQuestDao ?? (_characterQuestDao = new CharacterQuestDAO()); }
         }
 
         public static IComboDAO ComboDao

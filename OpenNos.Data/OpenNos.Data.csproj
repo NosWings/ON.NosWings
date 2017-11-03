@@ -152,6 +152,7 @@
     <Compile Include="BazaarItemDTO.cs" />
     <Compile Include="BCardDTO.cs" />
     <Compile Include="BoxItemDTO.cs" />
+    <Compile Include="CharacterQuestDTO.cs" />
     <Compile Include="LogChatDTO.cs" />
     <Compile Include="LogCommandsDTO.cs" />
     <Compile Include="QuestDTO.cs" />

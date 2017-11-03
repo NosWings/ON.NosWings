@@ -152,6 +152,7 @@
     <Compile Include="IBazaarItemDAO.cs" />
     <Compile Include="IBCardDAO.cs" />
     <Compile Include="ICardDAO.cs" />
+    <Compile Include="ICharacterQuestDAO.cs" />
     <Compile Include="IFamilyCharacterDAO.cs" />
     <Compile Include="IFamilyDAO.cs" />
     <Compile Include="IFamilyLogDAO.cs" />
