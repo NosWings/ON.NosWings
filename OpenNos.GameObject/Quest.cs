@@ -20,6 +20,8 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public byte QuestTypeId { get; set; }
+
         public int FirstCurrentObjective { get; set; }
 
         public int SecondCurrentObjective { get; set; }

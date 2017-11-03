@@ -452,6 +452,15 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateQuestsPacket());
         }
 
+        public void RemoveQuest(long questId)
+        {
+            if (Quests.Any(q => q.QuestId == questId))
+            {
+                Quests.Remove(Quests.FirstOrDefault(q => q.QuestId == questId));
+                Session.SendPacket(GenerateQuestsPacket());
+            }
+        }
+
         public string GenerateQuestsPacket()
         {
             byte i = 0;
