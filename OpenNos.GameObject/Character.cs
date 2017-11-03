@@ -448,15 +448,24 @@ namespace OpenNos.GameObject
             {
                 return;
             }
+            if (newQuest.TargetMap == MapInstance.Map.MapId)
+            {
+                Session.SendPacket(newQuest.TargetPacket());
+            }
             Quests.Add(newQuest);
             Session.SendPacket(GenerateQuestsPacket());
         }
 
         public void RemoveQuest(long questId)
         {
-            if (Quests.Any(q => q.QuestId == questId))
+            Quest questToRemove = Quests.FirstOrDefault(q => q.QuestId == questId);
+            if (questToRemove != null)
             {
-                Quests.Remove(Quests.FirstOrDefault(q => q.QuestId == questId));
+                if (questToRemove.TargetMap == MapInstance.Map.MapId)
+                {
+                    Session.SendPacket(questToRemove.RemoveTargetPacket());
+                }
+                Quests.Remove(questToRemove);
                 Session.SendPacket(GenerateQuestsPacket());
             }
         }

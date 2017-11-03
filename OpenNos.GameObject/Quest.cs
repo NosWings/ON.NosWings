@@ -70,6 +70,16 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string TargetPacket()
+        {
+            return $"target {TargetX} {TargetY} {TargetMap} {QuestId}";
+        }
+
+        public string RemoveTargetPacket()
+        {
+            return $"targetoff {TargetX} {TargetY} {TargetMap} {QuestId}";
+        }
+
         #endregion
 
     }

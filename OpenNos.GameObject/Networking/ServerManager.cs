@@ -747,6 +747,7 @@ namespace OpenNos.GameObject
                     e.Item2.Add(session.Character.CharacterId);
                     EventHelper.Instance.RunEvent(e.Item1, session);
                 });
+                session.Character.Quests.Where(q => q.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.TargetPacket()));
             }
             catch (Exception)
             {
