@@ -1198,7 +1198,7 @@ namespace OpenNos.GameObject
             }
 
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), Skills.Count));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), Cards.Count));
 
 
             // initialize quests
@@ -1211,7 +1211,7 @@ namespace OpenNos.GameObject
                 Quests.Add(quest);
             }
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), Skills.Count));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("QUESTS_LOADED"), Quests.Count));
 
             // intialize mapnpcs
             _mapNpcs = new ConcurrentDictionary<short, List<MapNpc>>();

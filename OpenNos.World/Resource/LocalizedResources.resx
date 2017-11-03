@@ -1039,6 +1039,12 @@
   <data name="MAPNPCS_LOADED" xml:space="preserve">
     <value>{0} MapNpcs loaded!</value>
   </data>
+  <data name="QUESTS_LOADED" xml:space="preserve">
+    <value>{0} Quests loaded!</value>
+  </data>
+  <data name="CARDS_LOADED" xml:space="preserve">
+    <value>{0} Cards loaded!</value>
+  </data>
   <data name="POINTS_RESET" xml:space="preserve">
     <value>Specialist points reseted!</value>
   </data>

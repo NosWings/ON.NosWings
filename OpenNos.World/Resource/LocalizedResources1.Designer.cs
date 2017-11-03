@@ -19,7 +19,7 @@ namespace OpenNos.World.Resource {
     // à l'aide d'un outil, tel que ResGen ou Visual Studio.
     // Pour ajouter ou supprimer un membre, modifiez votre fichier .ResX, puis réexécutez ResGen
     // avec l'option /str ou régénérez votre projet VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class LocalizedResources {
@@ -750,6 +750,15 @@ namespace OpenNos.World.Resource {
         internal static string CANT_USE_THAT {
             get {
                 return ResourceManager.GetString("CANT_USE_THAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} Cards loaded!.
+        /// </summary>
+        internal static string CARDS_LOADED {
+            get {
+                return ResourceManager.GetString("CARDS_LOADED", resourceCulture);
             }
         }
         
@@ -3234,6 +3243,15 @@ namespace OpenNos.World.Resource {
         internal static string QNA_ITEM {
             get {
                 return ResourceManager.GetString("QNA_ITEM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} Quests loaded!.
+        /// </summary>
+        internal static string QUESTS_LOADED {
+            get {
+                return ResourceManager.GetString("QUESTS_LOADED", resourceCulture);
             }
         }
         
