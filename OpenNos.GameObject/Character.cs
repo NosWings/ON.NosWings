@@ -2573,10 +2573,25 @@ namespace OpenNos.GameObject
                     return;
                 }
 
+                #region Quest
+
                 if (monsterToAttack.Monster.Level + 10 > Level && Quests.Any(q => q.QuestType == (byte) QuestType.FlowerQuest))
                 {
                     IncrementQuestObjective(Quests.FirstOrDefault(q => q.QuestType == (byte) QuestType.FlowerQuest));
                 }
+
+                foreach (Quest qst in Quests.Where(q => q.QuestType == (int) QuestType.Hunt).ToList())
+                {
+                    byte data = (byte) (qst.FirstData == monsterToAttack.MonsterVNum ? 1 :
+                                       (qst.SecondData == monsterToAttack.MonsterVNum ? 2 :
+                                       (qst.ThirdData == monsterToAttack.MonsterVNum ? 3 : 0)));
+                    if (data != 0)
+                    {
+                        IncrementQuestObjective(qst, data);
+                    }
+                }
+
+                #endregion
 
                 #region exp
 
