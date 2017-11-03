@@ -381,6 +381,7 @@ namespace OpenNos.Handler
                 Session.Character.LoadInventory();
                 Session.Character.LoadQuicklists();
                 Session.Character.GenerateMiniland();
+                Session.Character.LoadQuests();
                 DaoFactory.MateDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
                 {
                     Mate mate = (Mate)s;

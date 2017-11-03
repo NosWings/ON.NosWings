@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
+using CloneExtensions;
 using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject
@@ -286,6 +287,8 @@ namespace OpenNos.GameObject
 
         public int TotalTime { get; set; }
 
+        public List<Quest> Quests { get; set; }
+
         public List<QuicklistEntryDTO> QuicklistEntries { get; private set; }
 
         public RespawnMapTypeDTO Respawn
@@ -437,6 +440,23 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public void LoadQuests()
+        {
+            Quests = new List<Quest>();
+            foreach (CharacterQuestDTO characterQuest in DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId))
+            {
+                Quest quest = ServerManager.Instance.Quests.FirstOrDefault(q => q.QuestId == characterQuest.QuestId).GetClone();
+                if (quest == null)
+                {
+                    continue;
+                }
+                quest.FirstCurrentObjective = characterQuest.FirstObjective ?? 0;
+                quest.FirstCurrentObjective = characterQuest.SecondObjective ?? 0;
+                quest.FirstCurrentObjective = characterQuest.ThirdObjective ?? 0;
+                Quests.Add(quest);
+            }
+        }
 
         public string GenerateAct6()
         {
