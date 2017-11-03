@@ -228,6 +228,7 @@
     <Compile Include="Packets\CommandPackets\StuffPack.cs" />
     <Compile Include="Packets\CommandPackets\WarningPacket.cs" />
     <Compile Include="Packets\ServerPackets\TalkPacket.cs" />
+    <Compile Include="Quest.cs" />
     <Compile Include="ScriptedInstance.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
