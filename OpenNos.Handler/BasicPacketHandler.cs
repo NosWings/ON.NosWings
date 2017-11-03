@@ -1313,6 +1313,10 @@ namespace OpenNos.Handler
             {
                 Session.Character.ConnectAct4();
             }
+            if (Session.Character.Quests.Any())
+            {
+                Session.SendPacket(Session.Character.GenerateQuestsPacket());
+            }
         }
 
         /// <summary>
