@@ -467,6 +467,120 @@ namespace OpenNos.GameObject
             return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {i++}.{quest.QuestId}.{quest.QuestId}.{quest.QuestType}.{quest.FirstCurrentObjective}.{quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondCurrentObjective}.{quest.SecondObjective ?? 0}.{quest.ThirdCurrentObjective}.{quest.ThirdObjective ?? 0}.0.0.0.0.1")}";
         }
 
+        public void IncrementQuestObjective(Quest quest, byte data = 0)
+        {
+            bool isFinish = false;
+            if (quest == null || Quests.All(q => q != quest))
+            {
+                return;
+            }
+            switch ((QuestType)quest.QuestType)
+            {
+                case QuestType.Brings:
+                    break;
+
+                case QuestType.Capture1:
+                case QuestType.Capture2:
+                    quest.FirstCurrentObjective++;
+                    break;
+
+                case QuestType.Collect1:
+                case QuestType.Collect2:
+                case QuestType.Collect3:
+                case QuestType.Collect4:
+                case QuestType.Collect5:
+                    break;
+
+                case QuestType.Dialog1:
+                case QuestType.Dialog2:
+                    isFinish = true;
+                    break;
+
+                case QuestType.FlowerQuest:
+                    quest.FirstCurrentObjective++;
+                    break;
+
+                case QuestType.GoTo:
+                    if (quest.FirstData == MapInstance.Map.MapId && quest.SecondData == PositionX && quest.ThirdData == PositionY)
+                    {
+                        isFinish = true;
+                    }
+                    break;
+
+                case QuestType.Hunt:
+                    switch (data)
+                    {
+                        case 1:
+                            quest.FirstCurrentObjective++;
+                            break;
+
+                        case 2:
+                            quest.SecondCurrentObjective++;
+                            break;
+
+                        case 3:
+                            quest.ThirdCurrentObjective++;
+                            break;
+                    }
+                    break;
+
+                case QuestType.Inspect:
+                    break;
+
+                case QuestType.Make:
+                    break;
+
+                case QuestType.Needed:
+                    break;
+
+                case QuestType.NumberOfKill:
+                    break;
+
+                case QuestType.TsPoint:
+                    break;
+
+                case QuestType.TargetReput:
+                    break;
+
+                case QuestType.TimesSpace:
+                    isFinish = true;
+                    break;
+
+                case QuestType.TransmitGold:
+                    break;
+
+                case QuestType.Use:
+                    break;
+
+                case QuestType.WinRaid:
+                    break;
+
+                case QuestType.YouNeed:
+                    break;
+
+                case QuestType.Wear:
+                    break;
+            }
+
+            if (quest.FirstCurrentObjective >= quest.FirstObjective && quest.SecondCurrentObjective >= quest.SecondObjective && quest.ThirdCurrentObjective >= quest.ThirdObjective)
+            {
+                isFinish = true;
+            }
+
+            Session.SendPacket($"qsti {quest.QuestTypeId}.{quest.QuestId}.{quest.QuestId}.{quest.QuestType}.{quest.FirstCurrentObjective}.{quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondCurrentObjective}.{quest.SecondObjective}.{quest.ThirdCurrentObjective}.{quest.ThirdObjective}.0.0.0.0.0");
+
+            if (isFinish)
+            {
+                if (CustomQuestRewards((QuestType) quest.QuestType))
+                {
+                    RemoveQuest(quest.QuestId);
+                    return;
+                }
+                quest.GetRewardPacket(this);
+                RemoveQuest(quest.QuestId);
+            }
+        }
+
         public void LoadQuests()
         {
             Quests = new List<Quest>();
