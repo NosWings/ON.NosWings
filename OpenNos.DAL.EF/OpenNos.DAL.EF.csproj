@@ -181,6 +181,7 @@
     <Compile Include="Entities\LogCommands.cs" />
     <Compile Include="Entities\LogPlayerAction.cs" />
     <Compile Include="Entities\Quest.cs" />
+    <Compile Include="Entities\QuestReward.cs" />
     <Compile Include="Entities\RollGeneratedItem.cs" />
     <Compile Include="Entities\Mate.cs" />
     <Compile Include="Entities\ScriptedInstance.cs" />
@@ -264,6 +265,7 @@
       <DependentUpon>201710301242402_Aphrodite73.cs</DependentUpon>
     </Compile>
     <Compile Include="QuestDAO.cs" />
+    <Compile Include="QuestRewardDAO.cs" />
     <Compile Include="RollGeneratedItemDAO.cs" />
     <Compile Include="MateDAO.cs" />
     <Compile Include="Migrations\201702072152008_Aphrodite22.cs" />

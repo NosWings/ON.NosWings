@@ -103,6 +103,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Quest> Quest { get; set; }
 
+        public virtual DbSet<QuestReward> QuestReward { get; set; }
+
         public virtual DbSet<QuicklistEntry> QuicklistEntry { get; set; }
 
         public virtual DbSet<Recipe> Recipe { get; set; }
