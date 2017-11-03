@@ -60,6 +60,7 @@ namespace OpenNos.GameObject
                         character.GiftAdd((short) reward.Data, (byte) (reward.Amount == 0 ? 1 : reward.Amount), isQuest: true);
                         return $"{reward.RewardType} {reward.Data} {(reward.Amount == 0 ? 1 : reward.Amount)}";
 
+                    //Gold
                     case QuestRewardType.Gold:
                         character.GetGold(reward.Amount, true);
                         return $"{reward.RewardType} 0 {(reward.Amount == 0 ? 1 : reward.Amount)}";

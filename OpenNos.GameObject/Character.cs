@@ -2573,6 +2573,11 @@ namespace OpenNos.GameObject
                     return;
                 }
 
+                if (monsterToAttack.Monster.Level + 10 > Level && Quests.Any(q => q.QuestType == (byte) QuestType.FlowerQuest))
+                {
+                    IncrementQuestObjective(Quests.FirstOrDefault(q => q.QuestType == (byte) QuestType.FlowerQuest));
+                }
+
                 #region exp
 
                 if (Hp <= 0)
