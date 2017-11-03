@@ -441,6 +441,17 @@ namespace OpenNos.GameObject
 
         #region Methods
 
+        public void AddQuest(long questId)
+        {
+            Quest newQuest = ServerManager.Instance.Quests.FirstOrDefault(q => q.QuestId == questId).GetClone();
+            if (Quests.Any(q => q.QuestId == questId) || newQuest == null)
+            {
+                return;
+            }
+            Quests.Add(newQuest);
+            Session.SendPacket(GenerateQuestsPacket());
+        }
+
         public string GenerateQuestsPacket()
         {
             byte i = 0;
