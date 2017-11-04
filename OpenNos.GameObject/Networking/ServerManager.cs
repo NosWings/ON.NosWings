@@ -885,6 +885,11 @@ namespace OpenNos.GameObject
             return Skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
         }
 
+        public Quest GetQuest(long questId)
+        {
+            return Quests.FirstOrDefault(m => m.QuestId.Equals(questId));
+        }
+
         public T GetUserMethod<T>(long characterId, string methodName)
         {
             ClientSession session = GetSessionByCharacterId(characterId);
