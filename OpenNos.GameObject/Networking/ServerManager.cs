@@ -552,6 +552,7 @@ namespace OpenNos.GameObject
                 {
                     session.Character.CloseShop();
                 }
+                session.Character.Quests.Where(q => q.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.RemoveTargetPacket()));
                 session.Character.LeaveTalentArena();
                 session.CurrentMapInstance.RemoveMonstersTarget(session.Character);
                 session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(mate => session.CurrentMapInstance.RemoveMonstersTarget(mate));
