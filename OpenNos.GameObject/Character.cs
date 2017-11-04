@@ -586,7 +586,7 @@ namespace OpenNos.GameObject
                     RemoveQuest(quest.QuestId);
                     return;
                 }
-                quest.Quest.GetRewardPacket(this);
+                Session.SendPacket(quest.Quest.GetRewardPacket(this));
                 RemoveQuest(quest.QuestId);
             }
         }
