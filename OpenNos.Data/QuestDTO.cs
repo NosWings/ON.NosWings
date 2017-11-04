@@ -32,6 +32,8 @@ namespace OpenNos.Data
 
         public short? TargetY { get; set; }
 
+        public long? NextQuestId { get; set; }
+
         #endregion
     }
 }
