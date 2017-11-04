@@ -49,6 +49,16 @@ namespace OpenNos.Handler
 
         #region Methods
 
+        public void AddQuest(AddQuestPacket addQuestPacket)
+        {
+            if (ServerManager.Instance.Quests.Any(q => q.QuestId == addQuestPacket.QuestId))
+            {
+                Session.Character.AddQuest(addQuestPacket.QuestId);
+                return;
+            }
+            Session.SendPacket(Session.Character.GenerateSay("This Quest doesn't exist", 10));
+        }
+
         /// <summary>
         /// $CreateRaid
         /// </summary>
