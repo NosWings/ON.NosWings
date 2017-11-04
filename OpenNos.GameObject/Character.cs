@@ -478,7 +478,7 @@ namespace OpenNos.GameObject
         {
             short i = 0;
             Quests.ForEach(qst => qst.QuestNumber = i++);
-            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.QuestId}.{quest.QuestId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.Quest.ThirdObjective ?? 0}.{quest.ThirdObjective}.0.0.0.0.0")}";
+            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.Quest.ThirdObjective ?? 0}.{quest.ThirdObjective}.0.0.0.0.0")}";
         }
 
         public void IncrementQuestObjective(CharacterQuest quest, byte data = 0)
@@ -581,7 +581,7 @@ namespace OpenNos.GameObject
                 isFinish = true;
             }
 
-            Session.SendPacket($"qsti {quest.QuestNumber}.{quest.QuestId}.{quest.QuestId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.0.0.0.0.0");
+            Session.SendPacket($"qsti {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.0.0.0.0.0");
 
             if (isFinish)
             {
