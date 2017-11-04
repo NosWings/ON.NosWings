@@ -1039,6 +1039,7 @@ namespace OpenNos.GameObject
                         Session.SendPacket(GenerateEff(4344));
                         AddBuff(new Buff(534, Level));
                         RemoveBuff(533);
+                        RemoveBuff(532);
                         MeditationDictionary.Remove(534);
                     }
                     else if (MeditationDictionary.ContainsKey(533) && MeditationDictionary[533] < DateTime.Now)
@@ -1046,6 +1047,7 @@ namespace OpenNos.GameObject
                         Session.SendPacket(GenerateEff(4343));
                         AddBuff(new Buff(533, Level));
                         RemoveBuff(532);
+                        RemoveBuff(534);
                         MeditationDictionary.Remove(533);
                     }
                     else if (MeditationDictionary.ContainsKey(532) && MeditationDictionary[532] < DateTime.Now)
@@ -1053,6 +1055,7 @@ namespace OpenNos.GameObject
                         Session.SendPacket(GenerateEff(4343));
                         AddBuff(new Buff(532, Level));
                         RemoveBuff(534);
+                        RemoveBuff(533);
                         MeditationDictionary.Remove(532);
                     }
                 }
