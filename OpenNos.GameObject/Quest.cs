@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
                 return string.Empty;
             }
 
-            return $"qr {GetRewardPacket(QuestRewards.FirstOrDefault())} {GetRewardPacket(QuestRewards.Skip(1).FirstOrDefault())} {GetRewardPacket(QuestRewards.Skip(2).FirstOrDefault())} {GetRewardPacket(QuestRewards.Skip(3).FirstOrDefault())} {QuestId}";
+            return $"qr {GetRewardPacket(QuestRewards.FirstOrDefault())} {GetRewardPacket(QuestRewards.Skip(1).FirstOrDefault())} {GetRewardPacket(QuestRewards.Skip(2).FirstOrDefault())} {GetRewardPacket(QuestRewards.Skip(3).FirstOrDefault())} {InfoId}";
 
             string GetRewardPacket(QuestRewardDTO reward)
             {
