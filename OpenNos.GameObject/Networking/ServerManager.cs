@@ -209,6 +209,10 @@ namespace OpenNos.GameObject
 
         public bool InShutdown { get; set; }
 
+        public List<Quest> Quests { get; set; }
+
+        public long? FlowerQuestId { get; set; }
+
         #endregion
 
         #region Methods
@@ -559,6 +563,7 @@ namespace OpenNos.GameObject
                 {
                     session.Character.CloseShop();
                 }
+                session.Character.Quests.Where(q => q.Quest.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.Quest.RemoveTargetPacket()));
                 session.Character.LeaveTalentArena();
                 session.CurrentMapInstance.RemoveMonstersTarget(session.Character);
                 session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(mate => session.CurrentMapInstance.RemoveMonstersTarget(mate));
@@ -754,6 +759,7 @@ namespace OpenNos.GameObject
                     e.Item2.Add(session.Character.CharacterId);
                     EventHelper.Instance.RunEvent(e.Item1, session);
                 });
+                session.Character.Quests.Where(q => q.Quest.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.Quest.TargetPacket()));
             }
             catch (Exception)
             {
@@ -888,6 +894,11 @@ namespace OpenNos.GameObject
         public Skill GetSkill(short skillVNum)
         {
             return Skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
+        }
+
+        public Quest GetQuest(long questId)
+        {
+            return Quests.FirstOrDefault(m => m.QuestId.Equals(questId));
         }
 
         public T GetUserMethod<T>(long characterId, string methodName)
@@ -1204,7 +1215,20 @@ namespace OpenNos.GameObject
             }
 
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), Skills.Count));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_LOADED"), Cards.Count));
+
+
+            // initialize quests
+            Quests = new List<Quest>();
+            foreach (QuestDTO questdto in DaoFactory.QuestDao.LoadAll())
+            {
+                Quest quest = (Quest) questdto;
+                quest.QuestRewards = DaoFactory.QuestRewardDao.LoadByQuestId(quest.QuestId).ToList();
+                Quests.Add(quest);
+            }
+            FlowerQuestId = Quests.FirstOrDefault(q => q.QuestType == (byte) QuestType.FlowerQuest)?.QuestId;
+
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("QUESTS_LOADED"), Quests.Count));
 
             // intialize mapnpcs
             _mapNpcs = new ConcurrentDictionary<short, List<MapNpc>>();

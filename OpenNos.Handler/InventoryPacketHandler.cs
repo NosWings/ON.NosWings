@@ -617,6 +617,11 @@ namespace OpenNos.Handler
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
                             Session.SendPacket(Session.Character.GenerateSpPoint());
                         }
+                        //Flower Quest
+                        if (mapItem.ItemVNum == 1086 && ServerManager.Instance.FlowerQuestId != null)
+                        {
+                            Session.Character.AddQuest((long) ServerManager.Instance.FlowerQuestId);
+                        }
                         Session.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                     }

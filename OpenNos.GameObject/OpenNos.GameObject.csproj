@@ -152,6 +152,7 @@
     <Compile Include="Buff\Buff.cs" />
     <Compile Include="Buff\BCard.cs" />
     <Compile Include="Buff\Card.cs" />
+    <Compile Include="CharacterQuest.cs" />
     <Compile Include="Event\ACT4\Act4Raid.cs" />
     <Compile Include="Event\ACT4\Act4Ship.cs" />
     <Compile Include="Event\ARENA\ArenaEvent.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="NpcToSummon.cs" />
     <Compile Include="MonsterToSummon.cs" />
     <Compile Include="Packets\ClientPackets\PslPacket.cs" />
+    <Compile Include="Packets\ClientPackets\QtPacket.cs" />
     <Compile Include="Packets\ClientPackets\TawPacket.cs" />
     <Compile Include="Packets\ClientPackets\BscPacket.cs" />
     <Compile Include="Packets\ClientPackets\BlDelPacket.cs" />
@@ -218,6 +220,7 @@
     <Compile Include="Packets\ClientPackets\UseItemPacket.cs" />
     <Compile Include="Packets\CommandPackets\Act4ConnectPacket.cs" />
     <Compile Include="Packets\CommandPackets\AddPartnerPacket.cs" />
+    <Compile Include="Packets\CommandPackets\AddQuestPacket.cs" />
     <Compile Include="Packets\CommandPackets\CharacterPacket.cs" />
     <Compile Include="Packets\CommandPackets\CreateItemPacket.cs" />
     <Compile Include="Packets\CommandPackets\CreateRaidA4.cs" />
@@ -231,6 +234,7 @@
     <Compile Include="Packets\CommandPackets\WarningPacket.cs" />
     <Compile Include="Packets\ServerPackets\TalkPacket.cs" />
     <Compile Include="Packets\VipPackets\VipCommandPacket.cs" />
+    <Compile Include="Quest.cs" />
     <Compile Include="ScriptedInstance.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />

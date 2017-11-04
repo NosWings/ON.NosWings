@@ -754,6 +754,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} Cards loaded!.
+        /// </summary>
+        internal static string CARDS_LOADED {
+            get {
+                return ResourceManager.GetString("CARDS_LOADED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You have changed the common point of return of the members of the group..
         /// </summary>
         internal static string CHANGED_SHARE {
@@ -3234,6 +3243,15 @@ namespace OpenNos.World.Resource {
         internal static string QNA_ITEM {
             get {
                 return ResourceManager.GetString("QNA_ITEM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} Quests loaded!.
+        /// </summary>
+        internal static string QUESTS_LOADED {
+            get {
+                return ResourceManager.GetString("QUESTS_LOADED", resourceCulture);
             }
         }
         

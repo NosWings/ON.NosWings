@@ -720,6 +720,31 @@ namespace OpenNos.Handler
             }
         }
 
+        public void QtPacket(QtPacket qtPacket)
+        {
+            switch (qtPacket.Type)
+            {
+                // On Target Dest
+                case 1:
+                    CharacterQuest goToQuest = Session.Character.Quests.FirstOrDefault(q => q.Quest.QuestType == (int)QuestType.GoTo
+                    && q.Quest.FirstData == Session.CurrentMapInstance.Map.MapId
+                    && q.Quest.SecondData == Session.Character.PositionX
+                    && q.Quest.ThirdData == Session.Character.PositionY);
+
+                    if (goToQuest != null)
+                    {
+                        Session.Character.IncrementQuestObjective(goToQuest);
+                    }
+                    break;
+
+
+                // Ask for rewards
+                case 4:
+
+                    break;
+            }
+        }
+
         /// <summary>
         /// req_info packet
         /// </summary>
@@ -1287,6 +1312,10 @@ namespace OpenNos.Handler
             if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4 || m.MapTypeId == (short)MapTypeEnum.Act42))
             {
                 Session.Character.ConnectAct4();
+            }
+            if (Session.Character.Quests.Any())
+            {
+                Session.SendPacket(Session.Character.GenerateQuestsPacket());
             }
         }
 

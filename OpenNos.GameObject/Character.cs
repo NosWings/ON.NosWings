@@ -286,6 +286,8 @@ namespace OpenNos.GameObject
 
         public int TotalTime { get; set; }
 
+        public List<CharacterQuest> Quests { get; set; }
+
         public List<QuicklistEntryDTO> QuicklistEntries { get; private set; }
 
         public RespawnMapTypeDTO Respawn
@@ -437,6 +439,191 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public void AddQuest(long questId)
+        {
+            CharacterQuest characterQuest = new CharacterQuest(questId, CharacterId);
+            if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || Quests.Count >= 5)
+            {
+                return;
+            }
+            if (characterQuest.Quest.TargetMap == MapInstance.Map.MapId)
+            {
+                Session.SendPacket(characterQuest.Quest.TargetPacket());
+            }
+            Quests.Add(characterQuest);
+            Session.SendPacket(GenerateQuestsPacket());
+        }
+
+        public void RemoveQuest(long questId)
+        {
+            CharacterQuest questToRemove = Quests.FirstOrDefault(q => q.QuestId == questId);
+            if (questToRemove != null)
+            {
+                if (questToRemove.Quest.TargetMap == MapInstance.Map.MapId)
+                {
+                    Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
+                }
+                Quests.Remove(questToRemove);
+                Session.SendPacket(GenerateQuestsPacket());
+                if (questToRemove.Quest.NextQuestId == null)
+                {
+                    return;
+                }
+                AddQuest((long) questToRemove.Quest.NextQuestId);
+            }
+        }
+
+        public string GenerateQuestsPacket()
+        {
+            short i = 0;
+            Quests.ForEach(qst => qst.QuestNumber = i++);
+            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.Quest.ThirdObjective ?? 0}.{quest.ThirdObjective}.0.0.0.0.0")}";
+        }
+
+        public void IncrementQuestObjective(CharacterQuest quest, byte data = 0)
+        {
+            bool isFinish = false;
+            if (quest == null || Quests.All(q => q != quest))
+            {
+                return;
+            }
+            switch ((QuestType) quest.Quest.QuestType)
+            {
+                case QuestType.Brings:
+                    break;
+
+                case QuestType.Capture1:
+                case QuestType.Capture2:
+                    quest.FirstObjective++;
+                    break;
+
+                case QuestType.Collect1:
+                case QuestType.Collect2:
+                case QuestType.Collect3:
+                case QuestType.Collect4:
+                case QuestType.Collect5:
+                    break;
+
+                case QuestType.Dialog1:
+                case QuestType.Dialog2:
+                    isFinish = true;
+                    break;
+
+                case QuestType.FlowerQuest:
+                    quest.FirstObjective++;
+                    break;
+
+                case QuestType.GoTo:
+                    if (quest.Quest.FirstData == MapInstance.Map.MapId && quest.Quest.SecondData == PositionX && quest.Quest.ThirdData == PositionY)
+                    {
+                        isFinish = true;
+                    }
+                    break;
+
+                case QuestType.Hunt:
+                    switch (data)
+                    {
+                        case 1:
+                            quest.FirstObjective++;
+                            break;
+
+                        case 2:
+                            quest.SecondObjective++;
+                            break;
+
+                        case 3:
+                            quest.ThirdObjective++;
+                            break;
+                    }
+                    break;
+
+                case QuestType.Inspect:
+                    break;
+
+                case QuestType.Make:
+                    break;
+
+                case QuestType.Needed:
+                    break;
+
+                case QuestType.NumberOfKill:
+                    break;
+
+                case QuestType.TsPoint:
+                    break;
+
+                case QuestType.TargetReput:
+                    break;
+
+                case QuestType.TimesSpace:
+                    isFinish = true;
+                    break;
+
+                case QuestType.TransmitGold:
+                    break;
+
+                case QuestType.Use:
+                    break;
+
+                case QuestType.WinRaid:
+                    break;
+
+                case QuestType.YouNeed:
+                    break;
+
+                case QuestType.Wear:
+                    break;
+            }
+
+            if (quest.FirstObjective >= quest.Quest.FirstObjective && quest.SecondObjective >= (quest.Quest.SecondObjective ?? 0) && quest.ThirdObjective >= (quest.Quest.ThirdObjective ?? 0))
+            {
+                isFinish = true;
+            }
+
+            Session.SendPacket($"qsti {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.0.0.0.0.0");
+
+            if (isFinish)
+            {
+                if (CustomQuestRewards((QuestType) quest.Quest.QuestType))
+                {
+                    RemoveQuest(quest.QuestId);
+                    return;
+                }
+                Session.SendPacket(quest.Quest.GetRewardPacket(this));
+                RemoveQuest(quest.QuestId);
+            }
+        }
+
+        public bool CustomQuestRewards(QuestType type)
+        {
+            switch (type)
+            {
+                case QuestType.FlowerQuest:
+                    if (ServerManager.Instance.RandomNumber() < 50)
+                    {
+                        AddBuff(new Buff(378, Level));
+                    }
+                    else
+                    {
+                        AddBuff(new Buff(379, Level));
+                    }
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        public void LoadQuests()
+        {
+            Quests = new List<CharacterQuest>();
+            foreach (CharacterQuestDTO characterQuest in DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId))
+            {
+                CharacterQuest quest = new CharacterQuest(characterQuest);
+                Quests.Add(quest);
+            }
+        }
 
         public string GenerateAct6()
         {
@@ -2395,6 +2582,26 @@ namespace OpenNos.GameObject
                     return;
                 }
 
+                #region Quest
+
+                if (monsterToAttack.Monster.Level + 10 > Level && Quests.Any(q => q.Quest.QuestType == (byte) QuestType.FlowerQuest))
+                {
+                    IncrementQuestObjective(Quests.FirstOrDefault(q => q.Quest.QuestType == (byte) QuestType.FlowerQuest));
+                }
+
+                foreach (CharacterQuest qst in Quests.Where(q => q.Quest.QuestType == (int) QuestType.Hunt).ToList())
+                {
+                    byte data = (byte) (qst.Quest.FirstData == monsterToAttack.MonsterVNum ? 1 :
+                                       (qst.Quest.SecondData == monsterToAttack.MonsterVNum ? 2 :
+                                       (qst.Quest.ThirdData == monsterToAttack.MonsterVNum ? 3 : 0)));
+                    if (data != 0)
+                    {
+                        IncrementQuestObjective(qst, data);
+                    }
+                }
+
+                #endregion
+
                 #region exp
 
                 if (Hp <= 0)
@@ -4292,7 +4499,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_DECREASE"), val), 11));
         }
 
-        public void GetGold(long val)
+        public void GetGold(long val, bool isQuest = false)
         {
             Session.Character.Gold += val;
             if (Session.Character.Gold > ServerManager.Instance.MaxGold)
@@ -4300,7 +4507,14 @@ namespace OpenNos.GameObject
                 Session.Character.Gold = ServerManager.Instance.MaxGold;
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
             }
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(1046).Name} x {val}", 10));
+            if (isQuest)
+            {
+                Session.SendPacket(GenerateSay($"Quest reward: [ {ServerManager.Instance.GetItem(1046).Name} x {val} ]", 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(1046).Name} x {val}", 10));
+            }
             Session.SendPacket(Session.Character.GenerateGold());
         }
 
@@ -4430,7 +4644,7 @@ namespace OpenNos.GameObject
             return Reput <= 5000000 ? 26 : 27;
         }
 
-        public void GiftAdd(short itemVNum, byte amount, short design = 0, byte upgrade = 0, sbyte rare = 0)
+        public void GiftAdd(short itemVNum, byte amount, short design = 0, byte upgrade = 0, sbyte rare = 0, bool isQuest = false)
         {
             //TODO add the rare support
             if (Inventory == null)
@@ -4507,7 +4721,14 @@ namespace OpenNos.GameObject
                 List<ItemInstance> newInv = Inventory.AddToInventory(newItem);
                 if (newInv.Any())
                 {
-                    Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
+                    if (isQuest)
+                    {
+                        Session.SendPacket(GenerateSay($"Quest reward: [ {newItem.Item.Name} x {amount} ]", 10));
+                    }
+                    else
+                    {
+                        Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
+                    }
                 }
                 else
                 {
@@ -5093,6 +5314,26 @@ namespace OpenNos.GameObject
                 foreach (short bonusToDelete in currentlySavedBuff.Except(Buff.Select(s => s.Card.CardId)))
                 {
                     DaoFactory.StaticBuffDao.Delete(bonusToDelete, CharacterId);
+                }
+
+                //Quest
+                IEnumerable<long> currentlySavedQuest = DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).Select(s => s.QuestId);
+                foreach (long questToDelete in currentlySavedQuest.Except(Quests.Select(s => s.QuestId)))
+                {
+                    DaoFactory.CharacterQuestDao.Delete(CharacterId, questToDelete);
+                }
+                foreach (CharacterQuest qst in Quests)
+                {
+                    CharacterQuestDTO dto = new CharacterQuestDTO()
+                    {
+                        Id = qst.Id,
+                        CharacterId = CharacterId,
+                        QuestId = qst.QuestId,
+                        FirstObjective = qst.FirstObjective,
+                        SecondObjective = qst.SecondObjective,
+                        ThirdObjective = qst.ThirdObjective
+                    };
+                    DaoFactory.CharacterQuestDao.InsertOrUpdate(dto);
                 }
 
                 foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())

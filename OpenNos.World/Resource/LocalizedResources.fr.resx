@@ -1168,6 +1168,12 @@ Veux-tu le porter ?</value>
   <data name="MAPNPCS_LOADED" xml:space="preserve">
     <value>{0} Pnj sur les cartes chargés.</value>
   </data>
+  <data name="QUESTS_LOADED" xml:space="preserve">
+    <value>{0} Quêtes chargées!</value>
+  </data>
+  <data name="CARDS_LOADED" xml:space="preserve">
+    <value>{0} Buffs chargées!</value>
+  </data>
   <data name="MAPS_LOADED" xml:space="preserve">
     <value>{0} Carte chargées.</value>
   </data>
