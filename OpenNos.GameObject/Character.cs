@@ -4493,7 +4493,7 @@ namespace OpenNos.GameObject
             }
             if (isQuest)
             {
-                Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("Quest reward : ")}: [ {ServerManager.Instance.GetItem(1046).Name} x {val} ]", 10));
+                Session.SendPacket(GenerateSay($"Quest reward: [ {ServerManager.Instance.GetItem(1046).Name} x {val} ]", 10));
             }
             else
             {
