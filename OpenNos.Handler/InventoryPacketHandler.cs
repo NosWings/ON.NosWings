@@ -618,9 +618,9 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSpPoint());
                         }
                         //Flower Quest
-                        if (mapItem.ItemVNum == 1086)
+                        if (mapItem.ItemVNum == 1086 && ServerManager.Instance.FlowerQuestId != null)
                         {
-                            Session.Character.AddQuest(5981);
+                            Session.Character.AddQuest((long) ServerManager.Instance.FlowerQuestId);
                         }
                         Session.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));

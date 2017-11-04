@@ -211,6 +211,8 @@ namespace OpenNos.GameObject
 
         public List<Quest> Quests { get; set; }
 
+        public long? FlowerQuestId { get; set; }
+
         #endregion
 
         #region Methods
@@ -1225,6 +1227,7 @@ namespace OpenNos.GameObject
                 DaoFactory.QuestRewardDao.LoadByQuestId(quest.QuestId).ToList().ForEach(o => quest.QuestRewards.Add(o));
                 Quests.Add(quest);
             }
+            FlowerQuestId = Quests.FirstOrDefault(q => q.QuestType == (byte) QuestType.FlowerQuest)?.QuestId;
 
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("QUESTS_LOADED"), Quests.Count));
 
