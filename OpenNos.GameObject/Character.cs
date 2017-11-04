@@ -4537,7 +4537,7 @@ namespace OpenNos.GameObject
                 {
                     int shellSlHpMp = SpInstance.SlHP + Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
                                       Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-                    int point = CharacterHelper.Instance.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
+                    int point = CharacterHelper.Instance.SlPoint((short)(shellSlHpMp > 410 ? 410 : shellSlHpMp), 3);
 
                     if (point <= 50)
                     {
@@ -4796,7 +4796,7 @@ namespace OpenNos.GameObject
                 {
                     int shellSlHpMp = SpInstance.SlHP + Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
                                       Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-                    int point = CharacterHelper.Instance.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
+                    int point = CharacterHelper.Instance.SlPoint((short)(shellSlHpMp > 410 ? 410 : shellSlHpMp), 3);
 
                     if (point <= 50)
                     {
