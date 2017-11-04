@@ -5034,13 +5034,14 @@ namespace OpenNos.GameObject
                     mp = SpInstance.MP + SpInstance.SpHP * 100;
                 }
             }
-            multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumMP)[0] / 100D;
+            bool bearSpirit = HasBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumMP);
             multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP)[0] / 100D;
-            mp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0];
-            mp -= GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
-            mp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
-
-            return (int)((CharacterHelper.Instance.MpData[(byte)Class, Level] + mp) * multiplicator);
+            mp += CharacterHelper.Instance.MpData[(byte) Class, Level]
+                  + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0]
+                  + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0]
+                  - GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
+            mp = (int) (mp * multiplicator);
+            return bearSpirit ? (mp > 16666 ? mp + 5000 : (int) (mp * 1.3)) : mp;
         }
 
         public void NotifyRarifyResult(sbyte rare)
