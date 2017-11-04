@@ -622,8 +622,8 @@ namespace OpenNos.GameObject
                 }
                 quest.Id = characterQuest.Id;
                 quest.FirstCurrentObjective = characterQuest.FirstObjective ?? 0;
-                quest.FirstCurrentObjective = characterQuest.SecondObjective ?? 0;
-                quest.FirstCurrentObjective = characterQuest.ThirdObjective ?? 0;
+                quest.SecondCurrentObjective = characterQuest.SecondObjective ?? 0;
+                quest.ThirdCurrentObjective = characterQuest.ThirdObjective ?? 0;
                 Quests.Add(quest);
             }
         }
