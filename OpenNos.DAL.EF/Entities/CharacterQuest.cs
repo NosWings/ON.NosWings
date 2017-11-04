@@ -12,11 +12,11 @@
 
         public long QuestId { get; set; }
 
-        public int? FirstObjective { get; set; }
+        public int FirstObjective { get; set; }
 
-        public int? SecondObjective { get; set; }
+        public int SecondObjective { get; set; }
 
-        public int? ThirdObjective { get; set; }
+        public int ThirdObjective { get; set; }
 
         #endregion
     }
