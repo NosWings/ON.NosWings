@@ -726,10 +726,10 @@ namespace OpenNos.Handler
             {
                 // On Target Dest
                 case 1:
-                    Quest goToQuest = Session.Character.Quests.FirstOrDefault(q => q.QuestType == (int)QuestType.GoTo
-                    && q.FirstData == Session.CurrentMapInstance.Map.MapId
-                    && q.SecondData == Session.Character.PositionX
-                    && q.ThirdData == Session.Character.PositionY);
+                    CharacterQuest goToQuest = Session.Character.Quests.FirstOrDefault(q => q.Quest.QuestType == (int)QuestType.GoTo
+                    && q.Quest.FirstData == Session.CurrentMapInstance.Map.MapId
+                    && q.Quest.SecondData == Session.Character.PositionX
+                    && q.Quest.ThirdData == Session.Character.PositionY);
 
                     if (goToQuest != null)
                     {

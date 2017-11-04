@@ -552,7 +552,7 @@ namespace OpenNos.GameObject
                 {
                     session.Character.CloseShop();
                 }
-                session.Character.Quests.Where(q => q.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.RemoveTargetPacket()));
+                session.Character.Quests.Where(q => q.Quest.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.Quest.RemoveTargetPacket()));
                 session.Character.LeaveTalentArena();
                 session.CurrentMapInstance.RemoveMonstersTarget(session.Character);
                 session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(mate => session.CurrentMapInstance.RemoveMonstersTarget(mate));
@@ -748,7 +748,7 @@ namespace OpenNos.GameObject
                     e.Item2.Add(session.Character.CharacterId);
                     EventHelper.Instance.RunEvent(e.Item1, session);
                 });
-                session.Character.Quests.Where(q => q.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.TargetPacket()));
+                session.Character.Quests.Where(q => q.Quest.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.Quest.TargetPacket()));
             }
             catch (Exception)
             {
@@ -1211,7 +1211,7 @@ namespace OpenNos.GameObject
             Quests = new List<Quest>();
             foreach (QuestDTO questdto in DaoFactory.QuestDao.LoadAll())
             {
-                Quest quest = (Quest)questdto;
+                Quest quest = (Quest) questdto;
                 quest.QuestRewards = new List<QuestRewardDTO>();
                 DaoFactory.QuestRewardDao.LoadByQuestId(quest.QuestId).ToList().ForEach(o => quest.QuestRewards.Add(o));
                 Quests.Add(quest);

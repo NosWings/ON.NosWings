@@ -287,7 +287,7 @@ namespace OpenNos.GameObject
 
         public int TotalTime { get; set; }
 
-        public List<Quest> Quests { get; set; }
+        public List<CharacterQuest> Quests { get; set; }
 
         public List<QuicklistEntryDTO> QuicklistEntries { get; private set; }
 
@@ -443,27 +443,27 @@ namespace OpenNos.GameObject
 
         public void AddQuest(long questId)
         {
-            Quest newQuest = ServerManager.Instance.Quests.FirstOrDefault(q => q.QuestId == questId).GetClone();
-            if (Quests.Any(q => q.QuestId == questId) || newQuest == null || Quests.Count >= 5)
+            CharacterQuest characterQuest = new CharacterQuest(questId, CharacterId);
+            if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || Quests.Count >= 5)
             {
                 return;
             }
-            if (newQuest.TargetMap == MapInstance.Map.MapId)
+            if (characterQuest.Quest.TargetMap == MapInstance.Map.MapId)
             {
-                Session.SendPacket(newQuest.TargetPacket());
+                Session.SendPacket(characterQuest.Quest.TargetPacket());
             }
-            Quests.Add(newQuest);
+            Quests.Add(characterQuest);
             Session.SendPacket(GenerateQuestsPacket());
         }
 
         public void RemoveQuest(long questId)
         {
-            Quest questToRemove = Quests.FirstOrDefault(q => q.QuestId == questId);
+            CharacterQuest questToRemove = Quests.FirstOrDefault(q => q.QuestId == questId);
             if (questToRemove != null)
             {
-                if (questToRemove.TargetMap == MapInstance.Map.MapId)
+                if (questToRemove.Quest.TargetMap == MapInstance.Map.MapId)
                 {
-                    Session.SendPacket(questToRemove.RemoveTargetPacket());
+                    Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
                 }
                 Quests.Remove(questToRemove);
                 Session.SendPacket(GenerateQuestsPacket());
@@ -472,25 +472,26 @@ namespace OpenNos.GameObject
 
         public string GenerateQuestsPacket()
         {
-            byte i = 0;
-            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {i++}.{quest.QuestId}.{quest.QuestId}.{quest.QuestType}.{quest.FirstCurrentObjective}.{quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondCurrentObjective}.{quest.SecondObjective ?? 0}.{quest.ThirdCurrentObjective}.{quest.ThirdObjective ?? 0}.0.0.0.0.1")}";
+            short i = 0;
+            Quests.ForEach(qst => qst.QuestNumber = i++);
+            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.QuestId}.{quest.QuestId}.{quest.Quest.QuestType}.{quest.FirstObjective ?? 0}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective ?? 0}.{quest.Quest.SecondObjective ?? 0}.{quest.Quest.ThirdObjective ?? 0}.{quest.ThirdObjective ?? 0}.0.0.0.0.0")}";
         }
 
-        public void IncrementQuestObjective(Quest quest, byte data = 0)
+        public void IncrementQuestObjective(CharacterQuest quest, byte data = 0)
         {
             bool isFinish = false;
             if (quest == null || Quests.All(q => q != quest))
             {
                 return;
             }
-            switch ((QuestType)quest.QuestType)
+            switch ((QuestType) quest.Quest.QuestType)
             {
                 case QuestType.Brings:
                     break;
 
                 case QuestType.Capture1:
                 case QuestType.Capture2:
-                    quest.FirstCurrentObjective++;
+                    quest.FirstObjective++;
                     break;
 
                 case QuestType.Collect1:
@@ -506,11 +507,11 @@ namespace OpenNos.GameObject
                     break;
 
                 case QuestType.FlowerQuest:
-                    quest.FirstCurrentObjective++;
+                    quest.FirstObjective++;
                     break;
 
                 case QuestType.GoTo:
-                    if (quest.FirstData == MapInstance.Map.MapId && quest.SecondData == PositionX && quest.ThirdData == PositionY)
+                    if (quest.Quest.FirstData == MapInstance.Map.MapId && quest.Quest.SecondData == PositionX && quest.Quest.ThirdData == PositionY)
                     {
                         isFinish = true;
                     }
@@ -520,15 +521,15 @@ namespace OpenNos.GameObject
                     switch (data)
                     {
                         case 1:
-                            quest.FirstCurrentObjective++;
+                            quest.FirstObjective++;
                             break;
 
                         case 2:
-                            quest.SecondCurrentObjective++;
+                            quest.SecondObjective++;
                             break;
 
                         case 3:
-                            quest.ThirdCurrentObjective++;
+                            quest.ThirdObjective++;
                             break;
                     }
                     break;
@@ -571,21 +572,21 @@ namespace OpenNos.GameObject
                     break;
             }
 
-            if (quest.FirstCurrentObjective >= quest.FirstObjective && quest.SecondCurrentObjective >= (quest.SecondObjective ?? 0) && quest.ThirdCurrentObjective >= (quest.ThirdObjective ?? 0))
+            if (quest.FirstObjective >= quest.Quest.FirstObjective && quest.SecondObjective >= (quest.Quest.SecondObjective ?? 0) && quest.ThirdObjective >= (quest.Quest.ThirdObjective ?? 0))
             {
                 isFinish = true;
             }
 
-            Session.SendPacket($"qsti {quest.QuestTypeId}.{quest.QuestId}.{quest.QuestId}.{quest.QuestType}.{quest.FirstCurrentObjective}.{quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondCurrentObjective}.{quest.SecondObjective}.{quest.ThirdCurrentObjective}.{quest.ThirdObjective}.0.0.0.0.0");
+            Session.SendPacket($"qsti {quest.QuestNumber}.{quest.QuestId}.{quest.QuestId}.{quest.Quest.QuestType}.{quest.FirstObjective ?? 0}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective ?? 0}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective ?? 0}.{quest.Quest.ThirdObjective ?? 0}.0.0.0.0.0");
 
             if (isFinish)
             {
-                if (CustomQuestRewards((QuestType) quest.QuestType))
+                if (CustomQuestRewards((QuestType) quest.Quest.QuestType))
                 {
                     RemoveQuest(quest.QuestId);
                     return;
                 }
-                quest.GetRewardPacket(this);
+                quest.Quest.GetRewardPacket(this);
                 RemoveQuest(quest.QuestId);
             }
         }
@@ -612,18 +613,10 @@ namespace OpenNos.GameObject
 
         public void LoadQuests()
         {
-            Quests = new List<Quest>();
+            Quests = new List<CharacterQuest>();
             foreach (CharacterQuestDTO characterQuest in DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId))
             {
-                Quest quest = ServerManager.Instance.Quests.FirstOrDefault(q => q.QuestId == characterQuest.QuestId).GetClone();
-                if (quest == null)
-                {
-                    continue;
-                }
-                quest.Id = characterQuest.Id;
-                quest.FirstCurrentObjective = characterQuest.FirstObjective ?? 0;
-                quest.SecondCurrentObjective = characterQuest.SecondObjective ?? 0;
-                quest.ThirdCurrentObjective = characterQuest.ThirdObjective ?? 0;
+                CharacterQuest quest = new CharacterQuest(characterQuest);
                 Quests.Add(quest);
             }
         }
@@ -2576,16 +2569,16 @@ namespace OpenNos.GameObject
 
                 #region Quest
 
-                if (monsterToAttack.Monster.Level + 10 > Level && Quests.Any(q => q.QuestType == (byte) QuestType.FlowerQuest))
+                if (monsterToAttack.Monster.Level + 10 > Level && Quests.Any(q => q.Quest.QuestType == (byte) QuestType.FlowerQuest))
                 {
-                    IncrementQuestObjective(Quests.FirstOrDefault(q => q.QuestType == (byte) QuestType.FlowerQuest));
+                    IncrementQuestObjective(Quests.FirstOrDefault(q => q.Quest.QuestType == (byte) QuestType.FlowerQuest));
                 }
 
-                foreach (Quest qst in Quests.Where(q => q.QuestType == (int) QuestType.Hunt).ToList())
+                foreach (CharacterQuest qst in Quests.Where(q => q.Quest.QuestType == (int) QuestType.Hunt).ToList())
                 {
-                    byte data = (byte) (qst.FirstData == monsterToAttack.MonsterVNum ? 1 :
-                                       (qst.SecondData == monsterToAttack.MonsterVNum ? 2 :
-                                       (qst.ThirdData == monsterToAttack.MonsterVNum ? 3 : 0)));
+                    byte data = (byte) (qst.Quest.FirstData == monsterToAttack.MonsterVNum ? 1 :
+                                       (qst.Quest.SecondData == monsterToAttack.MonsterVNum ? 2 :
+                                       (qst.Quest.ThirdData == monsterToAttack.MonsterVNum ? 3 : 0)));
                     if (data != 0)
                     {
                         IncrementQuestObjective(qst, data);
@@ -5312,16 +5305,16 @@ namespace OpenNos.GameObject
                 {
                     DaoFactory.CharacterQuestDao.Delete(CharacterId, questToDelete);
                 }
-                foreach (Quest qst in Quests)
+                foreach (CharacterQuest qst in Quests)
                 {
                     CharacterQuestDTO dto = new CharacterQuestDTO()
                     {
                         Id = qst.Id,
                         CharacterId = CharacterId,
                         QuestId = qst.QuestId,
-                        FirstObjective = qst.FirstCurrentObjective,
-                        SecondObjective = qst.SecondCurrentObjective,
-                        ThirdObjective = qst.ThirdCurrentObjective
+                        FirstObjective = qst.FirstObjective,
+                        SecondObjective = qst.SecondObjective,
+                        ThirdObjective = qst.ThirdObjective
                     };
                     DaoFactory.CharacterQuestDao.InsertOrUpdate(dto);
                 }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenNos.Data;
 using OpenNos.Domain;
 
@@ -21,19 +18,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public Guid Id { get; set; }
-
-        public int FirstCurrentObjective { get; set; }
-
-        public int SecondCurrentObjective { get; set; }
-
-        public int ThirdCurrentObjective { get; set; }
-
-        public bool RewardInWaiting { get; set; }
-
         public List<QuestRewardDTO> QuestRewards { get; set; }
-
-        public byte QuestTypeId { get; set; }
 
         #endregion
 
