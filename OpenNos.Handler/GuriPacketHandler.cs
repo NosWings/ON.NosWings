@@ -253,7 +253,7 @@ namespace OpenNos.Handler
                                     vnumToUse = vnum;
                                 }
                             }
-                            if (vnumToUse != -1)
+                            if (vnumToUse != -1 || Session.Character.Authority > AuthorityType.User)
                             {
                                 if (guriPacket.User == null)
                                 {

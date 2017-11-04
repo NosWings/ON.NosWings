@@ -544,6 +544,15 @@ namespace OpenNos.GameObject
             }
             try
             {
+                if (session.Character.Authority >= AuthorityType.VipPlus && session.Character.StaticBonusList.All(s => s.StaticBonusType != StaticBonusType.PetBasket))
+                {
+                    session.Character.StaticBonusList.Add(new StaticBonusDTO
+                    {
+                        CharacterId = session.Character.CharacterId,
+                        DateEnd = DateTime.Now.AddDays(60),
+                        StaticBonusType = StaticBonusType.PetBasket
+                    });
+                }
                 if (session.Character.IsExchanging || session.Character.InExchangeOrTrade)
                 {
                     session.Character.CloseExchangeOrTrade();
