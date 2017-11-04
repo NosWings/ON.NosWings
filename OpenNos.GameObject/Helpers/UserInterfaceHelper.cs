@@ -21,7 +21,7 @@ using OpenNos.DAL;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class UserInterfaceHelper : Singleton<UserInterfaceHelper>
+    public class UserInterfaceHelper
     {
 
         #region Methods
@@ -541,6 +541,16 @@ namespace OpenNos.GameObject.Helpers
         public IEnumerable<string> GenerateVb()
         {
             return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
+        }
+
+        #endregion
+        #region Singleton
+
+        private static UserInterfaceHelper _instance;
+
+        public static UserInterfaceHelper Instance
+        {
+            get { return _instance ?? (_instance = new UserInterfaceHelper()); }
         }
 
         #endregion

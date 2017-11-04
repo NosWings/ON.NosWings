@@ -25,8 +25,9 @@ namespace OpenNos.Domain
         VipPlusPlus = 5,
         Donator = 10,
         DonatorPlus = 15,
-        Moderator = 20,
-        GameMaster = 25,
+        DonatorPlusPlus = 20,
+        Moderator = 25,
+        GameMaster = 40,
         SuperGameMaster = 50,
         Administrator = 100,
     }

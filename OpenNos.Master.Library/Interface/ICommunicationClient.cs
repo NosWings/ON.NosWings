@@ -24,7 +24,9 @@ namespace OpenNos.Master.Library.Interface
         void UpdateRelation(long relationId);
 
         void KickSession(long? accountId, long? sessionId);
+
         void SendMail(MailDTO mail);
+
         void ChangeAuthority(long accountAccountId, AuthorityType authority);
     }
 }

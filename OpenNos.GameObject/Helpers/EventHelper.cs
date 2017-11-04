@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class EventHelper : Singleton<EventHelper>
+    public class EventHelper
     {
         #region Methods
 
@@ -116,7 +116,7 @@ namespace OpenNos.GameObject.Helpers
                         session.SendPacket((string)evt.Parameter);
                         break;
 
-                        #endregion
+                    #endregion
                 }
             }
             if (evt.MapInstance == null)
@@ -131,10 +131,7 @@ namespace OpenNos.GameObject.Helpers
                 case EventActionType.SENDPACKET:
                     if (session == null)
                     {
-                        evt.MapInstance.Sessions.ToList().ForEach(e =>
-                        {
-                            RunEvent(evt, e);
-                        });
+                        evt.MapInstance.Sessions.ToList().ForEach(e => { RunEvent(evt, e); });
                     }
                     break;
 
@@ -233,7 +230,7 @@ namespace OpenNos.GameObject.Helpers
 
                 case EventActionType.EFFECT:
                     short evt3 = (short)evt.Parameter;
-                    if (monster!=null && (DateTime.Now - monster.LastEffect).TotalSeconds >= 5)
+                    if (monster != null && (DateTime.Now - monster.LastEffect).TotalSeconds >= 5)
                     {
                         evt.MapInstance.Broadcast(monster.GenerateEff(evt3));
                         monster.ShowEffect();
@@ -258,7 +255,7 @@ namespace OpenNos.GameObject.Helpers
                     {
                         monster.MoveEvent = null;
                         monster.Path = null;
-                        foreach (EventContainer s in ((ConcurrentBag<EventContainer>) evt.Parameter))
+                        foreach (EventContainer s in ((ConcurrentBag<EventContainer>)evt.Parameter))
                         {
                             RunEvent(s, monster: monster);
                         }
@@ -387,7 +384,7 @@ namespace OpenNos.GameObject.Helpers
                                                         case 999:
                                                         case 882:
                                                         case 942:
-                                                            rare = (sbyte) ServerManager.Instance.RandomNumber(1, 7);
+                                                            rare = (sbyte)ServerManager.Instance.RandomNumber(1, 7);
                                                             break;
                                                     }
                                                 }
@@ -586,7 +583,7 @@ namespace OpenNos.GameObject.Helpers
                     }
                     else
                     {
-                        portalToRemove = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == (int) evt.Parameter);
+                        portalToRemove = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == (int)evt.Parameter);
                     }
                     if (portalToRemove != null)
                     {
@@ -607,7 +604,6 @@ namespace OpenNos.GameObject.Helpers
                             evt.MapInstance.Sessions.ToList().ForEach(cli =>
                                 ServerManager.Instance.ChangeMapInstance(cli.Character.CharacterId, endParameters.Item1.MapInstanceId, endParameters.Item2, endParameters.Item3));
                         });
-
                     });
                     break;
 
@@ -615,16 +611,24 @@ namespace OpenNos.GameObject.Helpers
                     evt.MapInstance.Monsters.ForEach(m => evt.MapInstance.DespawnMonster(m));
                     break;
 
-                    #endregion
+                #endregion
             }
         }
 
         public void ScheduleEvent(TimeSpan timeSpan, EventContainer evt)
         {
-            Observable.Timer(timeSpan).Subscribe(x =>
-            {
-                RunEvent(evt);
-            });
+            Observable.Timer(timeSpan).Subscribe(x => { RunEvent(evt); });
+        }
+
+        #endregion
+
+        #region Singleton
+
+        private static EventHelper _instance;
+
+        public static EventHelper Instance
+        {
+            get { return _instance ?? (_instance = new EventHelper()); }
         }
 
         #endregion

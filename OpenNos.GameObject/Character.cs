@@ -1408,7 +1408,7 @@ namespace OpenNos.GameObject
         public string GenerateCInfo()
         {
             return
-                $"c_info {(Authority == AuthorityType.Moderator && !Undercover ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + Name : Name)} - -1 {(Family != null && !Undercover ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper() ?? "") ?? "-1 -"})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte) AuthorityType.User : Authority < AuthorityType.User ? (byte) AuthorityType.User : (byte) Authority)} {(byte) Gender} {(byte) HairStyle} {(byte) HairColor} {(byte) Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {Family?.FamilyLevel ?? 0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
+                $"c_info {(Authority == AuthorityType.Moderator && !Undercover ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + Name : Name)} - -1 {(Family != null && !Undercover ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper() ?? "") ?? "-1 -"})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte) AuthorityType.User : Authority < AuthorityType.User ? (byte) AuthorityType.User : Authority > AuthorityType.Moderator ? 2 : (byte) AuthorityType.User)} {(byte) Gender} {(byte) HairStyle} {(byte) HairColor} {(byte) Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {Family?.FamilyLevel ?? 0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
@@ -4758,7 +4758,7 @@ namespace OpenNos.GameObject
                 {
                     int shellSlHpMp = SpInstance.SlHP + Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
                                       Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-                    int point = CharacterHelper.Instance.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
+                    int point = CharacterHelper.Instance.SlPoint((short)(shellSlHpMp > 410 ? 410 : shellSlHpMp), 3);
 
                     if (point <= 50)
                     {
@@ -4771,13 +4771,14 @@ namespace OpenNos.GameObject
                     hp = specialist.HP + specialist.SpHP * 100;
                 }
             }
-            multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP)[0] / 100D;
+            bool bearSpirit = HasBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP);
             multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumHP)[0] / 100D;
-            hp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0];
-            hp -= GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
-            hp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
-
-            return (int)((CharacterHelper.Instance.HpData[(byte)Class, Level] + hp) * multiplicator);
+            hp += CharacterHelper.Instance.HpData[(byte)Class, Level]
+                + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0]
+                + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0]
+                - GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
+            hp = (int) (hp * multiplicator);
+            return bearSpirit ? (hp > 16666 ? hp + 5000 : (int) (hp * 1.3)) : hp;
         }
 
         public override void Initialize()
@@ -5017,7 +5018,7 @@ namespace OpenNos.GameObject
                 {
                     int shellSlHpMp = SpInstance.SlHP + Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
                                       Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-                    int point = CharacterHelper.Instance.SlPoint((short)(shellSlHpMp > 100 ? 100 : shellSlHpMp), 3);
+                    int point = CharacterHelper.Instance.SlPoint((short)(shellSlHpMp > 410 ? 410 : shellSlHpMp), 3);
 
                     if (point <= 50)
                     {

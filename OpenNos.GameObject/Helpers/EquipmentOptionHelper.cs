@@ -6,7 +6,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class EquipmentOptionHelper : Singleton<EquipmentOptionHelper>
+    public class EquipmentOptionHelper
     {
         #region Cellons
 
@@ -436,6 +436,17 @@ namespace OpenNos.GameObject.Helpers
             }
             return bCard;
         }
+        #endregion
+
+        #region Singleton
+
+        private static EquipmentOptionHelper _instance;
+
+        public static EquipmentOptionHelper Instance
+        {
+            get { return _instance ?? (_instance = new EquipmentOptionHelper()); }
+        }
+
         #endregion
     }
 }

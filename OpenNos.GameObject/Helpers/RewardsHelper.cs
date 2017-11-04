@@ -2,7 +2,7 @@
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class RewardsHelper : Singleton<RewardsHelper>
+    public class RewardsHelper
     {
         #region Methods
 
@@ -96,6 +96,17 @@ namespace OpenNos.GameObject.Helpers
                     break;
             }
         }
+        #endregion
+
+        #region Singleton
+
+        private static RewardsHelper _instance;
+
+        public static RewardsHelper Instance
+        {
+            get { return _instance ?? (_instance = new RewardsHelper()); }
+        }
+
         #endregion
     }
 }

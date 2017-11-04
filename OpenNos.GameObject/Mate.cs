@@ -865,7 +865,7 @@ namespace OpenNos.GameObject
 
         public string GenerateIn(bool foe = false, bool isAct4 = false)
         {
-            if (_owner.Invisible || _owner.InvisibleGm)
+            if (_owner.Invisible || _owner.InvisibleGm || !IsAlive)
             {
                 return ""; //Maybe have to implement the exception on each mate.GenerateIn call.
             }

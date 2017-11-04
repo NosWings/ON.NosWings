@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class MateHelper : Singleton<MateHelper>
+    public class MateHelper
     {
         #region Instantiation
 

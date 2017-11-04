@@ -511,7 +511,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Read^our^LICENSE!.
+        ///   Recherche une chaîne localisée semblable à Welcome^On^NosWings^!.
         /// </summary>
         internal static string BN0 {
             get {
@@ -520,7 +520,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à If^you^have^problems^read^Troubleshooting.md.
+        ///   Recherche une chaîne localisée semblable à Welcome^On^NosWings^!.
         /// </summary>
         internal static string BN1 {
             get {
@@ -529,7 +529,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Need^help?^Use^our^official^discord^server:^https://discordapp.com/qdPMDv5.
+        ///   Recherche une chaîne localisée semblable à Welcome^On^NosWings^!.
         /// </summary>
         internal static string BN2 {
             get {
@@ -547,7 +547,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Do^you^want^to^contribute?^https://github.com/OpenNos/OpenNos.
+        ///   Recherche une chaîne localisée semblable à Welcome^On^NosWings^!.
         /// </summary>
         internal static string BN4 {
             get {
@@ -556,7 +556,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à OpenNos^developed^by:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu,^Uppermost.
+        ///   Recherche une chaîne localisée semblable à Welcome^On^NosWings^!.
         /// </summary>
         internal static string BN5 {
             get {
@@ -565,7 +565,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Check^out:^https://github.com/OpenNos/OpenNos^for^latest^updates..
+        ///   Recherche une chaîne localisée semblable à Welcome^On^NosWings^!.
         /// </summary>
         internal static string BN6 {
             get {
@@ -574,7 +574,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à We^don&apos;t^support^private^servers!.
+        ///   Recherche une chaîne localisée semblable à Welcome^On^NosWings^!.
         /// </summary>
         internal static string BN7 {
             get {
@@ -583,7 +583,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à That&apos;s^a^cool^message!.
+        ///   Recherche une chaîne localisée semblable à Welcome^On^NosWings^!.
         /// </summary>
         internal static string BN8 {
             get {
@@ -592,7 +592,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Thanks^for^all^of^your^contributions!.
+        ///   Recherche une chaîne localisée semblable à Welcome^On^NosWings^!.
         /// </summary>
         internal static string BN9 {
             get {
@@ -610,7 +610,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Report bugs to our github page!.
+        ///   Recherche une chaîne localisée semblable à Report bugs on our Discord ! .
         /// </summary>
         internal static string BOT_MESSAGE_1 {
             get {
@@ -619,7 +619,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à That&apos;s a cool message!.
+        ///   Recherche une chaîne localisée semblable à Never share your password !.
         /// </summary>
         internal static string BOT_MESSAGE_2 {
             get {

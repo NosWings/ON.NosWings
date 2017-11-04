@@ -6,7 +6,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class LogHelper : Singleton<LogHelper>
+    public class LogHelper
     {
         public void InsertCommandLog(long characterId, PacketDefinition commandPacket, string ipAddress)
         {
@@ -39,5 +39,16 @@ namespace OpenNos.GameObject.Helpers
             };
             DaoFactory.LogChatDao.InsertOrUpdate(ref log);
         }
+
+        #region Singleton
+
+        private static LogHelper _instance;
+
+        public static LogHelper Instance
+        {
+            get { return _instance ?? (_instance = new LogHelper()); }
+        }
+
+        #endregion
     }
 }

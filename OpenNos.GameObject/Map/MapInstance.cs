@@ -114,7 +114,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(20) >= DateTime.Now)
+                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(20) >= DateTime.Now || Sessions.Any())
                 {
                     return _isSleeping;
                 }
@@ -711,6 +711,16 @@ namespace OpenNos.GameObject
             {
                 ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
             }
+        }
+
+        #endregion
+        #region Singleton
+
+        private static EventHelper _instance;
+
+        public static EventHelper Instance
+        {
+            get { return _instance ?? (_instance = new EventHelper()); }
         }
 
         #endregion

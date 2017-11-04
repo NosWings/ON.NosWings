@@ -519,7 +519,7 @@ namespace OpenNos.Handler
             IEnumerable<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp?.Values.ToList() : Session.Character.Skills?.Values.ToList();
             if (skills != null)
             {
-                CharacterSkill ski = skills.FirstOrDefault(s => s.Skill?.CastId == castingId && s.Skill?.UpgradeSkill == 0);
+                CharacterSkill ski = skills.FirstOrDefault(s => s.Skill?.CastId == castingId && (s.Skill?.UpgradeSkill == 0 || s.Skill?.SkillType == 1));
                 if (castingId != 0)
                 {
                     Session.SendPacket("ms_c 0");
