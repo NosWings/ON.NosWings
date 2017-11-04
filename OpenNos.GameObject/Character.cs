@@ -466,6 +466,11 @@ namespace OpenNos.GameObject
                 }
                 Quests.Remove(questToRemove);
                 Session.SendPacket(GenerateQuestsPacket());
+                if (questToRemove.Quest.NextQuestId == null)
+                {
+                    return;
+                }
+                AddQuest((long) questToRemove.Quest.NextQuestId);
             }
         }
 
