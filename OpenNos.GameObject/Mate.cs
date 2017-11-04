@@ -819,7 +819,7 @@ namespace OpenNos.GameObject
             IsAlive = false;
             Hp = 1;
             Owner.Session.SendPacket(GenerateScPacket());
-            Loyalty -= 50;
+            Loyalty -= (short) (Owner.Authority >= AuthorityType.VipPlus ? 0 : 50);
             Owner.Session.SendPacket(GenerateScPacket());
             if (MateType == MateType.Pet)
             {

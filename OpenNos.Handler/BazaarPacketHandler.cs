@@ -208,11 +208,20 @@ namespace OpenNos.Handler
                 return;
             }
             SpinWait.SpinUntil(() => !ServerManager.Instance.InBazaarRefreshMode);
+            if (Session.Character.Authority >= AuthorityType.Vip && Session.Character.StaticBonusList.All(s => s.StaticBonusType != StaticBonusType.BazaarMedalGold))
+            {
+                Session.Character.StaticBonusList.Add(new StaticBonusDTO
+                {
+                    CharacterId = Session.Character.CharacterId,
+                    DateEnd = DateTime.Now.AddDays(30),
+                    StaticBonusType = StaticBonusType.BazaarMedalGold
+                });
+            }
             StaticBonusDTO medalBonus = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
             if (medalBonus != null)
             {
-                byte medal = medalBonus.StaticBonusType == StaticBonusType.BazaarMedalGold ? (byte)MedalType.Gold : (byte)MedalType.Silver;
-                int time = (int)(medalBonus.DateEnd - DateTime.Now).TotalHours;
+                byte medal = medalBonus.StaticBonusType == StaticBonusType.BazaarMedalGold || (int)Session.Character.Authority >= 1 ? (byte)MedalType.Gold : (byte)MedalType.Silver;
+                int time = (int)Session.Character.Authority >= 1 ? 720 : (int)(medalBonus.DateEnd - DateTime.Now).TotalHours;
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOTICE_BAZAAR"), 0));
                 Session.SendPacket($"wopen 32 {medal} {time}");
             }
@@ -277,12 +286,27 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (Session.Character.Inventory.CountItemInAnInventory(InventoryType.Bazaar) > 10 * (medal == null ? 1 : 10))
+            if (Session.Character.Authority == AuthorityType.Vip && Session.Character.Inventory.CountItemInAnInventory(InventoryType.Bazaar) > 200)
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LIMIT_EXCEEDED"), 0));
                 return;
             }
-            if (price > (medal == null ? 100000000 : maxGold))
+            if (Session.Character.Authority == AuthorityType.VipPlus && Session.Character.Inventory.CountItemInAnInventory(InventoryType.Bazaar) > 300)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LIMIT_EXCEEDED"), 0));
+                return;
+            }
+            if (Session.Character.Authority == AuthorityType.VipPlusPlus && Session.Character.Inventory.CountItemInAnInventory(InventoryType.Bazaar) > 500)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LIMIT_EXCEEDED"), 0));
+                return;
+            }
+            if (Session.Character.Authority == AuthorityType.User && Session.Character.Inventory.CountItemInAnInventory(InventoryType.Bazaar) > 10 * (medal == null ? 1 : 10))
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LIMIT_EXCEEDED"), 0));
+                return;
+            }
+            if (price > (medal == null || Session.Character.Authority == AuthorityType.User ? 100000000 : maxGold))
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PRICE_EXCEEDED"), 0));
                 return;

@@ -900,76 +900,87 @@ namespace OpenNos.GameObject
                 {
                     spType = 1;
                 }
-                if (SpPoint >= spType)
+                if (Authority == AuthorityType.User)
                 {
-                    SpPoint -= spType;
-                }
-                else if (SpPoint < spType && SpPoint != 0)
-                {
-                    spType -= (byte)SpPoint;
-                    SpPoint = 0;
-                    SpAdditionPoint -= spType;
-                }
-                else
-                {
-                    switch (SpPoint)
+                    if (SpPoint >= spType)
                     {
-                        case 0 when SpAdditionPoint >= spType:
-                            SpAdditionPoint -= spType;
-                            break;
-                        case 0 when SpAdditionPoint < spType:
-                            SpAdditionPoint = 0;
-
-                            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-
-                            if (UseSp)
-                            {
-                                LoadPassive();
-                                LastSp = currentRunningSeconds;
-                                if (Session != null && Session.HasSession)
-                                {
-                                    if (IsVehicled)
-                                    {
-                                        return;
-                                    }
-                                    UseSp = false;
-                                    SpInstance = null;
-                                    LoadSpeed();
-                                    Session.SendPacket(GenerateCond());
-                                    Session.SendPacket(GenerateLev());
-                                    SpCooldown = 30;
-                                    if (SkillsSp != null)
-                                    {
-                                        foreach (CharacterSkill ski in SkillsSp.Where(s => !s.Value.CanBeUsed()).Select(s => s.Value))
-                                        {
-                                            short time = ski.Skill.Cooldown;
-                                            double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
-                                            temp /= 1000;
-                                            SpCooldown = temp > SpCooldown ? (int)temp : SpCooldown;
-                                        }
-                                    }
-                                    Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), SpCooldown), 11));
-                                    Session.SendPacket($"sd {SpCooldown}");
-                                    Session.CurrentMapInstance?.Broadcast(GenerateCMode());
-                                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, CharacterId), PositionX, PositionY);
-
-                                    // ms_c
-                                    Session.SendPacket(GenerateSki());
-                                    Session.SendPackets(GenerateQuicklist());
-                                    Session.SendPacket(GenerateStat());
-                                    Session.SendPacket(GenerateStatChar());
-                                    Observable.Timer(TimeSpan.FromMilliseconds(SpCooldown * 1000)).Subscribe(o =>
-                                    {
-                                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                                        Session.SendPacket("sd 0");
-                                    });
-                                }
-                            }
-                            break;
+                        SpPoint -= spType;
                     }
+                    else if (SpPoint < spType && SpPoint != 0)
+                    {
+                        spType -= (byte) SpPoint;
+                        SpPoint = 0;
+                        SpAdditionPoint -= spType;
+                    }
+                    else
+                    {
+                        switch (SpPoint)
+                        {
+                            case 0 when SpAdditionPoint >= spType:
+                                SpAdditionPoint -= spType;
+                                break;
+                            case 0 when SpAdditionPoint < spType:
+                                SpAdditionPoint = 0;
+
+                                double currentRunningSeconds =
+                                    (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+
+                                if (UseSp)
+                                {
+                                    LoadPassive();
+                                    LastSp = currentRunningSeconds;
+                                    if (Session != null && Session.HasSession)
+                                    {
+                                        if (IsVehicled)
+                                        {
+                                            return;
+                                        }
+                                        UseSp = false;
+                                        SpInstance = null;
+                                        LoadSpeed();
+                                        Session.SendPacket(GenerateCond());
+                                        Session.SendPacket(GenerateLev());
+                                        SpCooldown = 30;
+                                        if (SkillsSp != null)
+                                        {
+                                            foreach (CharacterSkill ski in SkillsSp.Where(s => !s.Value.CanBeUsed())
+                                                .Select(s => s.Value))
+                                            {
+                                                short time = ski.Skill.Cooldown;
+                                                double temp =
+                                                    (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
+                                                temp /= 1000;
+                                                SpCooldown = temp > SpCooldown ? (int) temp : SpCooldown;
+                                            }
+                                        }
+                                        Session.SendPacket(GenerateSay(
+                                            string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), SpCooldown),
+                                            11));
+                                        Session.SendPacket($"sd {SpCooldown}");
+                                        Session.CurrentMapInstance?.Broadcast(GenerateCMode());
+                                        Session.CurrentMapInstance?.Broadcast(
+                                            UserInterfaceHelper.Instance.GenerateGuri(6, 1, CharacterId), PositionX,
+                                            PositionY);
+
+                                        // ms_c
+                                        Session.SendPacket(GenerateSki());
+                                        Session.SendPackets(GenerateQuicklist());
+                                        Session.SendPacket(GenerateStat());
+                                        Session.SendPacket(GenerateStatChar());
+                                        Observable.Timer(TimeSpan.FromMilliseconds(SpCooldown * 1000)).Subscribe(o =>
+                                        {
+                                            Session.SendPacket(GenerateSay(
+                                                Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                                            Session.SendPacket("sd 0");
+                                        });
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                    Session?.SendPacket(GenerateSpPoint());
+                    LastSpGaugeRemove = DateTime.Now;
                 }
-                Session?.SendPacket(GenerateSpPoint());
-                LastSpGaugeRemove = DateTime.Now;
             }
         }
 
@@ -2528,7 +2539,8 @@ namespace OpenNos.GameObject
                 #region gold drop
 
                 // gold calculation
-                int gold = GetGold(monsterToAttack);
+                double increase = Authority >= AuthorityType.Donator ? ((double) Authority - 5) / 100D + 1 : 1;
+                int gold = (int)(GetGold(monsterToAttack) * increase);
                 long maxGold = ServerManager.Instance.MaxGold;
                 gold = gold > maxGold ? (int) maxGold : gold;
                 double randChance = ServerManager.Instance.RandomNumber() * random.NextDouble();
@@ -2786,7 +2798,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePStashAll()
         {
-            string stash = $"pstash_all {(StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)}";
+            string stash = $"pstash_all {(StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack || Authority >= AuthorityType.VipPlusPlus) ? 50 : 0)}";
             return Inventory.Select(s => s.Value).Where(s => s.Type == InventoryType.PetWarehouse).Aggregate(stash, (current, item) => current + $" {item.GenerateStashPacket()}");
         }
 
@@ -5418,6 +5430,10 @@ namespace OpenNos.GameObject
             {
                 xp = (int) (GetXp(monsterinfo, grp) / 3D * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D));
             }
+            if (Authority >= AuthorityType.Donator)
+            {
+                xp *= (int) ((double) Authority / 100D + 1);
+            }
             if (Level < ServerManager.Instance.MaxLevel)
             {
                 LevelXp += xp;
@@ -5440,11 +5456,11 @@ namespace OpenNos.GameObject
             if (SpInstance != null && UseSp && SpInstance.SpLevel < ServerManager.Instance.MaxSpLevel)
             {
                 int multiplier = SpInstance.SpLevel < 10 ? 10 : SpInstance.SpLevel < 19 ? 5 : 1;
-                SpInstance.XP += (int) (GetJxp(monsterinfo, grp) * (multiplier + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D));
+                SpInstance.XP += (int) ((GetJxp(monsterinfo, grp) * (multiplier + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D) * ((double)Authority / 100 + 1)));
             }
             if (HeroLevel > 0 && HeroLevel < ServerManager.Instance.MaxHeroLevel)
             {
-                HeroXp += (int) (GetHxp(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D));
+                HeroXp += (int) (GetHxp(monsterinfo, grp) * (1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D) * ((double)Authority / 100 + 1));
             }
 
             GenerateLevelXpLevelUp();
@@ -5634,25 +5650,6 @@ namespace OpenNos.GameObject
             }
 
             int lowBaseGold = ServerManager.Instance.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
-            /*
-            int actMultiplier = Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short) MapTypeEnum.Act52) ?? false
-                ? 2
-                : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short) MapTypeEnum.Act61) ?? false
-                    ? 2
-                    : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short) MapTypeEnum.Act61A) ?? false
-                        ? 5
-                        : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61D) ?? false
-                            ? 5
-                            : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act62) ?? false
-                                ? 5
-                                : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act32) ?? false
-                                    ? 5
-                                    : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Oasis) ?? false
-                                        ? 5
-                                        : Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42) ?? false
-                                            ? 2
-                                            : 1;
-                                            */
             if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.CometPlain) == true)
             {
                 return ServerManager.Instance.RandomNumber(1, 1000);
