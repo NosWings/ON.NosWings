@@ -42,7 +42,10 @@ namespace OpenNos.Master.Server
 
         #region Properties
 
-        public static MSManager Instance => _instance ?? (_instance = new MSManager());
+        public static MSManager Instance
+        {
+            get { return _instance ?? (_instance = new MSManager()); }
+        }
 
         public List<long> AuthentificatedClients { get; set; }
         

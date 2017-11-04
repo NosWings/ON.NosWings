@@ -1046,7 +1046,10 @@ namespace OpenNos.Handler
 
             if (spTransformPacket.Type == 10)
             {
-                short specialistDamage = spTransformPacket.SpecialistDamage, specialistDefense = spTransformPacket.SpecialistDefense, specialistElement = spTransformPacket.SpecialistElement, specialistHealpoints = spTransformPacket.SpecialistHp;
+                short specialistDamage = spTransformPacket.SpecialistDamage;
+                short specialistDefense = spTransformPacket.SpecialistDefense;
+                short specialistElement = spTransformPacket.SpecialistElement;
+                short specialistHealpoints = spTransformPacket.SpecialistHp;
                 int transportId = spTransformPacket.TransportId;
                 if (!Session.Character.UseSp || specialistInstance == null || transportId != specialistInstance.TransportId)
                 {

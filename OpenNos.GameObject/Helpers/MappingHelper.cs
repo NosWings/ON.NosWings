@@ -17,7 +17,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    public class MappingHelper : Singleton<MappingHelper>
+    public class MappingHelper
     {
         #region Properties
 
@@ -33,6 +33,16 @@ namespace OpenNos.GameObject
             {879, 1561},
             {880, 1561}
         };
+
+        #endregion
+        #region Singleton
+
+        private static MappingHelper _instance;
+
+        public static MappingHelper Instance
+        {
+            get { return _instance ?? (_instance = new MappingHelper()); }
+        }
 
         #endregion
     }

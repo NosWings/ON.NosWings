@@ -2325,10 +2325,12 @@ namespace OpenNos.Handler
                 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("MEMORY")}: {GC.GetTotalMemory(true) / (1024 * 1024)}MB ", 13));
 
+            /*
             foreach (string message in CommunicationServiceClient.Instance.RetrieveServerStatistics())
             {
                 Session.SendPacket(Session.Character.GenerateSay(message, 13));
             }
+            */
         }
 
         /// <summary>

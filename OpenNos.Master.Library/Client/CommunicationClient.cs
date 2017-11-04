@@ -29,6 +29,7 @@ namespace OpenNos.Master.Library.Client
         {
             Task.Run(() => CommunicationServiceClient.Instance.OnSendMail(mail));
         }
+
         public void ChangeAuthority(long accountId, AuthorityType authority)
         {
             Task.Run(() => CommunicationServiceClient.Instance.OnAuthorityChange(accountId, authority));

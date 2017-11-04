@@ -20,9 +20,11 @@ using OpenNos.Domain;
 using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using Newtonsoft.Json;
 using OpenNos.Data;
 
 namespace OpenNos.Master.Server
@@ -30,22 +32,23 @@ namespace OpenNos.Master.Server
     internal class CommunicationService : ScsService, ICommunicationService
     {
         #region Instantiation
+
         public CommunicationService()
         {
-
         }
+
         #endregion
 
         #region Methods
 
         public bool Authenticate(string authKey)
         {
-            if (!string.IsNullOrWhiteSpace(authKey) && authKey == ConfigurationManager.AppSettings["MasterAuthKey"])
+            if (string.IsNullOrWhiteSpace(authKey) || authKey != ConfigurationManager.AppSettings["MasterAuthKey"])
             {
-                MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
-                return true;
+                return false;
             }
-            return false;
+            MSManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
+            return true;
         }
 
         public void Cleanup()
@@ -84,16 +87,18 @@ namespace OpenNos.Master.Server
             long accountId = DaoFactory.CharacterDao.LoadById(characterId)?.AccountId ?? 0;
 
             AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && a.ConnectedWorld?.Id.Equals(worldId) == true);
-            if (account == null)
+            CharacterDTO character = DaoFactory.CharacterDao.LoadById(characterId);
+            if (account == null || character == null)
             {
                 return false;
             }
             account.CharacterId = characterId;
+            account.Character = new AccountConnection.CharacterSession(character.Name, character.Level, character.Gender.ToString(), character.Class.ToString());
             foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(account.ConnectedWorld.WorldGroup)))
             {
                 world.ServiceClient.GetClientProxy<ICommunicationClient>().CharacterConnected(characterId);
             }
-            Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count(s => s.CharacterId != 0)}";
+            Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count(s => s.Character != null)}";
             return true;
         }
 
@@ -118,7 +123,7 @@ namespace OpenNos.Master.Server
         public bool IsCrossServerLoginPermitted(long accountId, int sessionId)
         {
             return MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)) &&
-                   MSManager.Instance.ConnectedAccounts.Any(s => s.AccountId.Equals(accountId) && s.SessionId.Equals(sessionId) && s.CanSwitchChannel);
+                MSManager.Instance.ConnectedAccounts.Any(s => s.AccountId.Equals(accountId) && s.SessionId.Equals(sessionId) && s.CanSwitchChannel);
         }
 
         public void DisconnectAccount(long accountId)
@@ -151,7 +156,7 @@ namespace OpenNos.Master.Server
                 {
                     continue;
                 }
-                account.CharacterId = 0;
+                account.Character = null;
                 account.ConnectedWorld = null;
                 Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count(s => s.CharacterId != 0)}";
             }
@@ -164,32 +169,20 @@ namespace OpenNos.Master.Server
 
         public bool IsAccountConnected(long accountId)
         {
-            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
-            {
-                return false;
-            }
-
-            return MSManager.Instance.ConnectedAccounts.Any(c => c.AccountId == accountId && c.ConnectedWorld != null);
+            return MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)) &&
+                MSManager.Instance.ConnectedAccounts.Any(c => c.AccountId == accountId && c.ConnectedWorld != null);
         }
 
         public bool IsCharacterConnected(string worldGroup, long characterId)
         {
-            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
-            {
-                return false;
-            }
-
-            return MSManager.Instance.ConnectedAccounts.Any(c => c.ConnectedWorld != null && c.ConnectedWorld.WorldGroup == worldGroup && c.CharacterId == characterId);
+            return MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)) &&
+                MSManager.Instance.ConnectedAccounts.Any(c => c.ConnectedWorld != null && c.ConnectedWorld.WorldGroup == worldGroup && c.CharacterId == characterId);
         }
 
         public bool IsLoginPermitted(long accountId, long sessionId)
         {
-            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
-            {
-                return false;
-            }
-
-            return MSManager.Instance.ConnectedAccounts.Any(s => s.AccountId.Equals(accountId) && s.SessionId.Equals(sessionId) && s.ConnectedWorld == null);
+            return MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)) &&
+                MSManager.Instance.ConnectedAccounts.Any(s => s.AccountId.Equals(accountId) && s.SessionId.Equals(sessionId) && s.ConnectedWorld == null);
         }
 
         public void KickSession(long? accountId, long? sessionId)
@@ -334,47 +327,19 @@ namespace OpenNos.Master.Server
             return MSManager.Instance.WorldServers.Any() ? channelPacket : null;
         }
 
-        public IEnumerable<string> RetrieveServerStatistics()
+        public string RetrieveServerStatistics()
         {
-            if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
-            {
-                return null;
-            }
+            Dictionary<int, List<AccountConnection.CharacterSession>> dictionary =
+                MSManager.Instance.WorldServers.ToDictionary(world => world.ChannelId, world => new List<AccountConnection.CharacterSession>());
 
-            List<string> result = new List<string>();
-
-            try
+            foreach (IGrouping<int, AccountConnection> accountConnections in MSManager.Instance.ConnectedAccounts.GroupBy(s => s.ConnectedWorld.ChannelId))
             {
-                List<string> groups = new List<string>();
-                foreach (string s in MSManager.Instance.WorldServers.Select(s => s.WorldGroup))
+                foreach (AccountConnection i in accountConnections)
                 {
-                    if (!groups.Contains(s))
-                    {
-                        groups.Add(s);
-                    }
+                    dictionary[accountConnections.Key].Add(i.Character);
                 }
-                int totalsessions = 0;
-                foreach (string s in groups)
-                {
-                    result.Add($"==={s}===");
-                    int groupsessions = 0;
-                    foreach (WorldServer world in MSManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(s)))
-                    {
-                        int sessions = MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.Id.Equals(world.Id) == true);
-                        result.Add($"Channel {world.ChannelId}: {sessions} Sessions");
-                        groupsessions += sessions;
-                    }
-                    result.Add($"Group Total: {groupsessions} Sessions");
-                    totalsessions += groupsessions;
-                }
-                result.Add($"Environment Total: {totalsessions} Sessions");
             }
-            catch (Exception ex)
-            {
-                Logger.Log.Error("Error while retreiving server Statistics:", ex);
-            }
-
-            return result;
+            return JsonConvert.SerializeObject(dictionary);
         }
 
         public int? SendMessageToCharacter(SCSCharacterMessage message)
@@ -405,7 +370,7 @@ namespace OpenNos.Master.Server
                     if (message.DestinationCharacterId.HasValue)
                     {
                         AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.CharacterId.Equals(message.DestinationCharacterId.Value));
-                        if (account != null && account.ConnectedWorld != null)
+                        if (account?.ConnectedWorld != null)
                         {
                             account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().SendMessageToCharacter(message);
                             return account.ConnectedWorld.ChannelId;
@@ -511,7 +476,7 @@ namespace OpenNos.Master.Server
         public void CleanupOutdatedSession()
         {
             AccountConnection[] tmp = new AccountConnection[MSManager.Instance.ConnectedAccounts.Count + 20];
-            lock (MSManager.Instance.ConnectedAccounts)
+            lock(MSManager.Instance.ConnectedAccounts)
             {
                 MSManager.Instance.ConnectedAccounts.ToList().CopyTo(tmp);
             }
@@ -560,7 +525,6 @@ namespace OpenNos.Master.Server
                 account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().SendMail(mail);
             }
         }
-
 
         #endregion
     }

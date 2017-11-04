@@ -1,6 +1,7 @@
 ﻿using Hik.Communication.ScsServices.Service;
 using OpenNos.Master.Library.Data;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -150,7 +151,7 @@ namespace OpenNos.Master.Library.Interface
         /// Generates the Stats from all Servers 
         /// </summary>
         /// <returns>the actual result</returns>
-        IEnumerable<string> RetrieveServerStatistics();
+        string RetrieveServerStatistics();
 
         /// <summary>
         /// Generates the Channel Selection Packet

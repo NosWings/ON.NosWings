@@ -6,8 +6,10 @@ using OpenNos.DAL;
 using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using OpenNos.Data;
 using OpenNos.Domain;
 
@@ -186,7 +188,7 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.RetrieveRegisteredWorldServers(sessionId);
         }
 
-        public IEnumerable<string> RetrieveServerStatistics()
+        public string RetrieveServerStatistics()
         {
             return _client.ServiceProxy.RetrieveServerStatistics();
         }

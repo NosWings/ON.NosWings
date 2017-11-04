@@ -13,10 +13,11 @@
  */
 
 using System;
+using OpenNos.Data;
 
 namespace OpenNos.Master.Library.Data
 {
-    internal class AccountConnection
+    public class AccountConnection
     {
         #region Instantiation
 
@@ -32,11 +33,13 @@ namespace OpenNos.Master.Library.Data
 
         #region Properties
 
-        public string AccountName { get; private set; }
+        public string AccountName { get; }
 
-        public long AccountId { get; private set; }
+        public long AccountId { get; }
 
         public long CharacterId { get; set; }
+
+        public CharacterSession Character { get; set; }
 
         public bool CanSwitchChannel { get; set; }
 
@@ -46,7 +49,27 @@ namespace OpenNos.Master.Library.Data
 
         public WorldServer PreviousChannel { get; set; }
 
-        public long SessionId { get; private set; }
+        public long SessionId { get; }
+
+        #endregion
+
+        #region CharacterSession
+
+        public class CharacterSession
+        {
+            public CharacterSession(string name, int level, string gender, string @class)
+            {
+                Name = name;
+                Level = level;
+                Gender = gender;
+                Class = @class;
+            }
+
+            public string Name { get; }
+            public int Level { get; }
+            public string Gender { get; }
+            public string Class { get; }
+        }
 
         #endregion
     }

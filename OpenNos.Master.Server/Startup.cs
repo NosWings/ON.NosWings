@@ -2,6 +2,8 @@
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 using System;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.Web.Http;
 
 namespace OpenNos.Master.Server
@@ -20,6 +22,10 @@ namespace OpenNos.Master.Server
                 "{controller}/{id}",
                 new {id = RouteParameter.Optional}
             );
+
+            MediaTypeHeaderValue appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
+            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
+            config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
             appBuilder.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
             appBuilder.UseWebApi(config);
         }

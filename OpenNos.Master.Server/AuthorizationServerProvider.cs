@@ -12,8 +12,10 @@ namespace OpenNos.Master.Server
         public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
             context.Validated();
+            await OnValidateClientAuthentication(context);
         }
 
+        /// <inheritdoc />
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
 
@@ -23,16 +25,15 @@ namespace OpenNos.Master.Server
 
             if (account != null && account.Password.ToLower().Equals(EncryptionBase.Sha512(context.Password)))
             {
-                var identity = new ClaimsIdentity(context.Options.AuthenticationType);
+                ClaimsIdentity identity = new ClaimsIdentity(context.Options.AuthenticationType);
                 identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, context.UserName));
                 identity.AddClaim(new Claim(ClaimTypes.Role, account.Authority.ToString()));
                 context.Validated(identity);
+                await OnGrantResourceOwnerCredentials(context);
             }
             else
             {
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
-                return;
-
             }
         }
     }

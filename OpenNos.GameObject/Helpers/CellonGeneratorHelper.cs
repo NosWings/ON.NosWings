@@ -7,7 +7,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class CellonGeneratorHelper : Singleton<CellonGeneratorHelper>
+    public class CellonGeneratorHelper
     {
         private readonly Dictionary<int, Dictionary<CellonType, CellonGenerator>> _generatorDictionary =
             new Dictionary<int, Dictionary<CellonType, CellonGenerator>>

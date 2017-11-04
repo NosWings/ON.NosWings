@@ -164,6 +164,7 @@
     <Compile Include="Helpers\PassiveSkillHelper.cs" />
     <Compile Include="Helpers\RewardsHelper.cs" />
     <Compile Include="Helpers\ShellGeneratorHelper.cs" />
+    <Compile Include="Helpers\VipHelper.cs" />
     <Compile Include="Map\Zone.cs" />
     <Compile Include="Event\EventContainer.cs" />
     <Compile Include="Event\Schedule.cs" />
@@ -226,8 +227,10 @@
     <Compile Include="Packets\CommandPackets\CharacterEditPacket.cs" />
     <Compile Include="Packets\ClientPackets\FDelPacket.cs" />
     <Compile Include="Packets\CommandPackets\StuffPack.cs" />
+    <Compile Include="Packets\CommandPackets\VipTpCommandPacket.cs" />
     <Compile Include="Packets\CommandPackets\WarningPacket.cs" />
     <Compile Include="Packets\ServerPackets\TalkPacket.cs" />
+    <Compile Include="Packets\VipPackets\VipCommandPacket.cs" />
     <Compile Include="ScriptedInstance.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />

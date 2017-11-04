@@ -19,7 +19,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {
-    public class CharacterHelper : Singleton<CharacterHelper>
+    public class CharacterHelper
     {
         #region Instantiation
 
@@ -1045,6 +1045,18 @@ namespace OpenNos.GameObject.Helpers
                 }
                 XpData[i] = Convert.ToInt64(XpData[i - 1] + var * (i + 2) * (i + 2));
             }
+        }
+
+        #endregion
+
+
+        #region Singleton
+
+        private static CharacterHelper _instance;
+
+        public static CharacterHelper Instance
+        {
+            get { return _instance ?? (_instance = new CharacterHelper()); }
         }
 
         #endregion
