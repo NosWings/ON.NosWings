@@ -34,6 +34,8 @@ namespace OpenNos.DAL.EF
 
         public long? NextQuestId { get; set; }
 
+        public int InfoId { get; set; }
+
         #endregion
     }
 }
