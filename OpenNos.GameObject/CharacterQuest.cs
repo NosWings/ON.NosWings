@@ -27,9 +27,9 @@ namespace OpenNos.GameObject
         public CharacterQuest(CharacterQuestDTO characterQuestDto)
         {
             Id = characterQuestDto.Id;
-            FirstObjective = characterQuestDto.FirstObjective ?? 0;
-            SecondObjective = characterQuestDto.SecondObjective ?? 0;
-            ThirdObjective = characterQuestDto.ThirdObjective ?? 0;
+            FirstObjective = characterQuestDto.FirstObjective;
+            SecondObjective = characterQuestDto.SecondObjective;
+            ThirdObjective = characterQuestDto.ThirdObjective;
             QuestId = characterQuestDto.QuestId;
             CharacterId = characterQuestDto.CharacterId;
         }
