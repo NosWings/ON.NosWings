@@ -4550,13 +4550,14 @@ namespace OpenNos.GameObject
                     hp = specialist.HP + specialist.SpHP * 100;
                 }
             }
-            multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP)[0] / 100D;
+            bool bearSpirit = HasBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP);
             multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumHP)[0] / 100D;
-            hp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0];
-            hp -= GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
-            hp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
-
-            return (int)((CharacterHelper.Instance.HpData[(byte)Class, Level] + hp) * multiplicator);
+            hp += CharacterHelper.Instance.HpData[(byte)Class, Level]
+                + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0]
+                + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0]
+                - GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
+            hp = (int) (hp * multiplicator);
+            return bearSpirit ? (hp > 16666 ? hp + 5000 : (int) (hp * 1.3)) : hp;
         }
 
         public override void Initialize()
