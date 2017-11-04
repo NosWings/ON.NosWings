@@ -5926,6 +5926,7 @@ namespace OpenNos.GameObject
                 ObservableBag[bf.Card.CardId] =  Observable.Timer(TimeSpan.FromSeconds(bf.RemainingTime)).Subscribe(o =>
                 {
                     RemoveBuff(bf.Card.CardId);
+                    TotalTime = 0;
                     if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
                         bf.Card.TimeoutBuffChance)
                     {
