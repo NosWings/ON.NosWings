@@ -1223,8 +1223,7 @@ namespace OpenNos.GameObject
             foreach (QuestDTO questdto in DaoFactory.QuestDao.LoadAll())
             {
                 Quest quest = (Quest) questdto;
-                quest.QuestRewards = new List<QuestRewardDTO>();
-                DaoFactory.QuestRewardDao.LoadByQuestId(quest.QuestId).ToList().ForEach(o => quest.QuestRewards.Add(o));
+                quest.QuestRewards = DaoFactory.QuestRewardDao.LoadByQuestId(quest.QuestId).ToList();
                 Quests.Add(quest);
             }
             FlowerQuestId = Quests.FirstOrDefault(q => q.QuestType == (byte) QuestType.FlowerQuest)?.QuestId;
