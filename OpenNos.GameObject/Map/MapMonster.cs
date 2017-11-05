@@ -1017,8 +1017,17 @@ namespace OpenNos.GameObject
             }
 
             #endregion
-            
-                return totalDamage;
+
+            if (targetCharacter.HasBuff(CardType.NoDefeatAndNoDamage,
+                (byte)AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
+            {
+                targetCharacter.ChargeValue = totalDamage;
+                targetCharacter.AddBuff(new Buff(0), false);
+                totalDamage = 0;
+                hitmode = 1;
+            }
+
+            return totalDamage;
         }
 
         /// <summary>

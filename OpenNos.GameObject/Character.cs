@@ -116,6 +116,8 @@ namespace OpenNos.GameObject
 
         public int DistanceRate { get; set; }
 
+        public int ChargeValue { get; set; }
+
         public byte Element { get; set; }
 
         public int ElementRate { get; set; }
@@ -1432,6 +1434,11 @@ namespace OpenNos.GameObject
 
         public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
+            if (skill.SkillVNum == 1085) // pas de bcard ...
+            {
+                TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
+            }
+
             if (monsterToAttack.MonsterVNum == 2309)
             {
                 return((ushort)(monsterToAttack.Monster.MaxHP / 1000));
@@ -2160,6 +2167,14 @@ namespace OpenNos.GameObject
             #endregion
 
             SkillBcards.Clear();
+
+
+            if (ChargeValue > 0)
+            {
+                damage += (ushort)ChargeValue;
+                ChargeValue = 0;
+                RemoveBuff(0);
+            }
 
             return damage;
         }
@@ -3017,6 +3032,11 @@ namespace OpenNos.GameObject
         {
             #region Definitions
 
+            if (skill.SkillVNum == 1085) // pas de bcard ...
+            {
+                TeleportOnMap(target.PositionX, target.PositionY);
+            }
+
             if (target == null || Inventory == null)
             {
                 return 0;
@@ -3734,6 +3754,20 @@ namespace OpenNos.GameObject
 
             #endregion
 
+            if (target.HasBuff(CardType.NoDefeatAndNoDamage,
+                (byte) AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
+            {
+                target.ChargeValue = totalDamage;
+                target.AddBuff(new Buff(0), false);
+                totalDamage = 0;
+                hitmode = 1;
+            }
+            if (ChargeValue > 0)
+            {
+                totalDamage += ChargeValue;
+                ChargeValue = 0;
+                RemoveBuff(0);
+            }
             return totalDamage;
         }
 
@@ -6203,11 +6237,15 @@ namespace OpenNos.GameObject
             {
                 buffTime = ServerManager.Instance.RandomNumber(50, 350);
             }
+            if (indicator.Card.CardId == 0)
+            {
+                buffTime = ChargeValue > 7000 ? 7000 : ChargeValue;
+            }
             indicator.RemainingTime = indicator.Card.Duration == 0 ? buffTime : indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
 
-            Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+            Session.SendPacket($"bf 1 {Session.Character.CharacterId} {ChargeValue}.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
@@ -6223,7 +6261,10 @@ namespace OpenNos.GameObject
 
             ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds((indicator.Card.Duration == 0 ? buffTime : indicator.Card.Duration) * 100)).Subscribe(o =>
             {
-                RemoveBuff(indicator.Card.CardId);
+                if (indicator.Card.CardId != 0)
+                {
+                    RemoveBuff(indicator.Card.CardId);
+                }
                 if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
                 {
                     AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
