@@ -486,6 +486,10 @@ namespace OpenNos.GameObject
                 }
                 Quests.Remove(questToRemove);
                 Session.SendPacket(GenerateQuestsPacket());
+                if (questToRemove.Quest.EndDialogId != null)
+                {
+                    Session.SendPacket(GenerateNpcDialog((int)questToRemove.Quest.EndDialogId));
+                }
                 if (questToRemove.Quest.NextQuestId == null)
                 {
                     return;
