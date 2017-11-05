@@ -2163,6 +2163,14 @@ namespace OpenNos.GameObject
 
             SkillBcards.Clear();
 
+
+            if (ChargeValue > 0)
+            {
+                damage += (ushort)ChargeValue;
+                ChargeValue = 0;
+                RemoveBuff(0);
+            }
+
             return damage;
         }
 
@@ -3750,7 +3758,7 @@ namespace OpenNos.GameObject
                 ChargeValue = 0;
                 RemoveBuff(0);
             }
-            return totalDamage + ChargeValue;
+            return totalDamage;
         }
 
         public IEnumerable<string> GenerateQuicklist()
