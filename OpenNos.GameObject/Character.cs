@@ -450,6 +450,23 @@ namespace OpenNos.GameObject
             {
                 return;
             }
+            if (characterQuest.Quest.IsDaily)
+            {
+                if(GeneralLogs.Any(s => s.LogType == "DailyQuest" && s.LogData == characterQuest.QuestId.ToString() && s.Timestamp.Date == DateTime.Today))
+                {
+                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("QUEST_ALREADY_DONE"), 12));
+                    return;
+                }
+                GeneralLogs.Add(new GeneralLogDTO
+                {
+                    AccountId = Session.Account.AccountId,
+                    CharacterId = CharacterId,
+                    IpAddress = Session.IpAddress,
+                    LogData = characterQuest.QuestId.ToString(),
+                    LogType = "DailyQuest",
+                    Timestamp = DateTime.Now
+                });
+            }
             if (characterQuest.Quest.TargetMap == MapInstance.Map.MapId)
             {
                 Session.SendPacket(characterQuest.Quest.TargetPacket());
