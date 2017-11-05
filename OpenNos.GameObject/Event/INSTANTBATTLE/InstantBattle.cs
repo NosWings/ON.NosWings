@@ -115,10 +115,10 @@ namespace OpenNos.GameObject.Event
                 {
                     mapsCount++;
                     Thread.Sleep(mapsCount * 500);
-                    ConcurrentBag<EventContainer> rewards = new ConcurrentBag<EventContainer>();
-                    rewards.Add(new EventContainer(mapinstance.Item1, EventActionType.INSTANTBATLLEREWARDS, null));
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(12), new EventContainer(mapinstance.Item1,EventActionType.REGISTEREVENT, 
-                        new Tuple<string, ConcurrentBag<EventContainer>>("OnMapClean", rewards)));
+                        new Tuple<string, ConcurrentBag<EventContainer>>("OnMapClean", 
+                        new ConcurrentBag<EventContainer> { new EventContainer(mapinstance.Item1, EventActionType.INSTANTBATLLEREWARDS, null) })));
+                   
 
 
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(15), new EventContainer(mapinstance.Item1, EventActionType.DISPOSEMAP, null));
