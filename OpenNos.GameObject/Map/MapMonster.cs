@@ -960,6 +960,11 @@ namespace OpenNos.GameObject
                 else
                 {
                     baseDamage += (int) (baseDamage * (mainCritHit / 100D));
+                    if (targetCharacter.HasBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased))
+                    {
+                        int damageReduction = targetCharacter.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased)[0];
+                        baseDamage -= (int) (baseDamage * (damageReduction / 100D));
+                    }
                     hitmode = 3;
                 }
             }
@@ -1012,8 +1017,8 @@ namespace OpenNos.GameObject
             }
 
             #endregion
-
-            return totalDamage;
+            
+                return totalDamage;
         }
 
         /// <summary>
