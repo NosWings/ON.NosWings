@@ -36,6 +36,10 @@ namespace OpenNos.Data
 
         public int InfoId { get; set; }
 
+        public bool IsDaily { get; set; }
+
+        public int? EndDialogId { get; set; }
+
         #endregion
     }
 }
