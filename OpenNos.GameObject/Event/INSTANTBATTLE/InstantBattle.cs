@@ -101,7 +101,6 @@ namespace OpenNos.GameObject.Event
                 level = s.Character.Level;
             }
             ServerManager.Instance.Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.Character.IsWaitingForEvent = false);
-            int mapsCount = 0;
             foreach (Tuple<MapInstance, byte> mapinstance in maps)
             {
                 ServerManager.Instance.StartedEvents.Remove(EventType.INSTANTBATTLE);
@@ -113,8 +112,6 @@ namespace OpenNos.GameObject.Event
                 }
                 else
                 {
-                    mapsCount++;
-                    Thread.Sleep(mapsCount * 500);
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(12), new EventContainer(mapinstance.Item1,EventActionType.REGISTEREVENT, 
                         new Tuple<string, ConcurrentBag<EventContainer>>("OnMapClean", 
                         new ConcurrentBag<EventContainer> { new EventContainer(mapinstance.Item1, EventActionType.INSTANTBATLLEREWARDS, null) })));
