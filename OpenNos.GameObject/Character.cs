@@ -57,6 +57,7 @@ namespace OpenNos.GameObject
             SkillBcards = new ConcurrentBag<BCard>();
             PassiveSkillBcards = new ConcurrentBag<BCard>();
             ObservableBag = new Dictionary<short, IDisposable>();
+            Quests = new List<CharacterQuest>();
         }
 
         #endregion
