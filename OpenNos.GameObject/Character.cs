@@ -1434,6 +1434,11 @@ namespace OpenNos.GameObject
 
         public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
+            if (skill.SkillVNum == 1085) // pas de bcard ...
+            {
+                TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
+            }
+
             if (monsterToAttack.MonsterVNum == 2309)
             {
                 return((ushort)(monsterToAttack.Monster.MaxHP / 1000));
@@ -3026,6 +3031,11 @@ namespace OpenNos.GameObject
         public int GeneratePvpDamage(Character target, Skill skill, ref int hitmode, ref bool onyx)
         {
             #region Definitions
+
+            if (skill.SkillVNum == 1085) // pas de bcard ...
+            {
+                TeleportOnMap(target.PositionX, target.PositionY);
+            }
 
             if (target == null || Inventory == null)
             {
