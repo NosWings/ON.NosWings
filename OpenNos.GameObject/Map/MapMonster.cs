@@ -960,6 +960,11 @@ namespace OpenNos.GameObject
                 else
                 {
                     baseDamage += (int) (baseDamage * (mainCritHit / 100D));
+                    if (targetCharacter.HasBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased))
+                    {
+                        int damageReduction = targetCharacter.GetBuff(CardType.Critical, (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased)[0];
+                        baseDamage -= (int) (baseDamage * (damageReduction / 100D));
+                    }
                     hitmode = 3;
                 }
             }
@@ -1012,6 +1017,15 @@ namespace OpenNos.GameObject
             }
 
             #endregion
+
+            if (targetCharacter.HasBuff(CardType.NoDefeatAndNoDamage,
+                (byte)AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
+            {
+                targetCharacter.ChargeValue = totalDamage;
+                targetCharacter.AddBuff(new Buff(0), false);
+                totalDamage = 0;
+                hitmode = 1;
+            }
 
             return totalDamage;
         }

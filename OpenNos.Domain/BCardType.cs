@@ -793,13 +793,13 @@ namespace OpenNos.Domain
 
         public enum BearSpirit : byte
         {
-            IncreaseMaximumMP = 11,
-            DecreaseMaximumMP = 12,
+            IncreaseMaximumHP = 11,
+            DecreaseMaximumHP = 12,
 
             // Unknown = 21, Unknown2 = 22,
-            IncreaseMaximumHP = 31,
+            IncreaseMaximumMP = 31,
 
-            DecreaseMaximumHP = 32
+            DecreaseMaximumMP = 32
         }
 
         public enum SummonSkill : byte

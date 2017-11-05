@@ -206,16 +206,17 @@ namespace OpenNos.GameObject
                                         heal *= sess.Level;
                                     }
                                 }
-                                sess.Session?.CurrentMapInstance?.Broadcast(sess.GenerateRc(heal));
                                 if (sess.Hp + heal < sess.HpLoad())
                                 {
                                     sess.Hp += heal;
+                                    sess.Session?.CurrentMapInstance?.Broadcast(sess.GenerateRc(heal));
                                     change = true;
                                 }
                                 else
                                 {
                                     if (sess.Hp != (int)sess.HpLoad())
                                     {
+                                        sess.Session?.CurrentMapInstance?.Broadcast(sess.GenerateRc((int)(sess.HpLoad() - sess.Hp)));
                                         change = true;
                                     }
                                     sess.Hp = (int)sess.HpLoad();

@@ -237,6 +237,20 @@ namespace OpenNos.GameObject.Helpers
                     }
                     break;
 
+                case EventActionType.INSTANTBATLLEREWARDS:
+                    RunEvent(new EventContainer(evt.MapInstance, EventActionType.SPAWNPORTAL, new Portal { SourceX = 47, SourceY = 33, DestinationMapId = 1 }));
+                    evt.MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
+                    Parallel.ForEach(evt.MapInstance.Sessions.Where(s => s.Character != null), cli =>
+                    {
+                        cli.Character.GetReput(cli.Character.Level * 50);
+                        cli.Character.GetGold(cli.Character.Level * 1000);
+                        cli.Character.SpAdditionPoint += cli.Character.Level * 100;
+                        cli.Character.SpAdditionPoint = cli.Character.SpAdditionPoint > 1000000 ? 1000000 : cli.Character.SpAdditionPoint;
+                        cli.SendPacket(cli.Character.GenerateSpPoint());
+                        cli.SendPacket(cli.Character.GenerateGold());
+                        cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_SP_POINT"), cli.Character.Level * 100), 10));
+                    });
+                    break;
                 case EventActionType.CONTROLEMONSTERINRANGE:
                     if (monster != null)
                     {

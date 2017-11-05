@@ -55,6 +55,7 @@ namespace OpenNos.Domain
         MAPGIVE,
         REMOVEPORTAL,
         ACT4RAIDEND,
-        CLEARMAPMONSTERS
+        CLEARMAPMONSTERS,
+        INSTANTBATLLEREWARDS
     }
 }

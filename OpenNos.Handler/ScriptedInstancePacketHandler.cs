@@ -281,6 +281,14 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
                 }
+                if (Session.Character.Group.Raid.Id == 24 && Session.Character.MapId != 236 || Session.Character.Group.Raid.Id == 23 && Session.Character.MapId != 232)
+                {
+                    Session.Character.Group.Characters.ToList().ForEach(s =>
+                    {
+                        s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_MAP"), 0));
+                    });
+                    return;
+                }
                 if (Session.Character.Group.Raid.FirstMap == null)
                 {
                     return;

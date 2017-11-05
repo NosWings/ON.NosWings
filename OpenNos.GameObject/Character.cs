@@ -57,6 +57,7 @@ namespace OpenNos.GameObject
             SkillBcards = new ConcurrentBag<BCard>();
             PassiveSkillBcards = new ConcurrentBag<BCard>();
             ObservableBag = new Dictionary<short, IDisposable>();
+            Quests = new List<CharacterQuest>();
         }
 
         #endregion
@@ -114,6 +115,8 @@ namespace OpenNos.GameObject
         public int DistanceDefenceRate { get; set; }
 
         public int DistanceRate { get; set; }
+
+        public int ChargeValue { get; set; }
 
         public byte Element { get; set; }
 
@@ -1039,6 +1042,7 @@ namespace OpenNos.GameObject
                         Session.SendPacket(GenerateEff(4344));
                         AddBuff(new Buff(534, Level));
                         RemoveBuff(533);
+                        RemoveBuff(532);
                         MeditationDictionary.Remove(534);
                     }
                     else if (MeditationDictionary.ContainsKey(533) && MeditationDictionary[533] < DateTime.Now)
@@ -1046,6 +1050,7 @@ namespace OpenNos.GameObject
                         Session.SendPacket(GenerateEff(4343));
                         AddBuff(new Buff(533, Level));
                         RemoveBuff(532);
+                        RemoveBuff(534);
                         MeditationDictionary.Remove(533);
                     }
                     else if (MeditationDictionary.ContainsKey(532) && MeditationDictionary[532] < DateTime.Now)
@@ -1053,6 +1058,7 @@ namespace OpenNos.GameObject
                         Session.SendPacket(GenerateEff(4343));
                         AddBuff(new Buff(532, Level));
                         RemoveBuff(534);
+                        RemoveBuff(533);
                         MeditationDictionary.Remove(532);
                     }
                 }
@@ -1408,7 +1414,7 @@ namespace OpenNos.GameObject
         public string GenerateCInfo()
         {
             return
-                $"c_info {(Authority == AuthorityType.Moderator && !Undercover ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + Name : Name)} - -1 {(Family != null && !Undercover ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper() ?? "") ?? "-1 -"})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte) AuthorityType.User : Authority < AuthorityType.User ? (byte) AuthorityType.User : Authority > AuthorityType.Moderator ? 2 : (byte) AuthorityType.User)} {(byte) Gender} {(byte) HairStyle} {(byte) HairColor} {(byte) Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {Family?.FamilyLevel ?? 0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
+                $"c_info {(Authority == AuthorityType.Moderator && !Undercover ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + Name : Name)} - -1 {(Family != null && !Undercover ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper() ?? "") ?? "-1 -"})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte) AuthorityType.User : Authority < AuthorityType.User ? (byte) AuthorityType.User : Authority > AuthorityType.Moderator ? 2 : (byte) Authority)} {(byte) Gender} {(byte) HairStyle} {(byte) HairColor} {(byte) Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {Family?.FamilyLevel ?? 0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
@@ -2156,6 +2162,14 @@ namespace OpenNos.GameObject
             #endregion
 
             SkillBcards.Clear();
+
+
+            if (ChargeValue > 0)
+            {
+                damage += (ushort)ChargeValue;
+                ChargeValue = 0;
+                RemoveBuff(0);
+            }
 
             return damage;
         }
@@ -3730,6 +3744,20 @@ namespace OpenNos.GameObject
 
             #endregion
 
+            if (target.HasBuff(CardType.NoDefeatAndNoDamage,
+                (byte) AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
+            {
+                target.ChargeValue = totalDamage;
+                target.AddBuff(new Buff(0), false);
+                totalDamage = 0;
+                hitmode = 1;
+            }
+            if (ChargeValue > 0)
+            {
+                totalDamage += ChargeValue;
+                ChargeValue = 0;
+                RemoveBuff(0);
+            }
             return totalDamage;
         }
 
@@ -4778,7 +4806,7 @@ namespace OpenNos.GameObject
                 + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0]
                 - GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
             hp = (int) (hp * multiplicator);
-            return bearSpirit ? (hp > 16666 ? hp + 5000 : (int) (hp * 1.3)) : hp;
+            return bearSpirit ? (hp > 16666 ? hp + 5000 : (int) (hp * (1.0 + GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP)[0] / 100D))) : hp;
         }
 
         public override void Initialize()
@@ -5031,13 +5059,14 @@ namespace OpenNos.GameObject
                     mp = SpInstance.MP + SpInstance.SpHP * 100;
                 }
             }
-            multiplicator += GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumMP)[0] / 100D;
+            bool bearSpirit = HasBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumMP);
             multiplicator += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP)[0] / 100D;
-            mp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0];
-            mp -= GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
-            mp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0];
-
-            return (int)((CharacterHelper.Instance.MpData[(byte)Class, Level] + mp) * multiplicator);
+            mp += CharacterHelper.Instance.MpData[(byte) Class, Level]
+                  + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0]
+                  + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0]
+                  - GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0];
+            mp = (int) (mp * multiplicator);
+            return bearSpirit ? (mp > 16666 ? mp + 5000 : (int) (mp * (1.0 + GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumMP)[0] / 100D))) : mp;
         }
 
         public void NotifyRarifyResult(sbyte rare)
@@ -6198,11 +6227,15 @@ namespace OpenNos.GameObject
             {
                 buffTime = ServerManager.Instance.RandomNumber(50, 350);
             }
+            if (indicator.Card.CardId == 0)
+            {
+                buffTime = ChargeValue > 7000 ? 7000 : ChargeValue;
+            }
             indicator.RemainingTime = indicator.Card.Duration == 0 ? buffTime : indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
 
-            Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+            Session.SendPacket($"bf 1 {Session.Character.CharacterId} {ChargeValue}.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
@@ -6218,7 +6251,10 @@ namespace OpenNos.GameObject
 
             ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds((indicator.Card.Duration == 0 ? buffTime : indicator.Card.Duration) * 100)).Subscribe(o =>
             {
-                RemoveBuff(indicator.Card.CardId);
+                if (indicator.Card.CardId != 0)
+                {
+                    RemoveBuff(indicator.Card.CardId);
+                }
                 if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
                 {
                     AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
