@@ -1561,4 +1561,7 @@
   <data name="PET_AUTO_RELIVE_ENABLED" xml:space="preserve">
     <value />
   </data>
+  <data name="QUEST_ALREADY_DONE" xml:space="preserve">
+    <value>You have already done this quest today !</value>
+  </data>
 </root>

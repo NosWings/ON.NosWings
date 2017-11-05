@@ -3247,6 +3247,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You have already done this quest today !.
+        /// </summary>
+        internal static string QUEST_ALREADY_DONE {
+            get {
+                return ResourceManager.GetString("QUEST_ALREADY_DONE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à {0} Quests loaded!.
         /// </summary>
         internal static string QUESTS_LOADED {
