@@ -339,7 +339,9 @@ namespace OpenNos.Master.Server
                     dictionary[accountConnections.Key].Add(i.Character);
                 }
             }
-            return JsonConvert.SerializeObject(dictionary);
+            string tmp = JsonConvert.SerializeObject(dictionary);
+            Logger.Log.Info($"[MASTER] :  Stats {tmp}");
+            return tmp;
         }
 
         public int? SendMessageToCharacter(SCSCharacterMessage message)
