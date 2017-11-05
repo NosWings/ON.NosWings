@@ -35,6 +35,10 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
+            if (session == null)
+            {
+                return;
+            }
             switch (Effect)
             {
                 case 0:

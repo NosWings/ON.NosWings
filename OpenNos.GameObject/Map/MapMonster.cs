@@ -242,21 +242,21 @@ namespace OpenNos.GameObject
         /// </summary>
         public void StartLife()
         {
-            if (!MapInstance.IsSleeping && Life == null)
+            if (MapInstance?.IsSleeping == false && Life == null)
             {
                 Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
                 {
                     try
                     {
-                        if (!MapInstance.IsSleeping)
+                        if (MapInstance?.IsSleeping == false)
                         {
                             MonsterLife();
                         }
-                        else
+                        else if (Life != null)
                         {
                             IDisposable tmp = Life;
+                            tmp?.Dispose();
                             Life = null;
-                            tmp.Dispose();
                         }
                     }
                     catch (Exception e)
