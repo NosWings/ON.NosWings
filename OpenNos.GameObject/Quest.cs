@@ -2,6 +2,7 @@
 using System.Linq;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.GameObject
 {
@@ -55,6 +56,15 @@ namespace OpenNos.GameObject
                     // Reputation
                     case QuestRewardType.Reput:
                         character.GetReput(reward.Amount);
+                        return $"{reward.RewardType} 0 0";
+
+                    // Experience
+                    case QuestRewardType.Exp:
+                        if (reward.Data > 255)
+                        {
+                            return "0 0 0";
+                        }
+                        character.GetXp((long) (CharacterHelper.Instance.XpData[reward.Data] / 100D * reward.Amount));
                         return $"{reward.RewardType} 0 0";
 
                     default:
