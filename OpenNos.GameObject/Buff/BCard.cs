@@ -150,29 +150,6 @@ namespace OpenNos.GameObject
                     break;
 
                 case BCardType.CardType.Defence:
-                    switch (SubType)
-                    {
-                        case (byte)AdditionalTypes.Defence.AllIncreased:
-                            if (session.GetType() == typeof(Character))
-                            {
-                                if (session is Character character)
-                                {
-                                    if (IsLevelScaled)
-                                    {
-                                        character.Defence += character.Level * FirstData;
-                                        character.DistanceDefence += character.Level * FirstData;
-                                        character.MagicalDefence += character.Level * FirstData;
-                                    }
-                                    else
-                                    {
-                                        character.Defence += FirstData;
-                                        character.DistanceDefence += FirstData;
-                                        character.MagicalDefence += FirstData;
-                                    }
-                                }
-                            }
-                            break;
-                    }
                     break;
 
                 case BCardType.CardType.DodgeAndDefencePercent:
@@ -185,31 +162,6 @@ namespace OpenNos.GameObject
                     break;
 
                 case BCardType.CardType.ElementResistance:
-                    switch (SubType)
-                    {
-                        case (byte)AdditionalTypes.ElementResistance.AllIncreased:
-                            if (session.GetType() == typeof(Character))
-                            {
-                                if (session is Character character)
-                                {
-                                    if (IsLevelScaled)
-                                    {
-                                        character.DarkResistance += character.Level * FirstData;
-                                        character.FireResistance += character.Level * FirstData;
-                                        character.LightResistance += character.Level * FirstData;
-                                        character.WaterResistance += character.Level * FirstData;
-                                    }
-                                    else
-                                    {
-                                        character.DarkResistance += FirstData;
-                                        character.FireResistance += FirstData;
-                                        character.LightResistance += FirstData;
-                                        character.WaterResistance += FirstData;
-                                    }
-                                }
-                            }
-                            break;
-                    }
                     break;
 
                 case BCardType.CardType.EnemyElementResistance:
