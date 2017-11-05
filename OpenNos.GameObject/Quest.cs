@@ -47,10 +47,15 @@ namespace OpenNos.GameObject
                         character.GiftAdd((short) reward.Data, (byte) (reward.Amount == 0 ? 1 : reward.Amount), isQuest: true);
                         return $"{reward.RewardType} {reward.Data} {(reward.Amount == 0 ? 1 : reward.Amount)}";
 
-                    //Gold
+                    // Gold
                     case QuestRewardType.Gold:
                         character.GetGold(reward.Amount, true);
                         return $"{reward.RewardType} 0 {(reward.Amount == 0 ? 1 : reward.Amount)}";
+
+                    // Reputation
+                    case QuestRewardType.Reput:
+                        character.GetReput(reward.Amount);
+                        return $"{reward.RewardType} 0 0";
 
                     default:
                         return "0 0 0";
