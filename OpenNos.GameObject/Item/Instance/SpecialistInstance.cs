@@ -157,11 +157,12 @@ namespace OpenNos.GameObject
             {
                 spdestroyed = 1;
             }
+            short firstskillvnum = 0;
             if (!skillsSp.Any())
             {
                 skill = "-1";
+                firstskillvnum = skillsSp[0].SkillVNum;
             }
-            short firstskillvnum = skillsSp[0].SkillVNum;
 
             for (int i = 1; i < 11; i++)
             {

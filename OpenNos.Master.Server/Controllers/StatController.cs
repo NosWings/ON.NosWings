@@ -17,8 +17,9 @@ namespace OpenNos.Master.Server
         {
             try
             {
-                Dictionary<int, List<AccountConnection.CharacterSession>> newDictionary =
-                    JsonConvert.DeserializeObject<Dictionary<int, List<AccountConnection.CharacterSession>>>(CommunicationServiceClient.Instance.RetrieveServerStatistics());
+                string tmp = CommunicationServiceClient.Instance.RetrieveServerStatistics();
+                Logger.Log.Info($"[WEBAPI] Stats : {tmp}");
+                Dictionary<int, List<AccountConnection.CharacterSession>> newDictionary = JsonConvert.DeserializeObject<Dictionary<int, List<AccountConnection.CharacterSession>>>(tmp);
 
                 return newDictionary;
             }
