@@ -6167,7 +6167,12 @@ namespace OpenNos.GameObject
                 StaticBuff = true
             };
             Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
-            
+
+            if (staticBuff.RemainingTime < -1)
+            {
+                RemoveBuff(bf.Card.CardId);
+                return;
+            }
             if (staticBuff.RemainingTime == -1)
             {
                 bf.RemainingTime = staticBuff.RemainingTime;
