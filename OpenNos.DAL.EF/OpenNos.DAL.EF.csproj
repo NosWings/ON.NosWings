@@ -180,6 +180,7 @@
     <Compile Include="Entities\LogChat.cs" />
     <Compile Include="Entities\LogCommands.cs" />
     <Compile Include="Entities\LogPlayerAction.cs" />
+    <Compile Include="Entities\LogVIP.cs" />
     <Compile Include="Entities\Quest.cs" />
     <Compile Include="Entities\QuestReward.cs" />
     <Compile Include="Entities\RollGeneratedItem.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="Entities\BCard.cs" />
     <Compile Include="LogChatDAO.cs" />
     <Compile Include="LogCommandsDAO.cs" />
+    <Compile Include="LogVIPDAO.cs" />
     <Compile Include="Migrations\201706141825546_Aphrodite55.cs" />
     <Compile Include="Migrations\201706141825546_Aphrodite55.Designer.cs">
       <DependentUpon>201706141825546_Aphrodite55.cs</DependentUpon>
@@ -279,6 +281,10 @@
     <Compile Include="Migrations\201711051618093_Aphrodite77.cs" />
     <Compile Include="Migrations\201711051618093_Aphrodite77.Designer.cs">
       <DependentUpon>201711051618093_Aphrodite77.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711062054491_Aphrodite78.cs" />
+    <Compile Include="Migrations\201711062054491_Aphrodite78.Designer.cs">
+      <DependentUpon>201711062054491_Aphrodite78.cs</DependentUpon>
     </Compile>
     <Compile Include="QuestDAO.cs" />
     <Compile Include="QuestRewardDAO.cs" />
@@ -858,6 +864,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711051618093_Aphrodite77.resx">
       <DependentUpon>201711051618093_Aphrodite77.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711062054491_Aphrodite78.resx">
+      <DependentUpon>201711062054491_Aphrodite78.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

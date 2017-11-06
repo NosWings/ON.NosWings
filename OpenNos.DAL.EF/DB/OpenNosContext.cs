@@ -73,7 +73,7 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<LogChat> LogChat { get; set; }
 
-        // public virtual DbSet<LogPlayerAction> PlayerActions { get; set; }
+        public virtual DbSet<LogVip> LogVip { get; set; }
 
         public virtual DbSet<LogCommands> LogCommands { get; set; }
 
