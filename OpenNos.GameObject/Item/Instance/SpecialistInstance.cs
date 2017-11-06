@@ -161,6 +161,9 @@ namespace OpenNos.GameObject
             if (!skillsSp.Any())
             {
                 skill = "-1";
+            }
+            else
+            {
                 firstskillvnum = skillsSp[0].SkillVNum;
             }
 
