@@ -359,8 +359,18 @@ namespace OpenNos.Handler
                 }
                 character.GeneralLogs = DaoFactory.GeneralLogDao.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
                 character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(character.MapId);
-                character.PositionX = character.MapX;
-                character.PositionY = character.MapY;
+                Map currentMap = ServerManager.Instance.GetMapInstance(character.MapInstanceId)?.Map;
+                if (currentMap != null && currentMap.IsBlockedZone(character.MapX, character.MapY))
+                {
+                    MapCell pos = currentMap.GetRandomPosition();
+                    character.PositionX = pos.X;
+                    character.PositionY = pos.Y;
+                }
+                else
+                {
+                    character.PositionX = character.MapX;
+                    character.PositionY = character.MapY;
+                }
                 character.Authority = Session.Account.Authority;
                 Session.SetCharacter(character);
                 if (!Session.Character.GeneralLogs.Any(s => s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == "Connection"))
