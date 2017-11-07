@@ -84,11 +84,12 @@ namespace OpenNos.Core
         /// <typeparam name="TBaseType">The BaseType to generate serialization informations</typeparam>
         public static void Initialize<TBaseType>() where TBaseType : PacketDefinition
         {
-            if (!IsInitialized)
+            if (IsInitialized)
             {
-                GenerateSerializationInformations<TBaseType>();
-                IsInitialized = true;
+                return;
             }
+            GenerateSerializationInformations<TBaseType>();
+            IsInitialized = true;
         }
 
         /// <summary>
@@ -288,7 +289,7 @@ namespace OpenNos.Core
             }
 
             // enum should be casted to number
-            if (packetPropertyType.BaseType != null && packetPropertyType.BaseType.Equals(typeof(Enum)))
+            if (packetPropertyType.BaseType != null && packetPropertyType.BaseType == typeof(Enum))
             {
                 object convertedValue = null;
                 try
@@ -305,17 +306,17 @@ namespace OpenNos.Core
 
                 return convertedValue;
             }
-            if (packetPropertyType.Equals(typeof(bool))) // handle boolean values
+            if (packetPropertyType == typeof(bool)) // handle boolean values
             {
                 return currentValue != "0";
             }
-            if (packetPropertyType.BaseType != null && packetPropertyType.BaseType.Equals(typeof(PacketDefinition))) // subpacket
+            if (packetPropertyType.BaseType != null && packetPropertyType.BaseType == typeof(PacketDefinition)) // subpacket
             {
                 KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> subpacketSerializationInfo = GetSerializationInformation(packetPropertyType);
                 return DeserializeSubpacket(currentValue, packetPropertyType, subpacketSerializationInfo, packetIndexAttribute?.IsReturnPacket ?? false);
             }
             if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)) // subpacket list
-                && packetPropertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketDefinition)))
+                && packetPropertyType.GenericTypeArguments[0].BaseType == typeof(PacketDefinition))
             {
                 return DeserializeSubpackets(currentValue, packetPropertyType, packetIndexAttribute?.RemoveSeparator ?? false, packetMatches, packetIndexAttribute?.Index, includesKeepAliveIdentity);
             }
@@ -329,7 +330,7 @@ namespace OpenNos.Core
             }
             if (Nullable.GetUnderlyingType(packetPropertyType) != null) // nullable value
             {
-                if (packetPropertyType.GenericTypeArguments[0]?.BaseType.Equals(typeof(Enum)) == true)
+                if (packetPropertyType.GenericTypeArguments[0]?.BaseType == typeof(Enum))
                 {
                     return Enum.Parse(packetPropertyType.GenericTypeArguments[0], currentValue);
                 }
@@ -428,17 +429,15 @@ namespace OpenNos.Core
             return serializedSubpacket;
         }
 
-        private static string SerializeSubpackets(IList listValues, Type packetBasePropertyType, bool shouldRemoveSeparator)
+        private static string SerializeSubpackets(ICollection listValues, Type packetBasePropertyType, bool shouldRemoveSeparator)
         {
             string serializedSubPacket = string.Empty;
             KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> subpacketSerializationInfo = GetSerializationInformation(packetBasePropertyType.GetGenericArguments()[0]);
 
             if (listValues.Count > 0)
             {
-                foreach (object listValue in listValues)
-                {
-                    serializedSubPacket += SerializeSubpacket(listValue, subpacketSerializationInfo, false, shouldRemoveSeparator);
-                }
+                serializedSubPacket = listValues.Cast<object>().Aggregate(serializedSubPacket,
+                    (current, listValue) => current + SerializeSubpacket(listValue, subpacketSerializationInfo, false, shouldRemoveSeparator));
             }
 
             return serializedSubPacket;
@@ -446,53 +445,51 @@ namespace OpenNos.Core
 
         private static string SerializeValue(Type propertyType, object value, PacketIndexAttribute packetIndexAttribute = null)
         {
-            if (propertyType != null)
+            if (propertyType == null)
             {
-                // check for nullable without value or string
-                if (propertyType.Equals(typeof(string)) && string.IsNullOrEmpty(Convert.ToString(value)))
-                {
-                    return " -";
-                }
-                if (Nullable.GetUnderlyingType(propertyType) != null && string.IsNullOrEmpty(Convert.ToString(value)))
-                {
-                    return " -1";
-                }
-
-                // enum should be casted to number
-                if (propertyType.BaseType != null && propertyType.BaseType.Equals(typeof(Enum)))
-                {
-                    return $" {Convert.ToInt16(value)}";
-                }
-                if (propertyType.Equals(typeof(bool)))
-                {
-                    // bool is 0 or 1 not True or False
-                    return Convert.ToBoolean(value) ? " 1" : " 0";
-                }
-                if (propertyType.BaseType != null && propertyType.BaseType.Equals(typeof(PacketDefinition)))
-                {
-                    KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> subpacketSerializationInfo = GetSerializationInformation(propertyType);
-                    return SerializeSubpacket(value, subpacketSerializationInfo, packetIndexAttribute?.IsReturnPacket ?? false, packetIndexAttribute?.RemoveSeparator ?? false);
-                }
-                if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))
-                    && propertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketDefinition)))
-                {
-                    return SerializeSubpackets((IList)value, propertyType, packetIndexAttribute?.RemoveSeparator ?? false);
-                }
-                if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //simple list
-                {
-                    return SerializeSimpleList((IList)value, propertyType);
-                }
-                return $" {value}";
+                return string.Empty;
+            }
+            // check for nullable without value or string
+            if (propertyType == typeof(string) && string.IsNullOrEmpty(Convert.ToString(value)))
+            {
+                return " -";
+            }
+            if (Nullable.GetUnderlyingType(propertyType) != null && string.IsNullOrEmpty(Convert.ToString(value)))
+            {
+                return " -1";
             }
 
-            return string.Empty;
+            // enum should be casted to number
+            if (propertyType.BaseType != null && propertyType.BaseType == typeof(Enum))
+            {
+                return $" {Convert.ToInt16(value)}";
+            }
+            if (propertyType == typeof(bool))
+            {
+                // bool is 0 or 1 not True or False
+                return Convert.ToBoolean(value) ? " 1" : " 0";
+            }
+            if (propertyType.BaseType != null && propertyType.BaseType == typeof(PacketDefinition))
+            {
+                KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> subpacketSerializationInfo = GetSerializationInformation(propertyType);
+                return SerializeSubpacket(value, subpacketSerializationInfo, packetIndexAttribute?.IsReturnPacket ?? false, packetIndexAttribute?.RemoveSeparator ?? false);
+            }
+            if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))
+                                           && propertyType.GenericTypeArguments[0].BaseType == typeof(PacketDefinition))
+            {
+                return SerializeSubpackets((IList)value, propertyType, packetIndexAttribute?.RemoveSeparator ?? false);
+            }
+            if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //simple list
+            {
+                return SerializeSimpleList((IList)value, propertyType);
+            }
+            return $" {value}";
         }
 
-        private static PacketDefinition SetDeserializationInformations(PacketDefinition packetDefinition, string packetContent, string packetHeader)
+        private static void SetDeserializationInformations(PacketDefinition packetDefinition, string packetContent, string packetHeader)
         {
             packetDefinition.OriginalContent = packetContent;
             packetDefinition.OriginalHeader = packetHeader;
-            return packetDefinition;
         }
 
         #endregion

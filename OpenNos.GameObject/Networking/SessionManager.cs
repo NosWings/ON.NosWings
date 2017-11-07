@@ -24,7 +24,8 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        protected Type PacketHandler;
+        protected Type PacketHandler { get; }
+
         protected ConcurrentDictionary<long, ClientSession> Sessions = new ConcurrentDictionary<long, ClientSession>();
 
         #endregion
@@ -54,15 +55,17 @@ namespace OpenNos.GameObject
             ClientSession session = IntializeNewSession(customClient);
             customClient.SetClientSession(session);
 
-            if (session != null && IsWorldServer)
+            if (session == null || !IsWorldServer)
             {
-                if (!Sessions.TryAdd(customClient.ClientId, session))
-                {
-                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
-                    customClient.Disconnect();
-                    Sessions.TryRemove(customClient.ClientId, out session);
-                }
+                return;
             }
+            if (Sessions.TryAdd(customClient.ClientId, session))
+            {
+                return;
+            }
+            Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
+            customClient.Disconnect();
+            Sessions.TryRemove(customClient.ClientId, out session);
         }
 
         public virtual void StopServer()
