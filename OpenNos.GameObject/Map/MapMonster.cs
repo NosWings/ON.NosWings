@@ -2055,7 +2055,10 @@ namespace OpenNos.GameObject
                         switch (b.Card?.BuffType)
                         {
                             case BuffType.Bad:
-                                s.ApplyBCards(character);
+                                if (b.Card?.CardId != 124)
+                                {
+                                    s.ApplyBCards(character);
+                                }
                                 break;
 
                             case BuffType.Good:
