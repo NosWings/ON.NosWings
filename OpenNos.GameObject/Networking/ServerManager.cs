@@ -465,15 +465,22 @@ namespace OpenNos.GameObject
                             Group grp = session.Character.Group;
                             if (grp != null)
                             {
+                                session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
+                                if (session.Character.Hp <= 0)
+                                {
+                                    session.Character.Hp = 1;
+                                    session.Character.Mp = 1;
+                                }
                                 grp.Characters.Where(s => s != null).ToList().ForEach(s =>
                                 {
                                     s.SendPacket(s.Character?.Group?.GeneraterRaidmbf(s.CurrentMapInstance));
                                     s.SendPacket(s.Character?.Group?.GenerateRdlst());
                                 });
-                                grp.LeaveGroup(session);
                                 session.SendPacket(session.Character.GenerateRaid(1, true));
                                 session.SendPacket(session.Character.GenerateRaid(2, true));
+                                grp.LeaveGroup(session);
                                 session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
+                                ChangeMap(session.Character.CharacterId, 1, 78, 111);
                             }
                         }
                     }

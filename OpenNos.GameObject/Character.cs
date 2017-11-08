@@ -1439,14 +1439,15 @@ namespace OpenNos.GameObject
                 TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
             }
 
-            if (monsterToAttack.MonsterVNum == 2309)
+            // Remove this shit for the moment, only works 1/10 times, need to make smth clean
+            /*if (monsterToAttack.MonsterVNum == 2309)
             {
-                return((ushort)(monsterToAttack.Monster.MaxHP / 1000));
+                return (ushort)(monsterToAttack.Monster.MaxHP / 1000);
             }
             if (monsterToAttack.MonsterVNum == 1381)
             {
-                return ((ushort)(monsterToAttack.Monster.MaxHP / 500));
-            }
+                return (ushort)(monsterToAttack.Monster.MaxHP / 500);
+            }*/
             #region Definitions
 
             if (monsterToAttack == null)
@@ -3847,15 +3848,15 @@ namespace OpenNos.GameObject
             bool isPvpSecondary = false;
             bool isPvpArmor = false;
 
-            if (Inventory.PrimaryWeapon?.Item.Name.Contains(": ") == true)
+            if (Inventory?.PrimaryWeapon?.Item.Name.Contains(": ") == true)
             {
                 isPvpPrimary = true;
             }
-            if (Inventory.SecondaryWeapon?.Item.Name.Contains(": ") == true)
+            if (Inventory?.SecondaryWeapon?.Item.Name.Contains(": ") == true)
             {
                 isPvpSecondary = true;
             }
-            if (Inventory.Armor?.Item.Name.Contains(": ") == true)
+            if (Inventory?.Armor?.Item.Name.Contains(": ") == true)
             {
                 isPvpArmor = true;
             }
