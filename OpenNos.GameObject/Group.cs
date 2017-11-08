@@ -161,7 +161,7 @@ namespace OpenNos.GameObject
 
         public string GeneraterRaidmbf(MapInstance mapInstance)
         {
-            return $"raidmbf {mapInstance.MonsterLocker.Initial} {mapInstance.MonsterLocker.Current} {mapInstance.ButtonLocker.Initial} {mapInstance.ButtonLocker.Current} {Raid?.FirstMap?.InstanceBag.Lives - Raid?.FirstMap?.InstanceBag.DeadList.Count()} {Raid?.FirstMap?.InstanceBag.Lives} 25";
+            return $"raidmbf {mapInstance?.MonsterLocker?.Initial} {mapInstance?.MonsterLocker?.Current} {mapInstance?.ButtonLocker?.Initial} {mapInstance?.ButtonLocker?.Current} {Raid?.FirstMap?.InstanceBag?.Lives - Raid?.FirstMap?.InstanceBag?.DeadList.Count()} {Raid?.FirstMap?.InstanceBag?.Lives} 25";
         }
         #endregion
     }
