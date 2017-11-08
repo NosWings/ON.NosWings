@@ -909,8 +909,10 @@ namespace OpenNos.GameObject
                     elementalBoost = 0.2;
                 }
             }
+            int elementalRez = playerRessistance + bonusrez;
+            elementalRez = elementalRez > 100 ? 100 : elementalRez;
             elementalDamage =(int) ((elementalDamage + (100 + baseDamage) * (Monster.ElementRate / 100D)) * elementalBoost);
-            elementalDamage = elementalDamage / 100 * (100 - playerRessistance - bonusrez);
+            elementalDamage = elementalDamage / 100 * (100 - elementalRez);
             if (elementalDamage < 0)
             {
                 elementalDamage = 0;
@@ -1468,9 +1470,10 @@ namespace OpenNos.GameObject
                     elementalBoost = 0.2;
                 }
             }
-            elementalDamage =
-                (int)((elementalDamage + (100 + baseDamage) * (Monster.ElementRate / 100D)) * elementalBoost);
-            elementalDamage = elementalDamage / 100 * (100 - playerRessistance - bonusrez);
+            int elementalRez = playerRessistance + bonusrez;
+            elementalRez = elementalRez > 100 ? 100 : elementalRez;
+            elementalDamage = (int) ((elementalDamage + (100 + baseDamage) * (Monster.ElementRate / 100D)) * elementalBoost);
+            elementalDamage = elementalDamage / 100 * (100 - elementalRez);
             if (elementalDamage < 0)
             {
                 elementalDamage = 0;

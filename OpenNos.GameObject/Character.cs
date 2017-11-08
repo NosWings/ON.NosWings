@@ -3663,8 +3663,10 @@ namespace OpenNos.GameObject
                 elementalBoost = 0;
             }
 
+            int elementalRez = enemyresistance + bonusrez;
+            elementalRez = elementalRez > 100 ? 100 : elementalRez;
             elementalDamage = (int)(elementalDamage + (baseDamage + 100) * ((ElementRate + ElementRateSp) / 100D));
-            elementalDamage = (int)(elementalDamage / 100D * (100 - enemyresistance - bonusrez) * elementalBoost);
+            elementalDamage = (int)(elementalDamage / 100D * (100 - elementalRez) * elementalBoost);
             if (elementalDamage < 0)
             {
                 elementalDamage = 0;
