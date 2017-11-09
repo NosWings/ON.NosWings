@@ -293,7 +293,6 @@ namespace OpenNos.Handler
                     {
                         if (targetSession.Character.GroupSentRequestCharacterIds.Count <= 0)
                         {
-                            // Not quite sure this will fix the issue though...
                             return;
                         }
                         targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
