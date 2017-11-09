@@ -24,7 +24,11 @@ namespace OpenNos.Data
 
         public AuthorityType Authority { get; set; }
 
+        public long BankMoney { get; set; }
+
         public string Email { get; set; }
+
+        public long Money { get; set; }
 
         public string Name { get; set; }
 
