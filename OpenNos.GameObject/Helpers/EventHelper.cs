@@ -625,6 +625,32 @@ namespace OpenNos.GameObject.Helpers
                     evt.MapInstance.Monsters.ForEach(m => evt.MapInstance.DespawnMonster(m));
                     break;
 
+                case EventActionType.STARTACT4RAID:
+                    Tuple<Act4RaidType, FactionType> raidParameters = (Tuple<Act4RaidType, FactionType>)evt.Parameter;
+                    Act4Stat stat = raidParameters.Item2 == FactionType.Angel ? ServerManager.Instance.Act4AngelStat : ServerManager.Instance.Act4DemonStat;
+                    stat.Mode = 3;
+                    stat.TotalTime = 3600;
+                    switch (raidParameters.Item1)
+                    {
+                        case Act4RaidType.Morcos:
+                            stat.IsMorcos = true;
+                            Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte)raidParameters.Item2);
+                            break;
+                        case Act4RaidType.Hatus:
+                            stat.IsHatus = true;
+                            Act4Raid.GenerateRaid(Act4RaidType.Hatus, (byte)raidParameters.Item2);
+                            break;
+                        case Act4RaidType.Calvina:
+                            stat.IsCalvina = true;
+                            Act4Raid.GenerateRaid(Act4RaidType.Calvina, (byte)raidParameters.Item2);
+                            break;
+                        case Act4RaidType.Berios:
+                            stat.IsBerios = true;
+                            Act4Raid.GenerateRaid(Act4RaidType.Berios, (byte)raidParameters.Item2);
+                            break;
+                    }
+                    break;
+
                 #endregion
             }
         }
