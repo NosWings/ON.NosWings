@@ -156,6 +156,10 @@ namespace OpenNos.GameObject
 
         public bool IsLeader(ClientSession session)
         {
+            if (!Characters.Any())
+            {
+                return false;
+            }
             return Characters.OrderBy(s => s.Character.LastGroupJoin).ElementAt(0) == session;
         }
 
