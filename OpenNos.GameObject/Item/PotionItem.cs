@@ -77,7 +77,7 @@ namespace OpenNos.GameObject
                         session.Character.Hp = (int)session.Character.HpLoad() / 2 + session.Character.Hp > (int)session.Character.HpLoad() ? (int)session.Character.HpLoad() : session.Character.Hp + (int)session.Character.HpLoad() / 2;
                         foreach (Mate mate in session.Character.Mates.Where(m => m.IsTeamMember))
                         {
-                            mate.Hp = mate.HpLoad() / 2;
+                            mate.Hp = mate.HpLoad() / 2 + mate.Hp > mate.HpLoad() ? mate.HpLoad() : mate.Hp + mate.HpLoad() / 2;
                             session.CurrentMapInstance?.Broadcast(mate.GenerateRc(mate.HpLoad() - mate.Hp));
                         }
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -98,7 +98,7 @@ namespace OpenNos.GameObject
                     if (session.CurrentMapInstance?.Map.MapId == 153)
                     {
                         session.Character.Mp = (int)session.Character.MpLoad() / 2 + session.Character.Mp > (int)session.Character.MpLoad() ? (int)session.Character.MpLoad() : session.Character.Mp + (int)session.Character.MpLoad() / 2;
-                        session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => m.Mp = m.MpLoad());
+                        session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => m.Mp = m.MpLoad() / 2 + m.Mp > m.MpLoad() ? m.MpLoad() : m.Mp + m.MpLoad() / 2);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         session.SendPacket(session.Character.GenerateStat());
                     }
@@ -128,8 +128,8 @@ namespace OpenNos.GameObject
                         session.Character.Mp = (int)session.Character.MpLoad() / 2 + session.Character.Mp > (int)session.Character.MpLoad() ? (int)session.Character.MpLoad() : session.Character.Mp + (int)session.Character.MpLoad() / 2;
                         foreach (Mate mate in session.Character.Mates.Where(m => m.IsTeamMember))
                         {
-                            mate.Hp = mate.HpLoad();
-                            mate.Mp = mate.MpLoad();
+                            mate.Hp = mate.HpLoad() / 2 + mate.Hp > mate.HpLoad() ? mate.HpLoad() : mate.Hp + mate.HpLoad() / 2;
+                            mate.Mp = mate.MpLoad() / 2 + mate.Mp > mate.MpLoad() ? mate.MpLoad() : mate.Mp + mate.MpLoad() / 2;
                             session.CurrentMapInstance?.Broadcast(mate.GenerateRc(mate.HpLoad() - mate.Hp));
                         }
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
