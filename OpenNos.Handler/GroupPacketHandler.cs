@@ -291,7 +291,7 @@ namespace OpenNos.Handler
                     }
                     if (targetSession != null)
                     {
-                        if (targetSession.Character.GroupSentRequestCharacterIds.Count <= 0)
+                        if (!targetSession.Character.GroupSentRequestCharacterIds.Any())
                         {
                             return;
                         }
