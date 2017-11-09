@@ -465,15 +465,22 @@ namespace OpenNos.GameObject
                             Group grp = session.Character.Group;
                             if (grp != null)
                             {
+                                session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
+                                if (session.Character.Hp <= 0)
+                                {
+                                    session.Character.Hp = 1;
+                                    session.Character.Mp = 1;
+                                }
                                 grp.Characters.Where(s => s != null).ToList().ForEach(s =>
                                 {
                                     s.SendPacket(s.Character?.Group?.GeneraterRaidmbf(s.CurrentMapInstance));
                                     s.SendPacket(s.Character?.Group?.GenerateRdlst());
                                 });
-                                grp.LeaveGroup(session);
                                 session.SendPacket(session.Character.GenerateRaid(1, true));
                                 session.SendPacket(session.Character.GenerateRaid(2, true));
+                                grp.LeaveGroup(session);
                                 session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("KICKED_FROM_RAID"), 0));
+                                ChangeMap(session.Character.CharacterId, 1, 78, 111);
                             }
                         }
                     }
@@ -1771,8 +1778,6 @@ namespace OpenNos.GameObject
 
             Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(x => { Act4Process(); });
 
-            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { Act4ShipProcess(); });
-
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { GroupProcess(); });
 
             Observable.Interval(TimeSpan.FromMinutes(1)).Subscribe(x => { Act4FlowerProcess(); });
@@ -1799,12 +1804,6 @@ namespace OpenNos.GameObject
             CommunicationServiceClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
             CommunicationServiceClient.Instance.ShutdownEvent += OnShutdown;
             _lastGroupId = 1;
-        }
-
-        private void Act4ShipProcess()
-        {
-            Act4ShipTask.Run(FactionType.Angel);
-            Act4ShipTask.Run(FactionType.Demon);
         }
 
         private void Act4FlowerProcess()

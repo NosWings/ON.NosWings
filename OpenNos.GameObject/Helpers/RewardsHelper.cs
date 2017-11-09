@@ -57,40 +57,45 @@ namespace OpenNos.GameObject.Helpers
                     break;
                 case 30:
                     session.Character.GiftAdd(1011, 50); // Potions géantes 1k5 / 1k5
-                    session.Character.GiftAdd(1286, 1); // béné
+                    session.Character.GiftAdd(1452, 1); // béné
                     break;
                 case 40:
                     session.Character.GiftAdd(1011, 50); // potions géantes 1k5 / 1k5
-                    session.Character.GiftAdd(1286, 2); // Béné
+                    session.Character.GiftAdd(1452, 2); // Béné
                     session.Character.GiftAdd(1363, 2); // parcho bleu
                     break;
                 case 50:
                     session.Character.GiftAdd(1011, 50); // potions géantes 1k5 / 1k5
-                    session.Character.GiftAdd(1286, 2); // Béné
+                    session.Character.GiftAdd(1452, 2); // Béné
                     session.Character.GiftAdd(1363, 2); // parcho bleu
                     session.Character.GiftAdd(1218, 2); // parcho up stuff
                     break;
                 case 60:
                     session.Character.GiftAdd(1011, 75); // potions géantes 1k5 / 1k5
-                    session.Character.GiftAdd(1286, 3); // Béné
+                    session.Character.GiftAdd(1452, 3); // Béné
                     session.Character.GiftAdd(1363, 2); // parcho bleu
                     session.Character.GiftAdd(1218, 2); // parcho up stuff
                     break;
                 case 70:
                     session.Character.GiftAdd(1244, 30); // TF
-                    session.Character.GiftAdd(1286, 4); // Béné
+                    session.Character.GiftAdd(1452, 4); // Béné
                     session.Character.GiftAdd(1363, 3); // parcho bleu
                     session.Character.GiftAdd(2282, 99);  // plume d'ange
                     break;
                 case 80:
                     session.Character.GiftAdd(1244, 60); // TF
-                    session.Character.GiftAdd(1286, 5); // Béné
+                    session.Character.GiftAdd(1452, 5); // Béné
                     session.Character.GiftAdd(1363, 3); // parcho rouge
                     session.Character.GiftAdd(282, 1); // Amu pari
                     break;
                 case 90:
                     session.Character.GiftAdd(1244, 99); // TF
-                    session.Character.GiftAdd(1286, 5); // Béné
+                    session.Character.GiftAdd(1452, 5); // Béné
+                    session.Character.GiftAdd(1363, 5); // parcho rouge
+                    break;
+                case 150:
+                    session.Character.GiftAdd(1244, 99); // TF
+                    session.Character.GiftAdd(1452, 5); // Béné
                     session.Character.GiftAdd(1363, 5); // parcho rouge
                     session.Character.GiftAdd(4262, 1); // Amu pari héroique
                     break;

@@ -198,27 +198,27 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 500));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 500 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 2027, 8, 5));
                             dropParameters.AddRange(GenerateDrop(map, 2018, 5, 5));
                             dropParameters.AddRange(GenerateDrop(map, 180, 5, 1));
                             break;
 
                         case 1:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 1000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 1000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1002, 8, 3));
                             dropParameters.AddRange(GenerateDrop(map, 1005, 16, 3));
                             dropParameters.AddRange(GenerateDrop(map, 181, 5, 1));
                             break;
 
                         case 2:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 1500));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 1500 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1002, 10, 5));
                             dropParameters.AddRange(GenerateDrop(map, 1005, 10, 5));
                             break;
 
                         case 3:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 2000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 2000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1003, 10, 5));
                             dropParameters.AddRange(GenerateDrop(map, 1006, 10, 5));
                             break;
@@ -229,26 +229,26 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 1500));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 1500 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1008, 5, 3));
                             dropParameters.AddRange(GenerateDrop(map, 180, 5, 1));
                             break;
 
                         case 1:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 2000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 2000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1008, 8, 3));
                             dropParameters.AddRange(GenerateDrop(map, 181, 5, 1));
                             break;
 
                         case 2:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 2500));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 2500 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1009, 10, 3));
                             dropParameters.AddRange(GenerateDrop(map, 1246, 5, 1));
                             dropParameters.AddRange(GenerateDrop(map, 1247, 5, 1));
                             break;
 
                         case 3:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 3000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 3000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1009, 10, 3));
                             dropParameters.AddRange(GenerateDrop(map, 1248, 5, 1));
                             break;
@@ -259,26 +259,26 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 1500));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 1500 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1008, 5, 3));
                             dropParameters.AddRange(GenerateDrop(map, 180, 5, 1));
                             break;
 
                         case 1:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 2000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 2000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1008, 8, 3));
                             dropParameters.AddRange(GenerateDrop(map, 181, 5, 1));
                             break;
 
                         case 2:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 2500));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 2500 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1009, 10, 3));
                             dropParameters.AddRange(GenerateDrop(map, 1246, 5, 1));
                             dropParameters.AddRange(GenerateDrop(map, 1247, 5, 1));
                             break;
 
                         case 3:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 3000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 3000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1009, 10, 3));
                             dropParameters.AddRange(GenerateDrop(map, 1248, 5, 1));
                             break;
@@ -289,26 +289,26 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 3000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 3000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1010, 8, 4));
                             dropParameters.AddRange(GenerateDrop(map, 1246, 5, 1));
                             break;
 
                         case 1:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 4000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 4000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1010, 10, 3));
                             dropParameters.AddRange(GenerateDrop(map, 1247, 5, 1));
                             break;
 
                         case 2:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 5000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 5000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1010, 10, 13));
                             dropParameters.AddRange(GenerateDrop(map, 1246, 8, 1));
                             dropParameters.AddRange(GenerateDrop(map, 1247, 8, 1));
                             break;
 
                         case 3:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 7000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 7000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1011, 13, 5));
                             dropParameters.AddRange(GenerateDrop(map, 1029, 5, 1));
                             dropParameters.AddRange(GenerateDrop(map, 1248, 13, 1));
@@ -320,26 +320,26 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 3000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 3000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1010, 8, 3));
                             dropParameters.AddRange(GenerateDrop(map, 1246, 5, 1));
                             break;
 
                         case 1:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 4000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 4000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1010, 15, 4));
                             dropParameters.AddRange(GenerateDrop(map, 1247, 10, 1));
                             break;
 
                         case 2:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 5000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 5000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1010, 13, 5));
                             dropParameters.AddRange(GenerateDrop(map, 1246, 13, 1));
                             dropParameters.AddRange(GenerateDrop(map, 1247, 13, 1));
                             break;
 
                         case 3:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 7000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 7000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1011, 13, 5));
                             dropParameters.AddRange(GenerateDrop(map, 1248, 13, 1));
                             dropParameters.AddRange(GenerateDrop(map, 1029, 5, 1));
@@ -351,26 +351,26 @@ namespace OpenNos.GameObject.Event
                     switch (wave)
                     {
                         case 0:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 10000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 10000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1011, 15, 5));
                             dropParameters.AddRange(GenerateDrop(map, 1246, 15, 1));
                             break;
 
                         case 1:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 12000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 12000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1011, 15, 5));
                             dropParameters.AddRange(GenerateDrop(map, 1247, 15, 1));
                             break;
 
                         case 2:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 15000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 15, 15000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1011, 20, 5));
                             dropParameters.AddRange(GenerateDrop(map, 1246, 15, 1));
                             dropParameters.AddRange(GenerateDrop(map, 1247, 15, 1));
                             break;
 
                         case 3:
-                            dropParameters.AddRange(GenerateDrop(map, 1046, 30, 20000));
+                            dropParameters.AddRange(GenerateDrop(map, 1046, 30, 20000 * ServerManager.Instance.GoldRate / 4));
                             dropParameters.AddRange(GenerateDrop(map, 1011, 30, 5));
                             dropParameters.AddRange(GenerateDrop(map, 1030, 30, 1));
                             dropParameters.AddRange(GenerateDrop(map, 2282, 12, 3));

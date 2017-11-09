@@ -41,6 +41,7 @@ namespace OpenNos.DAL
         private static IItemInstanceDAO _iteminstanceDao;
         private static ILogChatDAO _logChatDao;
         private static ILogCommandsDAO _logCommandsDao;
+        private static ILogVIPDAO _logVipDao;
         private static IMailDAO _mailDao;
         private static IMapDAO _mapDao;
         private static IMapMonsterDAO _mapmonsterDao;
@@ -165,6 +166,11 @@ namespace OpenNos.DAL
         public static ILogCommandsDAO LogCommandsDao
         {
             get { return _logCommandsDao ?? (_logCommandsDao = new LogCommandsDAO()); }
+        }
+
+        public static ILogVIPDAO LogVipDao
+        {
+            get { return _logVipDao ?? (_logVipDao = new LogVIPDAO()); }
         }
 
         public static IMailDAO MailDao

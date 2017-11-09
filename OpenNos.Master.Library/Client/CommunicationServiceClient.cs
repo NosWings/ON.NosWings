@@ -42,7 +42,7 @@ namespace OpenNos.Master.Library.Client
                 catch
                 {
                     Logger.Log.Error(Language.Instance.GetMessageFromKey("RETRY_CONNECTION"));
-                    System.Threading.Thread.Sleep(5000);
+                    System.Threading.Thread.Sleep(2000);
                 }
             }
         }

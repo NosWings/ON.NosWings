@@ -223,7 +223,7 @@ namespace OpenNos.GameObject
                     }
                     ItemInstance raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
 
-                    ScriptedInstance raid = ServerManager.Instance.Raids.FirstOrDefault(s => s.RequieredItems.Any(obj => obj.VNum == raidSeal.ItemVNum))?.GetClone();
+                    ScriptedInstance raid = ServerManager.Instance?.Raids?.FirstOrDefault(s => s.RequieredItems.Any(obj => obj?.VNum == raidSeal?.ItemVNum))?.GetClone();
                     if (raid != null)
                     {
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
@@ -581,47 +581,6 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1002:
-                    // TODO REVIEW THIS
-                    /*
-                    if (EffectValue == 69)
-                    {
-                        int rnd = ServerManager.Instance.RandomNumber(0, 1000);
-                        if (rnd < 5)
-                        {
-                            short[] vnums =
-                            {
-                                5560, 5591, 4099, 907, 1160, 4705, 4706, 4707, 4708, 4709, 4710, 4711, 4712, 4713, 4714,
-                                4715, 4716
-                            };
-                            byte[] counts = {1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-                            int item = ServerManager.Instance.RandomNumber(0, 17);
-
-                            session.Character.GiftAdd(vnums[item], counts[item]);
-                        }
-                        else if (rnd < 30)
-                        {
-                            short[] vnums = {361, 362, 363, 366, 367, 368, 371, 372, 373};
-                            session.Character.GiftAdd(vnums[ServerManager.Instance.RandomNumber(0, 9)], 1);
-                        }
-                        else
-                        {
-                            short[] vnums =
-                            {
-                                1161, 2282, 1030, 1244, 1218, 5369, 1012, 1363, 1364, 2160, 2173, 5959, 5983, 2514,
-                                2515, 2516, 2517, 2518, 2519, 2520, 2521, 1685, 1686, 5087, 5203, 2418, 2310, 2303,
-                                2169, 2280, 5892, 5893, 5894, 5895, 5896, 5897, 5898, 5899, 5332, 5105, 2161, 2162
-                            };
-                            byte[] counts =
-                            {
-                                10, 10, 20, 5, 1, 1, 99, 1, 1, 5, 5, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 5, 20,
-                                20, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-                            };
-                            int item = ServerManager.Instance.RandomNumber(0, 42);
-                            session.Character.GiftAdd(vnums[item], counts[item]);
-                        }
-                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                    }
-                    */
                     if (session.HasCurrentMapInstance)
                     {
                         if (session.CurrentMapInstance.Map.MapTypes.All(m => m.MapTypeId != (short) MapTypeEnum.Act4))

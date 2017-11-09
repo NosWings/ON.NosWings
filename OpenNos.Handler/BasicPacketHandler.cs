@@ -1405,7 +1405,15 @@ namespace OpenNos.Handler
                 message = message.Trim();
 
                 Session.SendPacket(Session.Character.GenerateSpk(message, 5));
-                CharacterDTO receiver = DaoFactory.CharacterDao.LoadByName(characterName);
+                if (characterName == null)
+                {
+                    return;
+                }
+                CharacterDTO receiver = DaoFactory.CharacterDao?.LoadByName(characterName);
+                if (receiver == null)
+                {
+                    return;
+                }
                 if (receiver.CharacterId == Session.Character.CharacterId)
                 {
                     return;

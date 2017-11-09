@@ -20,11 +20,12 @@ namespace OpenNos.DAL.EF
                 {
                     LogChat log = context.LogChat.First(i => i.LogId.Equals(logId));
 
-                    if (log != null)
+                    if (log == null)
                     {
-                        context.LogChat.Remove(log);
-                        context.SaveChanges();
+                        return DeleteResult.Deleted;
                     }
+                    context.LogChat.Remove(log);
+                    context.SaveChanges();
 
                     return DeleteResult.Deleted;
                 }
@@ -108,11 +109,12 @@ namespace OpenNos.DAL.EF
 
         private LogChatDTO Update(LogChat entity, LogChatDTO respawn, OpenNosContext context)
         {
-            if (entity != null)
+            if (entity == null)
             {
-                _mapper.Map(respawn, entity);
-                context.SaveChanges();
+                return null;
             }
+            _mapper.Map(respawn, entity);
+            context.SaveChanges();
             return _mapper.Map<LogChatDTO>(entity);
         }
     }

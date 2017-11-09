@@ -332,14 +332,16 @@ namespace OpenNos.Master.Server
             Dictionary<int, List<AccountConnection.CharacterSession>> dictionary =
                 MSManager.Instance.WorldServers.ToDictionary(world => world.ChannelId, world => new List<AccountConnection.CharacterSession>());
 
-            foreach (IGrouping<int, AccountConnection> accountConnections in MSManager.Instance.ConnectedAccounts.GroupBy(s => s.ConnectedWorld.ChannelId))
+            foreach (IGrouping<int, AccountConnection> accountConnections in MSManager.Instance.ConnectedAccounts.Where(s=> s.Character != null).GroupBy(s => s.ConnectedWorld.ChannelId))
             {
                 foreach (AccountConnection i in accountConnections)
                 {
                     dictionary[accountConnections.Key].Add(i.Character);
                 }
             }
-            return JsonConvert.SerializeObject(dictionary);
+            string tmp = JsonConvert.SerializeObject(dictionary);
+            Logger.Log.Info($"[MASTER] :  Stats {tmp}");
+            return tmp;
         }
 
         public int? SendMessageToCharacter(SCSCharacterMessage message)

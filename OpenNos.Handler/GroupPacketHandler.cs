@@ -291,6 +291,10 @@ namespace OpenNos.Handler
                     }
                     if (targetSession != null)
                     {
+                        if (targetSession.Character.GroupSentRequestCharacterIds.Count <= 0)
+                        {
+                            return;
+                        }
                         targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
 
                         if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId) && ServerManager.Instance.IsCharacterMemberOfGroup(pjoinPacket.CharacterId))

@@ -714,6 +714,7 @@ namespace OpenNos.GameObject
         }
 
         #endregion
+
         #region Singleton
 
         private static EventHelper _instance;

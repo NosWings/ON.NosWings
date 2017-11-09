@@ -1455,14 +1455,20 @@ namespace OpenNos.GameObject
 
         public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
-            if (monsterToAttack.MonsterVNum == 2309)
+            if (skill.SkillVNum == 1085) // pas de bcard ...
             {
-                return((ushort)(monsterToAttack.Monster.MaxHP / 1000));
+                TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
+            }
+
+            // Remove this shit for the moment, only works 1/10 times, need to make smth clean
+            /*if (monsterToAttack.MonsterVNum == 2309)
+            {
+                return (ushort)(monsterToAttack.Monster.MaxHP / 1000);
             }
             if (monsterToAttack.MonsterVNum == 1381)
             {
-                return ((ushort)(monsterToAttack.Monster.MaxHP / 500));
-            }
+                return (ushort)(monsterToAttack.Monster.MaxHP / 500);
+            }*/
             #region Definitions
 
             if (monsterToAttack == null)
@@ -2850,7 +2856,6 @@ namespace OpenNos.GameObject
                 }
 
                 #endregion
-
             }
         }
 
@@ -3047,6 +3052,11 @@ namespace OpenNos.GameObject
         public int GeneratePvpDamage(Character target, Skill skill, ref int hitmode, ref bool onyx)
         {
             #region Definitions
+
+            if (skill.SkillVNum == 1085) // pas de bcard ...
+            {
+                TeleportOnMap(target.PositionX, target.PositionY);
+            }
 
             if (target == null || Inventory == null)
             {
@@ -3675,8 +3685,10 @@ namespace OpenNos.GameObject
                 elementalBoost = 0;
             }
 
+            int elementalRez = enemyresistance + bonusrez;
+            elementalRez = elementalRez > 100 ? 100 : elementalRez;
             elementalDamage = (int)(elementalDamage + (baseDamage + 100) * ((ElementRate + ElementRateSp) / 100D));
-            elementalDamage = (int)(elementalDamage / 100D * (100 - enemyresistance - bonusrez) * elementalBoost);
+            elementalDamage = (int)(elementalDamage / 100D * (100 - elementalRez) * elementalBoost);
             if (elementalDamage < 0)
             {
                 elementalDamage = 0;
@@ -3857,15 +3869,15 @@ namespace OpenNos.GameObject
             bool isPvpSecondary = false;
             bool isPvpArmor = false;
 
-            if (Inventory.PrimaryWeapon?.Item.Name.Contains(": ") == true)
+            if (Inventory?.PrimaryWeapon?.Item.Name.Contains(": ") == true)
             {
                 isPvpPrimary = true;
             }
-            if (Inventory.SecondaryWeapon?.Item.Name.Contains(": ") == true)
+            if (Inventory?.SecondaryWeapon?.Item.Name.Contains(": ") == true)
             {
                 isPvpSecondary = true;
             }
-            if (Inventory.Armor?.Item.Name.Contains(": ") == true)
+            if (Inventory?.Armor?.Item.Name.Contains(": ") == true)
             {
                 isPvpArmor = true;
             }
@@ -6179,7 +6191,12 @@ namespace OpenNos.GameObject
                 StaticBuff = true
             };
             Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
-            
+
+            if (staticBuff.RemainingTime < -1)
+            {
+                RemoveBuff(bf.Card.CardId);
+                return;
+            }
             if (staticBuff.RemainingTime == -1)
             {
                 bf.RemainingTime = staticBuff.RemainingTime;

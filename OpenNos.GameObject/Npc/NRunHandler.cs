@@ -610,34 +610,19 @@ namespace OpenNos.GameObject
                 case 5001:
                     if (npc != null)
                     {
-                        MapInstance map = null;
                         switch (session.Character.Faction)
                         {
                             case FactionType.Neutral:
                                 session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("NEED_FACTION_ACT4"));
                                 return;
-                            case FactionType.Angel:
-                                map = ServerManager.Instance.Act4ShipAngel;
-
-                                break;
-                            case FactionType.Demon:
-                                map = ServerManager.Instance.Act4ShipDemon;
-
-                                break;
-                        }
-                        if (map == null || !npc.EffectActivated)
-                        {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHIP_NOTARRIVED"), 0));
-                            return;
                         }
                         if (3000 > session.Character.Gold)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                             return;
                         }
-                        MapCell pos = map.Map.GetRandomPosition();
-                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, map.MapInstanceId, pos.X, pos.Y);
                         session.Character.Gold -= 3000;
+                        session.Character.ConnectAct4();
                     }
                     break;
 

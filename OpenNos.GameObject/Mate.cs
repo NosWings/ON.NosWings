@@ -1031,6 +1031,7 @@ namespace OpenNos.GameObject
             DamageMinimum = (short)(MateHelper.Instance.MinDamageData[type, Level] + (Monster.DamageMinimum - MateHelper.Instance.MinDamageData[type, Monster.Level]));
             DamageMaximum = (short)(MateHelper.Instance.MaxDamageData[type, Level] + (Monster.DamageMaximum - MateHelper.Instance.MaxDamageData[type, Monster.Level]));
             IsAlive = true;
+            Hp = MaxHp;
             Life = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(s =>
             {
                 MateLife();
