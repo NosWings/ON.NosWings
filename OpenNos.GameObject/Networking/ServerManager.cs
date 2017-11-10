@@ -518,7 +518,7 @@ namespace OpenNos.GameObject
         {
             InBazaarRefreshMode = true;
             CommunicationServiceClient.Instance.UpdateBazaar(ServerGroup, bazaarItemId);
-            SpinWait.SpinUntil(() => !InBazaarRefreshMode);
+            SpinWait.SpinUntil(() => !InBazaarRefreshMode, TimeSpan.FromSeconds(5));
         }
 
         public void ChangeMap(long id, short? mapId = null, short? mapX = null, short? mapY = null)
