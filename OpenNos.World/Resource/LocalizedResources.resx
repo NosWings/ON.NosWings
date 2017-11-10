@@ -1547,7 +1547,7 @@
     <value />
   </data>
   <data name="DIGNITY_RESTORED" xml:space="preserve">
-    <value />
+    <value>Dignity changed!</value>
   </data>
   <data name="PARTNER_AUTO_RELIVE_DISABLED" xml:space="preserve">
     <value />
@@ -1563,5 +1563,35 @@
   </data>
   <data name="QUEST_ALREADY_DONE" xml:space="preserve">
     <value>You have already done this quest today !</value>
+  </data>
+  <data name="CELLONING_FAILED" xml:space="preserve">
+    <value>The Cellon has disappeared because you failed to add options.</value>
+  </data>
+  <data name="CELLONING_SUCCESS" xml:space="preserve">
+    <value>Options added.</value>
+  </data>
+  <data name="CELLON_LEVEL_TOO_HIGH" xml:space="preserve">
+    <value>The Cellon's level is higher than that of the accessory.</value>
+  </data>
+  <data name="DO_YOU_WANT_RAID" xml:space="preserve">
+    <value>Do you want to start the raid ?</value>
+  </data>
+  <data name="EFFECT_TERMINATED" xml:space="preserve">
+    <value>You have lost the {0} effect</value>
+  </data>
+  <data name="RAID_DISOLVED" xml:space="preserve">
+    <value>The team was disbanded</value>
+  </data>
+  <data name="RAID_LEADER_CHANGE" xml:space="preserve">
+    <value>The Raid Leader changed !</value>
+  </data>
+  <data name="RAID_SUCCEED" xml:space="preserve">
+    <value>[{1}'s team] {0}'s raid team succeeded</value>
+  </data>
+  <data name="UNDER_EFFECT" xml:space="preserve">
+    <value>You are under the effect of {0}</value>
+  </data>
+  <data name="YOU_ARE_RAID_CHIEF" xml:space="preserve">
+    <value>You are now the Raid Leader. Invite members.</value>
   </data>
 </root>
