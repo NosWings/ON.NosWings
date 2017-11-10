@@ -6265,7 +6265,11 @@ namespace OpenNos.GameObject
             {
                 buffTime = ServerManager.Instance.RandomNumber(50, 350);
             }
-            if (indicator.Card.CardId == 0)
+            else if (indicator.Card.CardId == 336)
+            {
+                buffTime = ServerManager.Instance.RandomNumber(30, 70);
+            }
+            else if (indicator.Card.CardId == 0)
             {
                 buffTime = ChargeValue > 7000 ? 7000 : ChargeValue;
             }
