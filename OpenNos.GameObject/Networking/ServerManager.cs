@@ -445,7 +445,7 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), session.Character.Name)));
 
                             session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
-                            if (session.Character.Group.Characters != null)
+                            if (session.Character?.Group?.Characters != null)
                             {
                                 foreach (ClientSession player in session.Character.Group?.Characters)
                                 {
