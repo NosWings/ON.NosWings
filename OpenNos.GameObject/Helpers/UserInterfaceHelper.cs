@@ -498,8 +498,8 @@ namespace OpenNos.GameObject.Helpers
                     }
                     // TODO ADD RIGHT CLICK ON PET (get packet)
                     info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
-                        (bzlink.Item as WearableInstance).GenerateEInfo() : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
-                            (bzlink.Item as SpecialistInstance).GeneratePslInfo() : bzlink.Item.Item.SpType == 3 && bzlink.Item.Item.ItemSubType == 1 ? (bzlink.Item as SpecialistInstance).GenerateSlInfo(): "").Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
+                        (bzlink.Item as WearableInstance)?.GenerateEInfo() : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
+                            (bzlink.Item as SpecialistInstance)?.GeneratePslInfo() : bzlink.Item.Item.SpType == 3 && bzlink.Item.Item.ItemSubType == 1 ? (bzlink.Item as SpecialistInstance)?.GenerateSlInfo(): "")?.Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
                 }
 
                 itembazar += $"{bzlink.BazaarItem.BazaarItemId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|0|{bzlink.Item.Rare}|{bzlink.Item.Upgrade}|{info} ";
