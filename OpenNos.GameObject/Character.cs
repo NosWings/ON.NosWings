@@ -6273,7 +6273,7 @@ namespace OpenNos.GameObject
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
 
-            Session.SendPacket($"bf 1 {Session.Character.CharacterId} {ChargeValue}.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+            Session.SendPacket($"bf 1 {Session.Character.CharacterId} {(ChargeValue > 7000 ? 7000 : ChargeValue)}.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
