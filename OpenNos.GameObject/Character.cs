@@ -6265,7 +6265,11 @@ namespace OpenNos.GameObject
             {
                 buffTime = ServerManager.Instance.RandomNumber(50, 350);
             }
-            if (indicator.Card.CardId == 0)
+            else if (indicator.Card.CardId == 336)
+            {
+                buffTime = ServerManager.Instance.RandomNumber(30, 70);
+            }
+            else if (indicator.Card.CardId == 0)
             {
                 buffTime = ChargeValue > 7000 ? 7000 : ChargeValue;
             }
@@ -6273,7 +6277,7 @@ namespace OpenNos.GameObject
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
 
-            Session.SendPacket($"bf 1 {Session.Character.CharacterId} {ChargeValue}.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+            Session.SendPacket($"bf 1 {Session.Character.CharacterId} {(ChargeValue > 7000 ? 7000 : ChargeValue)}.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Session.Character));
@@ -6289,10 +6293,7 @@ namespace OpenNos.GameObject
 
             ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds((indicator.Card.Duration == 0 ? buffTime : indicator.Card.Duration) * 100)).Subscribe(o =>
             {
-                if (indicator.Card.CardId != 0)
-                {
-                    RemoveBuff(indicator.Card.CardId);
-                }
+                RemoveBuff(indicator.Card.CardId);
                 if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
                 {
                     AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));

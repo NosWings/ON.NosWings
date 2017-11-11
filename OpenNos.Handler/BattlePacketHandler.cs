@@ -669,41 +669,35 @@ namespace OpenNos.Handler
                                             switch (Session.CurrentMapInstance.MapInstanceType)
                                             {
                                                 case MapInstanceType.Act4Instance:
-                                                    if (s.CardId.HasValue)
+                                                    Buff bf = new Buff(s.SecondData);
+                                                    switch (bf.Card?.BuffType)
                                                     {
-                                                        Buff b = new Buff(s.CardId.Value);
-                                                        switch (b.Card.BuffType)
-                                                        {
-                                                            case BuffType.Bad:
+                                                        case BuffType.Bad:
+                                                            s.ApplyBCards(target.Character);
+                                                            break;
+                                                        case BuffType.Good:
+                                                        case BuffType.Neutral:
+                                                            if (Session.Character.Faction == target.Character.Faction)
+                                                            {
                                                                 s.ApplyBCards(target.Character);
-                                                                break;
-                                                            case BuffType.Good:
-                                                            case BuffType.Neutral:
-                                                                if (Session.Character.Faction == target.Character.Faction)
-                                                                {
-                                                                    s.ApplyBCards(target.Character);
-                                                                }
-                                                                break;
-                                                        }
+                                                            }
+                                                            break;
                                                     }
                                                     break;
                                                 case MapInstanceType.ArenaInstance:
-                                                    if (s.CardId.HasValue)
+                                                    Buff b = new Buff(s.SecondData);
+                                                    switch (b.Card?.BuffType)
                                                     {
-                                                        Buff b = new Buff(s.CardId.Value);
-                                                        switch (b.Card.BuffType)
-                                                        {
-                                                            case BuffType.Bad:
+                                                        case BuffType.Bad:
+                                                            s.ApplyBCards(target.Character);
+                                                            break;
+                                                        case BuffType.Good:
+                                                        case BuffType.Neutral:
+                                                            if (Session.Character.Group?.GroupType == GroupType.Group && Session.Character.Group.IsMemberOfGroup(target))
+                                                            {
                                                                 s.ApplyBCards(target.Character);
-                                                                break;
-                                                            case BuffType.Good:
-                                                            case BuffType.Neutral:
-                                                                if (Session.Character.Group?.GroupType == GroupType.Group && Session.Character.Group.IsMemberOfGroup(target))
-                                                                {
-                                                                    s.ApplyBCards(target.Character);
-                                                                }
-                                                                break;
-                                                        }
+                                                            }
+                                                            break;
                                                     }
                                                     break;
                                                 default:

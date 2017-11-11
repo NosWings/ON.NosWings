@@ -56,6 +56,7 @@ namespace OpenNos.Domain
         REMOVEPORTAL,
         ACT4RAIDEND,
         CLEARMAPMONSTERS,
-        INSTANTBATLLEREWARDS
+        INSTANTBATLLEREWARDS,
+        STARTACT4RAID
     }
 }

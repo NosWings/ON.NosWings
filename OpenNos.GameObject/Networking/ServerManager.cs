@@ -445,7 +445,7 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), session.Character.Name)));
 
                             session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
-                            if (session.Character.Group.Characters != null)
+                            if (session.Character?.Group?.Characters != null)
                             {
                                 foreach (ClientSession player in session.Character.Group?.Characters)
                                 {
@@ -518,7 +518,7 @@ namespace OpenNos.GameObject
         {
             InBazaarRefreshMode = true;
             CommunicationServiceClient.Instance.UpdateBazaar(ServerGroup, bazaarItemId);
-            SpinWait.SpinUntil(() => !InBazaarRefreshMode);
+            SpinWait.SpinUntil(() => !InBazaarRefreshMode, TimeSpan.FromSeconds(5));
         }
 
         public void ChangeMap(long id, short? mapId = null, short? mapX = null, short? mapY = null)
@@ -1851,6 +1851,7 @@ namespace OpenNos.GameObject
                     ShouldRespawn = false
                 };
                 monster.Initialize(instance);
+                monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<Act4RaidType, FactionType>((Act4RaidType)RaidType, (FactionType)faction)));
                 instance.AddMonster(monster);
                 instance.Broadcast(monster.GenerateIn());
             }
@@ -1863,64 +1864,12 @@ namespace OpenNos.GameObject
                 SummonMukraju(angelMapInstance, 1);
             }
 
-            if (Act4AngelStat.Mode == 1 && angelMapInstance.Monsters.All(s => s.MonsterVNum != 556))
-            {
-                Act4AngelStat.Mode = 3;
-                Act4AngelStat.TotalTime = 3600;
-
-                switch ((Act4RaidType)RaidType)
-                {
-                    case Act4RaidType.Morcos:
-                        Act4AngelStat.IsMorcos = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Angel);
-                        break;
-                    case Act4RaidType.Hatus:
-                        Act4AngelStat.IsHatus = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Hatus, (byte) FactionType.Angel);
-                        break;
-                    case Act4RaidType.Calvina:
-                        Act4AngelStat.IsCalvina = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Calvina, (byte) FactionType.Angel);
-                        break;
-                    case Act4RaidType.Berios:
-                        Act4AngelStat.IsBerios = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Berios, (byte) FactionType.Angel);
-                        break;
-                }
-            }
-
             if (Act4DemonStat.Percentage > 10000)
             {
                 Act4DemonStat.Mode = 1;
                 Act4DemonStat.Percentage = 0;
                 Act4DemonStat.TotalTime = 300;
                 SummonMukraju(demonMapInstance, 2);
-            }
-
-            if (Act4DemonStat.Mode == 1 && demonMapInstance.Monsters.All(s => s.MonsterVNum != 556))
-            {
-                Act4DemonStat.Mode = 3;
-                Act4DemonStat.TotalTime = 3600;
-
-                switch ((Act4RaidType)RaidType)
-                {
-                    case Act4RaidType.Morcos:
-                        Act4DemonStat.IsMorcos = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Morcos, (byte) FactionType.Demon);
-                        break;
-                    case Act4RaidType.Hatus:
-                        Act4DemonStat.IsHatus = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Hatus, (byte) FactionType.Demon);
-                        break;
-                    case Act4RaidType.Calvina:
-                        Act4DemonStat.IsCalvina = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Calvina, (byte) FactionType.Demon);
-                        break;
-                    case Act4RaidType.Berios:
-                        Act4DemonStat.IsBerios = true;
-                        Act4Raid.GenerateRaid(Act4RaidType.Berios, (byte) FactionType.Demon);
-                        break;
-                }
             }
 
             Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance), sess => sess.SendPacket(sess.Character.GenerateFc()));

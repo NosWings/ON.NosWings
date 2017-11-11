@@ -1367,6 +1367,10 @@ namespace OpenNos.Handler
                 });
                 Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY));
 
+                if (Session.CurrentMapInstance?.OnMoveOnMapEvents.Count <= 0)
+                {
+                    return;
+                }
                 Session.CurrentMapInstance?.OnMoveOnMapEvents?.ForEach(e =>
                 {
                     EventHelper.Instance.RunEvent(e);

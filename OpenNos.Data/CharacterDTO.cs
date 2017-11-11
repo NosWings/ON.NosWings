@@ -42,6 +42,8 @@ namespace OpenNos.Data
 
         public float Dignity { get; set; }
 
+        public int Elo { get; set; }
+
         public bool EmoticonsBlocked { get; set; }
 
         public bool ExchangeBlocked { get; set; }

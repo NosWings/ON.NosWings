@@ -37,12 +37,16 @@ namespace OpenNos.DAL.EF
 
         public AuthorityType Authority { get; set; }
 
+        public long BankMoney { get; set; }
+
         public virtual ICollection<Character> Character { get; set; }
 
         [MaxLength(255)]
         public string Email { get; set; }
 
         public virtual ICollection<GeneralLog> GeneralLog { get; set; }
+
+        public long Money { get; set; }
 
         [MaxLength(255)]
         public string Name { get; set; }

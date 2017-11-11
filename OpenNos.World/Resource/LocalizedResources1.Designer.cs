@@ -763,6 +763,33 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The Cellon&apos;s level is higher than that of the accessory..
+        /// </summary>
+        internal static string CELLON_LEVEL_TOO_HIGH {
+            get {
+                return ResourceManager.GetString("CELLON_LEVEL_TOO_HIGH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The Cellon has disappeared because you failed to add options..
+        /// </summary>
+        internal static string CELLONING_FAILED {
+            get {
+                return ResourceManager.GetString("CELLONING_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Options added..
+        /// </summary>
+        internal static string CELLONING_SUCCESS {
+            get {
+                return ResourceManager.GetString("CELLONING_SUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You have changed the common point of return of the members of the group..
         /// </summary>
         internal static string CHANGED_SHARE {
@@ -1015,7 +1042,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à Dignity changed!.
         /// </summary>
         internal static string DIGNITY_RESTORED {
             get {
@@ -1038,6 +1065,15 @@ namespace OpenNos.World.Resource {
         internal static string DISMISS_FAMILY {
             get {
                 return ResourceManager.GetString("DISMISS_FAMILY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Do you want to start the raid ?.
+        /// </summary>
+        internal static string DO_YOU_WANT_RAID {
+            get {
+                return ResourceManager.GetString("DO_YOU_WANT_RAID", resourceCulture);
             }
         }
         
@@ -1101,6 +1137,15 @@ namespace OpenNos.World.Resource {
         internal static string EFFECT_ACTIVATED {
             get {
                 return ResourceManager.GetString("EFFECT_ACTIVATED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You have lost the {0} effect.
+        /// </summary>
+        internal static string EFFECT_TERMINATED {
+            get {
+                return ResourceManager.GetString("EFFECT_TERMINATED", resourceCulture);
             }
         }
         
@@ -3283,6 +3328,33 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The team was disbanded.
+        /// </summary>
+        internal static string RAID_DISOLVED {
+            get {
+                return ResourceManager.GetString("RAID_DISOLVED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The Raid Leader changed !.
+        /// </summary>
+        internal static string RAID_LEADER_CHANGE {
+            get {
+                return ResourceManager.GetString("RAID_LEADER_CHANGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à [{1}&apos;s team] {0}&apos;s raid team succeeded.
+        /// </summary>
+        internal static string RAID_SUCCEED {
+            get {
+                return ResourceManager.GetString("RAID_SUCCEED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Gambling failed! The item disappeared. .
         /// </summary>
         internal static string RARIFY_FAILED {
@@ -4057,6 +4129,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You are under the effect of {0}.
+        /// </summary>
+        internal static string UNDER_EFFECT {
+            get {
+                return ResourceManager.GetString("UNDER_EFFECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Error inserting or updating Account {0} , {1}.
         /// </summary>
         internal static string UPDATE_ACCOUNT_ERROR {
@@ -4359,6 +4440,15 @@ namespace OpenNos.World.Resource {
         internal static string XP_RATE_NOW {
             get {
                 return ResourceManager.GetString("XP_RATE_NOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You are now the Raid Leader. Invite members..
+        /// </summary>
+        internal static string YOU_ARE_RAID_CHIEF {
+            get {
+                return ResourceManager.GetString("YOU_ARE_RAID_CHIEF", resourceCulture);
             }
         }
         
