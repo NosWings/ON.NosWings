@@ -428,6 +428,9 @@ namespace OpenNos.Handler
                             break;
                     }
                 }
+
+                hitRequest.Skill.BCards.Where(s => s.Type.Equals((byte)BCardType.CardType.Buff)).ToList().ForEach(s => s.ApplyBCards(target.Character));
+
                 switch (hitRequest.TargetHitType)
                 {
                     case TargetHitType.SingleTargetHit:
