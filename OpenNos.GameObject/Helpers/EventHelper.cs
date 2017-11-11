@@ -406,6 +406,11 @@ namespace OpenNos.GameObject.Helpers
                                                 sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                             }
                                         }
+
+                                        foreach (CharacterQuest qst in sess.Character.Quests.Where(q => q.Quest.QuestType == (byte) QuestType.WinRaid && q.Quest.FirstData == grp.Raid?.Id))
+                                        {
+                                            sess.Character.IncrementQuestObjective(qst);
+                                        }
                                     }
                                     // Remove monster when raid is over
                                     foreach (MapMonster mapMonster in evt.MapInstance.Monsters.Where(s => !s.IsBoss))

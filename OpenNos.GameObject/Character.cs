@@ -591,6 +591,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case QuestType.WinRaid:
+                    quest.FirstObjective++;
                     break;
 
                 case QuestType.YouNeed:
