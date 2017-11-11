@@ -3764,7 +3764,6 @@ namespace OpenNos.GameObject
             if (target.HasBuff(CardType.LightAndShadow, (byte) AdditionalTypes.LightAndShadow.InflictDamageToMP))
             {
                 int manaReduction = (int) ((double)target.GetBuff(CardType.LightAndShadow, (byte) AdditionalTypes.LightAndShadow.InflictDamageToMP)[0] * totalDamage / 100);
-                Console.WriteLine($"damage : {totalDamage}\nmanaReduction: {manaReduction}");
                 totalDamage -= manaReduction;
                 target.Mp -= manaReduction;
             }
