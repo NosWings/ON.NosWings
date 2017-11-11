@@ -1460,15 +1460,6 @@ namespace OpenNos.GameObject
                 TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
             }
 
-            // Remove this shit for the moment, only works 1/10 times, need to make smth clean
-            /*if (monsterToAttack.MonsterVNum == 2309)
-            {
-                return (ushort)(monsterToAttack.Monster.MaxHP / 1000);
-            }
-            if (monsterToAttack.MonsterVNum == 1381)
-            {
-                return (ushort)(monsterToAttack.Monster.MaxHP / 500);
-            }*/
             #region Definitions
 
             if (monsterToAttack == null)
@@ -1865,14 +1856,6 @@ namespace OpenNos.GameObject
                 case 10:
                     baseDamage += baseDamage * 2;
                     break;
-
-                    // sush don't tell ciapa
-                    /*default:
-                        if (mainUpgrade > 10)
-                        {
-                            baseDamage += baseDamage * (mainUpgrade / 5);
-                        }
-                        break;*/
             }
 
             baseDamage -= monsterToAttack.HasBuff(CardType.SpecialDefence, (byte)AdditionalTypes.SpecialDefence.AllDefenceNullified) ? 0 : monsterDefence;
@@ -3777,6 +3760,14 @@ namespace OpenNos.GameObject
 
             #endregion
 
+
+            if (target.HasBuff(CardType.LightAndShadow, (byte) AdditionalTypes.LightAndShadow.InflictDamageToMP))
+            {
+                int manaReduction = (int) ((double)target.GetBuff(CardType.LightAndShadow, (byte) AdditionalTypes.LightAndShadow.InflictDamageToMP)[0] * totalDamage / 100);
+                Console.WriteLine($"damage : {totalDamage}\nmanaReduction: {manaReduction}");
+                totalDamage -= manaReduction;
+                target.Mp -= manaReduction;
+            }
             if (target.HasBuff(CardType.NoDefeatAndNoDamage,
                 (byte) AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
             {
