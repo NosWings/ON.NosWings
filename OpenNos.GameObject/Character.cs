@@ -446,7 +446,7 @@ namespace OpenNos.GameObject
         public void AddQuest(long questId)
         {
             CharacterQuest characterQuest = new CharacterQuest(questId, CharacterId);
-            if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || Quests.Count >= 5)
+            if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || Quests.Where(q => q.Quest.QuestType != (byte) QuestType.WinRaid).ToList().Count >= 5 && characterQuest.Quest.QuestType != (byte) QuestType.WinRaid)
             {
                 return;
             }
@@ -500,8 +500,9 @@ namespace OpenNos.GameObject
 
         public string GenerateQuestsPacket()
         {
-            short i = 0;
-            Quests.ForEach(qst => qst.QuestNumber = i++);
+            short a = 0;
+            short b = 6;
+            Quests.ForEach(qst => qst.QuestNumber = qst.Quest.QuestType == (byte) QuestType.WinRaid ? b++ : a++);
             return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.Quest.ThirdObjective ?? 0}.{quest.ThirdObjective}.0.0.0.0.0")}";
         }
 
