@@ -2048,6 +2048,7 @@ namespace OpenNos.GameObject
                                 switch (b.Card?.CardId)
                                 {
                                     case 528:
+                                    case 570:
                                         s.ApplyBCards(this);
                                         break;
                                     default:
