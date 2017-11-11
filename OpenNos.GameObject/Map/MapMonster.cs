@@ -2038,16 +2038,6 @@ namespace OpenNos.GameObject
                         : $"su 3 {MapMonsterId} 1 {character.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(character.Hp > 0 ? 1 : 0)} {(int)(character.Hp / character.HpLoad() * 100)} {damage} {hitmode} 0");
                     LastSkill = DateTime.Now;
 
-                    // SP3M Frozen Shield
-                    if (character.HasBuff(CardType.SecondSPCard, (byte) AdditionalTypes.SecondSPCard.HitAttacker))
-                    {
-                        if (ServerManager.Instance.RandomNumber() < character.GetBuff(CardType.SecondSPCard,
-                            (byte) AdditionalTypes.SecondSPCard.HitAttacker)[0])
-                        {
-                            AddBuff(new Buff(character.GetBuff(CardType.SecondSPCard, (byte) AdditionalTypes.SecondSPCard.HitAttacker)[1], character.Level));
-                        }
-                    }
-
                     npcMonsterSkill?.Skill.BCards.ToList().ForEach(s =>
                     {
                         Buff b = new Buff(s.SecondData);
