@@ -428,6 +428,9 @@ namespace OpenNos.Handler
                             break;
                     }
                 }
+
+                hitRequest.Skill.BCards.Where(s => s.Type.Equals((byte)BCardType.CardType.Buff)).ToList().ForEach(s => s.ApplyBCards(target.Character));
+
                 switch (hitRequest.TargetHitType)
                 {
                     case TargetHitType.SingleTargetHit:
@@ -693,9 +696,14 @@ namespace OpenNos.Handler
                                                             break;
                                                         case BuffType.Good:
                                                         case BuffType.Neutral:
-                                                            if (Session.Character.Group?.GroupType == GroupType.Group && Session.Character.Group.IsMemberOfGroup(target))
+                                                            if (Session.Character.Group?.GroupType == GroupType.Group &&
+                                                                Session.Character.Group.IsMemberOfGroup(target))
                                                             {
                                                                 s.ApplyBCards(target.Character);
+                                                            }
+                                                            else
+                                                            {
+                                                                s.ApplyBCards(Session.Character);
                                                             }
                                                             break;
                                                     }
