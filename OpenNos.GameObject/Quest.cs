@@ -45,7 +45,7 @@ namespace OpenNos.GameObject
                     // Item
                     case QuestRewardType.EquipItem:
                     case QuestRewardType.EtcMainItem:
-                        character.GiftAdd((short) reward.Data, (byte) (reward.Amount == 0 ? 1 : reward.Amount), isQuest: true);
+                        character.GiftAdd((short) reward.Data, (byte) (reward.Amount == 0 ? 1 : reward.Amount), reward.Design, reward.Upgrade, (sbyte) reward.Rarity, true);
                         return $"{reward.RewardType} {reward.Data} {(reward.Amount == 0 ? 1 : reward.Amount)}";
 
                     // Gold
