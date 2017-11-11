@@ -110,6 +110,8 @@ namespace OpenNos.Data
 
         public int Mp { get; set; }
 
+        public string Prefix { get; set; }
+
         public string Name { get; set; }
 
         public bool QuickGetUp { get; set; }
