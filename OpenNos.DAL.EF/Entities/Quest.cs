@@ -40,6 +40,12 @@ namespace OpenNos.DAL.EF
 
         public int? EndDialogId { get; set; }
 
+        public int? StartDialogId { get; set; }
+
+        public byte LevelMin { get; set; }
+
+        public byte LevelMax { get; set; }
+
         #endregion
     }
 }
