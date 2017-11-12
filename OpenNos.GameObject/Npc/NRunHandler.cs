@@ -617,14 +617,15 @@ namespace OpenNos.GameObject
                                 session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("YOU_HAVE_TO_BE_IN_RAID"), 10));
                                 return;
                             }
-                            switch ((RaidDesignType)session.Character.Group?.Raid.Id)
+                            long? questId = ServerManager.Instance.Quests.FirstOrDefault(q => q.QuestType == (byte) QuestType.WinRaid && q.FirstData == session.Character.Group?.Raid.Id)?.QuestId;
+                            if (questId != null)
                             {
-                                case RaidDesignType.Cuby:
-                                    break;
+                                session.Character.AddQuest((long)questId);
+                            }
+                            else
+                            {
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_QUEST_FOR_THIS_RAID"), 10));
 
-                                default:
-                                    session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_QUEST_FOR_THIS_RAID"), 10));
-                                    break;
                             }
                         }
                     }
