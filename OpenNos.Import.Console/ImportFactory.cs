@@ -67,6 +67,39 @@ namespace OpenNos.Import.Console
             DaoFactory.AccountDao.InsertOrUpdate(ref acc2);
         }
 
+        public void ImportQuests()
+        {
+            string fileQuestDat = $"{_folder}\\quest.dat";
+            string fileRewardsDat = $"{_folder}\\qstprize.dat";
+            List<QuestDTO> quests = new List<QuestDTO>();
+            Dictionary<int, QuestRewardDTO> dictionaryRewards = new Dictionary<int, QuestRewardDTO>();
+            QuestDTO quest = new QuestDTO();
+            QuestRewardDTO reward = new QuestRewardDTO();
+            string line;
+
+            using (StreamReader questRewardStream = new StreamReader(fileRewardsDat, Encoding.GetEncoding(1252)))
+            {
+                while ((line = questRewardStream.ReadLine()) != null)
+                {
+                    string[] currentLine = line.Split('\t');
+                    if (currentLine.Length > 1)
+                    {
+                        switch (currentLine[1])
+                        {
+                            case "VNUM":
+                                reward = new QuestRewardDTO{ QuestRewardId = reward.QuestRewardId, RewardType = byte.Parse(currentLine[1]) };
+                                break;
+
+                            case "DATA":
+
+                                break;
+                        }
+                    }
+                }
+                questRewardStream.Close();
+            }
+        }
+
         public void ImportCards()
         {
             string fileCardDat = $"{_folder}\\Card.dat";

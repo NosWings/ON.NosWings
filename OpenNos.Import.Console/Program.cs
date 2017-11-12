@@ -61,6 +61,8 @@ namespace OpenNos.Import.Console
             System.Console.WriteLine(@"-----MapIDData.dat");
             System.Console.WriteLine(@"-----monster.dat");
             System.Console.WriteLine(@"-----Skill.dat");
+            System.Console.WriteLine(@"-----quest.dat");
+            System.Console.WriteLine(@"-----qstprize.dat");
             System.Console.BackgroundColor = ConsoleColor.Blue;
             System.Console.WriteLine(@"-----map");
             System.Console.ResetColor();
@@ -90,6 +92,7 @@ namespace OpenNos.Import.Console
 
                 if (key.KeyChar != 'n')
                 {
+                    //factory.ImportQuests();
                     factory.ImportMaps();
                     factory.LoadMaps();
                     factory.ImportRespawnMapType();
