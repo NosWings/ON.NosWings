@@ -1365,17 +1365,17 @@ namespace OpenNos.Handler
                 {
                     e.Events.ToList().ForEach(evt => EventHelper.Instance.RunEvent(evt));
                 });
-                Session.CurrentMapInstance?.OnAreaEntryEvents?.RemoveAll(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY));
+                Session.CurrentMapInstance?.OnAreaEntryEvents?.ToList().RemoveAll(s => s.InZone(Session.Character.PositionX, Session.Character.PositionY));
 
                 if (Session.CurrentMapInstance?.OnMoveOnMapEvents.Count <= 0)
                 {
                     return;
                 }
-                Session.CurrentMapInstance?.OnMoveOnMapEvents?.ForEach(e =>
+                Session.CurrentMapInstance?.OnMoveOnMapEvents?.ToList().ForEach(e =>
                 {
                     EventHelper.Instance.RunEvent(e);
                 });
-                Session.CurrentMapInstance?.OnMoveOnMapEvents?.RemoveAll(s => s != null);
+                Session.CurrentMapInstance?.OnMoveOnMapEvents?.ToList().RemoveAll(s => s != null);
             }
             else
             {

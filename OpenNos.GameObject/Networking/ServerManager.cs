@@ -757,7 +757,7 @@ namespace OpenNos.GameObject
 
                 session.Character.IsChangingMapInstance = false;
                 session.SendPacket(session.Character.GenerateMinimapPosition());
-                session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
+                session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ToList().ForEach(e =>
                 {
                     if (e.Item2.Contains(session.Character.CharacterId))
                     {
