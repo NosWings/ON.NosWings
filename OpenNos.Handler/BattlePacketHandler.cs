@@ -667,6 +667,11 @@ namespace OpenNos.Handler
                                 {
                                     foreach (ClientSession target in clientSessions)
                                     {
+                                        if (ski.SkillVNum == 871) // No bcard for this skill
+                                        {
+                                            List<BuffType> buffsToDisable = new List<BuffType> { BuffType.Bad };
+                                            target.Character.DisableBuffs(buffsToDisable, 4);
+                                        }
                                         ski.Skill.BCards.ToList().ForEach(s =>
                                         {
                                             switch (Session.CurrentMapInstance.MapInstanceType)

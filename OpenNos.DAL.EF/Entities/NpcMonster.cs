@@ -136,6 +136,12 @@ namespace OpenNos.DAL.EF
 
         public int XP { get; set; }
 
+        public bool IsPercent { get; set; }
+
+        public int TakeDamages { get; set; }
+
+        public int GiveDamagePercentage { get; set; }
+
         public virtual ICollection<BCard> BCards { get; set; }
 
         #endregion

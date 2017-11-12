@@ -148,11 +148,11 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case "OnMoveOnMap":
-                            evt.MapInstance.OnMoveOnMapEvents.AddRange(even.Item2);
+                            evt.MapInstance.OnMoveOnMapEvents.ToList().AddRange(even.Item2);
                             break;
 
                         case "OnMapClean":
-                            evt.MapInstance.OnMapClean.AddRange(even.Item2);
+                            evt.MapInstance.OnMapClean.ToList().AddRange(even.Item2);
                             break;
 
                         case "OnLockerOpen":
@@ -365,7 +365,7 @@ namespace OpenNos.GameObject.Helpers
                                         {
                                             continue;
                                         }
-                                        if (grp.Raid.Reputation > 0)
+                                        if (grp.Raid.Reputation > 0 && sess.Character.Level >= grp.Raid.LevelMinimum)
                                         {
                                             sess.Character.GetReput(grp.Raid.Reputation);
                                         }
@@ -386,24 +386,28 @@ namespace OpenNos.GameObject.Helpers
                                         {
                                             foreach (Gift gift in grp.Raid?.GiftItems)
                                             {
-                                                sbyte rare = 0;
-                                                if (gift.IsRandomRare)
+                                                if (sess.Character.Level >= grp.Raid?.LevelMinimum)
                                                 {
-                                                    switch (gift.VNum)
+                                                    sbyte rare = 0;
+                                                    if (gift.IsRandomRare)
                                                     {
-                                                        case 302:
-                                                            rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
-                                                            break;
-                                                        case 185:
-                                                        case 999:
-                                                        case 882:
-                                                        case 942:
-                                                            rare = (sbyte)ServerManager.Instance.RandomNumber(1, 7);
-                                                            break;
+                                                        switch (gift.VNum)
+                                                        {
+                                                            case 302:
+                                                                rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
+                                                                break;
+                                                            case 185:
+                                                            case 999:
+                                                            case 882:
+                                                            case 942:
+                                                                rare = (sbyte)ServerManager.Instance.RandomNumber(1, 7);
+                                                                break;
+                                                        }
                                                     }
+                                                    //TODO add random rarity for some object
+                                                    sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design,
+                                                        rare: rare);
                                                 }
-                                                //TODO add random rarity for some object
-                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                             }
                                         }
 

@@ -47,11 +47,11 @@ namespace OpenNos.GameObject
             MapInstanceId = guid;
             UnlockEvents = new ConcurrentBag<EventContainer>();
             ScriptedInstances = new List<ScriptedInstance>();
-            OnCharacterDiscoveringMapEvents = new List<Tuple<EventContainer, List<long>>>();
-            OnMoveOnMapEvents = new List<EventContainer>();
-            OnAreaEntryEvents = new List<ZoneEvent>();
-            WaveEvents = new List<EventWave>();
-            OnMapClean = new List<EventContainer>();
+            OnCharacterDiscoveringMapEvents = new ConcurrentBag<Tuple<EventContainer, List<long>>>();
+            OnMoveOnMapEvents = new ConcurrentBag<EventContainer>();
+            OnAreaEntryEvents = new ConcurrentBag<ZoneEvent>();
+            WaveEvents = new ConcurrentBag<EventWave>();
+            OnMapClean = new ConcurrentBag<EventContainer>();
             _monsters = new ConcurrentDictionary<long, MapMonster>();
             _npcs = new ConcurrentDictionary<long, MapNpc>();
             _mapMonsterIds = new List<int>();
@@ -182,15 +182,15 @@ namespace OpenNos.GameObject
             get { return _npcs.Select(s => s.Value).ToList(); }
         }
 
-        public List<Tuple<EventContainer, List<long>>> OnCharacterDiscoveringMapEvents { get; }
+        public ConcurrentBag<Tuple<EventContainer, List<long>>> OnCharacterDiscoveringMapEvents { get; }
 
-        public List<EventContainer> OnMapClean { get; }
+        public ConcurrentBag<EventContainer> OnMapClean { get; }
 
-        public List<EventContainer> OnMoveOnMapEvents { get; }
+        public ConcurrentBag<EventContainer> OnMoveOnMapEvents { get; }
 
-        public List<ZoneEvent> OnAreaEntryEvents { get; }
+        public ConcurrentBag<ZoneEvent> OnAreaEntryEvents { get; }
 
-        public List<EventWave> WaveEvents { get; }
+        public ConcurrentBag<EventWave> WaveEvents { get; }
 
         public List<Portal> Portals { get; }
 
@@ -592,7 +592,7 @@ namespace OpenNos.GameObject
         {
             Life = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
             {
-                WaveEvents.ForEach(s =>
+                WaveEvents.ToList().ForEach(s =>
                 {
                     if (s.LastStart.AddSeconds(s.Delay) > DateTime.Now)
                     {
@@ -617,8 +617,8 @@ namespace OpenNos.GameObject
                 {
                     if (Monsters.Count(s => s.IsAlive) == 0)
                     {
-                        OnMapClean.ForEach(e => { EventHelper.Instance.RunEvent(e); });
-                        OnMapClean.RemoveAll(s => s != null);
+                        OnMapClean.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e); });
+                        OnMapClean.ToList().RemoveAll(s => s != null);
                     }
                     if (!IsSleeping)
                     {

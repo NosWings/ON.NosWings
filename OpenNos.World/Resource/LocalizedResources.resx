@@ -1550,16 +1550,16 @@
     <value>Dignity changed!</value>
   </data>
   <data name="PARTNER_AUTO_RELIVE_DISABLED" xml:space="preserve">
-    <value />
+    <value>Partner will return to Miniland after it dies</value>
   </data>
   <data name="PARTNER_AUTO_RELIVE_ENABLED" xml:space="preserve">
-    <value />
+    <value>Partner can be revived with seed or power if it dies</value>
   </data>
   <data name="PET_AUTO_RELIVE_DISABLED" xml:space="preserve">
-    <value />
+    <value>Pet will return to Mini-land after it dies</value>
   </data>
   <data name="PET_AUTO_RELIVE_ENABLED" xml:space="preserve">
-    <value />
+    <value>Pet can be revived with seed or power if it dies</value>
   </data>
   <data name="QUEST_ALREADY_DONE" xml:space="preserve">
     <value>You have already done this quest today !</value>
@@ -1593,5 +1593,38 @@
   </data>
   <data name="YOU_ARE_RAID_CHIEF" xml:space="preserve">
     <value>You are now the Raid Leader. Invite members.</value>
+  </data>
+  <data name="NO_QUEST_FOR_THIS_RAID" xml:space="preserve">
+    <value>There is no quest implemented for this raid.</value>
+  </data>
+  <data name="YOU_HAVE_TO_BE_IN_RAID" xml:space="preserve">
+    <value>You have to be in a raid team.</value>
+  </data>
+  <data name="ALREADY_GOT_BUFF" xml:space="preserve">
+    <value>You already have {0}.</value>
+  </data>
+  <data name="AMULET_DESTROYED" xml:space="preserve">
+    <value>CAUTION : The protection spell has expired</value>
+  </data>
+  <data name="AMULET_FAIL_SAVED" xml:space="preserve">
+    <value>the item is not destroyed, thanks to the amulet</value>
+  </data>
+  <data name="BACK_TO_MINILAND" xml:space="preserve">
+    <value>Nosmate dead ! Wellcome to Mini-Land</value>
+  </data>
+  <data name="NEED_TEAM" xml:space="preserve">
+    <value>A team must first be created for the raid</value>
+  </data>
+  <data name="PARTNER_BACKPACK" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PET_AUTO_RELIVE_ENABLE" xml:space="preserve">
+    <value>Partner can be revived with seed or power if it dies</value>
+  </data>
+  <data name="PET_WILL_BE_BACK" xml:space="preserve">
+    <value>Nosmate dead !  It will be revived in 3 min</value>
+  </data>
+  <data name="RAID_REGISTRED" xml:space="preserve">
+    <value>Team was registred</value>
   </data>
 </root>

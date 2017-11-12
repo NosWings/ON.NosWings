@@ -51,7 +51,7 @@ namespace OpenNos.GameObject
                         case 5370:
                             if (session.Character.Buff.Any(s => s.Card.CardId == 393))
                             {
-                                session.SendPacket(session.Character.GenerateSay((Language.Instance.GetMessageFromKey("ALREADY_GOT_FAIRY_POTION")), 10));
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ALREADY_GOT_BUFF"), session.Character.Buff.FirstOrDefault(s => s.Card.CardId == 393)?.Card.Name), 10));
                                 return;
                             }
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -196,7 +196,7 @@ namespace OpenNos.GameObject
                 case 250:
                     if (session.Character.Buff.Any(s => s.Card.CardId == 131))
                     {
-                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ALREADY_GOT_BOOSTER"), 10));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ALREADY_GOT_BUFF"), session.Character.Buff.FirstOrDefault(s => s.Card.CardId == 131)?.Card.Name), 10));
                         return;
                     }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -208,7 +208,7 @@ namespace OpenNos.GameObject
                 case 208:
                     if (session.Character.Buff.Any(s => s.Card.CardId == 121))
                     {
-                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ALREADY_GOT_ANCELLOAN"), 10));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ALREADY_GOT_BUFF"), session.Character.Buff.FirstOrDefault(s => s.Card.CardId == 121)?.Card.Name), 10));
                         return;
                     }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);

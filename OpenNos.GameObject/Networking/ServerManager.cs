@@ -197,7 +197,9 @@ namespace OpenNos.GameObject
 
         public Act4Stat Act4DemonStat { get; set; }
 
-        public Act6Stats Act6Stat { get; set; }
+        public Act6Stats Act6Zenas { get; set; }
+
+        public Act6Stats Act6Erenia { get; set; }
 
         public DateTime Act4RaidStart { get; set; }
 
@@ -633,7 +635,7 @@ namespace OpenNos.GameObject
                     }
                 });
                 session.SendPacket(
-                    session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short) MapTypeEnum.Act61)
+                    session.Character.MapInstance.Map.MapId >= 228 && session.Character.MapInstance.Map.MapId <= 238
                         ? session.Character.GenerateAct6()
                         : session.Character.GenerateAct());
                 session.SendPacket(session.Character.GeneratePinit());
@@ -757,7 +759,7 @@ namespace OpenNos.GameObject
 
                 session.Character.IsChangingMapInstance = false;
                 session.SendPacket(session.Character.GenerateMinimapPosition());
-                session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(e =>
+                session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ToList().ForEach(e =>
                 {
                     if (e.Item2.Contains(session.Character.CharacterId))
                     {
@@ -1022,7 +1024,8 @@ namespace OpenNos.GameObject
             Act4RaidStart = DateTime.Now;
             Act4AngelStat = new Act4Stat();
             Act4DemonStat = new Act4Stat();
-            Act6Stat = new Act6Stats();
+            Act6Erenia = new Act6Stats();
+            Act6Zenas = new Act6Stats();
 
             OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DaoFactory.ItemDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
             ConcurrentDictionary<short, Item> item = new ConcurrentDictionary<short, Item>();
@@ -1877,35 +1880,29 @@ namespace OpenNos.GameObject
 
         public void Act6Process()
         {
-            if (Act6Stat.ZenasPercentage >= 100 && !Act6Stat.IsRaidActive)
+            if (Act6Zenas.Percentage >= 100 && !Act6Zenas.IsRaidActive)
             {
                 LoadAct6ScriptedInstance();
-                Act6Stat.TotalTime = 3600;
-                Act6Stat.IsZenas = true;
-                Act6Stat.IsRaidActive = true;
+                Act6Zenas.TotalTime = 3600;
+                Act6Zenas.IsRaidActive = true;
             }
-            else if (Act6Stat.EreniaPercentage >= 100 && !Act6Stat.IsRaidActive)
+            else if (Act6Erenia.Percentage >= 100 && !Act6Erenia.IsRaidActive)
             {
                 LoadAct6ScriptedInstance();
-                Act6Stat.TotalTime = 3600;
-                Act6Stat.IsErenia = true;
-                Act6Stat.IsRaidActive = true;
+                Act6Erenia.TotalTime = 3600;
+                Act6Erenia.IsRaidActive = true;
             }
-            if (Act6Stat.CurrentTime <= 0)
+            if (Act6Erenia.CurrentTime <= 0 && Act6Erenia.IsRaidActive)
             {
-                if (Act6Stat.IsZenas)
-                {
-                    Act6Stat.TotalAngelsKilled = 0;
-                    Act6Stat.ZenasPercentage = 0;
-                    Act6Stat.IsZenas = false;
-                }
-                if (Act6Stat.IsErenia)
-                {
-                    Act6Stat.TotalDemonsKilled = 0;
-                    Act6Stat.EreniaPercentage = 0;
-                    Act6Stat.IsErenia = false;
-                }
-                Act6Stat.IsRaidActive = false;
+                Act6Erenia.KilledMonsters = 0;
+                Act6Erenia.Percentage = 0;
+                Act6Erenia.IsRaidActive = false;
+            }
+            if (Act6Zenas.CurrentTime <= 0 && Act6Zenas.IsRaidActive)
+            {
+                Act6Zenas.KilledMonsters = 0;
+                Act6Zenas.Percentage = 0;
+                Act6Zenas.IsRaidActive = false;
             }
             Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.Map.MapId >= 228 && s.CurrentMapInstance?.Map.MapId < 238), sess => sess.SendPacket(sess.Character.GenerateAct6()));
         }
@@ -1975,7 +1972,7 @@ namespace OpenNos.GameObject
                         SourceX = si.PositionX,
                         SourceY = si.PositionY
                     };
-                    if (Act6Stat.EreniaPercentage >= 100 && portal.SourceMapId == 236)
+                    if (Act6Erenia.Percentage >= 100 && portal.SourceMapId == 236)
                     {
                         map.Value.Portals.Add(portal);
                         map.Value.Broadcast(portal.GenerateGp());
@@ -1985,12 +1982,12 @@ namespace OpenNos.GameObject
                             map.Value.MapClear();
                         });
                     }
-                    if (Act6Stat.ZenasPercentage < 100 || portal.SourceMapId != 232)
+                    if (Act6Zenas.Percentage < 100 || portal.SourceMapId != 232)
                     {
                         continue;
                     }
-                        map.Value.Portals.Add(portal);
-                        map.Value.Broadcast(portal.GenerateGp());
+                    map.Value.Portals.Add(portal);
+                    map.Value.Broadcast(portal.GenerateGp());
                     Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o =>
                     {
                         map.Value.Portals.Remove(portal);

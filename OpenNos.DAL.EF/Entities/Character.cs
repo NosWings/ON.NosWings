@@ -159,6 +159,9 @@ namespace OpenNos.DAL.EF
 
         public int Mp { get; set; }
 
+        [MaxLength(25)]
+        public string Prefix { get; set; }
+
         [MaxLength(255)]
         public string Name { get; set; }
 

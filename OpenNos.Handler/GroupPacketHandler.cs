@@ -409,6 +409,10 @@ namespace OpenNos.Handler
                             }
                             if (targetSession != null)
                             {
+                                if (Session?.Character.Group == null)
+                                {
+                                    return;
+                                }
                                 targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
 
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), targetSession.Character.Name), 0));

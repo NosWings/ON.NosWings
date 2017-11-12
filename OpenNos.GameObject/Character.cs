@@ -654,7 +654,7 @@ namespace OpenNos.GameObject
         public string GenerateAct6()
         {
             return
-                $"act6 1 0 {ServerManager.Instance.Act6Stat.ZenasPercentage} {Convert.ToByte(ServerManager.Instance.Act6Stat.IsZenas)} {ServerManager.Instance.Act6Stat.CurrentTime} {ServerManager.Instance.Act6Stat.TotalTime} {ServerManager.Instance.Act6Stat.EreniaPercentage} {Convert.ToByte(ServerManager.Instance.Act6Stat.IsErenia)} {ServerManager.Instance.Act6Stat.CurrentTime} {ServerManager.Instance.Act6Stat.TotalTime}";
+                $"act6 1 0 {ServerManager.Instance.Act6Zenas.Percentage} {Convert.ToByte(ServerManager.Instance.Act6Zenas.IsRaidActive)} {ServerManager.Instance.Act6Zenas.CurrentTime} {ServerManager.Instance.Act6Zenas.TotalTime} {ServerManager.Instance.Act6Erenia.Percentage} {Convert.ToByte(ServerManager.Instance.Act6Erenia.IsRaidActive)} {ServerManager.Instance.Act6Erenia.CurrentTime} {ServerManager.Instance.Act6Erenia.TotalTime}";
         }
 
         public string GenerateFc()
@@ -1457,10 +1457,6 @@ namespace OpenNos.GameObject
 
         public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
-            if (skill.SkillVNum == 1085) // pas de bcard ...
-            {
-                TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
-            }
 
             #region Definitions
 
@@ -1471,6 +1467,16 @@ namespace OpenNos.GameObject
             if (Inventory == null)
             {
                 return 0;
+            }
+
+            if (skill.SkillVNum == 1085) // pas de bcard ...
+            {
+                TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
+            }
+
+            if (monsterToAttack.IsPercentage)
+            {
+                return (ushort) monsterToAttack.TakesDamage;
             }
 
             // int miss_chance = 20;
@@ -2677,26 +2683,23 @@ namespace OpenNos.GameObject
                     return;
                 }
                 //Quand on me dit "Maintenant OpenNos, c'est du bricolage"
-                if (!ServerManager.Instance.Act6Stat.IsZenas && !ServerManager.Instance.Act6Stat.IsErenia)
+                if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232 && !ServerManager.Instance.Act6Zenas.IsRaidActive)
                 {
-                    if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232)
-                    {
-                        ServerManager.Instance.Act6Stat.TotalAngelsKilled++;
-                    }
-                    if (monsterToAttack.MapInstance.Map.MapId >= 233 && monsterToAttack.MapInstance.Map.MapId <= 236)
-                    {
-                        ServerManager.Instance.Act6Stat.TotalDemonsKilled++;
-                    }
-                    if (ServerManager.Instance.Act6Stat.TotalAngelsKilled > 0 && ServerManager.Instance.Act6Stat.TotalAngelsKilled % 10 == 0)
-                    {
-                        ServerManager.Instance.Act6Stat.ZenasPercentage++;
-                        ServerManager.Instance.Act6Process();
-                    }
-                    if (ServerManager.Instance.Act6Stat.TotalDemonsKilled > 0 && ServerManager.Instance.Act6Stat.TotalDemonsKilled % 10 == 0)
-                    {
-                        ServerManager.Instance.Act6Stat.EreniaPercentage++;
-                        ServerManager.Instance.Act6Process();
-                    }
+                    ServerManager.Instance.Act6Zenas.KilledMonsters++;
+                }
+                if (monsterToAttack.MapInstance.Map.MapId >= 233 && monsterToAttack.MapInstance.Map.MapId <= 236 && !ServerManager.Instance.Act6Erenia.IsRaidActive)
+                {
+                    ServerManager.Instance.Act6Erenia.KilledMonsters++;
+                }
+                if (ServerManager.Instance.Act6Zenas.KilledMonsters > 0 && ServerManager.Instance.Act6Zenas.KilledMonsters % 10 == 0)
+                {
+                    ServerManager.Instance.Act6Zenas.Percentage++;
+                    ServerManager.Instance.Act6Process();
+                }
+                if (ServerManager.Instance.Act6Erenia.KilledMonsters > 0 && ServerManager.Instance.Act6Erenia.KilledMonsters % 10 == 0)
+                {
+                    ServerManager.Instance.Act6Erenia.Percentage++;
+                    ServerManager.Instance.Act6Process();
                 }
                 #region item drop
 
