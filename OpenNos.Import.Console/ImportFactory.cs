@@ -171,6 +171,10 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case "TALK":
+                                if (int.Parse(currentLine[1]) != -1)
+                                {
+                                    quest.StartDialogId = int.Parse(currentLine[1]);
+                                }
                                 if (int.Parse(currentLine[2]) != -1)
                                 {
                                     quest.EndDialogId = int.Parse(currentLine[2]);
