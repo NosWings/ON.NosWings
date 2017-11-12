@@ -1455,10 +1455,6 @@ namespace OpenNos.GameObject
 
         public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
-            if (skill.SkillVNum == 1085) // pas de bcard ...
-            {
-                TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
-            }
 
             #region Definitions
 
@@ -1469,6 +1465,16 @@ namespace OpenNos.GameObject
             if (Inventory == null)
             {
                 return 0;
+            }
+
+            if (skill.SkillVNum == 1085) // pas de bcard ...
+            {
+                TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
+            }
+
+            if (monsterToAttack.IsPercentage)
+            {
+                return (ushort) monsterToAttack.TakesDamage;
             }
 
             // int miss_chance = 20;

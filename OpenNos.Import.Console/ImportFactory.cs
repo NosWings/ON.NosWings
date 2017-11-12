@@ -1263,6 +1263,94 @@ namespace OpenNos.Import.Console
                                 npc.HeroXp = 3756;
                                 break;
 
+                                /*
+                                 * percent damage monsters
+                                 */
+                            case 2309: // Foxy
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 193;
+                                npc.GiveDamagePercentage = 50;
+                                break;
+
+                            case 2314: // renard enragé
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 3666;
+                                npc.GiveDamagePercentage = 10;
+                                break;
+
+                            case 2315: // renard dusi enragé
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 3948;
+                                npc.GiveDamagePercentage = 10;
+                                break;
+
+                            case 1381: // Jack o lantern
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 600;
+                                npc.GiveDamagePercentage = 20;
+                                break;
+
+                            case 2316: // Maru
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 193;
+                                npc.GiveDamagePercentage = 50;
+                                break;
+
+                            case 1500: // Pete o peng
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 338;
+                                npc.GiveDamagePercentage = 20;
+                                break;
+
+                            case 774: // Reine poule
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 338;
+                                npc.GiveDamagePercentage = 20;
+                                break;
+
+                            case 2331: // Hongbi
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 676;
+                                npc.GiveDamagePercentage = 30;
+                                break;
+
+                            case 2332: // Cheongbi
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 507;
+                                npc.GiveDamagePercentage = 30;
+                                break;
+
+                            case 2357: // Lola longoreil
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 193;
+                                npc.GiveDamagePercentage = 50;
+                                break;
+
+                            case 1922: // Oeuf valak
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 9678;
+                                npc.MaxHP = 193560;
+                                npc.GiveDamagePercentage = 0;
+                                break;
+
+                            case 532: // Tete de bonhomme de neige geant
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 193;
+                                npc.GiveDamagePercentage = 50;
+                                break;
+
+                            case 531: // Bonhomme de neige
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 392;
+                                npc.GiveDamagePercentage = 10;
+                                break;
+
+                            case 796: // Roi poulet
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 200;
+                                npc.GiveDamagePercentage = 20;
+                                break;
+
                             default:
                                 npc.HeroXp = 0;
                                 break;

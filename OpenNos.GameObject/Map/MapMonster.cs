@@ -129,6 +129,12 @@ namespace OpenNos.GameObject
 
         public short FirstY { get; set; }
 
+        public bool IsPercentage { get; set; }
+
+        public int TakesDamage { get; set; }
+
+        public int GiveDamagePercent { get; set; }
+
         public IDisposable Life { get; set; }
 
         #endregion
@@ -193,6 +199,9 @@ namespace OpenNos.GameObject
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
             Buff = new ConcurrentBag<Buff>();
             SkillBcards = new ConcurrentBag<BCard>();
+            IsPercentage = Monster.IsPercent;
+            TakesDamage = Monster.TakeDamages;
+            GiveDamagePercent = Monster.GiveDamagePercentage;
         }
 
         /// <summary>
@@ -472,13 +481,9 @@ namespace OpenNos.GameObject
         /// <returns></returns>
         private int GenerateDamage(Character targetCharacter, Skill skill, ref int hitmode)
         {
-            if (Monster.NpcMonsterVNum == 2309)
+            if (IsPercentage)
             {
-                return((int)(targetCharacter.HpLoad() / 10));
-            }
-            if (Monster.NpcMonsterVNum == 1381)
-            {
-                return((int)(targetCharacter.HpLoad() / 15));
+                return (int)(targetCharacter.HpLoad() * (GiveDamagePercent / 100D));
             }
 
             #region Definitions
