@@ -72,7 +72,7 @@ namespace OpenNos.Import.Console
             string fileQuestDat = $"{_folder}\\quest.dat";
             string fileRewardsDat = $"{_folder}\\qstprize.dat";
             List<QuestDTO> quests = new List<QuestDTO>();
-            Dictionary<int, QuestRewardDTO> dictionaryRewards = new Dictionary<int, QuestRewardDTO>();
+            Dictionary<int, List<QuestRewardDTO>> dictionaryRewards = new Dictionary<int, List<QuestRewardDTO>>();
             QuestDTO quest = new QuestDTO();
             QuestRewardDTO reward = new QuestRewardDTO();
             string line;
@@ -87,11 +87,47 @@ namespace OpenNos.Import.Console
                         switch (currentLine[1])
                         {
                             case "VNUM":
-                                reward = new QuestRewardDTO{ QuestRewardId = reward.QuestRewardId, RewardType = byte.Parse(currentLine[1]) };
+                                reward = new QuestRewardDTO
+                                {
+                                    QuestRewardId = reward.QuestRewardId,
+                                    RewardType = byte.Parse(currentLine[1])
+                                };
                                 break;
 
                             case "DATA":
+                                if (currentLine.Length < 3 || reward == null)
+                                {
+                                    return;
+                                }
+                                switch ((QuestRewardType) reward.RewardType)
+                                {
+                                    case QuestRewardType.Exp:
+                                    case QuestRewardType.SecondExp:
+                                        break;
 
+                                    case QuestRewardType.EquipItem:
+                                        break;
+
+                                    case QuestRewardType.EtcMainItem:
+                                        break;
+
+                                    case QuestRewardType.Gold:
+                                    case QuestRewardType.SecondGold:
+                                    case QuestRewardType.ThirdGold:
+                                    case QuestRewardType.FourthGold:
+                                        break;
+
+                                    case QuestRewardType.JobExp:
+                                    case QuestRewardType.SecondJobExp:
+                                        break;
+
+                                    case QuestRewardType.Reput:
+                                        break;
+                                }
+                                break;
+
+                            case "END":
+                                reward = null;
                                 break;
                         }
                     }
