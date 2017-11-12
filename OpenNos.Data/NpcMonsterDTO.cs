@@ -104,6 +104,12 @@ namespace OpenNos.Data
 
         public int XP { get; set; }
 
+        public bool IsPercent { get; set; }
+
+        public int TakeDamages { get; set; }
+
+        public int GiveDamagePercentage { get; set; }
+
         #endregion
     }
 }
