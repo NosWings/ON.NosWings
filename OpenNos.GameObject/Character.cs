@@ -450,6 +450,16 @@ namespace OpenNos.GameObject
             {
                 return;
             }
+            if (characterQuest.Quest.LevelMin > Level)
+            {
+                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("LOW_LVL"), 12));
+                return;
+            }
+            if (characterQuest.Quest.LevelMax < Level)
+            {
+                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("HIGH_LVL"), 12));
+                return;
+            }
             if (characterQuest.Quest.IsDaily)
             {
                 if(GeneralLogs.Any(s => s.LogType == "DailyQuest" && s.LogData == characterQuest.QuestId.ToString() && s.Timestamp.Date == DateTime.Today))

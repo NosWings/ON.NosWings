@@ -1627,4 +1627,7 @@
   <data name="RAID_REGISTRED" xml:space="preserve">
     <value>Team was registred</value>
   </data>
+  <data name="HIGH_LVL" xml:space="preserve">
+    <value>Your level is too high!</value>
+  </data>
 </root>

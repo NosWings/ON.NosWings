@@ -1807,6 +1807,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Your level is too high!.
+        /// </summary>
+        internal static string HIGH_LVL {
+            get {
+                return ResourceManager.GetString("HIGH_LVL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à The hunt of the dark horn began..
         /// </summary>
         internal static string HORN_APPEAR {

@@ -166,8 +166,8 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case "LEVEL":
-                                //quest.LevelMin = byte.Parse(currentLine[1]);
-                                //quest.LevelMax = byte.Parse(currentLine[2]);
+                                quest.LevelMin = byte.Parse(currentLine[1]);
+                                quest.LevelMax = byte.Parse(currentLine[2]);
                                 break;
 
                             case "TALK":
