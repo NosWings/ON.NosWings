@@ -12,10 +12,6 @@ namespace OpenNos.GameObject
         private short _totalTime;
 
         private DateTime _latestUpdate;
-        public Act6Stats()
-        {
-            
-        }
 
         public short CurrentTime
         {
@@ -32,17 +28,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public byte EreniaPercentage { get; set; }
+        public byte Percentage { get; set; }
 
-        public byte ZenasPercentage { get; set; }
-
-        public bool IsZenas { get; set; }
-
-        public bool IsErenia { get; set; }
-
-        public int TotalDemonsKilled { get; set; }
-
-        public int TotalAngelsKilled { get; set; }
+        public int KilledMonsters { get; set; }
 
         public bool IsRaidActive { get; set; }
     }
