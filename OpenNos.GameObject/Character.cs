@@ -452,19 +452,19 @@ namespace OpenNos.GameObject
             }
             if (characterQuest.Quest.LevelMin > Level)
             {
-                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("LOW_LVL"), 12));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                 return;
             }
             if (characterQuest.Quest.LevelMax < Level)
             {
-                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("HIGH_LVL"), 12));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HIGH_LVL"), 0));
                 return;
             }
             if (characterQuest.Quest.IsDaily)
             {
                 if(GeneralLogs.Any(s => s.LogType == "DailyQuest" && s.LogData == characterQuest.QuestId.ToString() && s.Timestamp.Date == DateTime.Today))
                 {
-                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("QUEST_ALREADY_DONE"), 12));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("QUEST_ALREADY_DONE"), 0));
                     return;
                 }
                 GeneralLogs.Add(new GeneralLogDTO
