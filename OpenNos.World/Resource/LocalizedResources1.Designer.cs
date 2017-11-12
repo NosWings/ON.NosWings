@@ -151,6 +151,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You already have {0}..
+        /// </summary>
+        internal static string ALREADY_GOT_BUFF {
+            get {
+                return ResourceManager.GetString("ALREADY_GOT_BUFF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You are already in group!.
         /// </summary>
         internal static string ALREADY_IN_GROUP {
@@ -219,6 +228,24 @@ namespace OpenNos.World.Resource {
         internal static string AMMO_LOADED_SWORDSMAN {
             get {
                 return ResourceManager.GetString("AMMO_LOADED_SWORDSMAN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CAUTION : The protection spell has expired.
+        /// </summary>
+        internal static string AMULET_DESTROYED {
+            get {
+                return ResourceManager.GetString("AMULET_DESTROYED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à the item is not destroyed, thanks to the amulet.
+        /// </summary>
+        internal static string AMULET_FAIL_SAVED {
+            get {
+                return ResourceManager.GetString("AMULET_FAIL_SAVED", resourceCulture);
             }
         }
         
@@ -408,6 +435,15 @@ namespace OpenNos.World.Resource {
         internal static string ASSISTANT_UNDEMOTABLE {
             get {
                 return ResourceManager.GetString("ASSISTANT_UNDEMOTABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Nosmate dead ! Wellcome to Mini-Land.
+        /// </summary>
+        internal static string BACK_TO_MINILAND {
+            get {
+                return ResourceManager.GetString("BACK_TO_MINILAND", resourceCulture);
             }
         }
         
@@ -2608,6 +2644,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à A team must first be created for the raid.
+        /// </summary>
+        internal static string NEED_TEAM {
+            get {
+                return ResourceManager.GetString("NEED_TEAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Client connected. ClientId = .
         /// </summary>
         internal static string NEW_CONNECT {
@@ -3040,7 +3085,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à Partner will return to Miniland after it dies.
         /// </summary>
         internal static string PARTNER_AUTO_RELIVE_DISABLED {
             get {
@@ -3049,11 +3094,20 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à Partner can be revived with seed or power if it dies.
         /// </summary>
         internal static string PARTNER_AUTO_RELIVE_ENABLED {
             get {
                 return ResourceManager.GetString("PARTNER_AUTO_RELIVE_ENABLED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à .
+        /// </summary>
+        internal static string PARTNER_BACKPACK {
+            get {
+                return ResourceManager.GetString("PARTNER_BACKPACK", resourceCulture);
             }
         }
         
@@ -3148,7 +3202,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à Pet will return to Mini-land after it dies.
         /// </summary>
         internal static string PET_AUTO_RELIVE_DISABLED {
             get {
@@ -3157,7 +3211,16 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à Partner can be revived with seed or power if it dies.
+        /// </summary>
+        internal static string PET_AUTO_RELIVE_ENABLE {
+            get {
+                return ResourceManager.GetString("PET_AUTO_RELIVE_ENABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Pet can be revived with seed or power if it dies.
         /// </summary>
         internal static string PET_AUTO_RELIVE_ENABLED {
             get {
@@ -3234,6 +3297,15 @@ namespace OpenNos.World.Resource {
         internal static string PET_SUMMONABLE {
             get {
                 return ResourceManager.GetString("PET_SUMMONABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Nosmate dead !  It will be revived in 3 min.
+        /// </summary>
+        internal static string PET_WILL_BE_BACK {
+            get {
+                return ResourceManager.GetString("PET_WILL_BE_BACK", resourceCulture);
             }
         }
         
@@ -3351,6 +3423,15 @@ namespace OpenNos.World.Resource {
         internal static string RAID_LEADER_CHANGE {
             get {
                 return ResourceManager.GetString("RAID_LEADER_CHANGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Team was registred.
+        /// </summary>
+        internal static string RAID_REGISTRED {
+            get {
+                return ResourceManager.GetString("RAID_REGISTRED", resourceCulture);
             }
         }
         
