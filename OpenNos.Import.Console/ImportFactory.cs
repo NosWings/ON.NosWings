@@ -72,7 +72,7 @@ namespace OpenNos.Import.Console
             string fileQuestDat = $"{_folder}\\quest.dat";
             string fileRewardsDat = $"{_folder}\\qstprize.dat";
             List<QuestDTO> quests = new List<QuestDTO>();
-            Dictionary<int, List<QuestRewardDTO>> dictionaryRewards = new Dictionary<int, List<QuestRewardDTO>>();
+            Dictionary<long, QuestRewardDTO> dictionaryRewards = new Dictionary<long, QuestRewardDTO>();
             QuestDTO quest = new QuestDTO();
             QuestRewardDTO reward = new QuestRewardDTO();
             string line;
@@ -95,7 +95,7 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case "DATA":
-                                if (currentLine.Length < 3 || reward == null)
+                                if (currentLine.Length < 3)
                                 {
                                     return;
                                 }
@@ -103,31 +103,43 @@ namespace OpenNos.Import.Console
                                 {
                                     case QuestRewardType.Exp:
                                     case QuestRewardType.SecondExp:
+                                        reward.Data = int.Parse(currentLine[2]);
+                                        reward.Amount = int.Parse(currentLine[1]);
                                         break;
 
                                     case QuestRewardType.EquipItem:
+                                        reward.Data = int.Parse(currentLine[1]);
+                                        reward.Amount = 1;
                                         break;
 
                                     case QuestRewardType.EtcMainItem:
+                                        reward.Data = int.Parse(currentLine[1]);
+                                        reward.Amount = int.Parse(currentLine[5]) == -1 ? 1 : int.Parse(currentLine[5]);
                                         break;
 
                                     case QuestRewardType.Gold:
                                     case QuestRewardType.SecondGold:
                                     case QuestRewardType.ThirdGold:
                                     case QuestRewardType.FourthGold:
+                                        reward.Data = 0;
+                                        reward.Amount = int.Parse(currentLine[1]);
                                         break;
 
                                     case QuestRewardType.JobExp:
                                     case QuestRewardType.SecondJobExp:
+                                        reward.Data = int.Parse(currentLine[2]);
+                                        reward.Amount = int.Parse(currentLine[1]);
                                         break;
 
                                     case QuestRewardType.Reput:
+                                        reward.Data = 0;
+                                        reward.Amount = int.Parse(currentLine[1]);
                                         break;
                                 }
                                 break;
 
                             case "END":
-                                reward = null;
+                                dictionaryRewards[reward.QuestRewardId] = reward;
                                 break;
                         }
                     }
