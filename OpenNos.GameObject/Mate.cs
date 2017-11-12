@@ -1140,6 +1140,8 @@ namespace OpenNos.GameObject
             Mp = MaxMp;
             Owner.Session.SendPacket(Owner.GeneratePinit());
             Owner.MapInstance.Broadcast(GenerateOut());
+            MapX = ServerManager.Instance.MinilandRandomPos().X;
+            MapY = ServerManager.Instance.MinilandRandomPos().Y;
         }
 
         public void GenerateRevive()
