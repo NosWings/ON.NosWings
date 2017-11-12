@@ -1020,6 +1020,11 @@ namespace OpenNos.GameObject
                 return 0;
             }
 
+            if (IsPercentage)
+            {
+                return (int)(targetMate.HpLoad() * (GiveDamagePercent / 100D));
+            }
+
             int playerDefense = targetMate.GetBuff(CardType.Defence, (byte) AdditionalTypes.Defence.AllIncreased)[0]
                 - targetMate.GetBuff(CardType.Defence, (byte) AdditionalTypes.Defence.AllDecreased)[0];
 

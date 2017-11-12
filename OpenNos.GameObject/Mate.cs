@@ -304,6 +304,17 @@ namespace OpenNos.GameObject
                 return 0;
             }
 
+            if (targetMonster.IsPercentage)
+            {
+                // Aux grands mots, les grands remedes de fdp, bonne soirée.
+                targetMonster.CurrentHp -= targetMonster.TakesDamage;
+                if (targetMonster.CurrentHp <= 0)
+                {
+                    targetMonster.IsAlive = false;
+                }
+                return targetMonster.TakesDamage;
+            }
+
             int monsterDefence = targetMonster.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllIncreased)[0]
                               - targetMonster.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllDecreased)[0];
 
