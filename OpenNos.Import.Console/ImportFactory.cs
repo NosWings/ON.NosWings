@@ -72,6 +72,7 @@ namespace OpenNos.Import.Console
             string fileQuestDat = $"{_folder}\\quest.dat";
             string fileRewardsDat = $"{_folder}\\qstprize.dat";
             List<QuestDTO> quests = new List<QuestDTO>();
+            List<QuestRewardDTO> rewards = new List<QuestRewardDTO>();
             Dictionary<long, QuestRewardDTO> dictionaryRewards = new Dictionary<long, QuestRewardDTO>();
             QuestDTO quest = new QuestDTO();
             QuestRewardDTO reward = new QuestRewardDTO();
@@ -89,7 +90,7 @@ namespace OpenNos.Import.Console
                             case "VNUM":
                                 reward = new QuestRewardDTO
                                 {
-                                    QuestRewardId = byte.Parse(currentLine[1]),
+                                    QuestRewardId = long.Parse(currentLine[1]),
                                     RewardType = byte.Parse(currentLine[2])
                                 };
                                 break;
@@ -145,6 +146,76 @@ namespace OpenNos.Import.Console
                     }
                 }
                 questRewardStream.Close();
+            }
+
+            using (StreamReader questStream = new StreamReader(fileQuestDat, Encoding.GetEncoding(1252)))
+            {
+                while ((line = questStream.ReadLine()) != null)
+                {
+                    string[] currentLine = line.Split('\t');
+                    if (currentLine.Length > 1)
+                    {
+                        switch (currentLine[0])
+                        {
+                            case "VNUM":
+                                quest = new QuestDTO()
+                                {
+                                    QuestId = long.Parse(currentLine[1]),
+                                    QuestType = byte.Parse(currentLine[2])
+                                };
+                                break;
+
+                            case "LEVEL":
+                                //quest.LevelMin = byte.Parse(currentLine[1]);
+                                //quest.LevelMax = byte.Parse(currentLine[2]);
+                                break;
+
+                            case "TALK":
+                                if (int.Parse(currentLine[2]) != -1)
+                                {
+                                    quest.EndDialogId = int.Parse(currentLine[2]);
+                                }
+                                break;
+
+                            case "TARGET":
+                                if (int.Parse(currentLine[3]) != -1)
+                                {
+                                    quest.TargetMap = short.Parse(currentLine[3]);
+                                    quest.TargetX = short.Parse(currentLine[1]);
+                                    quest.TargetY = short.Parse(currentLine[2]);
+                                }
+                                break;
+
+                            case "DATA":
+                                if (currentLine.Length < 3)
+                                {
+                                    return;
+                                }
+                                switch ((QuestType)quest.QuestType)
+                                {
+
+                                }
+                                break;
+
+                            case "PRIZE":
+                                for (int a = 1; a < 5; a++)
+                                {
+                                    if (int.Parse(currentLine[a]) != -1)
+                                    {
+                                        QuestRewardDTO currentReward = dictionaryRewards[int.Parse(currentLine[a])];
+                                        currentReward.QuestId = quest.QuestId;
+                                        rewards.Add(currentReward);
+                                    }
+                                }
+                                break;
+
+                            case "END":
+                                quests.Add(quest);
+                                break;
+                        }
+                    }
+                }
+                questStream.Close();
             }
         }
 
