@@ -1474,6 +1474,12 @@ namespace OpenNos.GameObject
 
             if (monsterToAttack.IsPercentage)
             {
+                // Aux grands mots, les grands remedes de fdp, bonne soirée.
+                monsterToAttack.CurrentHp -= monsterToAttack.TakesDamage;
+                if (monsterToAttack.CurrentHp <= 0)
+                {
+                    monsterToAttack.IsAlive = false;
+                }
                 return (ushort) monsterToAttack.TakesDamage;
             }
 
