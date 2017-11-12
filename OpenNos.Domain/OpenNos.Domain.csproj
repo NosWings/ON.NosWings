@@ -151,6 +151,7 @@
     <Compile Include="LoginFailType.cs" />
     <Compile Include="QuestRewardType.cs" />
     <Compile Include="QuestType.cs" />
+    <Compile Include="RaidDesignType.cs" />
     <Compile Include="SessionType.cs" />
     <Compile Include="ShellOptionType.cs" />
     <Compile Include="TalentArenaOptionType.cs" />

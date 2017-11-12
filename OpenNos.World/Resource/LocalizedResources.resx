@@ -1594,4 +1594,10 @@
   <data name="YOU_ARE_RAID_CHIEF" xml:space="preserve">
     <value>You are now the Raid Leader. Invite members.</value>
   </data>
+  <data name="NO_QUEST_FOR_THIS_RAID" xml:space="preserve">
+    <value>There is no quest implemented for this raid.</value>
+  </data>
+  <data name="YOU_HAVE_TO_BE_IN_RAID" xml:space="preserve">
+    <value>You have to be in a raid team.</value>
+  </data>
 </root>

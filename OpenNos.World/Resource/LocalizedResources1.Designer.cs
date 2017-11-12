@@ -2770,6 +2770,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à There is no quest implemented for this raid..
+        /// </summary>
+        internal static string NO_QUEST_FOR_THIS_RAID {
+            get {
+                return ResourceManager.GetString("NO_QUEST_FOR_THIS_RAID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You&apos;re not wearing specialist card!.
         /// </summary>
         internal static string NO_SP {
@@ -4467,6 +4476,15 @@ namespace OpenNos.World.Resource {
         internal static string YOU_GET_PET {
             get {
                 return ResourceManager.GetString("YOU_GET_PET", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You have to be in a raid team..
+        /// </summary>
+        internal static string YOU_HAVE_TO_BE_IN_RAID {
+            get {
+                return ResourceManager.GetString("YOU_HAVE_TO_BE_IN_RAID", resourceCulture);
             }
         }
         
