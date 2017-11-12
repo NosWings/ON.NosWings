@@ -84,13 +84,13 @@ namespace OpenNos.Import.Console
                     string[] currentLine = line.Split('\t');
                     if (currentLine.Length > 1)
                     {
-                        switch (currentLine[1])
+                        switch (currentLine[0])
                         {
                             case "VNUM":
                                 reward = new QuestRewardDTO
                                 {
-                                    QuestRewardId = reward.QuestRewardId,
-                                    RewardType = byte.Parse(currentLine[1])
+                                    QuestRewardId = byte.Parse(currentLine[1]),
+                                    RewardType = byte.Parse(currentLine[2])
                                 };
                                 break;
 
