@@ -18,7 +18,7 @@
         YouNeed = 14,
         Wear = 15,
         Needed = 16,
-        Collect4 = 17,
+        Collect4 = 17, //Quest item on Monster
         TransmitGold = 18,
         GoTo = 19,
         Collect5 = 20,

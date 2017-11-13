@@ -218,6 +218,7 @@ namespace OpenNos.Import.Console
                                     case QuestType.Collect3: // ItemVNum - Objective - TsId //
                                     case QuestType.YouNeed: // ItemVNum - Objective - npcVNum //
                                     case QuestType.Needed: // ItemVNum - Objective - npcVNum //
+                                    case QuestType.Collect4: // ItemVNum - Objective - MonsterVNum //
                                         data = int.Parse(currentLine[2]);
                                         objective = int.Parse(currentLine[3]);
                                         specialData = int.Parse(currentLine[1]);
@@ -239,6 +240,15 @@ namespace OpenNos.Import.Console
                                         data = int.Parse(currentLine[2]);
                                         objective = 1;
                                         specialData = int.Parse(currentLine[1]);
+                                        break;
+
+                                    case QuestType.TransmitGold: // NpcVNum - Gold x10K - * //
+                                        data = int.Parse(currentLine[1]); 
+                                        objective = int.Parse(currentLine[2]) * 10000;
+                                        break;
+
+                                    case QuestType.GoTo:
+                                        // TODO : firstData = Map [1] / secondData = X [2] / thirdData = Y [3]
                                         break;
                                 }
                                 break;
