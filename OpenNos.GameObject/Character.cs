@@ -2681,12 +2681,7 @@ namespace OpenNos.GameObject
 
                 #endregion
 
-                if (monsterToAttack.MapInstance.Map.MapId == 1)
-                {
-                    // NOSVILLE DISABLE DROPS
-                    return;
-                }
-                //Quand on me dit "Maintenant OpenNos, c'est du bricolage"
+                #region Act6Stats
                 if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232 && !ServerManager.Instance.Act6Zenas.IsRaidActive)
                 {
                     ServerManager.Instance.Act6Zenas.KilledMonsters++;
@@ -2705,8 +2700,15 @@ namespace OpenNos.GameObject
                     ServerManager.Instance.Act6Erenia.Percentage++;
                     ServerManager.Instance.Act6Process();
                 }
+                #endregion Act6Stats
+
                 #region item drop
 
+                if (monsterToAttack.MapInstance.Map.MapId == 1)
+                {
+                    // NOSVILLE DISABLE DROPS
+                    return;
+                }
                 int dropRate = ServerManager.Instance.DropRate * MapInstance.DropRate;
                 int x = 0;
                 foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
