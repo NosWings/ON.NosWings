@@ -10,20 +10,20 @@ namespace OpenNos.Core
 
         public static void Clear<T>(this ConcurrentBag<T> queue)
         {
-            while (queue.Count > 0)
+            while (queue.TryTake(out T item))
             {
-                queue.TryTake(out T item);
+                // NOTHING
             }
         }
 
         public static ConcurrentBag<T> Where<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate)
         {
-            ConcurrentBag<T> Temp = new ConcurrentBag<T>();
-            queue.ToList().Where(predicate).ToList().ForEach(Line =>
+            ConcurrentBag<T> temp = new ConcurrentBag<T>();
+            foreach (T line in queue.AsEnumerable().Where(predicate))
             {
-                Temp.Add(Line);
-            });
-            return Temp;
+                temp.Add(line);
+            }
+            return temp;
         }
 
         #endregion
