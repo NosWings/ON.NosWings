@@ -1484,8 +1484,13 @@ namespace OpenNos.GameObject
                 TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
             }
 
-            if (monsterToAttack.IsPercentage)
+            if (monsterToAttack.IsPercentage && monsterToAttack.TakesDamage > 0)
             {
+                monsterToAttack.CurrentHp -= monsterToAttack.TakesDamage;
+                if (monsterToAttack.CurrentHp <= 0)
+                {
+                    monsterToAttack.IsAlive = false;
+                }
                 return (ushort) monsterToAttack.TakesDamage;
             }
 
@@ -2687,12 +2692,7 @@ namespace OpenNos.GameObject
 
                 #endregion
 
-                if (monsterToAttack.MapInstance.Map.MapId == 1)
-                {
-                    // NOSVILLE DISABLE DROPS
-                    return;
-                }
-                //Quand on me dit "Maintenant OpenNos, c'est du bricolage"
+                #region Act6Stats
                 if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232 && !ServerManager.Instance.Act6Zenas.IsRaidActive)
                 {
                     ServerManager.Instance.Act6Zenas.KilledMonsters++;
@@ -2711,8 +2711,15 @@ namespace OpenNos.GameObject
                     ServerManager.Instance.Act6Erenia.Percentage++;
                     ServerManager.Instance.Act6Process();
                 }
+                #endregion Act6Stats
+
                 #region item drop
 
+                if (monsterToAttack.MapInstance.Map.MapId == 1)
+                {
+                    // NOSVILLE DISABLE DROPS
+                    return;
+                }
                 int dropRate = ServerManager.Instance.DropRate * MapInstance.DropRate;
                 int x = 0;
                 foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
@@ -5127,14 +5134,17 @@ namespace OpenNos.GameObject
         public List<string> OpenFamilyWarehouseHist()
         {
             List<string> packetList = new List<string>();
-            if (Family != null && (FamilyCharacter.Authority == FamilyAuthority.Head
-                                   || FamilyCharacter.Authority == FamilyAuthority.Assistant
-                                   || FamilyCharacter.Authority == FamilyAuthority.Member && Family.MemberCanGetHistory
-                                   || FamilyCharacter.Authority == FamilyAuthority.Manager && Family.ManagerCanGetHistory))
+            if (Family != null && FamilyCharacter != null)
             {
-                return GenerateFamilyWarehouseHist();
+                if (FamilyCharacter.Authority == FamilyAuthority.Manager && Family.ManagerCanGetHistory ||
+                    FamilyCharacter.Authority == FamilyAuthority.Member && Family.MemberCanGetHistory ||
+                    FamilyCharacter.Authority < FamilyAuthority.Manager)
+                {
+                    return GenerateFamilyWarehouseHist();
+                }
             }
-            packetList.Add(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
+            packetList.Add(
+                UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
             return packetList;
         }
 
@@ -5747,7 +5757,7 @@ namespace OpenNos.GameObject
             {
                 LevelXp += xp;
             }
-            foreach (Mate mate in Mates.Where(x => x.IsTeamMember))
+            foreach (Mate mate in Mates.Where(x => x.IsTeamMember && x.IsAlive))
             {
                 mate.GenerateXp(xp);
             }

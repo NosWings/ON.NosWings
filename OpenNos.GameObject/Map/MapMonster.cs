@@ -481,7 +481,7 @@ namespace OpenNos.GameObject
         /// <returns></returns>
         private int GenerateDamage(Character targetCharacter, Skill skill, ref int hitmode)
         {
-            if (IsPercentage)
+            if (IsPercentage && GiveDamagePercent > 0)
             {
                 return (int)(targetCharacter.HpLoad() * (GiveDamagePercent / 100D));
             }
@@ -1018,6 +1018,11 @@ namespace OpenNos.GameObject
             if (targetMate == null)
             {
                 return 0;
+            }
+
+            if (IsPercentage && GiveDamagePercent > 0)
+            {
+                return (int)(targetMate.HpLoad() * (GiveDamagePercent / 100D));
             }
 
             int playerDefense = targetMate.GetBuff(CardType.Defence, (byte) AdditionalTypes.Defence.AllIncreased)[0]

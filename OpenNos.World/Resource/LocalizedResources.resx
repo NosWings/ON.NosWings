@@ -1630,4 +1630,13 @@
   <data name="HIGH_LVL" xml:space="preserve">
     <value>Your level is too high!</value>
   </data>
+  <data name="ALREADY_IN_FAMILY" xml:space="preserve">
+    <value>You're already in a family</value>
+  </data>
+  <data name="JOIN_TEAM" xml:space="preserve">
+    <value>You join a raid team</value>
+  </data>
+  <data name="MATE_WILL_BE_BACK" xml:space="preserve">
+    <value>Mate died !  he will be back in 3 min</value>
+  </data>
 </root>

@@ -260,10 +260,11 @@ namespace OpenNos.GameObject
                                                 int capturerate = 100 - (monster.CurrentHp / monster.Monster.MaxHP + 1) / 2;
                                                 if (ServerManager.Instance.RandomNumber() <= capturerate)
                                                 {
+                                                    int level = monster.Monster.Level - 15 < 1 ? 1 : monster.Monster.Level - 15;
                                                     Mate currentmate = character.Mates?.FirstOrDefault(m => m.IsTeamMember && m.MateType == MateType.Pet);
                                                     monster.MapInstance.DespawnMonster(monster);
                                                     NpcMonster mateNpc = ServerManager.Instance.GetNpc(monster.Monster.NpcMonsterVNum);
-                                                    Mate mate = new Mate(character, mateNpc, 1, MateType.Pet);
+                                                    Mate mate = new Mate(character, mateNpc, (byte)level, MateType.Pet);
                                                     character.Mates.Add(mate);
                                                     mate.RefreshStats();
                                                     if (currentmate == null)

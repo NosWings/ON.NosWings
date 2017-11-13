@@ -399,6 +399,11 @@ namespace OpenNos.Handler
                     mate.GenerateMateTransportId();
                     mate.Monster = ServerManager.Instance.GetNpc(s.NpcMonsterVNum);
                     Session.Character.Mates.Add(mate);
+                    if (!mate.IsTeamMember)
+                    {
+                        mate.MapX = ServerManager.Instance.MinilandRandomPos().X;
+                        mate.MapY = ServerManager.Instance.MinilandRandomPos().Y;
+                    }
                 });
                 Session.Character.Life = Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
                 {

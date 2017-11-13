@@ -46,6 +46,8 @@ namespace OpenNos.Data
 
         public byte LevelMax { get; set; }
 
+        public int? SpecialData { get; set; }
+
         #endregion
     }
 }

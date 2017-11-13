@@ -304,6 +304,16 @@ namespace OpenNos.GameObject
                 return 0;
             }
 
+            if (targetMonster.IsPercentage && targetMonster.TakesDamage > 0)
+            {
+                targetMonster.CurrentHp -= targetMonster.TakesDamage;
+                if (targetMonster.CurrentHp <= 0)
+                {
+                    targetMonster.IsAlive = false;
+                }
+                return targetMonster.TakesDamage;
+            }
+
             int monsterDefence = targetMonster.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllIncreased)[0]
                               - targetMonster.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllDecreased)[0];
 
@@ -1129,15 +1139,21 @@ namespace OpenNos.GameObject
             Mp = MaxMp;
             Owner.Session.SendPacket(Owner.GeneratePinit());
             Owner.MapInstance.Broadcast(GenerateOut());
+            MapX = ServerManager.Instance.MinilandRandomPos().X;
+            MapY = ServerManager.Instance.MinilandRandomPos().Y;
         }
 
         public void GenerateRevive()
         {
-            Owner.MapInstance.Broadcast(GenerateOut());
+            if (Owner == null)
+            {
+                return;
+            }
+            Owner.MapInstance?.Broadcast(GenerateOut());
             IsAlive = true;
             PositionY = (short)(Owner.PositionY + 1);
             PositionX = (short)(Owner.PositionX + 1);
-            Owner.MapInstance.Broadcast(GenerateIn());
+            Owner.MapInstance?.Broadcast(GenerateIn());
             Owner.Session.SendPacket(GenerateCond());
             Owner.Session.SendPacket(Owner.GeneratePinit());
             Hp = MaxHp;

@@ -1475,6 +1475,11 @@ namespace OpenNos.GameObject
             return Random.Value.Next(min, max);
         }
 
+        public MapCell MinilandRandomPos()
+        {
+            return new MapCell(){X = (short) RandomNumber(5,16), Y = (short)RandomNumber(3, 14) };
+        }
+
         public void RefreshRanking()
         {
             TopComplimented = DaoFactory.CharacterDao.GetTopCompliment();

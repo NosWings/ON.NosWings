@@ -160,6 +160,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You&apos;re already in a family.
+        /// </summary>
+        internal static string ALREADY_IN_FAMILY {
+            get {
+                return ResourceManager.GetString("ALREADY_IN_FAMILY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You are already in group!.
         /// </summary>
         internal static string ALREADY_IN_GROUP {
@@ -2185,6 +2194,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You join a raid team.
+        /// </summary>
+        internal static string JOIN_TEAM {
+            get {
+                return ResourceManager.GetString("JOIN_TEAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You joined the group..
         /// </summary>
         internal static string JOINED_GROUP {
@@ -2379,6 +2397,15 @@ namespace OpenNos.World.Resource {
         internal static string MAPS_LOADED {
             get {
                 return ResourceManager.GetString("MAPS_LOADED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mate died !  he will be back in 3 min.
+        /// </summary>
+        internal static string MATE_WILL_BE_BACK {
+            get {
+                return ResourceManager.GetString("MATE_WILL_BE_BACK", resourceCulture);
             }
         }
         
