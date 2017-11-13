@@ -195,25 +195,46 @@ namespace OpenNos.Import.Console
                                 {
                                     return;
                                 }
-                                int data;
-                                int specialData;
-                                int objective;
+                                int? data;
+                                int? specialData;
+                                int? objective;
                                 switch ((QuestType)quest.QuestType)
                                 {
                                     case QuestType.Hunt:
+                                    case QuestType.Capture1:
+                                    case QuestType.Capture2:
                                         data = int.Parse(currentLine[1]);
                                         objective = int.Parse(currentLine[2]);
                                         break;
 
                                     case QuestType.Collect1:
+                                    case QuestType.Product:
                                         data = int.Parse(currentLine[1]);
                                         objective = int.Parse(currentLine[2]);
                                         break;
 
+                                    case QuestType.Brings:
                                     case QuestType.Collect2:
                                         specialData = int.Parse(currentLine[1]);
                                         data = int.Parse(currentLine[2]);
                                         objective = int.Parse(currentLine[3]);
+                                        break;
+
+                                    case QuestType.TimesSpace:
+                                    case QuestType.TsPoint:
+                                        specialData = int.Parse(currentLine[1]); //TS Id
+                                        data = int.Parse(currentLine[4]); //TS Lvl
+                                        objective = int.Parse(currentLine[2]);
+                                        break;
+
+                                    case QuestType.Dialog1:
+                                        data = int.Parse(currentLine[2]); // npc VNum
+                                        objective = 1;
+                                        break;
+
+                                    case QuestType.Collect3:
+                                        data = int.Parse(currentLine[2]); // npc VNum
+                                        objective = 1;
                                         break;
                                 }
                                 break;
