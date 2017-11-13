@@ -1472,9 +1472,8 @@ namespace OpenNos.GameObject
                 TeleportOnMap(monsterToAttack.MapX, monsterToAttack.MapY);
             }
 
-            if (monsterToAttack.IsPercentage)
+            if (monsterToAttack.IsPercentage && monsterToAttack.TakesDamage > 0)
             {
-                // Aux grands mots, les grands remedes de fdp, bonne soirée.
                 monsterToAttack.CurrentHp -= monsterToAttack.TakesDamage;
                 if (monsterToAttack.CurrentHp <= 0)
                 {

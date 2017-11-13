@@ -481,7 +481,7 @@ namespace OpenNos.GameObject
         /// <returns></returns>
         private int GenerateDamage(Character targetCharacter, Skill skill, ref int hitmode)
         {
-            if (IsPercentage)
+            if (IsPercentage && GiveDamagePercent > 0)
             {
                 return (int)(targetCharacter.HpLoad() * (GiveDamagePercent / 100D));
             }
@@ -1020,7 +1020,7 @@ namespace OpenNos.GameObject
                 return 0;
             }
 
-            if (IsPercentage)
+            if (IsPercentage && GiveDamagePercent > 0)
             {
                 return (int)(targetMate.HpLoad() * (GiveDamagePercent / 100D));
             }

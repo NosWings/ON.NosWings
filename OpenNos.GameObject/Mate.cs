@@ -304,9 +304,8 @@ namespace OpenNos.GameObject
                 return 0;
             }
 
-            if (targetMonster.IsPercentage)
+            if (targetMonster.IsPercentage && targetMonster.TakesDamage > 0)
             {
-                // Aux grands mots, les grands remedes de fdp, bonne soirée.
                 targetMonster.CurrentHp -= targetMonster.TakesDamage;
                 if (targetMonster.CurrentHp <= 0)
                 {
