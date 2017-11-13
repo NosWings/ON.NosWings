@@ -1961,7 +1961,7 @@ namespace OpenNos.GameObject
         /// <param name="npcMonsterSkill">Skill use</param>
         private void TargetHit(object target, NpcMonsterSkill npcMonsterSkill)
         {
-            if (Monster == null || (!((DateTime.Now - LastSkill).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200) && !Skills.Any() || npcMonsterSkill != null) ||
+            if (Monster == null || (!((DateTime.Now - LastSkill).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 350) && npcMonsterSkill == null) ||
                 HasBuff(CardType.SpecialAttack, (byte) AdditionalTypes.SpecialAttack.NoAttack))
             {
                 return;
