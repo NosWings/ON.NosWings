@@ -1145,11 +1145,15 @@ namespace OpenNos.GameObject
 
         public void GenerateRevive()
         {
-            Owner.MapInstance.Broadcast(GenerateOut());
+            if (Owner == null)
+            {
+                return;
+            }
+            Owner.MapInstance?.Broadcast(GenerateOut());
             IsAlive = true;
             PositionY = (short)(Owner.PositionY + 1);
             PositionX = (short)(Owner.PositionX + 1);
-            Owner.MapInstance.Broadcast(GenerateIn());
+            Owner.MapInstance?.Broadcast(GenerateIn());
             Owner.Session.SendPacket(GenerateCond());
             Owner.Session.SendPacket(Owner.GeneratePinit());
             Hp = MaxHp;
