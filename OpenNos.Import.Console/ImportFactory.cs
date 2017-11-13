@@ -182,7 +182,7 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case "TARGET":
-                                if (int.Parse(currentLine[3]) != -1)
+                                if (int.Parse(currentLine[3]) > 0)
                                 {
                                     quest.TargetMap = short.Parse(currentLine[3]);
                                     quest.TargetX = short.Parse(currentLine[1]);
@@ -215,26 +215,30 @@ namespace OpenNos.Import.Console
 
                                     case QuestType.Brings:
                                     case QuestType.Collect2:
-                                        specialData = int.Parse(currentLine[1]);
+                                    case QuestType.Collect3: // ItemVNum - Objective - TsId //
+                                    case QuestType.YouNeed: // ItemVNum - Objective - npcVNum //
+                                    case QuestType.Needed: // ItemVNum - Objective - npcVNum //
                                         data = int.Parse(currentLine[2]);
                                         objective = int.Parse(currentLine[3]);
+                                        specialData = int.Parse(currentLine[1]);
                                         break;
 
-                                    case QuestType.TimesSpace:
+                                    case QuestType.TimesSpace: // TS Lvl - Objective - TS Id //
                                     case QuestType.TsPoint:
-                                        specialData = int.Parse(currentLine[1]); //TS Id
-                                        data = int.Parse(currentLine[4]); //TS Lvl
+                                        data = int.Parse(currentLine[4]);
                                         objective = int.Parse(currentLine[2]);
+                                        specialData = int.Parse(currentLine[1]);
                                         break;
 
-                                    case QuestType.Dialog1:
-                                        data = int.Parse(currentLine[2]); // npc VNum
+                                    case QuestType.Dialog1: // npcVNum - * - * //
+                                        data = int.Parse(currentLine[2]);
                                         objective = 1;
                                         break;
 
-                                    case QuestType.Collect3:
-                                        data = int.Parse(currentLine[2]); // npc VNum
+                                    case QuestType.Wear: // Item VNum - * - NpcVNum //
+                                        data = int.Parse(currentLine[2]);
                                         objective = 1;
+                                        specialData = int.Parse(currentLine[1]);
                                         break;
                                 }
                                 break;
