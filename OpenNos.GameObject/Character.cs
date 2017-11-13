@@ -5122,14 +5122,17 @@ namespace OpenNos.GameObject
         public List<string> OpenFamilyWarehouseHist()
         {
             List<string> packetList = new List<string>();
-            if (Family != null && (FamilyCharacter.Authority == FamilyAuthority.Head
-                                   || FamilyCharacter.Authority == FamilyAuthority.Assistant
-                                   || FamilyCharacter.Authority == FamilyAuthority.Member && Family.MemberCanGetHistory
-                                   || FamilyCharacter.Authority == FamilyAuthority.Manager && Family.ManagerCanGetHistory))
+            if (Family != null && FamilyCharacter != null)
             {
-                return GenerateFamilyWarehouseHist();
+                if (FamilyCharacter.Authority == FamilyAuthority.Manager && Family.ManagerCanGetHistory ||
+                    FamilyCharacter.Authority == FamilyAuthority.Member && Family.MemberCanGetHistory ||
+                    FamilyCharacter.Authority < FamilyAuthority.Manager)
+                {
+                    return GenerateFamilyWarehouseHist();
+                }
             }
-            packetList.Add(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
+            packetList.Add(
+                UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
             return packetList;
         }
 
