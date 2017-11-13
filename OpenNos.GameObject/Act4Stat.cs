@@ -29,7 +29,11 @@ namespace OpenNos.GameObject
         public int Percentage
         {
             get { return Mode == 0 ? _percentage : 0; }
-            set { _percentage = value; }
+            set
+            {
+                _percentage = value;
+                ServerManager.Instance.Act4Process();
+            }
         }
 
         public short CurrentTime
@@ -54,6 +58,5 @@ namespace OpenNos.GameObject
         public bool IsCalvina { get; set; }
 
         public bool IsBerios { get; set; }
-
     }
 }
