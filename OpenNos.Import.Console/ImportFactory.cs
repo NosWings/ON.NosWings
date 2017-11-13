@@ -195,9 +195,26 @@ namespace OpenNos.Import.Console
                                 {
                                     return;
                                 }
+                                int data;
+                                int specialData;
+                                int objective;
                                 switch ((QuestType)quest.QuestType)
                                 {
+                                    case QuestType.Hunt:
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[2]);
+                                        break;
 
+                                    case QuestType.Collect1:
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[2]);
+                                        break;
+
+                                    case QuestType.Collect2:
+                                        specialData = int.Parse(currentLine[1]);
+                                        data = int.Parse(currentLine[2]);
+                                        objective = int.Parse(currentLine[3]);
+                                        break;
                                 }
                                 break;
 
