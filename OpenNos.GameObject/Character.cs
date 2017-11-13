@@ -576,7 +576,7 @@ namespace OpenNos.GameObject
                 case QuestType.Inspect:
                     break;
 
-                case QuestType.Make:
+                case QuestType.Product:
                     break;
 
                 case QuestType.Needed:
