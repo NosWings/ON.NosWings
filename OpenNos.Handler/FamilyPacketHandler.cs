@@ -263,9 +263,9 @@ namespace OpenNos.Handler
                     Type = MessageType.FamilyChat
                 });
             }
-            catch (TimeoutException e)
+            catch (Exception)
             {
-                throw new TimeoutException(e.ToString());
+                // NOPE TU VAS PAS CRASH
             }
             Parallel.ForEach(ServerManager.Instance.Sessions.ToList(), session =>
             {
