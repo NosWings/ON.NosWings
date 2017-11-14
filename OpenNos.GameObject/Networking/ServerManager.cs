@@ -1836,11 +1836,6 @@ namespace OpenNos.GameObject
             MapInstance angelMapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == 132);
             MapInstance demonMapInstance = Act4Maps.FirstOrDefault(s => s.Map.MapId == 133);
 
-            if (RaidType == null)
-            {
-                RaidType = RandomNumber(0, 3);
-            }
-
             if (angelMapInstance == null || demonMapInstance == null)
             {
                 return;
@@ -1859,7 +1854,7 @@ namespace OpenNos.GameObject
                     ShouldRespawn = false
                 };
                 monster.Initialize(instance);
-                monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<Act4RaidType, FactionType>((Act4RaidType)RaidType, (FactionType)faction)));
+                monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<Act4RaidType, FactionType>((Act4RaidType)RandomNumber(0, 3), (FactionType)faction)));
                 instance.AddMonster(monster);
                 instance.Broadcast(monster.GenerateIn());
             }
