@@ -23,6 +23,7 @@ using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -251,14 +252,21 @@ namespace OpenNos.Handler
                     break;
             }
             LogHelper.Instance.InsertChatLog(ChatType.Family, Session.Character.CharacterId, familyChatPacket.Message, Session.IpAddress);
-            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
+            try
             {
-                DestinationCharacterId = Session.Character.Family.FamilyId,
-                SourceCharacterId = Session.Character.CharacterId,
-                SourceWorldId = ServerManager.Instance.WorldId,
-                Message = ccmsg,
-                Type = MessageType.FamilyChat
-            });
+                CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
+                {
+                    DestinationCharacterId = Session.Character.Family.FamilyId,
+                    SourceCharacterId = Session.Character.CharacterId,
+                    SourceWorldId = ServerManager.Instance.WorldId,
+                    Message = ccmsg,
+                    Type = MessageType.FamilyChat
+                });
+            }
+            catch (TimeoutException e)
+            {
+                throw new TimeoutException(e.ToString());
+            }
             Parallel.ForEach(ServerManager.Instance.Sessions.ToList(), session =>
             {
                 if (!session.HasSelectedCharacter || session.Character.Family == null || Session.Character.Family == null || session.Character.Family?.FamilyId != Session.Character.Family?.FamilyId)
