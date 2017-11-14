@@ -4209,8 +4209,8 @@ namespace OpenNos.GameObject
 
                     MinHit += SpInstance.DamageMinimum + slHit * 10;
                     MaxHit += SpInstance.DamageMaximum + slHit * 10;
-                    MinDistance += SpInstance.DamageMinimum;
-                    MaxDistance += SpInstance.DamageMaximum;
+                    MinDistance += SpInstance.DamageMinimum + slHit * 10;
+                    MaxDistance += SpInstance.DamageMaximum + slHit * 10;
                     HitCriticalRate += SpInstance.CriticalLuckRate;
                     HitCritical += SpInstance.CriticalRate;
                     DistanceCriticalRate += SpInstance.CriticalLuckRate;
