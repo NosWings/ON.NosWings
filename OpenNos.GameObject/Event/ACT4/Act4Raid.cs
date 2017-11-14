@@ -122,7 +122,7 @@ namespace OpenNos.GameObject.Event
                 DestinationX = destX,
                 DestinationY = destY,
                 Type = (short) (9 + _faction)
-            });
+            }, 3600, true);
 
             foreach (MapInstance map in ServerManager.Instance.Act4Maps)
             {
