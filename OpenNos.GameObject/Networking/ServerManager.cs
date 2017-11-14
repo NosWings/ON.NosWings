@@ -1883,10 +1883,14 @@ namespace OpenNos.GameObject
             if (Act4AngelStat.CurrentTime <= 0 && Act4AngelStat.Mode != 0)
             {
                 Act4AngelStat.Mode = 0;
+                Act4AngelStat.Percentage = 0;
+                Act4AngelStat.TotalTime = 0;
             }
             else if (Act4DemonStat.CurrentTime <= 0 && Act4DemonStat.Mode != 0)
             {
                 Act4DemonStat.Mode = 0;
+                Act4DemonStat.Percentage = 0;
+                Act4DemonStat.TotalTime = 0;
             }
 
             Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance), sess => sess.SendPacket(sess.Character.GenerateFc()));

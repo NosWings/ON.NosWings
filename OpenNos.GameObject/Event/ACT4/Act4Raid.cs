@@ -34,6 +34,8 @@ namespace OpenNos.GameObject.Event
         private const int BossSpawn = 1800;
 
         private int _raidTime = 3600;
+        
+        private bool _raidStarted = false;
 
         private Act4RaidType _type;
 
@@ -134,7 +136,7 @@ namespace OpenNos.GameObject.Event
             {
                 RefreshAct4Raid(type, raidMap, destX, destY);
 
-                if (_raidTime == BossSpawn)
+                if (_raidTime <= BossSpawn && !_raidStarted)
                 {
                     SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList)
@@ -143,6 +145,7 @@ namespace OpenNos.GameObject.Event
                         {
                             continue;
                         }
+                        _raidStarted = true;
                         SpawnBoss(fam.Act4Raid, fam.Act4RaidBossMap, bossParametter, boxVnum);
                     }
                 }
