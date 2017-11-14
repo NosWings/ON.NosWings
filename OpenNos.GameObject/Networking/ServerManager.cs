@@ -1860,6 +1860,7 @@ namespace OpenNos.GameObject
                 Observable.Timer(TimeSpan.FromSeconds(300)).Subscribe(o =>
                 {
                     instance.RemoveMonster(monster);
+                    instance.Broadcast(monster.GenerateOut());
                 });
             }
 
