@@ -1857,6 +1857,10 @@ namespace OpenNos.GameObject
                 monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<Act4RaidType, FactionType>((Act4RaidType)RandomNumber(0, 3), (FactionType)faction)));
                 instance.AddMonster(monster);
                 instance.Broadcast(monster.GenerateIn());
+                Observable.Timer(TimeSpan.FromSeconds(300)).Subscribe(o =>
+                {
+                    instance.RemoveMonster(monster);
+                });
             }
 
             if (Act4AngelStat.Percentage > 10000)
@@ -1873,6 +1877,15 @@ namespace OpenNos.GameObject
                 Act4DemonStat.Percentage = 0;
                 Act4DemonStat.TotalTime = 300;
                 SummonMukraju(demonMapInstance, 2);
+            }
+
+            if (Act4AngelStat.CurrentTime <= 0 && Act4AngelStat.Mode != 0)
+            {
+                Act4AngelStat.Mode = 0;
+            }
+            else if (Act4DemonStat.CurrentTime <= 0 && Act4DemonStat.Mode != 0)
+            {
+                Act4DemonStat.Mode = 0;
             }
 
             Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance), sess => sess.SendPacket(sess.Character.GenerateFc()));
