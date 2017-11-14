@@ -2688,10 +2688,10 @@ namespace OpenNos.GameObject
                         switch (Faction)
                         {
                             case FactionType.Angel:
-                                ServerManager.Instance.Act4AngelStat.Percentage += 10;
+                                ServerManager.Instance.Act4AngelStat.Percentage += 5;
                                 break;
                             case FactionType.Demon:
-                                ServerManager.Instance.Act4DemonStat.Percentage += 10;
+                                ServerManager.Instance.Act4DemonStat.Percentage += 5;
                                 break;
                         }
                     }
