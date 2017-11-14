@@ -255,7 +255,7 @@ namespace OpenNos.GameObject.Event
             boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.REMOVEPORTAL, raidMap.Portals.FirstOrDefault(p => p.DestinationMapInstanceId == raidBossMap.MapInstanceId)));
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.ACT4RAIDEND, new Tuple<MapInstance, short, short>(raidMap, raidMap.MapIndexX, raidMap.MapIndexY)));
             //RaidBox
-            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.MAPGIVE, new Tuple<bool, short, byte, short>(true, boxVnum, 1, 50)));
+            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.MAPGIVE, new Tuple<bool, short, byte, short, bool>(true, boxVnum, 1, 50, true)));
         }
 
         private ConcurrentBag<EventContainer> GetWaveMonster(MapInstance mapInstance)
