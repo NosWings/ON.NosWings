@@ -12,7 +12,7 @@ namespace OpenNos.DAL.EF
 
         public long QuestId { get; set; }
 
-        public byte QuestType { get; set; }
+        public int QuestType { get; set; }
 
         public int FirstData { get; set; }
 
