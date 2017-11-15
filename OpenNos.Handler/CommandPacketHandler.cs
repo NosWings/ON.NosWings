@@ -423,6 +423,7 @@ namespace OpenNos.Handler
         public void Unstuck(MoveCommandPacket move)
         {
             ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.MapInstanceId, Session.Character.PositionX, Session.Character.PositionY);
+            Session.SendPacket(Session.Character.GenerateRevive());
         }
 
         public void Act4Connect(Act4ConnectPacket act4ConnectPacket)
