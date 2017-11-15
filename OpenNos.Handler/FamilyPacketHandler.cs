@@ -61,7 +61,8 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChanged, Session.Character.Name, authority: fAuthPacket.MemberType, righttype: fAuthPacket.AuthorityId + 1, rightvalue: fAuthPacket.Value);
+            Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChanged, Session.Character.Name, authority: fAuthPacket.MemberType, righttype: fAuthPacket.AuthorityId + 1,
+                rightvalue: fAuthPacket.Value);
             switch (fAuthPacket.MemberType)
             {
                 case FamilyAuthority.Manager:
@@ -302,11 +303,11 @@ namespace OpenNos.Handler
         public void FamilyDeposit(FDepositPacket fDepositPacket)
         {
             if (Session.Character.Family == null || !(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
-                                                      || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
-                                                      || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member &&
-                                                      Session.Character.Family.MemberAuthorityType != FamilyAuthorityType.NONE
-                                                      || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager &&
-                                                      Session.Character.Family.ManagerAuthorityType != FamilyAuthorityType.NONE
+                    || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
+                    || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member &&
+                    Session.Character.Family.MemberAuthorityType != FamilyAuthorityType.NONE
+                    || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager &&
+                    Session.Character.Family.ManagerAuthorityType != FamilyAuthorityType.NONE
                 )
             )
             {
@@ -531,7 +532,11 @@ namespace OpenNos.Handler
                     FamilyCharacterDTO chara = targetSession.Character.FamilyCharacter;
                     DaoFactory.FamilyCharacterDao.InsertOrUpdate(ref chara);
 
-                    Session.Character.Family.Warehouse.ToList().ForEach(s => { s.Value.CharacterId = targetSession.Character.CharacterId; DaoFactory.IteminstanceDao.InsertOrUpdate(s.Value); });
+                    Session.Character.Family.Warehouse.ToList().ForEach(s =>
+                    {
+                        s.Value.CharacterId = targetSession.Character.CharacterId;
+                        DaoFactory.IteminstanceDao.InsertOrUpdate(s.Value);
+                    });
                     Session.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
                     FamilyCharacterDTO chara2 = Session.Character.FamilyCharacter;
                     DaoFactory.FamilyCharacterDao.InsertOrUpdate(ref chara2);
@@ -700,9 +705,9 @@ namespace OpenNos.Handler
         public void FamilyRepos(FReposPacket fReposPacket)
         {
             if (Session.Character.Family == null || !(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
-             || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
-             || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL
-             || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL))
+                || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
+                || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL
+                || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL))
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
                 return;
@@ -786,11 +791,11 @@ namespace OpenNos.Handler
         public void FamilyWithdraw(FWithdrawPacket fWithdrawPacket)
         {
             if (Session.Character.Family == null || !(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
-                                                      || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
-                                                      || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member &&
-                                                      Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL
-                                                      || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager &&
-                                                      Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL))
+                || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
+                || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member &&
+                Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL
+                || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager &&
+                Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL))
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
                 return;
@@ -925,12 +930,12 @@ namespace OpenNos.Handler
             });
 
             // TODO Character.ChangeFaction
-            Session.Character.Faction = (FactionType) inviteSession.Character.Family.FamilyFaction;
-            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{(byte) Session.Character.Faction}"), 0));
+            Session.Character.Faction = (FactionType)inviteSession.Character.Family.FamilyFaction;
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{(byte)Session.Character.Faction}"), 0));
             Session.SendPacket("scr 0 0 0 0 0 0");
             Session.SendPacket(Session.Character.GenerateFaction());
             Session.SendPacket(Session.Character.GenerateStatChar());
-            Session.SendPacket(Session.Character.GenerateEff(4799 + (byte) Session.Character.Faction));
+            Session.SendPacket(Session.Character.GenerateEff(4799 + (byte)Session.Character.Faction));
             Session.SendPacket(Session.Character.GenerateCond());
             Session.SendPacket(Session.Character.GenerateLev());
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
@@ -1015,7 +1020,8 @@ namespace OpenNos.Handler
                 SourceWorldId = ServerManager.Instance.WorldId,
                 Message = "fhis_stc",
                 Type = MessageType.Family
-            }); Session.SendPacket(Session.Character.GenerateFamilyMember());
+            });
+            Session.SendPacket(Session.Character.GenerateFamilyMember());
             Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
         }
 
@@ -1038,7 +1044,8 @@ namespace OpenNos.Handler
                 }
                 i++;
             }
-            bool islog = Session.Character.Family.FamilyLogs.Any(s => s.FamilyLogType == FamilyLogType.DailyMessage && s.FamilyLogData.StartsWith(Session.Character.Name) && s.Timestamp.AddDays(1) > DateTime.Now);
+            bool islog = Session.Character.Family.FamilyLogs.Any(s =>
+                s.FamilyLogType == FamilyLogType.DailyMessage && s.FamilyLogData.StartsWith(Session.Character.Name) && s.Timestamp.AddDays(1) > DateTime.Now);
             if (!islog)
             {
                 Session.Character.FamilyCharacter.DailyMessage = msg;

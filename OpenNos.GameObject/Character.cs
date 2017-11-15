@@ -4739,19 +4739,22 @@ namespace OpenNos.GameObject
                 }
                 newItem.Design = design;
                 newItem.Rare = rare;
-                if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
+                switch (newItem.Item.ItemType)
                 {
-                    ((WearableInstance) newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
-                    if (rare != 0)
-                    {
-                        newItem.Rare = rare;
-                        ((WearableInstance)newItem).SetRarityPoint();
-                    }
-                    newItem.Upgrade = upgrade;
-                }
-                if (newItem.Item.ItemType == ItemType.Specialist)
-                {
-                    newItem.Upgrade = upgrade;
+                    case ItemType.Armor:
+                    case ItemType.Weapon:
+                    case ItemType.Shell:
+                        ((WearableInstance) newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+                        if (rare != 0)
+                        {
+                            newItem.Rare = rare;
+                            ((WearableInstance)newItem).SetRarityPoint();
+                        }
+                        newItem.Upgrade = upgrade;
+                        break;
+                    case ItemType.Specialist:
+                        newItem.Upgrade = upgrade;
+                        break;
                 }
                 if (newItem.Item.ItemType == ItemType.Shell)
                 {
@@ -4800,14 +4803,9 @@ namespace OpenNos.GameObject
                 List<ItemInstance> newInv = Inventory.AddToInventory(newItem);
                 if (newInv.Any())
                 {
-                    if (isQuest)
-                    {
-                        Session.SendPacket(GenerateSay($"Quest reward: [ {newItem.Item.Name} x {amount} ]", 10));
-                    }
-                    else
-                    {
-                        Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
-                    }
+                    Session.SendPacket(isQuest
+                        ? GenerateSay($"Quest reward: [ {newItem.Item.Name} x {amount} ]", 10)
+                        : GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
                 }
                 else
                 {
