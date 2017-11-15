@@ -168,6 +168,28 @@ namespace OpenNos.Import.Console
                                 questRewards.Clear();
                                 break;
 
+                            case "LINK":
+                                if (int.Parse(currentLine[1]) != -1)
+                                {
+                                    quest.NextQuestId = int.Parse(currentLine[1]);
+                                }
+                                else
+                                {
+                                    if (quest.QuestId == 1997)
+                                    {
+                                        quest.NextQuestId = 1500;
+                                    }
+                                    else if (quest.QuestId >= 1500 && quest.QuestId < 1751)
+                                    {
+                                        quest.NextQuestId = quest.QuestId + 1;
+                                    }
+                                    else if (quest.QuestId == 1751)
+                                    {
+                                       
+                                    }
+                                }
+                                break;
+
                             case "LEVEL":
                                 quest.LevelMin = byte.Parse(currentLine[1]);
                                 quest.LevelMax = byte.Parse(currentLine[2]);
