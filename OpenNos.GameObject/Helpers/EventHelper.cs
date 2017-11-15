@@ -365,7 +365,7 @@ namespace OpenNos.GameObject.Helpers
                                         {
                                             continue;
                                         }
-                                        if (grp.Raid.Reputation > 0)
+                                        if (grp.Raid.Reputation > 0 && sess.Character.Level > grp.Raid.LevelMinimum)
                                         {
                                             sess.Character.GetReput(grp.Raid.Reputation);
                                         }
@@ -389,21 +389,13 @@ namespace OpenNos.GameObject.Helpers
                                                 sbyte rare = 0;
                                                 if (gift.IsRandomRare)
                                                 {
-                                                    switch (gift.VNum)
-                                                    {
-                                                        case 302:
-                                                            rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
-                                                            break;
-                                                        case 185:
-                                                        case 999:
-                                                        case 882:
-                                                        case 942:
-                                                            rare = (sbyte)ServerManager.Instance.RandomNumber(1, 7);
-                                                            break;
-                                                    }
+                                                    rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
                                                 }
                                                 //TODO add random rarity for some object
-                                                sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
+                                                if (sess.Character.Level >= grp.Raid.LevelMinimum)
+                                                {
+                                                    sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
+                                                }
                                             }
                                         }
                                     }
