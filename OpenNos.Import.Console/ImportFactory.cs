@@ -103,6 +103,8 @@ namespace OpenNos.Import.Console
                                 {
                                     case QuestRewardType.Exp:
                                     case QuestRewardType.SecondExp:
+                                    case QuestRewardType.JobExp:
+                                    case QuestRewardType.SecondJobExp:
                                         reward.Data = int.Parse(currentLine[2]);
                                         reward.Amount = int.Parse(currentLine[1]);
                                         break;
@@ -121,19 +123,14 @@ namespace OpenNos.Import.Console
                                     case QuestRewardType.SecondGold:
                                     case QuestRewardType.ThirdGold:
                                     case QuestRewardType.FourthGold:
-                                        reward.Data = 0;
-                                        reward.Amount = int.Parse(currentLine[1]);
-                                        break;
-
-                                    case QuestRewardType.JobExp:
-                                    case QuestRewardType.SecondJobExp:
-                                        reward.Data = int.Parse(currentLine[2]);
-                                        reward.Amount = int.Parse(currentLine[1]);
-                                        break;
-
                                     case QuestRewardType.Reput:
                                         reward.Data = 0;
                                         reward.Amount = int.Parse(currentLine[1]);
+                                        break;
+
+                                    default:
+                                        reward.Data = int.Parse(currentLine[1]);
+                                        reward.Amount = int.Parse(currentLine[2]);
                                         break;
                                 }
                                 break;
@@ -290,6 +287,10 @@ namespace OpenNos.Import.Console
                                         specialData = int.Parse(currentLine[3]);
                                         break;
 
+                                }
+                                if (specialData < 0)
+                                {
+                                    specialData = null;
                                 }
                                 if (quest.FirstData == 0)
                                 {
