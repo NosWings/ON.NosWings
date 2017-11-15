@@ -21,7 +21,7 @@
         Collect4 = 17, //Quest item on Monster
         TransmitGold = 18,
         GoTo = 19,
-        Collect5 = 20,
+        Collect5 = 20, // Collect from map entity ( Ice Flower / Water )
         Use = 21,
         Dialog2 = 22,
         UnKnow = 23,

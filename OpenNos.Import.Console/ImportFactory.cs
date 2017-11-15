@@ -72,9 +72,7 @@ namespace OpenNos.Import.Console
             string fileQuestDat = $"{_folder}\\quest.dat";
             string fileRewardsDat = $"{_folder}\\qstprize.dat";
             List<QuestDTO> quests = new List<QuestDTO>();
-            List<QuestRewardDTO> rewards = new List<QuestRewardDTO>();
             Dictionary<long, QuestRewardDTO> dictionaryRewards = new Dictionary<long, QuestRewardDTO>();
-            QuestDTO quest = new QuestDTO();
             QuestRewardDTO reward = new QuestRewardDTO();
             string line;
 
@@ -148,6 +146,11 @@ namespace OpenNos.Import.Console
                 questRewardStream.Close();
             }
 
+            QuestDTO quest = new QuestDTO();
+            List<QuestRewardDTO> questRewards = new List<QuestRewardDTO>();
+            List<QuestRewardDTO> rewards = new List<QuestRewardDTO>();
+
+
             using (StreamReader questStream = new StreamReader(fileQuestDat, Encoding.GetEncoding(1252)))
             {
                 while ((line = questStream.ReadLine()) != null)
@@ -203,10 +206,6 @@ namespace OpenNos.Import.Console
                                     case QuestType.Hunt:
                                     case QuestType.Capture1:
                                     case QuestType.Capture2:
-                                        data = int.Parse(currentLine[1]);
-                                        objective = int.Parse(currentLine[2]);
-                                        break;
-
                                     case QuestType.Collect1:
                                     case QuestType.Product:
                                         data = int.Parse(currentLine[1]);
@@ -219,6 +218,7 @@ namespace OpenNos.Import.Console
                                     case QuestType.YouNeed: // ItemVNum - Objective - npcVNum //
                                     case QuestType.Needed: // ItemVNum - Objective - npcVNum //
                                     case QuestType.Collect4: // ItemVNum - Objective - MonsterVNum //
+                                    case QuestType.Collect5: // ItemVNum - Objective - npcVNum //
                                         data = int.Parse(currentLine[2]);
                                         objective = int.Parse(currentLine[3]);
                                         specialData = int.Parse(currentLine[1]);
@@ -248,16 +248,45 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     case QuestType.GoTo: // Map - PosX - PosY //
+                                    case QuestType.WinRaid: // Design - Objective - ? //
                                         data = int.Parse(currentLine[1]);
                                         objective = int.Parse(currentLine[2]);
                                         specialData = int.Parse(currentLine[3]);
                                         break;
+
+                                    case QuestType.Use: // Item to use - * - mateVnum //
+                                        data = int.Parse(currentLine[1]);
+                                        objective = 1;
+                                        specialData = int.Parse(currentLine[2]);
+                                        break;
+
+                                    case QuestType.Dialog2: // npcVNum - * - * //
+                                        data = int.Parse(currentLine[1]);
+                                        objective = 1;
+                                        break;
+
+                                    case QuestType.FlowerQuest:
+                                        objective = 10;
+                                        break;
+
+                                    case QuestType.Inspect: // NpcVNum - ItemVNum - Objective //
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[3]);
+                                        specialData = int.Parse(currentLine[2]);
+                                        break;
+
+                                    default:
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[2]);
+                                        specialData = int.Parse(currentLine[3]);
+                                        break;
+
                                 }
-                                if (quest.FirstData == null)
+                                if (quest.FirstData == 0)
                                 {
-                                    /*quest.FirstData = data;
-                                    quest.FirstObjective = objective;
-                                    quest.FirstSpecialData = specialData;*/
+                                    quest.FirstData = data ?? 0;
+                                    quest.FirstObjective = objective ?? 1;
+                                    quest.FirstSpecialData = specialData;
                                 }
                                 else if (quest.SecondData == null)
                                 {
@@ -292,13 +321,14 @@ namespace OpenNos.Import.Console
                                     {
                                         QuestRewardDTO currentReward = dictionaryRewards[int.Parse(currentLine[a])];
                                         currentReward.QuestId = quest.QuestId;
-                                        rewards.Add(currentReward);
+                                        questRewards.Add(currentReward);
                                     }
                                 }
                                 break;
 
                             case "END":
                                 quests.Add(quest);
+                                rewards.AddRange(questRewards);
                                 break;
                         }
                     }
