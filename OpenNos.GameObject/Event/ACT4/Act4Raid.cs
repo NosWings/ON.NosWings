@@ -34,6 +34,8 @@ namespace OpenNos.GameObject.Event
         private const int BossSpawn = 1800;
 
         private int _raidTime = 3600;
+        
+        private bool _raidStarted = false;
 
         private Act4RaidType _type;
 
@@ -122,7 +124,7 @@ namespace OpenNos.GameObject.Event
                 DestinationX = destX,
                 DestinationY = destY,
                 Type = (short) (9 + _faction)
-            });
+            }, 3600, true);
 
             foreach (MapInstance map in ServerManager.Instance.Act4Maps)
             {
@@ -134,7 +136,7 @@ namespace OpenNos.GameObject.Event
             {
                 RefreshAct4Raid(type, raidMap, destX, destY);
 
-                if (_raidTime == BossSpawn)
+                if (_raidTime <= BossSpawn && !_raidStarted)
                 {
                     SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList)
@@ -143,6 +145,7 @@ namespace OpenNos.GameObject.Event
                         {
                             continue;
                         }
+                        _raidStarted = true;
                         SpawnBoss(fam.Act4Raid, fam.Act4RaidBossMap, bossParametter, boxVnum);
                     }
                 }
@@ -255,7 +258,7 @@ namespace OpenNos.GameObject.Event
             boss.OnDeathEvents.Add(new EventContainer(raidMap, EventActionType.REMOVEPORTAL, raidMap.Portals.FirstOrDefault(p => p.DestinationMapInstanceId == raidBossMap.MapInstanceId)));
             boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.ACT4RAIDEND, new Tuple<MapInstance, short, short>(raidMap, raidMap.MapIndexX, raidMap.MapIndexY)));
             //RaidBox
-            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.MAPGIVE, new Tuple<bool, short, byte, short>(true, boxVnum, 1, 50)));
+            boss.OnDeathEvents.Add(new EventContainer(raidBossMap, EventActionType.MAPGIVE, new Tuple<bool, short, byte, short, bool>(true, boxVnum, 1, 50, true)));
         }
 
         private ConcurrentBag<EventContainer> GetWaveMonster(MapInstance mapInstance)

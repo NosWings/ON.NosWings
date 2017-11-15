@@ -217,7 +217,15 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// <returns>Response message</returns>
         public IScsMessage SendMessageAndWaitForResponse(IScsMessage message, byte priority)
         {
-            return SendMessageAndWaitForResponse(message, Timeout, priority);
+            try
+            {
+                IScsMessage tmp = SendMessageAndWaitForResponse(message, Timeout, priority);
+                return tmp;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>

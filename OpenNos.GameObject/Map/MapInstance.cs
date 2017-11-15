@@ -517,11 +517,19 @@ namespace OpenNos.GameObject
             Broadcast(monster.GenerateOut());
         }
 
-        internal void CreatePortal(Portal portal)
+        internal void CreatePortal(Portal portal, int timeInSeconds = 0, bool isTemporary = false)
         {
             portal.SourceMapInstanceId = MapInstanceId;
             Portals.Add(portal);
             Broadcast(portal.GenerateGp());
+            if (isTemporary)
+            {
+                Observable.Timer(TimeSpan.FromSeconds(timeInSeconds)).Subscribe(o =>
+                {
+                    Portals.Remove(portal);
+                    MapClear();
+                });
+            }
         }
 
         internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)

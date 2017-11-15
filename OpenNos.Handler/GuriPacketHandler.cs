@@ -284,7 +284,7 @@ namespace OpenNos.Handler
                                         }
                                         else
                                         {
-                                            if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance && session.Character.Faction == Session.Character.Faction)
+                                            if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance && session.Character.Faction == Session.Character.Faction && session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance)
                                             {
                                                 short mapy = session.Character.PositionY;
                                                 short mapx = session.Character.PositionX;

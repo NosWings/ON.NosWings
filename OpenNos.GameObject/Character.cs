@@ -2692,6 +2692,24 @@ namespace OpenNos.GameObject
 
                 #endregion
 
+                #region Act4
+                if (monsterToAttack.MapInstance.MapInstanceType == MapInstanceType.Act4Instance)
+                {
+                    if (ServerManager.Instance.Act4AngelStat.Mode == 0 && ServerManager.Instance.Act4DemonStat.Mode == 0)
+                    {
+                        switch (Faction)
+                        {
+                            case FactionType.Angel:
+                                ServerManager.Instance.Act4AngelStat.Percentage += 5;
+                                break;
+                            case FactionType.Demon:
+                                ServerManager.Instance.Act4DemonStat.Percentage += 5;
+                                break;
+                        }
+                    }
+                }
+                #endregion
+
                 #region Act6Stats
                 if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232 && !ServerManager.Instance.Act6Zenas.IsRaidActive)
                 {
@@ -4203,8 +4221,8 @@ namespace OpenNos.GameObject
 
                     MinHit += SpInstance.DamageMinimum + slHit * 10;
                     MaxHit += SpInstance.DamageMaximum + slHit * 10;
-                    MinDistance += SpInstance.DamageMinimum;
-                    MaxDistance += SpInstance.DamageMaximum;
+                    MinDistance += SpInstance.DamageMinimum + slHit * 10;
+                    MaxDistance += SpInstance.DamageMaximum + slHit * 10;
                     HitCriticalRate += SpInstance.CriticalLuckRate;
                     HitCritical += SpInstance.CriticalRate;
                     DistanceCriticalRate += SpInstance.CriticalLuckRate;

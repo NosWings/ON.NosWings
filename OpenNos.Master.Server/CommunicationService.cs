@@ -513,13 +513,12 @@ namespace OpenNos.Master.Server
         {
             if (!IsCharacterConnected(worldGroup, mail.ReceiverId))
             {
-                CharacterDTO chara = DaoFactory.CharacterDao.LoadById(mail.ReceiverId);
                 DaoFactory.MailDao.InsertOrUpdate(ref mail);
             }
             else
             {
                 AccountConnection account = MSManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.CharacterId.Equals(mail.ReceiverId));
-                if (account == null || account.ConnectedWorld == null)
+                if (account?.ConnectedWorld == null)
                 {
                     DaoFactory.MailDao.InsertOrUpdate(ref mail);
                     return;

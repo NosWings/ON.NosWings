@@ -20,11 +20,29 @@ namespace OpenNos.Data
 
         public int? ThirdData { get; set; }
 
+        public int? FourthData { get; set; }
+
+        public int? FifthData { get; set; }
+
+        public int? FirstSpecialData { get; set; }
+
+        public int? SecondSpecialData { get; set; }
+
+        public int? ThirdSpecialData { get; set; }
+
+        public int? FourthSpecialData { get; set; }
+
+        public int? FifthSpecialData { get; set; }
+
         public int FirstObjective { get; set; }
 
         public int? SecondObjective { get; set; }
 
         public int? ThirdObjective { get; set; }
+
+        public int? FourthObjective { get; set; }
+
+        public int? FifthObjective { get; set; }
 
         public short? TargetMap { get; set; }
 
@@ -45,8 +63,6 @@ namespace OpenNos.Data
         public byte LevelMin { get; set; }
 
         public byte LevelMax { get; set; }
-
-        public int? SpecialData { get; set; }
 
         #endregion
     }

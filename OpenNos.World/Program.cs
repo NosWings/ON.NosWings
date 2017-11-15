@@ -158,6 +158,8 @@ namespace OpenNos.World
 
         private static bool ExitHandler(CtrlType sig)
         {
+            ServerManager.Instance.InShutdown = true;
+            Logger.Log.Debug(Language.Instance.GetMessageFromKey("SERVER_CRASH"));
             CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
