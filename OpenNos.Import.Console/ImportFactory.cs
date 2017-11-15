@@ -195,9 +195,9 @@ namespace OpenNos.Import.Console
                                 {
                                     return;
                                 }
-                                int? data;
-                                int? specialData;
-                                int? objective;
+                                int? data = null;
+                                int? specialData = null;
+                                int? objective = null;
                                 switch ((QuestType)quest.QuestType)
                                 {
                                     case QuestType.Hunt:
@@ -247,9 +247,41 @@ namespace OpenNos.Import.Console
                                         objective = int.Parse(currentLine[2]) * 10000;
                                         break;
 
-                                    case QuestType.GoTo:
-                                        // TODO : firstData = Map [1] / secondData = X [2] / thirdData = Y [3]
+                                    case QuestType.GoTo: // Map - PosX - PosY //
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[2]);
+                                        specialData = int.Parse(currentLine[3]);
                                         break;
+                                }
+                                if (quest.FirstData == null)
+                                {
+                                    /*quest.FirstData = data;
+                                    quest.FirstObjective = objective;
+                                    quest.FirstSpecialData = specialData;*/
+                                }
+                                else if (quest.SecondData == null)
+                                {
+                                    quest.SecondData = data;
+                                    quest.SecondObjective = objective;
+                                    quest.SecondSpecialData = specialData;
+                                }
+                                else if (quest.ThirdData == null)
+                                {
+                                    quest.ThirdData = data;
+                                    quest.ThirdObjective = objective;
+                                    quest.ThirdSpecialData = specialData;
+                                }
+                                else if (quest.FourthData == null)
+                                {
+                                    quest.FourthData = data;
+                                    quest.FourthObjective = objective;
+                                    quest.FourthSpecialData = specialData;
+                                }
+                                else if (quest.FifthData == null)
+                                {
+                                    quest.FourthData = data;
+                                    quest.FourthObjective = objective;
+                                    quest.FourthSpecialData = specialData;
                                 }
                                 break;
 
