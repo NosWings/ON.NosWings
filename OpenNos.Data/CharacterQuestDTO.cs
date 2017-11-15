@@ -14,6 +14,8 @@
 
         public int ThirdObjective { get; set; }
 
+        public bool IsMainQuest { get; set; }
+
         #endregion
     }
 }

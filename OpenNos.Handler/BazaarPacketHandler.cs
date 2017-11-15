@@ -100,6 +100,7 @@ namespace OpenNos.Handler
                         newBz.Type = newBz.Item.Type;
                         if (newBz is WearableInstance wear)
                         {
+                            wear.EquipmentOptions.AddRange(DaoFactory.EquipmentOptionDao.GetOptionsByWearableInstanceId(bzcree.Item.Id));
                             wear.EquipmentOptions.ForEach(s => s.WearableInstanceId = newBz.Id);
                         }
 
