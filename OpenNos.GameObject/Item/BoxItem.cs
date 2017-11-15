@@ -43,7 +43,6 @@ namespace OpenNos.GameObject
             {
                 case 0:
                 case 999:
-                case 700:
                     if (option == 0)
                     {
                         if (packetsplit != null && packetsplit.Length == 9)
