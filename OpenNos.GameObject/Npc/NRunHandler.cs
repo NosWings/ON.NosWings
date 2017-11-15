@@ -692,6 +692,10 @@ namespace OpenNos.GameObject
                         {
                             session.SendPacket("it 3");
                             SerializableWorldServer connection = CommunicationServiceClient.Instance.GetPreviousChannelByAccountId(session.Account.AccountId);
+                            if (connection == null || session.Character == null)
+                            {
+                                break;
+                            }
                             session.Character.MapId = tp.MapId;
                             session.Character.MapX = tp.MapX;
                             session.Character.MapY = tp.MapY;
