@@ -82,7 +82,7 @@ namespace OpenNos.Import.Console
                 while ((line = questRewardStream.ReadLine()) != null)
                 {
                     string[] currentLine = line.Split('\t');
-                    if (currentLine.Length > 1)
+                    if (currentLine.Length > 1 || currentLine[0] == "END")
                     {
                         switch (currentLine[0])
                         {
@@ -157,7 +157,7 @@ namespace OpenNos.Import.Console
                 while ((line = questStream.ReadLine()) != null)
                 {
                     string[] currentLine = line.Split('\t');
-                    if (currentLine.Length > 1)
+                    if (currentLine.Length > 1 || currentLine[0] == "END")
                     {
                         switch (currentLine[0])
                         {
@@ -165,9 +165,10 @@ namespace OpenNos.Import.Console
                                 quest = new QuestDTO()
                                 {
                                     QuestId = long.Parse(currentLine[1]),
-                                    QuestType = byte.Parse(currentLine[2]),
+                                    QuestType = int.Parse(currentLine[2]),
                                     InfoId = int.Parse(currentLine[1])
                                 };
+                                questRewards.Clear();
                                 break;
 
                             case "LEVEL":
