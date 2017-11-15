@@ -3418,6 +3418,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} quests parsed !.
+        /// </summary>
+        internal static string QUEST_PARSED {
+            get {
+                return ResourceManager.GetString("QUEST_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à {0} Quests loaded!.
         /// </summary>
         internal static string QUESTS_LOADED {
@@ -3639,6 +3648,15 @@ namespace OpenNos.World.Resource {
         internal static string RETRY_SEARCH_ARENA_TEAM {
             get {
                 return ResourceManager.GetString("RETRY_SEARCH_ARENA_TEAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} quests rewards parsed !.
+        /// </summary>
+        internal static string REWARD_PARSED {
+            get {
+                return ResourceManager.GetString("REWARD_PARSED", resourceCulture);
             }
         }
         

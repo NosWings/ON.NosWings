@@ -1639,4 +1639,10 @@
   <data name="MATE_WILL_BE_BACK" xml:space="preserve">
     <value>Mate died !  he will be back in 3 min</value>
   </data>
+  <data name="QUEST_PARSED" xml:space="preserve">
+    <value>{0} quests parsed !</value>
+  </data>
+  <data name="REWARD_PARSED" xml:space="preserve">
+    <value>{0} quests rewards parsed !</value>
+  </data>
 </root>

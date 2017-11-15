@@ -71,6 +71,7 @@ namespace OpenNos.Import.Console
         {
             string fileQuestDat = $"{_folder}\\quest.dat";
             string fileRewardsDat = $"{_folder}\\qstprize.dat";
+            int qstCounter = 0;
             List<QuestDTO> quests = new List<QuestDTO>();
             Dictionary<long, QuestRewardDTO> dictionaryRewards = new Dictionary<long, QuestRewardDTO>();
             QuestRewardDTO reward = new QuestRewardDTO();
@@ -164,7 +165,8 @@ namespace OpenNos.Import.Console
                                 quest = new QuestDTO()
                                 {
                                     QuestId = long.Parse(currentLine[1]),
-                                    QuestType = byte.Parse(currentLine[2])
+                                    QuestType = byte.Parse(currentLine[2]),
+                                    InfoId = int.Parse(currentLine[1])
                                 };
                                 break;
 
@@ -327,12 +329,21 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case "END":
-                                quests.Add(quest);
-                                rewards.AddRange(questRewards);
+                                if (DaoFactory.QuestDao.LoadById(quest.QuestId) == null)
+                                {
+                                    quests.Add(quest);
+                                    qstCounter++;
+                                    rewards.AddRange(questRewards);
+                                }
                                 break;
                         }
                     }
                 }
+                DaoFactory.QuestDao.Insert(quests);
+                DaoFactory.QuestRewardDao.Insert(rewards);
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("QUEST_PARSED"), qstCounter));
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("REWARD_PARSED"), rewards.Count));
+
                 questStream.Close();
             }
         }

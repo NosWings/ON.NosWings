@@ -62,6 +62,23 @@ namespace OpenNos.DAL.EF
             }
         }
 
+
+        public QuestDTO LoadById(long questId)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<QuestDTO>(context.Quest.FirstOrDefault(s => s.QuestId.Equals(questId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
+
         #endregion
     }
 }
