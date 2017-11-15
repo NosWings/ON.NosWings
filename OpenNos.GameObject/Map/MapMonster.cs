@@ -1733,6 +1733,10 @@ namespace OpenNos.GameObject
                     if (hitmode != 1)
                     {
                         hitRequest.Session.Character.RemoveBuff(85);
+                        if (!IsBoss)
+                        {
+                            hitRequest.Skill.BCards.ToList().ForEach(b => b.ApplyBCards(this, hitRequest.Session.Character));
+                        }
                     }
 
                     // generate the kill bonus
@@ -1746,10 +1750,6 @@ namespace OpenNos.GameObject
                 if (IsBoss)
                 {
                     MapInstance?.Broadcast(GenerateBoss());
-                }
-                else
-                {
-                    hitRequest.Skill.BCards.ToList().ForEach(b => b.ApplyBCards(this, hitRequest.Session.Character));
                 }
             }
 
