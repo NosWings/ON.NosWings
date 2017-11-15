@@ -250,10 +250,16 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     case QuestType.GoTo: // Map - PosX - PosY //
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[2]);
+                                        specialData = int.Parse(currentLine[3]);
+                                        break;
+
                                     case QuestType.WinRaid: // Design - Objective - ? //
                                         data = int.Parse(currentLine[1]);
                                         objective = int.Parse(currentLine[2]);
                                         specialData = int.Parse(currentLine[3]);
+                                        quest.IsDaily = true;
                                         break;
 
                                     case QuestType.Use: // Item to use - * - mateVnum //
@@ -321,9 +327,12 @@ namespace OpenNos.Import.Console
                                 {
                                     if (int.Parse(currentLine[a]) != -1)
                                     {
-                                        QuestRewardDTO currentReward = dictionaryRewards[int.Parse(currentLine[a])];
-                                        currentReward.QuestId = quest.QuestId;
-                                        questRewards.Add(currentReward);
+                                        if (dictionaryRewards.ContainsKey(long.Parse(currentLine[a])))
+                                        {
+                                            QuestRewardDTO currentReward = dictionaryRewards[long.Parse(currentLine[a])];
+                                            currentReward.QuestId = quest.QuestId;
+                                            questRewards.Add(currentReward);
+                                        }
                                     }
                                 }
                                 break;
