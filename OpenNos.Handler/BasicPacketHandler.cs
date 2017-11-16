@@ -435,21 +435,28 @@ namespace OpenNos.Handler
                 return;
             }
             //session is not on current server, check api if the target character is on another server
-            int? sentChannelId = CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+            try
             {
-                DestinationCharacterId = character.CharacterId,
-                SourceCharacterId = Session.Character.CharacterId,
-                SourceWorldId = ServerManager.Instance.WorldId,
-                Message = PacketFactory.Serialize(Session.Character.GenerateTalk(message)),
-                Type = MessageType.PrivateChat
-            });
-            if (!sentChannelId.HasValue) //character is even offline on different world
-            {
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
+                int? sentChannelId = CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                {
+                    DestinationCharacterId = character.CharacterId,
+                    SourceCharacterId = Session.Character.CharacterId,
+                    SourceWorldId = ServerManager.Instance.WorldId,
+                    Message = PacketFactory.Serialize(Session.Character.GenerateTalk(message)),
+                    Type = MessageType.PrivateChat
+                });
+                if (!sentChannelId.HasValue) //character is even offline on different world
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
+                }
+                else
+                {
+                    LogHelper.Instance.InsertChatLog(ChatType.Friend, Session.Character.CharacterId, message, Session.IpAddress);
+                }
             }
-            else
+            catch (Exception)
             {
-                LogHelper.Instance.InsertChatLog(ChatType.Friend, Session.Character.CharacterId, message, Session.IpAddress);
+                // FDP
             }
         }
 
