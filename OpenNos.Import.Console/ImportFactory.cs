@@ -185,7 +185,27 @@ namespace OpenNos.Import.Console
                                     }
                                     else if (quest.QuestId == 1751)
                                     {
-                                       
+                                        quest.NextQuestId = 3000;
+                                    }
+                                    else if (quest.QuestId >= 3000 && quest.QuestId < 3101)
+                                    {
+                                        quest.NextQuestId = quest.QuestId + 1;
+                                    }
+                                    else if (quest.QuestId == 3101)
+                                    {
+                                        quest.NextQuestId = 3200;
+                                    }
+                                    else if (quest.QuestId >= 3200 && quest.QuestId < 3331)
+                                    {
+                                        quest.NextQuestId = quest.QuestId + 1;
+                                    }
+                                    else if (quest.QuestId == 3331)
+                                    {
+                                        quest.NextQuestId = 3340;
+                                    }
+                                    else if (quest.QuestId >= 3340 && quest.QuestId < 3374)
+                                    {
+                                        quest.NextQuestId = quest.QuestId + 1;
                                     }
                                 }
                                 break;
