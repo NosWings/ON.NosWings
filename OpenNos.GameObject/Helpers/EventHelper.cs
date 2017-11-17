@@ -148,11 +148,11 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case "OnMoveOnMap":
-                            evt.MapInstance.OnMoveOnMapEvents.ToList().AddRange(even.Item2);
+                            even.Item2.ToList().ForEach(s => evt.MapInstance.OnMoveOnMapEvents.Add(s));
                             break;
 
                         case "OnMapClean":
-                            evt.MapInstance.OnMapClean.ToList().AddRange(even.Item2);
+                            even.Item2.ToList().ForEach(s => evt.MapInstance.OnMapClean.Add(s));
                             break;
 
                         case "OnLockerOpen":
