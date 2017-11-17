@@ -241,6 +241,30 @@ namespace OpenNos.Handler
                             Session.Character.IsWaitingForEvent = true;
                         }
                         break;
+
+                    case 4999: //RollGeneratedItem for SpecialItem
+                        if (guriPacket.Argument == 8023)
+                        {
+                            if (guriPacket.User == null)
+                            {
+                                return;
+                            }
+                            short slot = (short)guriPacket.User.Value;
+                            ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(slot, InventoryType.Main);
+                            if (item != null)
+                            {
+                                if (guriPacket.Data > 0)
+                                {
+                                    item.Item.Use(Session, ref item, 1, new[] { guriPacket.Data.ToString() });
+                                }
+                                else
+                                {
+                                    item.Item.Use(Session, ref item, 1);
+                                }
+                            }
+                        }
+                        break;
+
                     default:
                         if (guriPacket.Type == 199 && guriPacket.Argument == 2)
                         {
