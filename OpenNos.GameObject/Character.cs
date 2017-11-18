@@ -443,7 +443,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void AddQuest(long questId)
+        public void AddQuest(long questId, bool isMain)
         {
             CharacterQuest characterQuest = new CharacterQuest(questId, CharacterId);
             if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || Quests.Where(q => q.Quest.QuestType != (byte) QuestType.WinRaid).ToList().Count >= 5 && characterQuest.Quest.QuestType != (byte) QuestType.WinRaid)
@@ -479,13 +479,14 @@ namespace OpenNos.GameObject
             }
             if (characterQuest.Quest.QuestType == (int) QuestType.TimesSpace)
             {
-                AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId);
+                AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId, isMain);
                 return;
             }
             if (characterQuest.Quest.TargetMap == MapInstance.Map.MapId)
             {
                 Session.SendPacket(characterQuest.Quest.TargetPacket());
             }
+            characterQuest.IsMainQuest = isMain;
             Quests.Add(characterQuest);
             Session.SendPacket(GenerateQuestsPacket());
         }
@@ -509,7 +510,7 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                AddQuest((long) questToRemove.Quest.NextQuestId);
+                AddQuest((long) questToRemove.Quest.NextQuestId, questToRemove.IsMainQuest);
             }
         }
 
