@@ -287,6 +287,16 @@ namespace OpenNos.GameObject
                                                     character.Session.SendPackets(character.Mates.Where(s => s.IsTeamMember)
                                                         .OrderBy(s => s.MateType)
                                                         .Select(s => s.GeneratePst()));
+
+                                                    int vnum = monster.MonsterVNum;
+                                                    foreach (CharacterQuest qst in character.Quests.Where(q => q.Quest.QuestType == (int) QuestType.Capture1 || q.Quest.QuestType == (int) QuestType.Capture2))
+                                                    {
+                                                        byte data = (byte)(qst.Quest.FirstData == vnum ? 1 : (qst.Quest.SecondData == vnum ? 2 : (qst.Quest.ThirdData == vnum ? 3 : (qst.Quest.FourthData == vnum ? 4 : (qst.Quest.FifthData == vnum ? 5 : 0)))));
+                                                        if (data != 0)
+                                                        {
+                                                            character.IncrementQuestObjective(qst, data);
+                                                        }
+                                                    }
                                                 }
                                                 else { character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CAPTURE_FAILED"), 0)); }
                                             }
