@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
             SkillBcards = new ConcurrentBag<BCard>();
             PassiveSkillBcards = new ConcurrentBag<BCard>();
             ObservableBag = new Dictionary<short, IDisposable>();
-            Quests = new List<CharacterQuest>();
+            Quests = new ConcurrentBag<CharacterQuest>();
         }
 
         #endregion
@@ -289,7 +289,7 @@ namespace OpenNos.GameObject
 
         public int TotalTime { get; set; }
 
-        public List<CharacterQuest> Quests { get; set; }
+        public ConcurrentBag<CharacterQuest> Quests { get; set; }
 
         public List<QuicklistEntryDTO> QuicklistEntries { get; private set; }
 
@@ -496,29 +496,30 @@ namespace OpenNos.GameObject
             CharacterQuest questToRemove = Quests.FirstOrDefault(q => q.QuestId == questId);
             if (questToRemove != null)
             {
-                if (questToRemove.Quest.TargetMap == MapInstance.Map.MapId)
-                {
-                    Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
-                }
-                Quests.Remove(questToRemove);
-                Session.SendPacket(GenerateQuestsPacket());
-                if (questToRemove.Quest.EndDialogId != null)
-                {
-                    Session.SendPacket(GenerateNpcDialog((int)questToRemove.Quest.EndDialogId));
-                }
-                if (questToRemove.Quest.NextQuestId == null)
-                {
-                    return;
-                }
-                AddQuest((long) questToRemove.Quest.NextQuestId, questToRemove.IsMainQuest);
+                return;
             }
+            if (questToRemove.Quest.TargetMap == MapInstance.Map.MapId)
+            {
+                Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
+            }
+            Quests = Quests.Where(q => q.QuestId != questId);
+            Session.SendPacket(GenerateQuestsPacket());
+            if (questToRemove.Quest.EndDialogId != null)
+            {
+                Session.SendPacket(GenerateNpcDialog((int)questToRemove.Quest.EndDialogId));
+            }
+            if (questToRemove.Quest.NextQuestId == null)
+            {
+                return;
+            }
+            AddQuest((long)questToRemove.Quest.NextQuestId, questToRemove.IsMainQuest);
         }
 
         public string GenerateQuestsPacket()
         {
             short a = 0;
             short b = 6;
-            Quests.ForEach(qst => qst.QuestNumber = qst.IsMainQuest ? (short) 5 : (qst.Quest.QuestType == (byte) QuestType.WinRaid ? b++ : a++));
+            Quests.ToList().ForEach(qst => qst.QuestNumber = qst.IsMainQuest ? (short) 5 : (qst.Quest.QuestType == (byte) QuestType.WinRaid ? b++ : a++));
             return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.Quest.ThirdObjective ?? 0}.{quest.ThirdObjective}.0.0.0.0.0")}";
         }
 
@@ -667,7 +668,7 @@ namespace OpenNos.GameObject
 
         public void LoadQuests()
         {
-            Quests = new List<CharacterQuest>();
+            Quests = new ConcurrentBag<CharacterQuest>();
             foreach (CharacterQuestDTO characterQuest in DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId))
             {
                 CharacterQuest quest = new CharacterQuest(characterQuest);
