@@ -50,6 +50,9 @@ namespace OpenNos.GameObject
 
                     // Gold
                     case QuestRewardType.Gold:
+                    case QuestRewardType.SecondGold:
+                    case QuestRewardType.ThirdGold:
+                    case QuestRewardType.FourthGold:
                         character.GetGold(reward.Amount, true);
                         return $"{reward.RewardType} 0 {(reward.Amount == 0 ? 1 : reward.Amount)}";
 
@@ -65,6 +68,33 @@ namespace OpenNos.GameObject
                             return "0 0 0";
                         }
                         character.GetXp((long) (CharacterHelper.Instance.XpData[reward.Data] / 100D * reward.Amount));
+                        return $"{reward.RewardType} 0 0";
+
+                    // % Experience
+                    case QuestRewardType.SecondExp:
+                        if (reward.Data > 255)
+                        {
+                            return "0 0 0";
+                        }
+                        character.GetXp((long)(CharacterHelper.Instance.XpData[character.Level] / 100D * reward.Amount));
+                        return $"{reward.RewardType} 0 0";
+
+                    // JobExperience
+                    case QuestRewardType.JobExp:
+                        if (reward.Data > 255)
+                        {
+                            return "0 0 0";
+                        }
+                        character.GetJobExp((long) ((character.Class == (byte) ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXpData[reward.Data] : CharacterHelper.Instance.SecondJobXpData[reward.Data]) / 100D * reward.Amount));
+                        return $"{reward.RewardType} 0 0";
+
+                    // % JobExperience
+                    case QuestRewardType.SecondJobExp:
+                        if (reward.Data > 255)
+                        {
+                            return "0 0 0";
+                        }
+                        character.GetJobExp((long)((character.Class == (byte)ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXpData[character.Level] : CharacterHelper.Instance.SecondJobXpData[character.Level]) / 100D * reward.Amount));
                         return $"{reward.RewardType} 0 0";
 
                     default:

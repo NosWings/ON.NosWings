@@ -13,7 +13,6 @@
         ThirdGold = 10,
         FourthGold = 11,
         SecondJobExp = 12,
-        //never used but it is in the dat file
-        Unknow = 13
+        Unknow = 13 //never used but it is in the dat file
     }
 }

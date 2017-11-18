@@ -4611,6 +4611,21 @@ namespace OpenNos.GameObject
             GenerateLevelXpLevelUp();
         }
 
+        public void GetJobExp(long val)
+        {
+            if (UseSp && SpInstance != null)
+            {
+                int multiplier = SpInstance.SpLevel < 10 ? 10 : SpInstance.SpLevel < 19 ? 5 : 1;
+                SpInstance.XP += (int) ((val * (multiplier + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D) * ((double)Authority / 100 + 1)));
+                GenerateSpXpLevelUp();
+            }
+            else
+            {
+                JobLevelXp += (int) (val * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D));
+                GenerateJobXpLevelUp();
+            }
+        }
+
         public void GetReput(long val)
         {
             Reput += val * ServerManager.Instance.ReputRate;

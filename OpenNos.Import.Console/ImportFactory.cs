@@ -105,7 +105,7 @@ namespace OpenNos.Import.Console
                                     case QuestRewardType.SecondExp:
                                     case QuestRewardType.JobExp:
                                     case QuestRewardType.SecondJobExp:
-                                        reward.Data = int.Parse(currentLine[2]);
+                                        reward.Data = int.Parse(currentLine[2]) == -1 ? 0 : int.Parse(currentLine[2]);
                                         reward.Amount = int.Parse(currentLine[1]);
                                         break;
 
