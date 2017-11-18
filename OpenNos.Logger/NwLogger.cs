@@ -8,12 +8,12 @@ using MongoDB.Driver;
 
 namespace OpenNos.Logger
 {
-    public abstract class NWLogger
+    public abstract class NwLogger
     {
         protected static IMongoClient Client;
         protected static IMongoDatabase Database;
 
-        private NWLogger(string database)
+        private NwLogger(string database)
         {
             Client = new MongoClient();
             Database = Client.GetDatabase(database);
