@@ -64,8 +64,6 @@ namespace OpenNos.Data
 
         public byte LevelMax { get; set; }
 
-        public bool IsMainQuest { get; set; }
-
         #endregion
     }
 }
