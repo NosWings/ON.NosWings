@@ -199,7 +199,6 @@ namespace OpenNos.Import.Console
                                             break;
                                     }
                                 }
-                                quest.IsMainQuest = quest.NextQuestId == null ? false : true;
                                 break;
 
                             case "LEVEL":
