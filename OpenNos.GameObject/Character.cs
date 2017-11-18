@@ -556,7 +556,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case QuestType.GoTo:
-                    if (quest.Quest.FirstData == MapInstance.Map.MapId && quest.Quest.SecondData == PositionX && quest.Quest.ThirdData == PositionY)
+                    if (quest.Quest.FirstData == MapInstance.Map.MapId && quest.Quest.FirstObjective == PositionX && quest.Quest.FirstSpecialData == PositionY)
                     {
                         isFinish = true;
                     }

@@ -781,8 +781,8 @@ namespace OpenNos.Handler
                 case 1:
                     CharacterQuest goToQuest = Session.Character.Quests.FirstOrDefault(q => q.Quest.QuestType == (int)QuestType.GoTo
                     && q.Quest.FirstData == Session.CurrentMapInstance.Map.MapId
-                    && q.Quest.SecondData == Session.Character.PositionX
-                    && q.Quest.ThirdData == Session.Character.PositionY);
+                    && q.Quest.FirstObjective == Session.Character.PositionX
+                    && q.Quest.FirstSpecialData == Session.Character.PositionY);
 
                     if (goToQuest != null)
                     {
