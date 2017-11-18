@@ -169,45 +169,37 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case "LINK":
-                                if (int.Parse(currentLine[1]) != -1)
+                                if (int.Parse(currentLine[1]) != -1) // Base Quest Order (ex: SpQuest)
                                 {
                                     quest.NextQuestId = int.Parse(currentLine[1]);
+                                    continue;
+                                }
+
+                                // Main Quest Order
+                                if (quest.QuestId >= 1500 && quest.QuestId < 1751 || quest.QuestId >= 3000 && quest.QuestId < 3101
+                                 || quest.QuestId >= 3200 && quest.QuestId < 3331 || quest.QuestId >= 3340 && quest.QuestId < 3374)
+                                {
+                                    quest.NextQuestId = quest.QuestId + 1;
                                 }
                                 else
                                 {
-                                    if (quest.QuestId == 1997)
+                                    switch (quest.QuestId)
                                     {
-                                        quest.NextQuestId = 1500;
-                                    }
-                                    else if (quest.QuestId >= 1500 && quest.QuestId < 1751)
-                                    {
-                                        quest.NextQuestId = quest.QuestId + 1;
-                                    }
-                                    else if (quest.QuestId == 1751)
-                                    {
-                                        quest.NextQuestId = 3000;
-                                    }
-                                    else if (quest.QuestId >= 3000 && quest.QuestId < 3101)
-                                    {
-                                        quest.NextQuestId = quest.QuestId + 1;
-                                    }
-                                    else if (quest.QuestId == 3101)
-                                    {
-                                        quest.NextQuestId = 3200;
-                                    }
-                                    else if (quest.QuestId >= 3200 && quest.QuestId < 3331)
-                                    {
-                                        quest.NextQuestId = quest.QuestId + 1;
-                                    }
-                                    else if (quest.QuestId == 3331)
-                                    {
-                                        quest.NextQuestId = 3340;
-                                    }
-                                    else if (quest.QuestId >= 3340 && quest.QuestId < 3374)
-                                    {
-                                        quest.NextQuestId = quest.QuestId + 1;
+                                        case 1997:
+                                            quest.NextQuestId = 1500;
+                                            break;
+                                        case 1751:
+                                            quest.NextQuestId = 3000;
+                                            break;
+                                        case 3101:
+                                            quest.NextQuestId = 3200;
+                                            break;
+                                        case 3331:
+                                            quest.NextQuestId = 3340;
+                                            break;
                                     }
                                 }
+                                quest.IsMainQuest = quest.NextQuestId == null ? false : true;
                                 break;
 
                             case "LEVEL":
@@ -369,14 +361,11 @@ namespace OpenNos.Import.Console
                             case "PRIZE":
                                 for (int a = 1; a < 5; a++)
                                 {
-                                    if (int.Parse(currentLine[a]) != -1)
+                                    if (int.Parse(currentLine[a]) != -1 && dictionaryRewards.ContainsKey(long.Parse(currentLine[a])))
                                     {
-                                        if (dictionaryRewards.ContainsKey(long.Parse(currentLine[a])))
-                                        {
-                                            QuestRewardDTO currentReward = dictionaryRewards[long.Parse(currentLine[a])];
-                                            currentReward.QuestId = quest.QuestId;
-                                            questRewards.Add(currentReward);
-                                        }
+                                        QuestRewardDTO currentReward = dictionaryRewards[long.Parse(currentLine[a])];
+                                        currentReward.QuestId = quest.QuestId;
+                                        questRewards.Add(currentReward);
                                     }
                                 }
                                 break;
