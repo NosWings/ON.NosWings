@@ -542,6 +542,7 @@ namespace OpenNos.GameObject
                 case QuestType.Dialog1:
                 case QuestType.Dialog2:
                 case QuestType.Brings:
+                case QuestType.Wear:
                     isFinish = true;
                     break;
 
@@ -617,9 +618,6 @@ namespace OpenNos.GameObject
                     break;
 
                 case QuestType.YouNeed:
-                    break;
-
-                case QuestType.Wear:
                     break;
             }
 

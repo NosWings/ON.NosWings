@@ -890,6 +890,8 @@ namespace OpenNos.Handler
                 {
                     Session.SendPacket(npc.GetNpcDialog());
                 }
+                #region Quest
+
                 foreach (CharacterQuest qst in Session.Character.Quests.Where(q => (q.Quest.QuestType == (int)QuestType.Dialog1 || q.Quest.QuestType == (int)QuestType.Dialog2) && q.Quest.FirstData == npc.NpcVNum))
                 {
                     Session.Character.IncrementQuestObjective(qst);
@@ -902,6 +904,15 @@ namespace OpenNos.Handler
                         Session.Character.IncrementQuestObjective(qst);
                     }
                 }
+                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Wear && q.Quest.FirstSpecialData == npc.NpcVNum))
+                {
+                    if (Session.Character.Inventory.Any(i => i.Value.ItemVNum == qst.Quest.FirstData && i.Value.Type == InventoryType.Wear))
+                    {
+                        Session.Character.IncrementQuestObjective(qst);
+                    }
+                }
+
+                #endregion
             }
         }
 
