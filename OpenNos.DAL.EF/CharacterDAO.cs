@@ -20,6 +20,7 @@ using OpenNos.Data;
 using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -38,11 +39,12 @@ namespace OpenNos.DAL.EF
                     // actually a Character wont be deleted, it just will be disabled for future traces
                     Character character = context.Character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot) && c.State.Equals((byte)CharacterState.Active));
 
-                    if (character != null)
+                    if (character == null)
                     {
-                        character.State = (byte)CharacterState.Inactive;
-                        Update(character, _mapper.Map<CharacterDTO>(character), context);
+                        return DeleteResult.Deleted;
                     }
+                    character.State = (byte)CharacterState.Inactive;
+                    Update(character, _mapper.Map<CharacterDTO>(character), context);
 
                     return DeleteResult.Deleted;
                 }

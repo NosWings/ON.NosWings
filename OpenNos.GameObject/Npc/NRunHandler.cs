@@ -108,6 +108,13 @@ namespace OpenNos.GameObject
                                         session.Character.RemoveBuff(381);
                                         session.Character.RemoveBuff(383);
                                         session.Character.RemoveBuff(108);
+                                        session.Character.RemoveBuff(377);
+                                        session.Character.RemoveBuff(391);
+                                        session.Character.RemoveBuff(385);
+                                        session.Character.RemoveBuff(399);
+                                        session.Character.RemoveBuff(394);
+                                        session.Character.RemoveBuff(442);
+                                        session.Character.RemoveBuff(403);
                                         teammate.IsTeamMember = false;
                                         teammate.MapX = teammate.PositionX;
                                         teammate.MapY = teammate.PositionY;
@@ -129,6 +136,13 @@ namespace OpenNos.GameObject
                                 session.Character.RemoveBuff(381);
                                 session.Character.RemoveBuff(383);
                                 session.Character.RemoveBuff(108);
+                                session.Character.RemoveBuff(377);
+                                session.Character.RemoveBuff(391);
+                                session.Character.RemoveBuff(385);
+                                session.Character.RemoveBuff(399);
+                                session.Character.RemoveBuff(394);
+                                session.Character.RemoveBuff(442);
+                                session.Character.RemoveBuff(403);
                                 mate.IsTeamMember = false;
                                 mate.MapX = mate.PositionX;
                                 mate.MapY = mate.PositionY;
@@ -145,6 +159,13 @@ namespace OpenNos.GameObject
                                     session.Character.RemoveBuff(381);
                                     session.Character.RemoveBuff(383);
                                     session.Character.RemoveBuff(108);
+                                    session.Character.RemoveBuff(377);
+                                    session.Character.RemoveBuff(391);
+                                    session.Character.RemoveBuff(385);
+                                    session.Character.RemoveBuff(399);
+                                    session.Character.RemoveBuff(394);
+                                    session.Character.RemoveBuff(442);
+                                    session.Character.RemoveBuff(403);
                                     mate.IsTeamMember = false;
                                     mate.MapX = mate.PositionX;
                                     mate.MapY = mate.PositionY;
@@ -174,6 +195,13 @@ namespace OpenNos.GameObject
                                     session.Character.RemoveBuff(381);
                                     session.Character.RemoveBuff(383);
                                     session.Character.RemoveBuff(108);
+                                    session.Character.RemoveBuff(377);
+                                    session.Character.RemoveBuff(391);
+                                    session.Character.RemoveBuff(385);
+                                    session.Character.RemoveBuff(399);
+                                    session.Character.RemoveBuff(394);
+                                    session.Character.RemoveBuff(442);
+                                    session.Character.RemoveBuff(403);
                                     mate.IsTeamMember = false;
                                     session.CurrentMapInstance.Broadcast(mate.GenerateOut());
                                     session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PET_KICKED"), mate.Name), 11));
@@ -196,6 +224,13 @@ namespace OpenNos.GameObject
                                     session.Character.RemoveBuff(381);
                                     session.Character.RemoveBuff(383);
                                     session.Character.RemoveBuff(108);
+                                    session.Character.RemoveBuff(377);
+                                    session.Character.RemoveBuff(391);
+                                    session.Character.RemoveBuff(385);
+                                    session.Character.RemoveBuff(399);
+                                    session.Character.RemoveBuff(394);
+                                    session.Character.RemoveBuff(442);
+                                    session.Character.RemoveBuff(403);
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 10, $"#n_run^4^9^3^{mate.MateTransportId}"));
                                 }
                             }
@@ -658,6 +693,10 @@ namespace OpenNos.GameObject
                         {
                             session.SendPacket("it 3");
                             SerializableWorldServer connection = CommunicationServiceClient.Instance.GetPreviousChannelByAccountId(session.Account.AccountId);
+                            if (connection == null || session.Character == null)
+                            {
+                                break;
+                            }
                             session.Character.MapId = tp.MapId;
                             session.Character.MapX = tp.MapX;
                             session.Character.MapY = tp.MapY;

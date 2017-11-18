@@ -148,11 +148,11 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case "OnMoveOnMap":
-                            evt.MapInstance.OnMoveOnMapEvents.ToList().AddRange(even.Item2);
+                            even.Item2.ToList().ForEach(s => evt.MapInstance.OnMoveOnMapEvents.Add(s));
                             break;
 
                         case "OnMapClean":
-                            evt.MapInstance.OnMapClean.ToList().AddRange(even.Item2);
+                            even.Item2.ToList().ForEach(s => evt.MapInstance.OnMapClean.Add(s));
                             break;
 
                         case "OnLockerOpen":
@@ -365,7 +365,7 @@ namespace OpenNos.GameObject.Helpers
                                         {
                                             continue;
                                         }
-                                        if (grp.Raid.Reputation > 0 && sess.Character.Level >= grp.Raid.LevelMinimum)
+                                        if (grp.Raid.Reputation > 0 && sess.Character.Level > grp.Raid.LevelMinimum)
                                         {
                                             sess.Character.GetReput(grp.Raid.Reputation);
                                         }
@@ -386,27 +386,15 @@ namespace OpenNos.GameObject.Helpers
                                         {
                                             foreach (Gift gift in grp.Raid?.GiftItems)
                                             {
-                                                if (sess.Character.Level >= grp.Raid?.LevelMinimum)
+                                                sbyte rare = 0;
+                                                if (gift.IsRandomRare)
                                                 {
-                                                    sbyte rare = 0;
-                                                    if (gift.IsRandomRare)
-                                                    {
-                                                        switch (gift.VNum)
-                                                        {
-                                                            case 302:
-                                                                rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
-                                                                break;
-                                                            case 185:
-                                                            case 999:
-                                                            case 882:
-                                                            case 942:
-                                                                rare = (sbyte)ServerManager.Instance.RandomNumber(1, 7);
-                                                                break;
-                                                        }
-                                                    }
-                                                    //TODO add random rarity for some object
-                                                    sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design,
-                                                        rare: rare);
+                                                    rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
+                                                }
+                                                //TODO add random rarity for some object
+                                                if (sess.Character.Level >= grp.Raid.LevelMinimum)
+                                                {
+                                                    sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                                 }
                                             }
                                         }

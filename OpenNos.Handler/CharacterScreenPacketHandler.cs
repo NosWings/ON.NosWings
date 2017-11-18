@@ -189,7 +189,16 @@ namespace OpenNos.Handler
                 }
                 DaoFactory.GeneralLogDao.SetCharIdNull(Convert.ToInt64(character.CharacterId));
                 DaoFactory.CharacterDao.DeleteByPrimaryKey(account.AccountId, characterDeletePacket.Slot);
-                LoadCharacters(string.Empty);
+
+                FamilyCharacterDTO familyCharacter = DaoFactory.FamilyCharacterDao.LoadByCharacterId(character.CharacterId);
+                if (familyCharacter == null)
+                {
+                    LoadCharacters(string.Empty);
+                    return;
+                }
+                // REMOVE FROM FAMILY
+                DaoFactory.FamilyCharacterDao.Delete(character.Name);
+                ServerManager.Instance.FamilyRefresh(familyCharacter.FamilyId);
             }
             else
             {

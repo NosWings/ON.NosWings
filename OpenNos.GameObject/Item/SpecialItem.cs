@@ -42,7 +42,7 @@ namespace OpenNos.GameObject
         public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
         {
             inv.Item.BCards.ForEach(c => c.ApplyBCards(session.Character));
-            
+
             switch (Effect)
             {
                 case 0:
@@ -55,7 +55,7 @@ namespace OpenNos.GameObject
                                 return;
                             }
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                            session.Character.AddStaticBuff(new StaticBuffDTO {CardId = 393});
+                            session.Character.AddStaticBuff(new StaticBuffDTO { CardId = 393 });
                             break;
                         case 1428:
                             session.SendPacket("guri 18 1");
@@ -96,7 +96,7 @@ namespace OpenNos.GameObject
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
                             break;
                         case 1904:
-                            short[] items = {1894, 1895, 1896, 1897, 1898, 1899, 1900, 1901, 1902, 1903};
+                            short[] items = { 1894, 1895, 1896, 1897, 1898, 1899, 1900, 1901, 1902, 1903 };
                             for (int i = 0; i < 5; i++)
                             {
                                 session.Character.GiftAdd(items[ServerManager.Instance.RandomNumber(0, items.Length)], 1);
@@ -212,7 +212,7 @@ namespace OpenNos.GameObject
                         return;
                     }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                    session.Character.AddStaticBuff(new StaticBuffDTO {CardId = 121, CharacterId = session.Character.CharacterId, RemainingTime = 3600});
+                    session.Character.AddStaticBuff(new StaticBuffDTO { CardId = 121, CharacterId = session.Character.CharacterId, RemainingTime = 3600 });
                     break;
 
                 case 301:
@@ -300,7 +300,7 @@ namespace OpenNos.GameObject
                     }
                     session.Character?.Inventory?.RemoveItemAmountFromInventory(1, inv.Id);
                     session.CurrentMapInstance?.Broadcast(partner.GenerateCMode(partner.Skin));
-                    break; 
+                    break;
 
                 //speed booster
                 case 998:
@@ -318,11 +318,11 @@ namespace OpenNos.GameObject
                         case 2518: // Nossi F
                         case 2522: // Roller M
                         case 2523: // Roller F
-                                // Removes <= lv 4 debuffs
+                                   // Removes <= lv 4 debuffs
                             List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad };
                             session.Character.DisableBuffs(bufftodisable, 4);
                             break;
-                            
+
                     }
                     Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(o =>
                     {
@@ -447,7 +447,7 @@ namespace OpenNos.GameObject
                     }
                     if (EffectValue < 3)
                     {
-                        if (session.Character.Faction == (FactionType) EffectValue)
+                        if (session.Character.Faction == (FactionType)EffectValue)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SAME_FACTION"), 0));
                             return;
@@ -482,11 +482,11 @@ namespace OpenNos.GameObject
                     {
                         if (option == 0)
                         {
-                            session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte) inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
+                            session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
                         }
                         else
                         {
-                            session.Character.SpInstance.Design = (byte) EffectValue;
+                            session.Character.SpInstance.Design = (byte)EffectValue;
                             session.Character.MorphUpgrade2 = EffectValue;
                             session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
                             session.SendPacket(session.Character.GenerateStat());
@@ -586,7 +586,7 @@ namespace OpenNos.GameObject
                 case 1002:
                     if (session.HasCurrentMapInstance)
                     {
-                        if (session.CurrentMapInstance.Map.MapTypes.All(m => m.MapTypeId != (short) MapTypeEnum.Act4))
+                        if (session.CurrentMapInstance.Map.MapTypes.All(m => m.MapTypeId != (short)MapTypeEnum.Act4))
                         {
                             short[] vnums =
                             {
@@ -606,7 +606,7 @@ namespace OpenNos.GameObject
                                 MapY = session.Character.MapY,
                                 MapX = session.Character.MapX,
                                 MapId = session.Character.MapInstance.Map.MapId,
-                                Position = (byte) session.Character.Direction,
+                                Position = (byte)session.Character.Direction,
                                 IsMoving = true,
                                 MapMonsterId = session.CurrentMapInstance.GetNextMonsterId(),
                                 ShouldRespawn = false
@@ -721,6 +721,52 @@ namespace OpenNos.GameObject
                     break;
 
                 default:
+                    List<RollGeneratedItemDTO> rolls = inv.Item.RollGeneratedItems?.ToList();
+                    if (rolls != null && rolls.Any())
+                    {
+                        if (option == 0)
+                        {
+                            if (packetsplit != null && packetsplit.Length == 9 || inv.Item.ItemSubType == 3)
+                            {
+                                session.SendPacket($"qna #guri^4999^8023^{inv.Slot} {Language.Instance.GetMessageFromKey("ASK_OPEN_BOX")}");
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            int probabilities = rolls.Sum(s => s.Probability);
+                            int rnd = ServerManager.Instance.RandomNumber(0, probabilities);
+                            int currentrnd = 0;
+                            List<ItemInstance> newInv = null;
+                            foreach (RollGeneratedItemDTO rollitem in rolls)
+                            {
+                                if (newInv != null)
+                                {
+                                    continue;
+                                }
+                                currentrnd += rollitem.Probability;
+                                if (currentrnd < rnd)
+                                {
+                                    continue;
+                                }
+                                newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, upgrade: rollitem.ItemGeneratedUpgrade);
+                                if (!newInv.Any())
+                                {
+                                    continue;
+                                }
+                                short slot = inv.Slot;
+                                if (slot == -1)
+                                {
+                                    continue;
+                                }
+                                session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.FirstOrDefault()?.Item.Name ?? ""} x {rollitem.ItemGeneratedAmount})", 12));
+                                session.SendPacket($"rdi {rollitem.ItemGeneratedVNum} {rollitem.ItemGeneratedAmount}");
+                                newInv.ForEach(s => session.SendPacket(s?.GenerateInventoryAdd()));
+                                session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                            }
+                            break;
+                        }
+                    }
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;
             }

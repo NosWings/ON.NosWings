@@ -228,18 +228,6 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
                         session.Character.EquipmentBCards = session.Character.EquipmentBCards.Where(o => o.ItemVNum != currentlyEquippedItem.ItemVNum);
-                        switch (currentlyEquippedItem.Slot)
-                        {
-                            case (byte) EquipmentType.Armor:
-                                session.Character.Inventory.Armor = null;
-                                break;
-                            case (byte) EquipmentType.MainWeapon:
-                                session.Character.Inventory.PrimaryWeapon = null;
-                                break;
-                            case (byte) EquipmentType.SecondaryWeapon:
-                                session.Character.Inventory.SecondaryWeapon = null;
-                                break;
-                        }
                     }
                     inv.Item.BCards.ForEach(s => session.Character.EquipmentBCards.Add(s));
 

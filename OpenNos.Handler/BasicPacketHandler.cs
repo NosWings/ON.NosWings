@@ -242,6 +242,7 @@ namespace OpenNos.Handler
                 return;
             }
             MailDTO mail = Session.Character.MailList[giftId];
+
             if (getGiftPacket.Type == 4 && mail.AttachmentVNum != null)
             {
                 if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
@@ -250,6 +251,51 @@ namespace OpenNos.Handler
                     if (newInv == null)
                     {
                         return;
+                    }
+
+                    if (newInv.Item.ItemType == ItemType.Shell)
+                    {
+                        byte[] incompleteShells = { 25, 30, 40, 55, 60, 65, 70, 75, 80, 85 };
+                        int rand = ServerManager.Instance.RandomNumber(0, 101);
+                        if (!ShellGeneratorHelper.Instance.ShellTypes.TryGetValue(newInv.ItemVNum, out byte shellType))
+                        {
+                            return;
+                        }
+                        bool isIncomplete = shellType == 8 || shellType == 9;
+
+                        if (rand < 84)
+                        {
+                            if (isIncomplete)
+                            {
+                                newInv.Upgrade = incompleteShells[ServerManager.Instance.RandomNumber(0, 6)];
+                            }
+                            else
+                            {
+                                newInv.Upgrade = (byte)ServerManager.Instance.RandomNumber(50, 75);
+                            }
+                        }
+                        else if (rand <= 99)
+                        {
+                            if (isIncomplete)
+                            {
+                                newInv.Upgrade = 75;
+                            }
+                            else
+                            {
+                                newInv.Upgrade = (byte)ServerManager.Instance.RandomNumber(75, 79);
+                            }
+                        }
+                        else
+                        {
+                            if (isIncomplete)
+                            {
+                                newInv.Upgrade = (byte)(ServerManager.Instance.RandomNumber() > 50 ? 85 : 80);
+                            }
+                            else
+                            {
+                                newInv.Upgrade = (byte)ServerManager.Instance.RandomNumber(80, 90);
+                            }
+                        }
                     }
                     if (newInv.Rare != 0)
                     {
@@ -389,21 +435,28 @@ namespace OpenNos.Handler
                 return;
             }
             //session is not on current server, check api if the target character is on another server
-            int? sentChannelId = CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+            try
             {
-                DestinationCharacterId = character.CharacterId,
-                SourceCharacterId = Session.Character.CharacterId,
-                SourceWorldId = ServerManager.Instance.WorldId,
-                Message = PacketFactory.Serialize(Session.Character.GenerateTalk(message)),
-                Type = MessageType.PrivateChat
-            });
-            if (!sentChannelId.HasValue) //character is even offline on different world
-            {
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
+                int? sentChannelId = CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+                {
+                    DestinationCharacterId = character.CharacterId,
+                    SourceCharacterId = Session.Character.CharacterId,
+                    SourceWorldId = ServerManager.Instance.WorldId,
+                    Message = PacketFactory.Serialize(Session.Character.GenerateTalk(message)),
+                    Type = MessageType.PrivateChat
+                });
+                if (!sentChannelId.HasValue) //character is even offline on different world
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
+                }
+                else
+                {
+                    LogHelper.Instance.InsertChatLog(ChatType.Friend, Session.Character.CharacterId, message, Session.IpAddress);
+                }
             }
-            else
+            catch (Exception)
             {
-                LogHelper.Instance.InsertChatLog(ChatType.Friend, Session.Character.CharacterId, message, Session.IpAddress);
+                // FDP
             }
         }
 

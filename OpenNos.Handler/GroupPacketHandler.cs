@@ -43,6 +43,10 @@ namespace OpenNos.Handler
                     ClientSession target = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
                     if (rdPacket.Parameter == null && target?.Character?.Group == null && Session?.Character?.Group?.IsLeader(Session) == true)
                     {
+                        if (target?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+                        {
+                            return;
+                        }
                         GroupJoin(new PJoinPacket {RequestType = GroupRequestType.Invited, CharacterId = rdPacket.CharacterId});
                     }
                     else if (Session?.Character?.Group == null)
