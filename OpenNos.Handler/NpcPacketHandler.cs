@@ -886,6 +886,10 @@ namespace OpenNos.Handler
                 {
                     Session.SendPacket(npc.GetNpcDialog());
                 }
+                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => (q.Quest.QuestType == (int)QuestType.Dialog1 || q.Quest.QuestType == (int)QuestType.Dialog2) && q.Quest.FirstData == npc.NpcVNum))
+                {
+                    Session.Character.IncrementQuestObjective(qst);
+                }
             }
         }
 
