@@ -477,6 +477,11 @@ namespace OpenNos.GameObject
                     Timestamp = DateTime.Now
                 });
             }
+            if (characterQuest.Quest.QuestType == (int) QuestType.TimesSpace)
+            {
+                AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId);
+                return;
+            }
             if (characterQuest.Quest.TargetMap == MapInstance.Map.MapId)
             {
                 Session.SendPacket(characterQuest.Quest.TargetPacket());
