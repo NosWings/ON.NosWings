@@ -576,6 +576,14 @@ namespace OpenNos.GameObject
                         case 3:
                             quest.ThirdObjective++;
                             break;
+
+                        case 4:
+                            quest.SecondObjective++;
+                            break;
+
+                        case 5:
+                            quest.ThirdObjective++;
+                            break;
                     }
                     break;
 
@@ -2676,12 +2684,10 @@ namespace OpenNos.GameObject
                 {
                     IncrementQuestObjective(Quests.FirstOrDefault(q => q.Quest.QuestType == (byte) QuestType.FlowerQuest));
                 }
-
-                foreach (CharacterQuest qst in Quests.Where(q => q.Quest.QuestType == (int) QuestType.Hunt).ToList())
+                int vnum = monsterToAttack.MonsterVNum;
+                foreach (CharacterQuest qst in Quests.Where(q => q.Quest.QuestType == (int)QuestType.Hunt))
                 {
-                    byte data = (byte) (qst.Quest.FirstData == monsterToAttack.MonsterVNum ? 1 :
-                                       (qst.Quest.SecondData == monsterToAttack.MonsterVNum ? 2 :
-                                       (qst.Quest.ThirdData == monsterToAttack.MonsterVNum ? 3 : 0)));
+                    byte data = (byte)(qst.Quest.FirstData == vnum ? 1 : (qst.Quest.SecondData == vnum ? 2 : (qst.Quest.ThirdData == vnum ? 3 : (qst.Quest.FourthData == vnum ? 4 : (qst.Quest.FifthData == vnum ? 5 : 0)))));
                     if (data != 0)
                     {
                         IncrementQuestObjective(qst, data);
