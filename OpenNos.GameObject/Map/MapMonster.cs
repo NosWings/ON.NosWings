@@ -175,7 +175,6 @@ namespace OpenNos.GameObject
         {
             MapInstance = currentMapInstance;
             Initialize();
-            StartLife();
         }
 
         public override void Initialize()
@@ -261,12 +260,6 @@ namespace OpenNos.GameObject
                         {
                             MonsterLife();
                         }
-                        else if (Life != null)
-                        {
-                            IDisposable tmp = Life;
-                            tmp?.Dispose();
-                            Life = null;
-                        }
                     }
                     catch (Exception e)
                     {
@@ -274,6 +267,12 @@ namespace OpenNos.GameObject
                     }
                 });
             }
+        }
+
+        public void StopLife()
+        {
+            Life?.Dispose();
+            Life = null;
         }
 
         /// <summary>

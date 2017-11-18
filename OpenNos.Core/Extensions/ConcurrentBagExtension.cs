@@ -18,12 +18,7 @@ namespace OpenNos.Core
 
         public static ConcurrentBag<T> Where<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate)
         {
-            ConcurrentBag<T> temp = new ConcurrentBag<T>();
-            foreach (T line in queue.AsEnumerable().Where(predicate))
-            {
-                temp.Add(line);
-            }
-            return temp;
+            return new ConcurrentBag<T>(queue.AsEnumerable().Where(predicate));
         }
 
         #endregion

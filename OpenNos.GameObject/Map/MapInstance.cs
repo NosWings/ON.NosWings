@@ -108,7 +108,7 @@ namespace OpenNos.GameObject
         public bool IsDancing { get; set; }
 
         public bool IsPvp { get; set; }
-        
+
         // TODO NEED A REVIEW
         public bool IsSleeping
         {
@@ -120,16 +120,8 @@ namespace OpenNos.GameObject
                 }
                 _isSleeping = true;
                 _isSleepingRequest = false;
-                Parallel.ForEach(Monsters, m =>
-                {
-                    m.Life?.Dispose();
-                    m.Life = null;
-                });
-                Parallel.ForEach(Npcs, m =>
-                {
-                    m.Life?.Dispose();
-                    m.Life = null;
-                });
+                Parallel.ForEach(Monsters.Where(s => s.Life != null), m => { m.StopLife(); });
+                Parallel.ForEach(Npcs.Where(s => s.Life != null), m => { m.StopLife(); });
                 return true;
             }
             set
@@ -142,20 +134,8 @@ namespace OpenNos.GameObject
                 {
                     _isSleeping = false;
                     _isSleepingRequest = false;
-                    Parallel.ForEach(Monsters, m =>
-                    {
-                        if (m.Life == null)
-                        {
-                            m.StartLife();
-                        }
-                    });
-                    Parallel.ForEach(Npcs, m =>
-                    {
-                        if (m.Life == null)
-                        {
-                            m.StartLife();
-                        }
-                    });
+                    Parallel.ForEach(Monsters.Where(s => s.Life == null), m => { m.StartLife(); });
+                    Parallel.ForEach(Npcs.Where(s => s.Life == null), m => { m.StartLife(); });
                 }
             }
         }
@@ -244,14 +224,14 @@ namespace OpenNos.GameObject
                 {
                     for (short y = -1; y < 2; y++)
                     {
-                        possibilities.Add(new MapCell {X = x, Y = y});
+                        possibilities.Add(new MapCell { X = x, Y = y });
                     }
                 }
 
                 foreach (MapCell possibilitie in possibilities.OrderBy(s => ServerManager.Instance.RandomNumber()))
                 {
-                    localMapX = (short) (mapX + possibilitie.X);
-                    localMapY = (short) (mapY + possibilitie.Y);
+                    localMapX = (short)(mapX + possibilitie.X);
+                    localMapY = (short)(mapY + possibilitie.Y);
                     if (!Map.IsBlockedZone(localMapX, localMapY))
                     {
                         break;
@@ -260,7 +240,8 @@ namespace OpenNos.GameObject
 
                 MonsterMapItem droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, owner ?? -1);
                 DroppedList[droppedItem.TransportId] = droppedItem;
-                Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
+                Broadcast(
+                    $"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
             }
             catch (Exception e)
             {
@@ -318,19 +299,10 @@ namespace OpenNos.GameObject
                     packets.Add(s.GenerateBoss());
                 }
             });
-            Npcs.ForEach(s =>
-            {
-                packets.Add(s.GenerateIn());
-            });
+            Npcs.ForEach(s => { packets.Add(s.GenerateIn()); });
             packets.AddRange(GenerateNpcShopOnMap());
-            Parallel.ForEach(DroppedList.Select(s => s.Value), session =>
-            {
-                packets.Add(session.GenerateIn());
-            });
-            Buttons.ForEach(s =>
-            {
-                packets.Add(s.GenerateIn());
-            });
+            Parallel.ForEach(DroppedList.Select(s => s.Value), session => { packets.Add(session.GenerateIn()); });
+            Buttons.ForEach(s => { packets.Add(s.GenerateIn()); });
             packets.AddRange(GenerateUserShops());
             packets.AddRange(GeneratePlayerShopOnMap());
             return packets;
@@ -437,7 +409,7 @@ namespace OpenNos.GameObject
             {
                 for (short y = -2; y < 3; y++)
                 {
-                    possibilities.Add(new GridPos {X = x, Y = y});
+                    possibilities.Add(new GridPos { X = x, Y = y });
                 }
             }
 
@@ -446,8 +418,8 @@ namespace OpenNos.GameObject
             bool niceSpot = false;
             foreach (GridPos possibility in possibilities.OrderBy(s => _random.Next()))
             {
-                mapX = (short) (session.Character.PositionX + possibility.X);
-                mapY = (short) (session.Character.PositionY + possibility.Y);
+                mapX = (short)(session.Character.PositionX + possibility.X);
+                mapY = (short)(session.Character.PositionY + possibility.Y);
                 if (Map.IsBlockedZone(mapX, mapY))
                 {
                     continue;
@@ -539,7 +511,7 @@ namespace OpenNos.GameObject
             IEnumerable<ClientSession> clientSessions = cl as IList<ClientSession> ?? cl.ToList();
             for (int i = clientSessions.Count() - 1; i >= 0; i--)
             {
-                if (Map.GetDistance(new MapCell {X = mapX, Y = mapY}, new MapCell {X = clientSessions.ElementAt(i).Character.PositionX, Y = clientSessions.ElementAt(i).Character.PositionY}) <=
+                if (Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = clientSessions.ElementAt(i).Character.PositionX, Y = clientSessions.ElementAt(i).Character.PositionY }) <=
                     distance + 1)
                 {
                     characters.Add(clientSessions.ElementAt(i).Character);
@@ -584,15 +556,16 @@ namespace OpenNos.GameObject
             for (int i = 0; i < parameter.Item3; i++)
             {
                 positionRandomizer:
-                short destX = (short) (originX + ServerManager.Instance.RandomNumber(-10, 10));
-                short destY = (short) (originY + ServerManager.Instance.RandomNumber(-10, 10));
+                short destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
+                short destY = (short)(originY + ServerManager.Instance.RandomNumber(-10, 10));
                 if (Map.IsBlockedZone(destX, destY))
                 {
                     goto positionRandomizer;
                 }
                 MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item2, amount);
                 DroppedList[droppedItem.TransportId] = droppedItem;
-                Broadcast($"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
+                Broadcast(
+                    $"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
             }
         }
 
@@ -610,28 +583,24 @@ namespace OpenNos.GameObject
                     {
                         s.Events.ToList().ForEach(e => EventHelper.Instance.RunEvent(e));
                     }
-                    s.Offset = s.Offset > 0 ? (byte) (s.Offset - 1) : (byte) 0;
+                    s.Offset = s.Offset > 0 ? (byte)(s.Offset - 1) : (byte)0;
                     s.LastStart = DateTime.Now;
                 });
-                if (!Sessions.Any() && LastUnregister.AddSeconds(20) <= DateTime.Now)
-                {
-                    IsSleeping = true;
-                }
-                else if (Sessions.Any() && IsSleeping)
-                {
-                    IsSleeping = false;
-                }
                 try
                 {
+                    if (IsSleeping)
+                    {
+                        return;
+                    }
                     if (Monsters.Count(s => s.IsAlive) == 0)
                     {
                         OnMapClean.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e); });
                         OnMapClean.ToList().RemoveAll(s => s != null);
                     }
-                    if (!IsSleeping)
-                    {
-                        RemoveMapItem();
-                    }
+
+                    Parallel.ForEach(Monsters.Where(s => s.Life == null), m => { m.StartLife(); });
+                    Parallel.ForEach(Npcs.Where(s => s.Life == null), m => { m.StartLife(); });
+                    RemoveMapItem();
                 }
                 catch (Exception e)
                 {
