@@ -598,6 +598,10 @@ namespace OpenNos.Handler
                 Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, Session.Character.CharacterId, 1324));
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
+                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Product && inv.ItemVNum == q.Quest.FirstData))
+                {
+                    Session.Character.IncrementQuestObjective(qst, rec.Amount);
+                }
             }
         }
 

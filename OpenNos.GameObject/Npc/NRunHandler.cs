@@ -655,7 +655,7 @@ namespace OpenNos.GameObject
                             long? questId = ServerManager.Instance.Quests.FirstOrDefault(q => q.QuestType == (byte) QuestType.WinRaid && q.FirstData == session.Character.Group?.Raid.Id)?.QuestId;
                             if (questId != null)
                             {
-                                session.Character.AddQuest((long)questId);
+                                session.Character.AddQuest((long)questId, false);
                             }
                             else
                             {

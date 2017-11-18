@@ -587,6 +587,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case QuestType.Product:
+                    quest.FirstObjective += data + quest.FirstObjective > quest.Quest.FirstObjective ? quest.Quest.FirstObjective - quest.FirstObjective : data;
                     break;
 
                 case QuestType.Needed:
