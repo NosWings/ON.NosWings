@@ -890,6 +890,14 @@ namespace OpenNos.Handler
                 {
                     Session.Character.IncrementQuestObjective(qst);
                 }
+                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Brings && q.Quest.FirstData == npc.NpcVNum))
+                {
+                    if (Session.Character.Inventory.Where(i => i.Value.ItemVNum == qst.Quest.FirstSpecialData).Count() > qst.Quest.FirstObjective)
+                    {
+                        Session.Character.Inventory.RemoveItemAmount((int) qst.Quest.FirstSpecialData, qst.Quest.FirstObjective);
+                        Session.Character.IncrementQuestObjective(qst);
+                    }
+                }
             }
         }
 

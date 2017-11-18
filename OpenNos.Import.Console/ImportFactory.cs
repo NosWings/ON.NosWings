@@ -245,7 +245,7 @@ namespace OpenNos.Import.Console
                                         objective = int.Parse(currentLine[2]);
                                         break;
 
-                                    case QuestType.Brings:
+                                    case QuestType.Brings: // npcVNum - ItemCount - ItemVNum //
                                     case QuestType.Collect2:
                                     case QuestType.Collect3: // ItemVNum - Objective - TsId //
                                     case QuestType.YouNeed: // ItemVNum - Objective - npcVNum //

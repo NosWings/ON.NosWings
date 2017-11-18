@@ -532,9 +532,6 @@ namespace OpenNos.GameObject
             }
             switch ((QuestType) quest.Quest.QuestType)
             {
-                case QuestType.Brings:
-                    break;
-
                 case QuestType.Collect1:
                 case QuestType.Collect2:
                 case QuestType.Collect3:
@@ -544,6 +541,7 @@ namespace OpenNos.GameObject
 
                 case QuestType.Dialog1:
                 case QuestType.Dialog2:
+                case QuestType.Brings:
                     isFinish = true;
                     break;
 

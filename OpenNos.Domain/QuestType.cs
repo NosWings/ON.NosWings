@@ -6,7 +6,7 @@
         Collect1 = 2,
         Collect2 = 3,
         Brings = 4,
-        Capture1 = 5, // multiple capture
+        Capture1 = 5,
         Capture2 = 6,
         TimesSpace = 7,
         Product = 8,
