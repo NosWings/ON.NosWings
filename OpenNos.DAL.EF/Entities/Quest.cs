@@ -64,6 +64,8 @@ namespace OpenNos.DAL.EF
 
         public byte LevelMax { get; set; }
 
+        public bool IsMainQuest { get; set; }
+
         #endregion
     }
 }
