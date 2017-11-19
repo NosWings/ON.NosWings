@@ -548,6 +548,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case QuestType.FlowerQuest:
+                case QuestType.WinRaid:
                     quest.FirstObjective++;
                     break;
 
@@ -609,10 +610,6 @@ namespace OpenNos.GameObject
                     break;
 
                 case QuestType.TransmitGold:
-                    break;
-
-                case QuestType.WinRaid:
-                    quest.FirstObjective++;
                     break;
 
                 case QuestType.YouNeed:
