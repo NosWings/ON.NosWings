@@ -24,6 +24,8 @@ namespace OpenNos.Data
 
         public int? FifthData { get; set; }
 
+        public int? SpecialData { get; set; }
+
         public int? FirstSpecialData { get; set; }
 
         public int? SecondSpecialData { get; set; }
