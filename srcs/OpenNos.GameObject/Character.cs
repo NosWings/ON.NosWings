@@ -545,19 +545,13 @@ namespace OpenNos.GameObject
                 case QuestType.Brings:
                 case QuestType.Wear:
                 case QuestType.Use:
+                case QuestType.GoTo:
                     isFinish = true;
                     break;
 
                 case QuestType.FlowerQuest:
                 case QuestType.WinRaid:
                     quest.FirstObjective++;
-                    break;
-
-                case QuestType.GoTo:
-                    if (quest.Quest.FirstData == MapInstance.Map.MapId && quest.Quest.FirstObjective == PositionX && quest.Quest.FirstSpecialData == PositionY)
-                    {
-                        isFinish = true;
-                    }
                     break;
 
                 case QuestType.Collect1:
