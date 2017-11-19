@@ -543,6 +543,7 @@ namespace OpenNos.GameObject
                 case QuestType.Dialog2:
                 case QuestType.Brings:
                 case QuestType.Wear:
+                case QuestType.Use:
                     isFinish = true;
                     break;
 
@@ -608,9 +609,6 @@ namespace OpenNos.GameObject
                     break;
 
                 case QuestType.TransmitGold:
-                    break;
-
-                case QuestType.Use:
                     break;
 
                 case QuestType.WinRaid:
