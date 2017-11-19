@@ -268,11 +268,6 @@ namespace OpenNos.Import.Console
                                         specialData = int.Parse(currentLine[1]);
                                         break;
 
-                                    case QuestType.Dialog1: // npcVNum - * - * //
-                                        data = int.Parse(currentLine[2]);
-                                        objective = 1;
-                                        break;
-
                                     case QuestType.Wear: // Item VNum - * - NpcVNum //
                                         data = int.Parse(currentLine[2]);
                                         objective = 1;
@@ -303,6 +298,7 @@ namespace OpenNos.Import.Console
                                         specialData = int.Parse(currentLine[2]);
                                         break;
 
+                                    case QuestType.Dialog1: // npcVNum - * - * //
                                     case QuestType.Dialog2: // npcVNum - * - * //
                                         data = int.Parse(currentLine[1]);
                                         objective = 1;
