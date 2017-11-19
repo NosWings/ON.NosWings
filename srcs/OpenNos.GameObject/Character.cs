@@ -494,7 +494,7 @@ namespace OpenNos.GameObject
         public void RemoveQuest(long questId)
         {
             CharacterQuest questToRemove = Quests.FirstOrDefault(q => q.QuestId == questId);
-            if (questToRemove != null)
+            if (questToRemove == null)
             {
                 return;
             }
