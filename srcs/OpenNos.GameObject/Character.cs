@@ -455,11 +455,12 @@ namespace OpenNos.GameObject
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                 return;
             }
-            if (characterQuest.Quest.LevelMax < Level)
+            // Remove Lvl max system because the max lvl on every main quest is 99 and the max lvl on the serv is 150.
+            /*if (characterQuest.Quest.LevelMax < Level)
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HIGH_LVL"), 0));
                 return;
-            }
+            }*/
             if (characterQuest.Quest.IsDaily)
             {
                 if(GeneralLogs.Any(s => s.LogType == "DailyQuest" && s.LogData == characterQuest.QuestId.ToString() && s.Timestamp.Date == DateTime.Today))
