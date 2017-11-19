@@ -446,7 +446,7 @@ namespace OpenNos.GameObject
         public void AddQuest(long questId, bool isMain)
         {
             CharacterQuest characterQuest = new CharacterQuest(questId, CharacterId);
-            if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || Quests.Where(q => q.Quest.QuestType != (byte) QuestType.WinRaid).ToList().Count >= 5 && characterQuest.Quest.QuestType != (byte) QuestType.WinRaid)
+            if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || (isMain & Quests.Any(q => q.IsMainQuest)) || (Quests.Where(q => q.Quest.QuestType != (byte) QuestType.WinRaid).ToList().Count >= 5 && characterQuest.Quest.QuestType != (byte) QuestType.WinRaid && !isMain))
             {
                 return;
             }
