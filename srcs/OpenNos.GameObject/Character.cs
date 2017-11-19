@@ -492,7 +492,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateQuestsPacket());
         }
 
-        public void RemoveQuest(long questId)
+        public void RemoveQuest(long questId, bool IsGivingUp)
         {
             CharacterQuest questToRemove = Quests.FirstOrDefault(q => q.QuestId == questId);
             if (questToRemove == null)
@@ -505,15 +505,18 @@ namespace OpenNos.GameObject
             }
             Quests = Quests.Where(q => q.QuestId != questId);
             Session.SendPacket(GenerateQuestsPacket());
+            if (IsGivingUp)
+            {
+                return;
+            }
             if (questToRemove.Quest.EndDialogId != null)
             {
                 Session.SendPacket(GenerateNpcDialog((int)questToRemove.Quest.EndDialogId));
             }
-            if (questToRemove.Quest.NextQuestId == null)
+            if (questToRemove.Quest.NextQuestId != null)
             {
-                return;
+                AddQuest((long)questToRemove.Quest.NextQuestId, questToRemove.IsMainQuest);
             }
-            AddQuest((long) questToRemove.Quest.NextQuestId, questToRemove.IsMainQuest);
         }
 
         public string GenerateQuestsPacket()

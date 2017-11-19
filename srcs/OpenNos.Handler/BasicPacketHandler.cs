@@ -790,6 +790,15 @@ namespace OpenNos.Handler
                     }
                     break;
 
+                // Give Up Quest
+                case 3:
+                    CharacterQuest charQuest = Session.Character.Quests?.FirstOrDefault(q => q.QuestNumber == qtPacket.Data);
+                    if (charQuest == null || charQuest.IsMainQuest)
+                    {
+                        return;
+                    }
+                    Session.Character.RemoveQuest(charQuest.QuestId, true);
+                    break;
 
                 // Ask for rewards
                 case 4:
