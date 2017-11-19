@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenNos.DAL.EF
 {
@@ -10,6 +7,8 @@ namespace OpenNos.DAL.EF
     {
         #region Properties
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long QuestId { get; set; }
 
         public int QuestType { get; set; }
@@ -23,6 +22,8 @@ namespace OpenNos.DAL.EF
         public int? FourthData { get; set; }
 
         public int? FifthData { get; set; }
+
+        public int? SpecialData { get; set; }
 
         public int? FirstSpecialData { get; set; }
 
