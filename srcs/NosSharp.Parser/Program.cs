@@ -92,7 +92,6 @@ namespace OpenNos.Import.Console
 
                 if (key.KeyChar != 'n')
                 {
-                    //factory.ImportQuests();
                     factory.ImportMaps();
                     factory.LoadMaps();
                     factory.ImportRespawnMapType();
@@ -113,6 +112,7 @@ namespace OpenNos.Import.Console
                     factory.ImportShopItems();
                     factory.ImportShopSkills();
                     factory.ImportRecipe();
+                    factory.ImportQuests();
                 }
                 else
                 {

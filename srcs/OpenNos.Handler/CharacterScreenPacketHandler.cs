@@ -104,6 +104,7 @@ namespace OpenNos.Handler
                     };
 
                     SaveResult insertResult = DaoFactory.CharacterDao.InsertOrUpdate(ref newCharacter);
+                    CharacterQuestDTO firstQuest = new CharacterQuestDTO { CharacterId = newCharacter.CharacterId, QuestId = 1997, IsMainQuest = true };
                     CharacterSkillDTO sk1 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 200};
                     CharacterSkillDTO sk2 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 201};
                     CharacterSkillDTO sk3 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 209};
@@ -136,6 +137,7 @@ namespace OpenNos.Handler
                         Slot = 3,
                         Pos = 1
                     };
+                    DaoFactory.CharacterQuestDao.InsertOrUpdate(firstQuest);
                     DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst1);
                     DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst2);
                     DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst3);
