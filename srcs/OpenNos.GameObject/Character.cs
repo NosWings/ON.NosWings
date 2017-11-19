@@ -3745,6 +3745,14 @@ namespace OpenNos.GameObject
             #region Total Damage
 
             int totalDamage = baseDamage + elementalDamage;
+
+            if (target.HasBuff(CardType.LightAndShadow, (byte)AdditionalTypes.LightAndShadow.InflictDamageToMP))
+            {
+                int manaReduction = (int) (target.GetBuff(CardType.LightAndShadow, (byte)AdditionalTypes.LightAndShadow.InflictDamageToMP)[0] * totalDamage / 100D);
+                manaReduction = target.Mp - manaReduction <= 0 ? target.Mp : manaReduction;
+                totalDamage -= manaReduction;
+                target.Mp = manaReduction;
+            }
             if (totalDamage < 5)
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);
@@ -3766,13 +3774,6 @@ namespace OpenNos.GameObject
 
             #endregion
 
-
-            if (target.HasBuff(CardType.LightAndShadow, (byte) AdditionalTypes.LightAndShadow.InflictDamageToMP))
-            {
-                int manaReduction = (int) ((double)target.GetBuff(CardType.LightAndShadow, (byte) AdditionalTypes.LightAndShadow.InflictDamageToMP)[0] * totalDamage / 100);
-                totalDamage -= manaReduction;
-                target.Mp = target.Mp - manaReduction < 0 ? 0 : target.Mp - manaReduction;
-            }
             if (target.HasBuff(CardType.NoDefeatAndNoDamage,
                 (byte) AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
             {
