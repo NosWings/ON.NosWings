@@ -513,7 +513,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            AddQuest((long)questToRemove.Quest.NextQuestId, questToRemove.IsMainQuest);
+            AddQuest((long) questToRemove.Quest.NextQuestId, questToRemove.IsMainQuest);
         }
 
         public string GenerateQuestsPacket()
@@ -655,11 +655,7 @@ namespace OpenNos.GameObject
         public void LoadQuests()
         {
             Quests = new ConcurrentBag<CharacterQuest>();
-            foreach (CharacterQuestDTO characterQuest in DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId))
-            {
-                CharacterQuest quest = new CharacterQuest(characterQuest);
-                Quests.Add(quest);
-            }
+            DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).ToList().ForEach(q => Quests.Add(new CharacterQuest(q)));
         }
 
         public string GenerateAct6()
@@ -5488,7 +5484,10 @@ namespace OpenNos.GameObject
                         QuestId = qst.QuestId,
                         FirstObjective = qst.FirstObjective,
                         SecondObjective = qst.SecondObjective,
-                        ThirdObjective = qst.ThirdObjective
+                        ThirdObjective = qst.ThirdObjective,
+                        FourthObjective = qst.FourthObjective,
+                        FifthObjective = qst.FifthObjective,
+                        IsMainQuest = qst.IsMainQuest
                     };
                     DaoFactory.CharacterQuestDao.InsertOrUpdate(dto);
                 }

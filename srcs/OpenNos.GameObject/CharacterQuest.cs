@@ -30,8 +30,11 @@ namespace OpenNos.GameObject
             FirstObjective = characterQuestDto.FirstObjective;
             SecondObjective = characterQuestDto.SecondObjective;
             ThirdObjective = characterQuestDto.ThirdObjective;
+            FourthObjective = characterQuestDto.FourthObjective;
+            FifthObjective = characterQuestDto.FifthObjective;
             QuestId = characterQuestDto.QuestId;
             CharacterId = characterQuestDto.CharacterId;
+            IsMainQuest = characterQuestDto.IsMainQuest;
         }
 
         #endregion
