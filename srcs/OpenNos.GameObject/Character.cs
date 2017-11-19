@@ -532,8 +532,6 @@ namespace OpenNos.GameObject
             }
             switch ((QuestType) quest.Quest.QuestType)
             {
-                case QuestType.Collect1:
-                case QuestType.Collect2:
                 case QuestType.Collect3:
                 case QuestType.Collect5:
                     break;
@@ -558,6 +556,8 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                case QuestType.Collect1:
+                case QuestType.Collect2:
                 case QuestType.Collect4:
                 case QuestType.Capture1:
                 case QuestType.Capture2:
@@ -581,7 +581,7 @@ namespace OpenNos.GameObject
                             break;
 
                         case 5:
-                            quest.ThirdObjective++;
+                            quest.FifthObjective++;
                             break;
                     }
                     break;
