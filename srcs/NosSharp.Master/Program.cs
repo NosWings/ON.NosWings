@@ -52,17 +52,10 @@ namespace OpenNos.Master.Server
 
                 // initialize Logger
                 Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
-
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-
-                Console.Title = $"OpenNos Master Server v{fileVersionInfo.ProductVersion}dev";
+                
+                Console.Title = @"[Nos#] Master Server";
                 string ipAddress = ConfigurationManager.AppSettings["MasterIP"];
                 int port = Convert.ToInt32(ConfigurationManager.AppSettings["MasterPort"]);
-                string text = $"MASTER SERVER v{fileVersionInfo.ProductVersion}dev - PORT : {port} by OpenNos Team";
-                int offset = Console.WindowWidth / 2 + text.Length / 2;
-                string separator = new string('=', Console.WindowWidth);
-                Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
 
                 // initialize DB
                 if (!DataAccessHelper.Initialize())
@@ -97,7 +90,7 @@ namespace OpenNos.Master.Server
 
                     CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
-                    Console.Title = $"MASTER SERVER - Channels :{MSManager.Instance.WorldServers.Count} - Players : {MSManager.Instance.ConnectedAccounts.Count}";
+                    Console.Title = $"[Nos#] Master - Players : {MSManager.Instance.ConnectedAccounts.Count}";
                 }
                 catch (Exception ex)
                 {
