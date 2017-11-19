@@ -535,7 +535,6 @@ namespace OpenNos.GameObject
                 case QuestType.Collect1:
                 case QuestType.Collect2:
                 case QuestType.Collect3:
-                case QuestType.Collect4:
                 case QuestType.Collect5:
                     break;
 
@@ -559,6 +558,7 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                case QuestType.Collect4:
                 case QuestType.Capture1:
                 case QuestType.Capture2:
                 case QuestType.Hunt:
@@ -2668,8 +2668,8 @@ namespace OpenNos.GameObject
                         ItemVNum = (short)qst.Quest.FirstData,
                         Amount = 1,
                         MonsterVNum = monsterToAttack.MonsterVNum,
-                        DropId = ServerManager.Instance.GetNextDropId()
-                        /*DropChance = */
+                        DropId = ServerManager.Instance.GetNextDropId(),
+                        DropChance = qst.Quest.SpecialData ?? 0
                     });
                 }
 

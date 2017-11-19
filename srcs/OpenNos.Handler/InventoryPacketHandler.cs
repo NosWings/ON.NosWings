@@ -625,6 +625,20 @@ namespace OpenNos.Handler
                         Session.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                     }
+                    else if (mapItemInstance.Item.ItemType == ItemType.Quest1)
+                    {
+                        int vnum = mapItem.ItemVNum;
+                        foreach (CharacterQuest qst in Session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Collect4))
+                        {
+                            byte data = (byte)(qst.Quest.FirstData == vnum ? 1 : (qst.Quest.SecondData == vnum ? 2 : (qst.Quest.ThirdData == vnum ? 3 : (qst.Quest.FourthData == vnum ? 4 : (qst.Quest.FifthData == vnum ? 5 : 0)))));
+                            if (data != 0)
+                            {
+                                Session.Character.IncrementQuestObjective(qst, data);
+                            }
+                        }
+                        Session.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
+                    }
                     else
                     {
                         lock (Session.Character.Inventory)
