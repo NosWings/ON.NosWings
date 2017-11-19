@@ -478,7 +478,7 @@ namespace OpenNos.GameObject
                     Timestamp = DateTime.Now
                 });
             }
-            if (characterQuest.Quest.QuestType == (int) QuestType.TimesSpace)
+            if (characterQuest.Quest.QuestType == (int) QuestType.TimesSpace || characterQuest.Quest.QuestType == (int) QuestType.Product)
             {
                 AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId, isMain);
                 return;
@@ -492,7 +492,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateQuestsPacket());
         }
 
-        public void RemoveQuest(long questId, bool IsGivingUp)
+        public void RemoveQuest(long questId, bool IsGivingUp = false)
         {
             CharacterQuest questToRemove = Quests.FirstOrDefault(q => q.QuestId == questId);
             if (questToRemove == null)
