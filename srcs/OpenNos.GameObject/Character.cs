@@ -596,23 +596,19 @@ namespace OpenNos.GameObject
                 case QuestType.Needed:
                     break;
 
-                case QuestType.NumberOfKill:
-                    break;
-
-                case QuestType.TsPoint:
-                    break;
-
                 case QuestType.TargetReput:
-                    break;
-
-                case QuestType.TimesSpace:
-                    isFinish = true;
                     break;
 
                 case QuestType.TransmitGold:
                     break;
 
                 case QuestType.YouNeed:
+                    break;
+
+                //TODO : Later 
+                case QuestType.TsPoint:
+                case QuestType.TimesSpace:
+                case QuestType.NumberOfKill:
                     break;
             }
 

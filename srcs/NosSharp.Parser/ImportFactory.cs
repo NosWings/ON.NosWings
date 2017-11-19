@@ -231,9 +231,7 @@ namespace OpenNos.Import.Console
                                 {
                                     return;
                                 }
-                                int? data = null;
-                                int? specialData = null;
-                                int? objective = null;
+                                int? data = null, objective = null, specialData = null, secondSpecialData = null;
                                 switch ((QuestType)quest.QuestType)
                                 {
                                     case QuestType.Hunt:
@@ -250,11 +248,17 @@ namespace OpenNos.Import.Console
                                     case QuestType.Collect3: // ItemVNum - Objective - TsId //
                                     case QuestType.YouNeed: // ItemVNum - Objective - npcVNum //
                                     case QuestType.Needed: // ItemVNum - Objective - npcVNum //
-                                    case QuestType.Collect4: // ItemVNum - Objective - MonsterVNum //
                                     case QuestType.Collect5: // ItemVNum - Objective - npcVNum //
                                         data = int.Parse(currentLine[2]);
                                         objective = int.Parse(currentLine[3]);
                                         specialData = int.Parse(currentLine[1]);
+                                        break;
+
+                                    case QuestType.Collect4: // ItemVNum - Objective - MonsterVNum - DropRate // 
+                                        data = int.Parse(currentLine[2]);
+                                        objective = int.Parse(currentLine[3]);
+                                        specialData = int.Parse(currentLine[1]);
+                                        secondSpecialData = int.Parse(currentLine[4]);
                                         break;
 
                                     case QuestType.TimesSpace: // TS Lvl - Objective - TS Id //
