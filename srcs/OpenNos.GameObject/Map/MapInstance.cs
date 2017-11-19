@@ -211,7 +211,7 @@ namespace OpenNos.GameObject
             _disposed = true;
         }
 
-        public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
+        public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY, bool isQuestItem = false)
         {
             // TODO: Parallelize, if possible.
             try
@@ -241,7 +241,7 @@ namespace OpenNos.GameObject
                 MonsterMapItem droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, owner ?? -1);
                 DroppedList[droppedItem.TransportId] = droppedItem;
                 Broadcast(
-                    $"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
+                    $"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} {(isQuestItem ? 1 : 0)} 0 -1");
             }
             catch (Exception e)
             {

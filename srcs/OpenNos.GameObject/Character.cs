@@ -2659,11 +2659,12 @@ namespace OpenNos.GameObject
                 }
 
                 List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMapInstance.Map.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || s.MapTypeId == null).ToList();
+                List<DropDTO> questDropList = new List<DropDTO>();
 
                 //Drop QuestItem 
-                foreach (CharacterQuest qst in Quests.Where(q => q.Quest.QuestType == (int)QuestType.Collect4 && q.Quest.FirstSpecialData == monsterToAttack.MonsterVNum))
+                foreach (CharacterQuest qst in Quests.Where(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Quest.FirstSpecialData == monsterToAttack.MonsterVNum))
                 {
-                    droplist.Add(new DropDTO()
+                    questDropList.Add(new DropDTO()
                     {
                         ItemVNum = (short)qst.Quest.FirstData,
                         Amount = 1,
@@ -2787,7 +2788,7 @@ namespace OpenNos.GameObject
                 }
                 int dropRate = ServerManager.Instance.DropRate * MapInstance.DropRate;
                 int x = 0;
-                foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
+                foreach (DropDTO drop in droplist.Concat(questDropList).OrderBy(s => random.Next()))
                 {
                     if (x >= 4)
                     {
@@ -2846,7 +2847,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.HasCurrentMapInstance)
                             {
-                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY, questDropList.Contains(drop));
                             }
                         });
                     }
