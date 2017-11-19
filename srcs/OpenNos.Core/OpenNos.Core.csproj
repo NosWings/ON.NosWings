@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C93A0A40-0551-4732-B594-171B87679AC1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenNos.Core</RootNamespace>
+    <AssemblyName>OpenNos.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <StyleCopTreatErrorsAsWarnings>True</StyleCopTreatErrorsAsWarnings>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Expressions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Core.3.1.1\lib\net46\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Linq.3.1.1\lib\net46\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.X509Certificates.4.3.1\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Application.cs" />
+    <Compile Include="Extension.cs" />
+    <Compile Include="Handling\HandlerMethodReference.cs" />
+    <Compile Include="Networking\Communication\Scs\Threading\SequentialItemProcessor.cs" />
+    <Compile Include="Networking\Communication\Scs\Threading\Timer.cs" />
+    <Compile Include="Networking\INetworkClient.cs" />
+    <Compile Include="Handling\IPacketHandler.cs" />
+    <Compile Include="Networking\NetworkClient.cs" />
+    <Compile Include="Serializing\PacketAliasAttribute.cs" />
+    <Compile Include="Extensions\ConcurrentBagExtension.cs" />
+    <Compile Include="Extensions\ConcurrentQueueExtensions.cs" />
+    <Compile Include="DelegateBuilder.cs" />
+    <Compile Include="LoginEncryption.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClient.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClientBuilder.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Communication\AutoConnectRemoteInvokeProxy.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Networking\Communication\ScsServices\Communication\Messages\ScsRemoteException.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Communication\Messages\ScsRemoteInvokeMessage.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Communication\Messages\ScsRemoteInvokeReturnMessage.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Communication\RemoteInvokeProxy.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\IScsServiceApplication.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\IScsServiceClient.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsService.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceApplication.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceAttribute.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceBuilder.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceClient.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceClientFactory.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ServiceClientEventArgs.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\ClientReConnecter.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\IConnectableClient.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\IScsClient.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\ScsClientBase.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\ScsClientFactory.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\Tcp\ScsTcpClient.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\Tcp\TcpHelper.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\CommunicationChannelBase.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\CommunicationChannelEventArgs.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\ConnectionListenerBase.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\ICommunicationChannel.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\IConnectionListener.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\Tcp\TcpCommunicationChannel.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\Tcp\TcpConnectionListener.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\CommunicationException.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\CommunicationStateException.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\CommunicationStates.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\EndPoints\ScsEndPoint.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\EndPoints\Tcp\ScsTcpEndPoint.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\IScsMessage.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\MessageEventArgs.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\PingMessage.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\ScsMessage.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\ScsRawDataMessage.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\ScsTextMessage.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messengers\IMessenger.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messengers\RequestReplyMessenger.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messengers\SynchronizedMessenger.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Protocols\BinarySerialization\BinarySerializationProtocol.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Protocols\BinarySerialization\BinarySerializationProtocolFactory.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Protocols\IScsWireProtocol.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Protocols\IScsWireProtocolFactory.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Protocols\WireProtocolManager.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\IScsServer.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\IScsServerClient.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\ScsServerBase.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\ScsServerClient.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\ScsServerFactory.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\ScsServerManager.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\ServerClientEventArgs.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\Tcp\ScsTcpServer.cs" />
+    <Compile Include="Language.cs" />
+    <Compile Include="EncryptionBase.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Handling\PacketAttribute.cs" />
+    <Compile Include="Networking\WireProtocol.cs" />
+    <Compile Include="Networking\WireProtocolFactory.cs" />
+    <Compile Include="Serializing\PacketHeaderAttribute.cs" />
+    <Compile Include="Serializing\PacketDefinition.cs" />
+    <Compile Include="Serializing\PacketFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializing\PacketIndexAttribute.cs" />
+    <Compile Include="SessionFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Scripts\jquery-3.1.1.min.map" />
+    <None Include="Scripts\jquery-3.1.1.slim.min.map" />
+    <None Include="Scripts\jquery-3.2.1.min.map" />
+    <None Include="Scripts\jquery-3.2.1.slim.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NosSharp.Enums\NosSharp.Enums.csproj">
+      <Project>{20ADDDDD-DAD9-44F3-9BEB-026C73090660}</Project>
+      <Name>NosSharp.Enums</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\jquery-3.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.1.1.js" />
+    <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.2.1.js" />
+    <Content Include="Scripts\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.2.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.2.min.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Ce projet fait référence à des packages NuGet qui sont manquants sur cet ordinateur. Utilisez l'option de restauration des packages NuGet pour les télécharger. Pour plus d'informations, consultez http://go.microsoft.com/fwlink/?LinkID=322105. Le fichier manquant est : {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets'))" />
+  </Target>
+</Project>

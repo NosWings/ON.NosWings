@@ -1,0 +1,513 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EADD17BE-20A4-4589-830E-E41BE9314928}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenNos.GameObject</RootNamespace>
+    <AssemblyName>OpenNos.GameObject</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <StyleCopTreatErrorsAsWarnings>True</StyleCopTreatErrorsAsWarnings>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CloneExtensions, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CloneExtensions.1.4.2\lib\net46\CloneExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Expressions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Core.3.1.1\lib\net46\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Linq.3.1.1\lib\net46\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.X509Certificates.4.3.1\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Act4Stat.cs" />
+    <Compile Include="Act6Stats.cs" />
+    <Compile Include="ArenaTeamMember.cs" />
+    <Compile Include="ArenaMember.cs" />
+    <Compile Include="Buff\Buff.cs" />
+    <Compile Include="Buff\BCard.cs" />
+    <Compile Include="Buff\Card.cs" />
+    <Compile Include="CharacterQuest.cs" />
+    <Compile Include="Event\ACT4\Act4Raid.cs" />
+    <Compile Include="Event\ACT4\Act4Ship.cs" />
+    <Compile Include="Event\ARENA\ArenaEvent.cs" />
+    <Compile Include="Event\EventWave.cs" />
+    <Compile Include="Event\ICEBREAKER\IceBreaker.cs" />
+    <Compile Include="Helpers\CellonGeneratorHelper.cs" />
+    <Compile Include="Helpers\EquipmentOptionHelper.cs" />
+    <Compile Include="Helpers\LogHelper.cs" />
+    <Compile Include="Helpers\MateHelper.cs" />
+    <Compile Include="Helpers\PassiveSkillHelper.cs" />
+    <Compile Include="Helpers\RewardsHelper.cs" />
+    <Compile Include="Helpers\ShellGeneratorHelper.cs" />
+    <Compile Include="Helpers\VipHelper.cs" />
+    <Compile Include="Map\Zone.cs" />
+    <Compile Include="Event\EventContainer.cs" />
+    <Compile Include="Event\Schedule.cs" />
+    <Compile Include="Helpers\EventHelper.cs" />
+    <Compile Include="Event\EventSchedule.cs" />
+    <Compile Include="Event\INSTANTBATTLE\InstantBattle.cs" />
+    <Compile Include="Event\LOD\LOD.cs" />
+    <Compile Include="Event\MINILANDREFRESH\MinilandRefresh.cs" />
+    <Compile Include="Helpers\UserInterfaceHelper.cs" />
+    <Compile Include="Clock.cs" />
+    <Compile Include="Locker.cs" />
+    <Compile Include="Map\MapButton.cs" />
+    <Compile Include="InstanceBag.cs" />
+    <Compile Include="Map\MapInstancePortalHandler.cs" />
+    <Compile Include="NpcToSummon.cs" />
+    <Compile Include="MonsterToSummon.cs" />
+    <Compile Include="Packets\ClientPackets\PslPacket.cs" />
+    <Compile Include="Packets\ClientPackets\QtPacket.cs" />
+    <Compile Include="Packets\ClientPackets\TawPacket.cs" />
+    <Compile Include="Packets\ClientPackets\BscPacket.cs" />
+    <Compile Include="Packets\ClientPackets\BlDelPacket.cs" />
+    <Compile Include="Packets\ClientPackets\BlInsPacket.cs" />
+    <Compile Include="Packets\ClientPackets\BtkPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CreateFamilyPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MzPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SuctlPacket.cs" />
+    <Compile Include="Packets\ClientPackets\TaCallPacket.cs" />
+    <Compile Include="Packets\ClientPackets\EscapePacket.cs" />
+    <Compile Include="Packets\ClientPackets\FamilyChatPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FamilyDismissPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FamilyManagementPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FInsPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GameStartPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GListPacket.cs" />
+    <Compile Include="Packets\ClientPackets\HeroPacket.cs" />
+    <Compile Include="Packets\ClientPackets\JoinFamilyPacket.cs" />
+    <Compile Include="Packets\ClientPackets\NcifPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PdtsePacket.cs" />
+    <Compile Include="Packets\ClientPackets\PstPacket.cs" />
+    <Compile Include="Packets\ClientPackets\QSetPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MkraidPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RlPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ReqInfoPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RequestNpcPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RevivalPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RdPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RSelPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RStartPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RxitPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SellPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ShoppingPacket.cs" />
+    <Compile Include="Packets\ClientPackets\UseItemPacket.cs" />
+    <Compile Include="Packets\CommandPackets\Act4ConnectPacket.cs" />
+    <Compile Include="Packets\CommandPackets\AddPartnerPacket.cs" />
+    <Compile Include="Packets\CommandPackets\AddQuestPacket.cs" />
+    <Compile Include="Packets\CommandPackets\CharacterPacket.cs" />
+    <Compile Include="Packets\CommandPackets\CreateItemPacket.cs" />
+    <Compile Include="Packets\CommandPackets\CreateRaidA4.cs" />
+    <Compile Include="Packets\CommandPackets\MoveCommandPacket.cs" />
+    <Compile Include="Packets\CommandPackets\PetExpPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ShutdownAllPacket.cs" />
+    <Compile Include="Packets\CommandPackets\CharacterEditPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FDelPacket.cs" />
+    <Compile Include="Packets\CommandPackets\StuffPack.cs" />
+    <Compile Include="Packets\CommandPackets\VipTpCommandPacket.cs" />
+    <Compile Include="Packets\CommandPackets\WarningPacket.cs" />
+    <Compile Include="Packets\ServerPackets\TalkPacket.cs" />
+    <Compile Include="Packets\VipPackets\VipCommandPacket.cs" />
+    <Compile Include="Quest.cs" />
+    <Compile Include="ScriptedInstance.cs" />
+    <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GitPacket.cs" />
+    <Compile Include="Packets\ClientPackets\EquipmentInfoPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FDepositPacket.cs" />
+    <Compile Include="Packets\ClientPackets\DepositPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GetGiftPacket.cs" />
+    <Compile Include="Packets\ClientPackets\LoginPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PtCtlSubPacket.cs" />
+    <Compile Include="Packets\ClientPackets\BIPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SitSubPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PtCtlPacket.cs" />
+    <Compile Include="Packets\ClientPackets\NRunPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FReposPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SayPPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SpecialistHolderPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SpTransformPacket.cs" />
+    <Compile Include="Packets\ClientPackets\StashEndPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ReposPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FWithdrawPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RemovePacket.cs" />
+    <Compile Include="Packets\ClientPackets\UpgradePacket.cs" />
+    <Compile Include="Packets\ClientPackets\WithdrawPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MinigamePacket.cs" />
+    <Compile Include="Packets\ClientPackets\UseobjPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RmvobjPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MLEditPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MJoinPacket.cs" />
+    <Compile Include="Packets\CommandPackets\AddPetPacket.cs" />
+    <Compile Include="Packets\CommandPackets\BanPacket.cs" />
+    <Compile Include="Packets\CommandPackets\BlockExpPacket.cs" />
+    <Compile Include="Packets\CommandPackets\BlockFExpPacket.cs" />
+    <Compile Include="Packets\CommandPackets\BlockRepPacket.cs" />
+    <Compile Include="Packets\CommandPackets\HeroXpRatePacket.cs" />
+    <Compile Include="Packets\CommandPackets\MutePacket.cs" />
+    <Compile Include="Packets\CommandPackets\ArenaWinnerPacket.cs" />
+    <Compile Include="Packets\CommandPackets\BackpackPacket.cs" />
+    <Compile Include="Packets\CommandPackets\BlockPMPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChangeSexPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChannelInfoPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ClearInventoryPacket.cs" />
+    <Compile Include="Packets\CommandPackets\EventPacket.cs" />
+    <Compile Include="Packets\CommandPackets\GiftPacket.cs" />
+    <Compile Include="Packets\CommandPackets\GodModePacket.cs" />
+    <Compile Include="Packets\CommandPackets\HelpPacket.cs" />
+    <Compile Include="Packets\CommandPackets\InvisiblePacket.cs" />
+    <Compile Include="Packets\CommandPackets\MapDancePacket.cs" />
+    <Compile Include="Packets\CommandPackets\MapPVPPacket.cs" />
+    <Compile Include="Packets\CommandPackets\MorphPacket.cs" />
+    <Compile Include="Packets\CommandPackets\PacketCallbackPacket.cs" />
+    <Compile Include="Packets\CommandPackets\PositionPacket.cs" />
+    <Compile Include="Packets\CommandPackets\RemoveMobPacket.cs" />
+    <Compile Include="Packets\CommandPackets\RemovePortalPacket.cs" />
+    <Compile Include="Packets\CommandPackets\SearchItemPacket.cs" />
+    <Compile Include="Packets\CommandPackets\SearchMonsterPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ShoutHerePacket.cs" />
+    <Compile Include="Packets\CommandPackets\ShoutPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ShutdownPacket.cs" />
+    <Compile Include="Packets\CommandPackets\SPRefillPacket.cs" />
+    <Compile Include="Packets\CommandPackets\StatCommandPacket.cs" />
+    <Compile Include="Packets\CommandPackets\SummonNPCPacket.cs" />
+    <Compile Include="Packets\CommandPackets\TeleportPacket.cs" />
+    <Compile Include="Packets\CommandPackets\UndercoverPacket.cs" />
+    <Compile Include="Packets\ServerPackets\RaidListPacket.cs" />
+    <Compile Include="Packets\ServerPackets\WreqPacket.cs" />
+    <Compile Include="Packets\ServerPackets\TreqPacket.cs" />
+    <Compile Include="Packets\ServerPackets\WpPacket.cs" />
+    <Compile Include="Portal.cs" />
+    <Compile Include="BazaarItemLink.cs" />
+    <Compile Include="Account.cs" />
+    <Compile Include="Character.cs" />
+    <Compile Include="ExchangeInfo.cs" />
+    <Compile Include="FamilyCharacter.cs" />
+    <Compile Include="Helpers\MappingHelper.cs" />
+    <Compile Include="Item\FoodItem.cs" />
+    <Compile Include="Item\Instance\BoxInstance.cs" />
+    <Compile Include="Item\MagicalItem.cs" />
+    <Compile Include="Item\ProduceItem.cs" />
+    <Compile Include="Item\SnackItem.cs" />
+    <Compile Include="Item\PotionItem.cs" />
+    <Compile Include="Item\SpecialItem.cs" />
+    <Compile Include="Item\BoxItem.cs" />
+    <Compile Include="Item\TeacherItem.cs" />
+    <Compile Include="Item\UpgradeItem.cs" />
+    <Compile Include="Item\NoFunctionItem.cs" />
+    <Compile Include="Item\WearableItem.cs" />
+    <Compile Include="CharacterMapItem.cs" />
+    <Compile Include="Map\Map.cs" />
+    <Compile Include="Group.cs" />
+    <Compile Include="Map\MapCell.cs" />
+    <Compile Include="Map\MapInstance.cs" />
+    <Compile Include="Map\MapMonster.cs" />
+    <Compile Include="MonsterMapItem.cs" />
+    <Compile Include="Networking\BroadcastableBase.cs" />
+    <Compile Include="Networking\HitRequest.cs" />
+    <Compile Include="Networking\SessionManager.cs" />
+    <Compile Include="Networking\TransportFactory.cs" />
+    <Compile Include="NpcMonsterSkill.cs" />
+    <Compile Include="Map\MapNpc.cs" />
+    <Compile Include="Npc\NRunHandler.cs" />
+    <Compile Include="Packets\ClientPackets\CScalcPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CBuyPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CharacterOptionPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CBlistPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CSlistPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ExchangeListPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ExchangeRequestPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CClosePacket.cs" />
+    <Compile Include="Packets\ClientPackets\FhisctsPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FrankCtsPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GetPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FStashEndPacket.cs" />
+    <Compile Include="Packets\ClientPackets\DirectionPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GuriPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CRegPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MallPacket.cs" />
+    <Compile Include="Packets\ClientPackets\NpinfoPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PclPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CSkillPacket.cs" />
+    <Compile Include="Packets\ClientPackets\FAuthPacket.cs" />
+    <Compile Include="Packets\ClientPackets\TodayPacket.cs" />
+    <Compile Include="Packets\ClientPackets\WhisperPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PLeavePacket.cs" />
+    <Compile Include="Packets\ClientPackets\PreqPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GroupSayPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SayPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SelectPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SitPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PulsePacket.cs" />
+    <Compile Include="Packets\ClientPackets\MultiTargetListSubPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MvePacket.cs" />
+    <Compile Include="Packets\ClientPackets\MviPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PJoinPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MultiTargetListPacket.cs" />
+    <Compile Include="Packets\ClientPackets\LbsPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ShopClosePacket.cs" />
+    <Compile Include="Packets\ClientPackets\UseAOESkillPacket.cs" />
+    <Compile Include="Packets\ClientPackets\UseSkillPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SnapPacket.cs" />
+    <Compile Include="Packets\ClientPackets\WalkPacket.cs" />
+    <Compile Include="Packets\CommandPackets\AddMonsterPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChangeClassPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChangeDignityPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChangeFairyLevelPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChangeHeroLevelPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChangeJobLevelPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChangeLevelPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChangeReputationPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChangeSpecialistLevelPacket.cs" />
+    <Compile Include="Packets\CommandPackets\CharacterStatsPacket.cs" />
+    <Compile Include="Packets\CommandPackets\DemotePacket.cs" />
+    <Compile Include="Packets\CommandPackets\DropRatePacket.cs" />
+    <Compile Include="Packets\CommandPackets\EffectCommandPacket.cs" />
+    <Compile Include="Packets\CommandPackets\FairyXpRatePacket.cs" />
+    <Compile Include="Packets\CommandPackets\GoldDropRatePacket.cs" />
+    <Compile Include="Packets\CommandPackets\GoldPacket.cs" />
+    <Compile Include="Packets\CommandPackets\GoldRatePacket.cs" />
+    <Compile Include="Packets\CommandPackets\GuriCommandPacket.cs" />
+    <Compile Include="Packets\CommandPackets\HairColorPacket.cs" />
+    <Compile Include="Packets\CommandPackets\HairStylePacket.cs" />
+    <Compile Include="Packets\CommandPackets\KickSessionPacket.cs" />
+    <Compile Include="Packets\CommandPackets\KickPacket.cs" />
+    <Compile Include="Packets\CommandPackets\KillPacket.cs" />
+    <Compile Include="Packets\CommandPackets\MusicPacket.cs" />
+    <Compile Include="Packets\CommandPackets\PortalToPacket.cs" />
+    <Compile Include="Packets\CommandPackets\PromotePacket.cs" />
+    <Compile Include="Packets\CommandPackets\RarifyPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ResizePacket.cs" />
+    <Compile Include="Packets\CommandPackets\AddSkillPacket.cs" />
+    <Compile Include="Packets\CommandPackets\SpeedPacket.cs" />
+    <Compile Include="Packets\CommandPackets\SummonPacket.cs" />
+    <Compile Include="Packets\CommandPackets\TeleportToMePacket.cs" />
+    <Compile Include="Packets\CommandPackets\UnbanPacket.cs" />
+    <Compile Include="Packets\CommandPackets\UnmutePacket.cs" />
+    <Compile Include="Packets\CommandPackets\UpgradeCommandPacket.cs" />
+    <Compile Include="Packets\CommandPackets\WigColorPacket.cs" />
+    <Compile Include="Packets\CommandPackets\XpRatePacket.cs" />
+    <Compile Include="Packets\CommandPackets\ZoomPacket.cs" />
+    <Compile Include="Packets\ServerPackets\Act6Packet.cs" />
+    <Compile Include="Packets\ServerPackets\BfPacket.cs" />
+    <Compile Include="Packets\ServerPackets\BuyPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CharacterCreatePacket.cs" />
+    <Compile Include="Packets\ClientPackets\CharacterDeletePacket.cs" />
+    <Compile Include="Packets\ClientPackets\CharacterRenamePacket.cs" />
+    <Compile Include="Packets\ServerPackets\CListPacket.cs" />
+    <Compile Include="Packets\ServerPackets\DialogPacket.cs" />
+    <Compile Include="Packets\ServerPackets\EffectPacket.cs" />
+    <Compile Include="Packets\ServerPackets\EqPacket.cs" />
+    <Compile Include="Packets\ServerPackets\EquipPacket.cs" />
+    <Compile Include="Packets\ServerPackets\GetPacket.cs" />
+    <Compile Include="Packets\ServerPackets\HeroPacket.cs" />
+    <Compile Include="Packets\ServerPackets\InPacket.cs" />
+    <Compile Include="Packets\ServerPackets\MovePacket.cs" />
+    <Compile Include="Packets\ServerPackets\MviPacket.cs" />
+    <Compile Include="Packets\ServerPackets\NcifPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PutPacket.cs" />
+    <Compile Include="Packets\ServerPackets\RemovePacket.cs" />
+    <Compile Include="Packets\ServerPackets\SayPacket.cs" />
+    <Compile Include="Packets\ServerPackets\SelectPacket.cs" />
+    <Compile Include="Packets\ServerPackets\StatPacket.cs" />
+    <Compile Include="Packets\ServerPackets\UseItemPacket.cs" />
+    <Compile Include="Packets\ServerPackets\UseObjPacket.cs" />
+    <Compile Include="Packets\ServerPackets\VbPacket.cs" />
+    <Compile Include="Packets\ClientPackets\WearPacket.cs" />
+    <Compile Include="Packets\ServerPackets\WithDrawPacket.cs" />
+    <Compile Include="Gift.cs" />
+    <Compile Include="Mate.cs" />
+    <Compile Include="Recipe.cs" />
+    <Compile Include="MinilandObject.cs" />
+    <Compile Include="Shop.cs" />
+    <Compile Include="Item\Item.cs" />
+    <Compile Include="Inventory.cs" />
+    <Compile Include="PersonalShopItem.cs" />
+    <Compile Include="Map\MapShop.cs" />
+    <Compile Include="Map\MapItem.cs" />
+    <Compile Include="Item\Instance\ItemInstance.cs" />
+    <Compile Include="Networking\ClientSession.cs" />
+    <Compile Include="Networking\ServerManager.cs" />
+    <Compile Include="Networking\BroadcastPacket.cs" />
+    <Compile Include="Networking\NetworkManager.cs" />
+    <Compile Include="Npc\NpcMonster.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helpers\CharacterHelper.cs" />
+    <Compile Include="Family.cs" />
+    <Compile Include="Skill.cs" />
+    <Compile Include="CharacterSkill.cs" />
+    <Compile Include="Item\Instance\SpecialistInstance.cs" />
+    <Compile Include="Item\Instance\WearableInstance.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
+      <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
+      <Name>OpenNos.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
+      <Project>{175C851B-8DC8-43A5-AF93-AF32D106CD77}</Project>
+      <Name>OpenNos.DAL.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.DAL\OpenNos.DAL.csproj">
+      <Project>{d8c8a266-3d46-42c5-a492-28c75db85ba8}</Project>
+      <Name>OpenNos.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
+      <Project>{f1071ded-3d92-4416-9b9c-8664441ade64}</Project>
+      <Name>OpenNos.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NosSharp.Enums\NosSharp.Enums.csproj">
+      <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
+      <Name>NosSharp.Enums</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.Master.Library\OpenNos.Master.Library.csproj">
+      <Project>{8FABDA5B-C873-4E32-A78F-08A9A4768595}</Project>
+      <Name>OpenNos.Master.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.PathFinder\OpenNos.PathFinder.csproj">
+      <Project>{4BC2B4B0-2A38-4274-98A2-37CEF5F03B42}</Project>
+      <Name>OpenNos.PathFinder</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\NETStandard.Library.2.0.0\build\NETStandard.Library.targets" Condition="Exists('..\..\packages\NETStandard.Library.2.0.0\build\NETStandard.Library.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Ce projet fait référence à des packages NuGet qui sont manquants sur cet ordinateur. Utilisez l'option de restauration des packages NuGet pour les télécharger. Pour plus d'informations, consultez http://go.microsoft.com/fwlink/?LinkID=322105. Le fichier manquant est : {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\NETStandard.Library.2.0.1\build\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NETStandard.Library.2.0.0\build\NETStandard.Library.targets'))" />
+    <Error Condition="!Exists('..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />
+</Project>
