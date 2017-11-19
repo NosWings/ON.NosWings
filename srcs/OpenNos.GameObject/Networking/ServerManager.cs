@@ -68,6 +68,8 @@ namespace OpenNos.GameObject
 
         private List<DropDTO> _generalDrops;
 
+        private short _lastDropId;
+
         private long _lastGroupId;
 
         public ConcurrentDictionary<long, Group> _groups;
@@ -853,6 +855,11 @@ namespace OpenNos.GameObject
             return Mapinstances.Values.Where(s => s.MapInstanceType == type);
         }
 
+        public short GetNextDropId()
+        {
+            return _lastDropId++;
+        }
+
         public long GetNextGroupId()
         {
             _lastGroupId++;
@@ -1146,6 +1153,7 @@ namespace OpenNos.GameObject
                     _generalDrops = monsterDropGrouping.ToList();
                 }
             });
+            _lastDropId = (short)(_generalDrops.OrderBy(d => d.DropId).FirstOrDefault().DropId + 1);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.Sum(i => i.Value.Count)));
 
             // initialize monsterskills

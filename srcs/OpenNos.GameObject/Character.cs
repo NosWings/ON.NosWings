@@ -2659,6 +2659,20 @@ namespace OpenNos.GameObject
                 }
 
                 List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMapInstance.Map.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || s.MapTypeId == null).ToList();
+
+                //Drop QuestItem 
+                foreach (CharacterQuest qst in Quests.Where(q => q.Quest.QuestType == (int)QuestType.Collect4 && q.Quest.FirstSpecialData == monsterToAttack.MonsterVNum))
+                {
+                    droplist.Add(new DropDTO()
+                    {
+                        ItemVNum = (short)qst.Quest.FirstData,
+                        Amount = 1,
+                        MonsterVNum = monsterToAttack.MonsterVNum,
+                        DropId = ServerManager.Instance.GetNextDropId()
+                        /*DropChance = */
+                    });
+                }
+
                 if (monsterToAttack.Monster.MonsterType == MonsterType.Special)
                 {
                     return;
