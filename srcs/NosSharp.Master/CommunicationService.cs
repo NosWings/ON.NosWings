@@ -26,6 +26,7 @@ using System.Configuration;
 using System.Linq;
 using Newtonsoft.Json;
 using OpenNos.Data;
+using OpenNos.GameObject;
 
 namespace OpenNos.Master.Server
 {
@@ -110,7 +111,7 @@ namespace OpenNos.Master.Server
             {
                 return act4Channel.Serializable;
             }
-            act4Channel = MSManager.Instance.WorldServers.FirstOrDefault(s => s.WorldGroup == worldGroup);
+            act4Channel = MSManager.Instance.WorldServers.FirstOrDefault(s => s.ChannelId == 51);
             if (act4Channel == null)
             {
                 return null;
@@ -288,6 +289,18 @@ namespace OpenNos.Master.Server
             {
                 return null;
             }
+            if (MSManager.Instance.WorldServers.Count >= ServerManager.Instance.Act4MinChannels && !MSManager.Instance.WorldServers.Any(w => w.IsAct4))
+            {
+                WorldServer a4 = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIp, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup)
+                {
+                    ServiceClient = CurrentClient,
+                    ChannelId = 51,
+                    Serializable = new SerializableWorldServer(worldServer.Id, worldServer.EndPointIp, worldServer.EndPointPort, worldServer.AccountLimit, worldServer.WorldGroup),
+                    IsAct4 = true
+                };
+                MSManager.Instance.WorldServers.Add(a4);
+                return a4.ChannelId;
+            }
             WorldServer ws = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIp, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup)
             {
                 ServiceClient = CurrentClient,
@@ -320,6 +333,11 @@ namespace OpenNos.Master.Server
 
                 int currentlyConnectedAccounts = MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.ChannelId == world.ChannelId);
                 int channelcolor = (int)Math.Round((double)currentlyConnectedAccounts / world.AccountLimit * 20) + 1;
+
+                if (world.ChannelId == 51)
+                {
+                    continue;
+                }
 
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
             }

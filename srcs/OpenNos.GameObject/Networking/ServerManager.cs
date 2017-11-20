@@ -209,6 +209,8 @@ namespace OpenNos.GameObject
 
         public short Port { get; set; }
 
+        public byte Act4MinChannels { get; set; }
+
         public bool InShutdown { get; set; }
 
         public List<Quest> Quests { get; set; }
@@ -1020,6 +1022,7 @@ namespace OpenNos.GameObject
             MaxSpLevel = byte.Parse(ConfigurationManager.AppSettings["MaxSPLevel"]);
             MaxHeroLevel = byte.Parse(ConfigurationManager.AppSettings["MaxHeroLevel"]);
             HeroicStartLevel = byte.Parse(ConfigurationManager.AppSettings["HeroicStartLevel"]);
+            Act4MinChannels = byte.Parse(ConfigurationManager.AppSettings["ChannelsBeforeAct4"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Act4RaidStart = DateTime.Now;
             Act4AngelStat = new Act4Stat();
