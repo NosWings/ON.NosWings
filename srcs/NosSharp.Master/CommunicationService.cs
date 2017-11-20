@@ -495,6 +495,30 @@ namespace OpenNos.Master.Server
             {
                 return false;
             }
+            LogVIPDTO log = DaoFactory.LogVipDao.GetLastByAccountId(character.AccountId);
+
+            if (log == null)
+            {
+                log = new LogVIPDTO
+                {
+                    AccountId = character.AccountId,
+                    Timestamp = DateTime.Now,
+                    VipPack = authority.ToString()
+                };
+                DaoFactory.LogVipDao.InsertOrUpdate(ref log);
+                // FIRST TIME VIP
+            }
+            else
+            {
+                // PRO RATA
+                LogVIPDTO newlog = new LogVIPDTO
+                {
+                    AccountId = character.AccountId,
+                    Timestamp = log.Timestamp.Date.AddMonths(1),
+                    VipPack = authority.ToString(),
+                };
+                DaoFactory.LogVipDao.InsertOrUpdate(ref log);
+            }
             if (!IsAccountConnected(character.AccountId))
             {
                 AccountDTO account = DaoFactory.AccountDao.LoadById(character.AccountId);
