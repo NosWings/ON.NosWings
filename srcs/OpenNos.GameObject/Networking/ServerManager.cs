@@ -1854,7 +1854,7 @@ namespace OpenNos.GameObject
                     ShouldRespawn = false
                 };
                 monster.Initialize(instance);
-                monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<Act4RaidType, FactionType>((Act4RaidType)RandomNumber(0, 3), (FactionType)faction)));
+                monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<Act4RaidType, FactionType>((Act4RaidType)RandomNumber(0, 4), (FactionType)faction)));
                 instance.AddMonster(monster);
                 instance.Broadcast(monster.GenerateIn());
                 Observable.Timer(TimeSpan.FromSeconds(300)).Subscribe(o =>

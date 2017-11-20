@@ -389,7 +389,7 @@ namespace OpenNos.GameObject.Helpers
                                                 sbyte rare = 0;
                                                 if (gift.IsRandomRare)
                                                 {
-                                                    rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 7);
+                                                    rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 8);
                                                 }
                                                 //TODO add random rarity for some object
                                                 if (sess.Character.Level >= grp.Raid.LevelMinimum)
@@ -575,7 +575,7 @@ namespace OpenNos.GameObject.Helpers
                         sbyte rare = 0;
                         if (giveParameters.Item1)
                         {
-                            rare = (sbyte)ServerManager.Instance.RandomNumber(giveParameters.Item5 ? 1 : -2, 7);
+                            rare = (sbyte)ServerManager.Instance.RandomNumber(giveParameters.Item5 ? 1 : -2, 8);
                         }
                         cli.Character.GiftAdd(giveParameters.Item2, giveParameters.Item3, giveParameters.Item4, rare: rare);
                     }
