@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.DAL.
+using OpenNos.DAL;
 
 namespace OpenNos.DAL.Interface
 {
