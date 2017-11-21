@@ -639,16 +639,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void LoadQuests()
-        {
-            Quests = new List<CharacterQuest>();
-            foreach (CharacterQuestDTO characterQuest in DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId))
-            {
-                CharacterQuest quest = new CharacterQuest(characterQuest);
-                Quests.Add(quest);
-            }
-        }
-
         public string GenerateAct6()
         {
             return
@@ -5377,11 +5367,7 @@ namespace OpenNos.GameObject
                 }
 
                 //Quest
-                IEnumerable<long> currentlySavedQuest = DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).Select(s => s.QuestId);
-                foreach (long questToDelete in currentlySavedQuest.Except(Quests.Select(s => s.QuestId)))
-                {
-                    DaoFactory.CharacterQuestDao.Delete(CharacterId, questToDelete);
-                }
+                DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).ToList().ForEach(q => DaoFactory.CharacterQuestDao.Delete(CharacterId, q.QuestId));
                 foreach (CharacterQuest qst in Quests)
                 {
                     CharacterQuestDTO dto = new CharacterQuestDTO()
