@@ -214,6 +214,7 @@
     <Compile Include="Controllers\AuthorityController.cs" />
     <Compile Include="Controllers\ControllersParameters\ChangeAuthorityParameter.cs" />
     <Compile Include="Controllers\ControllersParameters\MailPostParameter.cs" />
+    <Compile Include="Controllers\GlacernonController.cs" />
     <Compile Include="Controllers\MailController.cs" />
     <Compile Include="MSManager.cs" />
     <Compile Include="Program.cs" />

@@ -154,6 +154,7 @@
     <Compile Include="RaidDesignType.cs" />
     <Compile Include="SessionType.cs" />
     <Compile Include="ShellOptionType.cs" />
+    <Compile Include="StatsType.cs" />
     <Compile Include="TalentArenaOptionType.cs" />
     <Compile Include="BuffType.cs" />
     <Compile Include="CellonType.cs" />
