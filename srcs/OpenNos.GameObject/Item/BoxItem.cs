@@ -92,7 +92,16 @@ namespace OpenNos.GameObject
                                     }
                                     if (createdItem.ItemType == ItemType.Sell)
                                     {
-                                        rollitem.ItemGeneratedUpgrade = (byte) ServerManager.Instance.RandomNumber(70, 90);
+                                        rollitem.ItemGeneratedUpgrade = (byte) ServerManager.Instance.RandomNumber();
+                                        if (rollitem.ItemGeneratedUpgrade >= 95)
+                                        {
+                                            rollitem.ItemGeneratedUpgrade =
+                                                (byte) ServerManager.Instance.RandomNumber(80, 91);
+                                        }
+                                        else
+                                        {
+                                            rollitem.ItemGeneratedUpgrade = (byte)ServerManager.Instance.RandomNumber(70, 80);
+                                        }
                                     }
                                     newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, rare: box.Rare, upgrade: rollitem.ItemGeneratedUpgrade);
                                     if (!newInv.Any())
