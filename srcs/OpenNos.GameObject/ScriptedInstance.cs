@@ -374,7 +374,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case "OnTimeElapsed":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.ONTIMEELAPSED, new Tuple<short, ConcurrentBag<EventContainer>>(short.Parse(mapevent?.Attributes["Value"]?.Value), GenerateEvent(mapevent, mapinstance))));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.ONTIMEELAPSED, new Tuple<int, ConcurrentBag<EventContainer>>(int.Parse(mapevent?.Attributes["Value"]?.Value), GenerateEvent(mapevent, mapinstance))));
                         break;
 
                     case "ControlMonsterInRange":

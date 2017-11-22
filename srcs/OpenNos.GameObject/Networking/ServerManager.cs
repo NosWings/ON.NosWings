@@ -2024,6 +2024,7 @@ namespace OpenNos.GameObject
         private void LoadScriptedInstances()
         {
             Raids = new List<ScriptedInstance>();
+            Act4Raids = new List<ScriptedInstance>();
             Parallel.ForEach(Mapinstances, map =>
             {
                 foreach (ScriptedInstanceDTO scriptedInstanceDto in DaoFactory.ScriptedInstanceDao.LoadByMap(map.Value.Map.MapId).ToList())
