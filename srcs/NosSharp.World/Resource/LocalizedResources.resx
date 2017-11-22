@@ -1636,4 +1636,7 @@
   <data name="MATE_WILL_BE_BACK" xml:space="preserve">
     <value>Mate died !  he will be back in 3 min</value>
   </data>
+  <data name="LOW_RAID_LEVEL" xml:space="preserve">
+    <value>You must be level {0} to join the raid.</value>
+  </data>
 </root>
