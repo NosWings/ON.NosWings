@@ -664,7 +664,7 @@ namespace OpenNos.GameObject
                 ServerManager.Instance.Act4RaidStart = DateTime.Now;
             }
             double seconds = (ServerManager.Instance.Act4RaidStart.AddMinutes(60) - DateTime.Now).TotalSeconds;
-            return $"dg {Session?.Character?.Family?.Act4Raid.Id ?? 0 + 1} {(seconds > 1800 ? 1 : 2)} {(int)seconds} 0";
+            return $"dg {(Session?.Character?.Family?.Act4Raid.Id ?? 0) + 1} {(seconds > 1800 ? 1 : 2)} {(int)seconds} 0";
         }
 
         public bool AddPet(Mate mate)
