@@ -647,15 +647,16 @@ namespace OpenNos.Handler
                         return;
                     case (sbyte)PortalType.BlueRaid:
                     case (sbyte)PortalType.DarkRaid:
-                        if ((byte)Session.Character.Faction == (portal.Type - 9) && Session.Character.Family?.Act4Raid?.FirstMap != null)
+                        ScriptedInstance raid = Session.Character.Family?.Act4Raid;
+                        if ((byte)Session.Character.Faction == (portal.Type - 9) && raid?.FirstMap != null)
                         {
-                            if (Session.Character.Family.Act4Raid.LevelMinimum > Session.Character.Level)
+                            if (raid.LevelMinimum > Session.Character.Level)
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOW_RAID_LEVEL"), Session.Character.Family.Act4Raid.LevelMinimum), 10));
+                                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOW_RAID_LEVEL"), raid.LevelMinimum), 10));
                                 return;
                             }
                             Session.Character.LastPortal = currentRunningSeconds;
-                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.Act4Raid.FirstMap.MapInstanceId, portal.DestinationX, portal.DestinationY);
+                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, raid.FirstMap.MapInstanceId, raid.StartX, raid.StartY);
                         }
                         else
                         {
