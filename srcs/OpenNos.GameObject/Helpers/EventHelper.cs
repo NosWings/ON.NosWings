@@ -607,20 +607,6 @@ namespace OpenNos.GameObject.Helpers
                     evt.MapInstance.SummonMonsters(summonParameters);
                     break;
 
-                case EventActionType.MAPGIVE:
-                    // 1 = isRandomRare // 2 = VNum // 3 = Amount // 4 = Design // 5 = IsAct4
-                    Tuple<bool, short, byte, short, bool> giveParameters = (Tuple<bool, short, byte, short, bool>)evt.Parameter;
-                    foreach (ClientSession cli in evt.MapInstance.Sessions)
-                    {
-                        sbyte rare = 0;
-                        if (giveParameters.Item1)
-                        {
-                            rare = (sbyte)ServerManager.Instance.RandomNumber(giveParameters.Item5 ? 1 : -2, 8);
-                        }
-                        cli.Character.GiftAdd(giveParameters.Item2, giveParameters.Item3, giveParameters.Item4, rare: rare);
-                    }
-                    break;
-
                 case EventActionType.REMOVEPORTAL:
                     Portal portalToRemove;
                     if (evt.Parameter is Portal p)
