@@ -3,7 +3,8 @@ using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System.Linq;
 using CloneExtensions;
-
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject.Event
 {
@@ -12,7 +13,7 @@ namespace OpenNos.GameObject.Event
 
         #region Methods
 
-        public static void GenerateRaid(byte type, byte faction)
+        public async static void GenerateRaid(byte type, byte faction)
         {
             ScriptedInstance raid = ServerManager.Instance.Act4Raids.FirstOrDefault(r => r.Id == type);
             MapInstance lobby = ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 134);
@@ -41,6 +42,14 @@ namespace OpenNos.GameObject.Event
             {
                 family.Act4Raid = ServerManager.Instance.Act4Raids.FirstOrDefault(r => r.Id == type).GetClone();
                 family.Act4Raid.LoadScript(MapInstanceType.RaidInstance);
+            }
+
+            await Task.Delay(60 * 60 * 1000);
+
+            foreach (Family family in ServerManager.Instance.FamilyList)
+            {
+                family.Act4Raid.Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
+                family.Act4Raid = null;
             }
         }
 
