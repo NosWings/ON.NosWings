@@ -46,6 +46,8 @@ namespace OpenNos.GameObject
 
         public List<Gift> GiftItems { get; set; }
 
+        public List<MapInstance> Maps { get; set; }
+
         public long Gold { get; set; }
 
         public string Label { get; set; }
@@ -139,6 +141,7 @@ namespace OpenNos.GameObject
             DrawItems = new List<Gift>();
             SpecialItems = new List<Gift>();
             GiftItems = new List<Gift>();
+            Maps = new List<MapInstance>();
 
             XmlDocument doc = new XmlDocument();
             if (Script != null)
@@ -225,6 +228,7 @@ namespace OpenNos.GameObject
                     }
                     _instancebag.Lives = Lives;
                     MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable?.Attributes?["VNum"].Value), mapinstancetype, _instancebag);
+                    Maps.Add(newmap);
                     byte.TryParse(variable?.Attributes["IndexX"]?.Value, out byte indexx);
                     newmap.MapIndexX = indexx;
 

@@ -647,10 +647,10 @@ namespace OpenNos.Handler
                         return;
                     case (sbyte)PortalType.BlueRaid:
                     case (sbyte)PortalType.DarkRaid:
-                        if ((byte)Session.Character.Faction == (portal.Type - 9) && Session.Character.Family?.Act4Raid != null)
+                        if ((byte)Session.Character.Faction == (portal.Type - 9) && Session.Character.Family?.Act4Raid?.FirstMap != null)
                         {
                             Session.Character.LastPortal = currentRunningSeconds;
-                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.Act4Raid.MapInstanceId, portal.DestinationX, portal.DestinationY);
+                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.Act4Raid.FirstMap.MapInstanceId, portal.DestinationX, portal.DestinationY);
                         }
                         else
                         {
