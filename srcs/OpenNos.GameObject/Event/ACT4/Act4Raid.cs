@@ -1,11 +1,8 @@
 ﻿using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using CloneExtensions;
 
 
 namespace OpenNos.GameObject.Event
@@ -26,12 +23,6 @@ namespace OpenNos.GameObject.Event
                 return;
             }
 
-            raid.LoadScript(MapInstanceType.RaidInstance);
-            if(raid.FirstMap == null)
-            {
-                return;
-            }
-
             lobby.CreatePortal(new Portal()
             {
                 SourceMapId = 134,
@@ -48,7 +39,8 @@ namespace OpenNos.GameObject.Event
 
             foreach (Family family in ServerManager.Instance.FamilyList)
             {
-                family.Act4Raid = raid;
+                family.Act4Raid = ServerManager.Instance.Act4Raids.FirstOrDefault(r => r.Id == type).GetClone();
+                family.Act4Raid.LoadScript(MapInstanceType.RaidInstance);
             }
         }
 
