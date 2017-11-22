@@ -368,6 +368,11 @@ namespace OpenNos.GameObject
                     case "SetButtonLockers":
                         evts.Add(new EventContainer(mapinstance, EventActionType.SETBUTTONLOCKERS, byte.Parse(mapevent?.Attributes["Value"]?.Value)));
                         break;
+
+                    case "OnTimeElapsed":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.ONTIMEELAPSED, new Tuple<short, ConcurrentBag<EventContainer>>(short.Parse(mapevent?.Attributes["Value"]?.Value), GenerateEvent(mapevent, mapinstance))));
+                        break;
+
                     case "ControlMonsterInRange":
                         short.TryParse(mapevent?.Attributes["VNum"]?.Value, out short vnum);
                         evts.Add(new EventContainer(mapinstance, EventActionType.CONTROLEMONSTERINRANGE,

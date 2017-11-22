@@ -57,6 +57,7 @@ namespace OpenNos.Domain
         ACT4RAIDEND,
         CLEARMAPMONSTERS,
         INSTANTBATLLEREWARDS,
-        STARTACT4RAID
+        STARTACT4RAID,
+        ONTIMEELAPSED
     }
 }

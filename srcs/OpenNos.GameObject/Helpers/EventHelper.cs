@@ -643,6 +643,14 @@ namespace OpenNos.GameObject.Helpers
                     }
                     break;
 
+                case EventActionType.ONTIMEELAPSED:
+                    Tuple<int, ConcurrentBag<EventContainer>> timeElapsedEvts = (Tuple<int, ConcurrentBag<EventContainer>>)evt.Parameter;
+                    Observable.Timer(TimeSpan.FromSeconds(timeElapsedEvts.Item1)).Subscribe(e => {
+                        timeElapsedEvts.Item2.ToList().ForEach(ev => RunEvent(ev));
+                    });
+                    break;
+
+
                 #endregion
             }
         }
