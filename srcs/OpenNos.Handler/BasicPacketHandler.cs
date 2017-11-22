@@ -672,15 +672,11 @@ namespace OpenNos.Handler
                         return;
                     case MapInstanceType.RaidInstance:
                         ClientSession leader = Session?.Character?.Group?.Characters?.OrderBy(s => s.Character.LastGroupJoin).ElementAt(0);
-                        if (leader != null)
+                        if (leader != null && Session.Character.CharacterId != leader.Character.CharacterId 
+                                           && leader.CurrentMapInstance.MapInstanceId != portal.DestinationMapInstanceId
+                                           && ServerManager.Instance.GetMapInstance(portal.DestinationMapInstanceId).Monsters.Any(m => m.IsBoss))
                         {
-                            if (Session.Character.CharacterId != leader.Character.CharacterId)
-                            {
-                                if (leader.CurrentMapInstance.MapInstanceId != portal.DestinationMapInstanceId)
-                                {
-                                    ServerManager.Instance.ChangeMapInstance(leader.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
-                                }
-                            }
+                            ServerManager.Instance.ChangeMapInstance(leader.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
                         }
                         break;
                     case MapInstanceType.ArenaInstance:
