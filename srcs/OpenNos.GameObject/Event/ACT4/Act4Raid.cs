@@ -5,6 +5,7 @@ using System.Linq;
 using CloneExtensions;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace OpenNos.GameObject.Event
 {
@@ -20,10 +21,11 @@ namespace OpenNos.GameObject.Event
 
             if (raid == null || lobby == null)
             {
-                Logger.Log.Info(raid == null ? $"Act4 raids is missing - type : {type}" : "There is no map in Act4Maps with MapId == 134");
+                Logger.Log.Error(raid == null ? $"Act4 raids is missing - type : {type}" : "There is no map in Act4Maps with MapId == 134");
                 return;
             }
 
+            ServerManager.Instance.Act4RaidStart = DateTime.Now;
             lobby.CreatePortal(new Portal()
             {
                 SourceMapId = 134,

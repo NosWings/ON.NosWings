@@ -88,6 +88,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The raid {0} is open !.
+        /// </summary>
+        internal static string ACT4_RAID_OPEN {
+            get {
+                return ResourceManager.GetString("ACT4_RAID_OPEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Do you want to add an option on this stuff ? If yes, this item will be link to you only..
         /// </summary>
         internal static string ADD_OPTION_ON_STUFF {

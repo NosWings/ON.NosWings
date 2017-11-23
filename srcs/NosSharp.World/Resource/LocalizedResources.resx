@@ -1639,4 +1639,7 @@
   <data name="LOW_RAID_LEVEL" xml:space="preserve">
     <value>You must be level {0} to join the raid.</value>
   </data>
+  <data name="ACT4_RAID_OPEN" xml:space="preserve">
+    <value>The raid {0} is open !</value>
+  </data>
 </root>
