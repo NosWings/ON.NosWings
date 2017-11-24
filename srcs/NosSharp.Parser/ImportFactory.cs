@@ -354,12 +354,6 @@ namespace OpenNos.Import.Console
                                     quest.FourthObjective = objective;
                                     quest.FourthSpecialData = specialData;
                                 }
-                                else if (quest.FifthData == null)
-                                {
-                                    quest.FourthData = data;
-                                    quest.FourthObjective = objective;
-                                    quest.FourthSpecialData = specialData;
-                                }
                                 break;
 
                             case "PRIZE":

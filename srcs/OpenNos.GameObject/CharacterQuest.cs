@@ -31,7 +31,6 @@ namespace OpenNos.GameObject
             SecondObjective = characterQuestDto.SecondObjective;
             ThirdObjective = characterQuestDto.ThirdObjective;
             FourthObjective = characterQuestDto.FourthObjective;
-            FifthObjective = characterQuestDto.FifthObjective;
             QuestId = characterQuestDto.QuestId;
             CharacterId = characterQuestDto.CharacterId;
             IsMainQuest = characterQuestDto.IsMainQuest;

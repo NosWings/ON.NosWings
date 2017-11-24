@@ -291,7 +291,7 @@ namespace OpenNos.GameObject
                                                     int vnum = monster.MonsterVNum;
                                                     foreach (CharacterQuest qst in character.Quests.Where(q => q.Quest.QuestType == (int) QuestType.Capture1 || q.Quest.QuestType == (int) QuestType.Capture2))
                                                     {
-                                                        byte data = (byte)(qst.Quest.FirstData == vnum ? 1 : (qst.Quest.SecondData == vnum ? 2 : (qst.Quest.ThirdData == vnum ? 3 : (qst.Quest.FourthData == vnum ? 4 : (qst.Quest.FifthData == vnum ? 5 : 0)))));
+                                                        byte data = (byte)(qst.Quest.FirstData == vnum ? 1 : (qst.Quest.SecondData == vnum ? 2 : (qst.Quest.ThirdData == vnum ? 3 : (qst.Quest.FourthData == vnum ? 4 : 0))));
                                                         if (data != 0)
                                                         {
                                                             character.IncrementQuestObjective(qst, data);
