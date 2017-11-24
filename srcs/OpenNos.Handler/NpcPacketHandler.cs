@@ -879,9 +879,9 @@ namespace OpenNos.Handler
 
                 foreach (CharacterQuest qst in Session.Character.Quests.Where(q => ((q.Quest.QuestType == (int) QuestType.Dialog1 || q.Quest.QuestType == (int) QuestType.Dialog2) && q.Quest.FirstData == npc.NpcVNum) // Quest dialog
                 || (q.Quest.QuestType == (int) QuestType.Wear && q.Quest.FirstSpecialData == npc.NpcVNum && Session.Character.Inventory.Any(i => i.Value.ItemVNum == q.Quest.FirstData && i.Value.Type == InventoryType.Wear)) // Quest wear
-                || (q.Quest.QuestType == (int) QuestType.Brings && q.Quest.FirstData == npc.NpcVNum && Session.Character.Inventory.Where(i => i.Value.ItemVNum == q.Quest.FirstSpecialData).Count() > q.Quest.FirstObjective))) // Quest brings
+                || ((q.Quest.QuestType == (int) QuestType.Brings || q.Quest.QuestType == (int) QuestType.YouNeed) && q.Quest.FirstData == npc.NpcVNum && Session.Character.Inventory.Where(i => i.Value.ItemVNum == q.Quest.FirstSpecialData).Count() > q.Quest.FirstObjective))) // Quest brings & Needed Quest
                 {
-                    if (qst.Quest.QuestType == (int) QuestType.Brings)
+                    if (qst.Quest.QuestType == (int) QuestType.Brings || qst.Quest.QuestType == (int) QuestType.YouNeed)
                     {
                         Session.Character.Inventory.RemoveItemAmount((int)qst.Quest.FirstSpecialData, qst.Quest.FirstObjective);
                     }

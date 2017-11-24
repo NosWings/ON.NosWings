@@ -245,7 +245,6 @@ namespace OpenNos.Import.Console
 
                                     case QuestType.Brings: // npcVNum - ItemCount - ItemVNum //
                                     case QuestType.Collect3: // ItemVNum - Objective - TsId //
-                                    case QuestType.YouNeed: // ItemVNum - Objective - npcVNum //
                                     case QuestType.Needed: // ItemVNum - Objective - npcVNum //
                                     case QuestType.Collect5: // ItemVNum - Objective - npcVNum //
                                         data = int.Parse(currentLine[2]);
@@ -314,6 +313,7 @@ namespace OpenNos.Import.Console
                                         specialData = int.Parse(currentLine[2]);
                                         break;
 
+                                    case QuestType.YouNeed: // npcVNum - Objective - ItemVNum //
                                     default:
                                         data = int.Parse(currentLine[1]);
                                         objective = int.Parse(currentLine[2]);
