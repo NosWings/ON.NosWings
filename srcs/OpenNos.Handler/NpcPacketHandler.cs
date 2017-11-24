@@ -874,6 +874,23 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
+
+                #region Quest
+
+                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => ((q.Quest.QuestType == (int) QuestType.Dialog1 || q.Quest.QuestType == (int) QuestType.Dialog2) && q.Quest.FirstData == npc.NpcVNum) // Quest dialog
+                || (q.Quest.QuestType == (int) QuestType.Wear && q.Quest.FirstSpecialData == npc.NpcVNum && Session.Character.Inventory.Any(i => i.Value.ItemVNum == q.Quest.FirstData && i.Value.Type == InventoryType.Wear)) // Quest wear
+                || (q.Quest.QuestType == (int) QuestType.Brings && q.Quest.FirstData == npc.NpcVNum && Session.Character.Inventory.Where(i => i.Value.ItemVNum == q.Quest.FirstSpecialData).Count() > q.Quest.FirstObjective))) // Quest brings
+                {
+                    if (qst.Quest.QuestType == (int) QuestType.Brings)
+                    {
+                        Session.Character.Inventory.RemoveItemAmount((int)qst.Quest.FirstSpecialData, qst.Quest.FirstObjective);
+                    }
+                    Session.Character.IncrementQuestObjective(qst);
+                    return;
+                }
+
+                #endregion
+
                 if (npc.Npc.Drops.Any(s => s.MonsterVNum != null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));
@@ -890,29 +907,6 @@ namespace OpenNos.Handler
                 {
                     Session.SendPacket(npc.GetNpcDialog());
                 }
-                #region Quest
-
-                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => (q.Quest.QuestType == (int)QuestType.Dialog1 || q.Quest.QuestType == (int)QuestType.Dialog2) && q.Quest.FirstData == npc.NpcVNum))
-                {
-                    Session.Character.IncrementQuestObjective(qst);
-                }
-                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Brings && q.Quest.FirstData == npc.NpcVNum))
-                {
-                    if (Session.Character.Inventory.Where(i => i.Value.ItemVNum == qst.Quest.FirstSpecialData).Count() > qst.Quest.FirstObjective)
-                    {
-                        Session.Character.Inventory.RemoveItemAmount((int) qst.Quest.FirstSpecialData, qst.Quest.FirstObjective);
-                        Session.Character.IncrementQuestObjective(qst);
-                    }
-                }
-                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Wear && q.Quest.FirstSpecialData == npc.NpcVNum))
-                {
-                    if (Session.Character.Inventory.Any(i => i.Value.ItemVNum == qst.Quest.FirstData && i.Value.Type == InventoryType.Wear))
-                    {
-                        Session.Character.IncrementQuestObjective(qst);
-                    }
-                }
-
-                #endregion
             }
         }
 
