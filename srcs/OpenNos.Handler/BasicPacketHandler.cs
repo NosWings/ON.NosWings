@@ -1428,7 +1428,7 @@ namespace OpenNos.Handler
                 {
                     EventHelper.Instance.RunEvent(e);
                 });
-                Session.CurrentMapInstance?.OnMoveOnMapEvents?.ToList().RemoveAll(s => s != null);
+                Session.CurrentMapInstance?.OnMoveOnMapEvents?.Clear();
             }
             else
             {
