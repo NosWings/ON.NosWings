@@ -40,6 +40,22 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public LogVIPDTO GetLastByAccountId(long accountId)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<LogVIPDTO>(context.LogVip.LastOrDefault(s => s.AccountId == accountId));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(e);
+                return null;
+            }
+        }
+
         private LogVIPDTO Insert(LogVIPDTO log, OpenNosContext context)
         {
             try

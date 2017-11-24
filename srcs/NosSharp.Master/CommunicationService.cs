@@ -26,6 +26,8 @@ using System.Configuration;
 using System.Linq;
 using Newtonsoft.Json;
 using OpenNos.Data;
+using OpenNos.GameObject;
+using OpenNos.Master.Controllers;
 
 namespace OpenNos.Master.Server
 {
@@ -110,7 +112,7 @@ namespace OpenNos.Master.Server
             {
                 return act4Channel.Serializable;
             }
-            act4Channel = MSManager.Instance.WorldServers.FirstOrDefault(s => s.WorldGroup == worldGroup);
+            act4Channel = MSManager.Instance.WorldServers.FirstOrDefault(s => s.ChannelId == 51);
             if (act4Channel == null)
             {
                 return null;
@@ -271,6 +273,26 @@ namespace OpenNos.Master.Server
             return false;
         }
 
+        public int[] GlacernonStats(sbyte type, short points)
+        {
+            switch (type)
+            {
+                case (sbyte)StatsType.None:
+                    return new[] {GlacernonController.Instance.AngelPercentage, GlacernonController.Instance.DemonPercentage};
+                case (sbyte) StatsType.Angel:
+                    GlacernonController.Instance.AngelPercentage += points;
+                    break;
+                case (sbyte)StatsType.Demon:
+                    GlacernonController.Instance.DemonPercentage += points;
+                    break;
+                case (sbyte)StatsType.Reset:
+                    GlacernonController.Instance.AngelPercentage = 0;
+                    GlacernonController.Instance.DemonPercentage = 0;
+                    break;
+            }
+            return new[] { GlacernonController.Instance.AngelPercentage, GlacernonController.Instance.DemonPercentage };
+        }
+
         public SerializableWorldServer GetPreviousChannelByAccountId(long accountId)
         {
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
@@ -287,6 +309,18 @@ namespace OpenNos.Master.Server
             if (!MSManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
             {
                 return null;
+            }
+            if (MSManager.Instance.WorldServers.Count >= ServerManager.Instance.Act4MinChannels && !MSManager.Instance.WorldServers.Any(w => w.IsAct4))
+            {
+                WorldServer a4 = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIp, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup)
+                {
+                    ServiceClient = CurrentClient,
+                    ChannelId = 51,
+                    Serializable = new SerializableWorldServer(worldServer.Id, worldServer.EndPointIp, worldServer.EndPointPort, worldServer.AccountLimit, worldServer.WorldGroup),
+                    IsAct4 = true
+                };
+                MSManager.Instance.WorldServers.Add(a4);
+                return a4.ChannelId;
             }
             WorldServer ws = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIp, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup)
             {
@@ -320,6 +354,11 @@ namespace OpenNos.Master.Server
 
                 int currentlyConnectedAccounts = MSManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.ChannelId == world.ChannelId);
                 int channelcolor = (int)Math.Round((double)currentlyConnectedAccounts / world.AccountLimit * 20) + 1;
+
+                if (world.ChannelId == 51)
+                {
+                    continue;
+                }
 
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
             }
@@ -494,6 +533,30 @@ namespace OpenNos.Master.Server
             if (character == null)
             {
                 return false;
+            }
+            LogVIPDTO log = DaoFactory.LogVipDao.GetLastByAccountId(character.AccountId);
+
+            if (log == null)
+            {
+                log = new LogVIPDTO
+                {
+                    AccountId = character.AccountId,
+                    Timestamp = DateTime.Now,
+                    VipPack = authority.ToString()
+                };
+                DaoFactory.LogVipDao.InsertOrUpdate(ref log);
+                // FIRST TIME VIP
+            }
+            else
+            {
+                // PRO RATA
+                LogVIPDTO newlog = new LogVIPDTO
+                {
+                    AccountId = character.AccountId,
+                    Timestamp = log.Timestamp.Date.AddMonths(1),
+                    VipPack = authority.ToString(),
+                };
+                DaoFactory.LogVipDao.InsertOrUpdate(ref log);
             }
             if (!IsAccountConnected(character.AccountId))
             {

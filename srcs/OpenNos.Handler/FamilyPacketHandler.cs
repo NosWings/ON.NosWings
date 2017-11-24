@@ -246,10 +246,10 @@ namespace OpenNos.Handler
             switch (Session.Account.Authority)
             {
                 case AuthorityType.GameMaster:
-                    ccmsg = $"[GM {Session.Character.Name}]:{msg}";
+                    ccmsg = $"[{Session.Character.Name}]:{msg}";
                     break;
                 case AuthorityType.Moderator:
-                    ccmsg = $"[Support {Session.Character.Name}]:{msg}";
+                    ccmsg = $"[{Session.Character.Name}]:{msg}";
                     break;
             }
             LogHelper.Instance.InsertChatLog(ChatType.Family, Session.Character.CharacterId, familyChatPacket.Message, Session.IpAddress);

@@ -211,6 +211,8 @@ namespace OpenNos.GameObject
 
         public short Port { get; set; }
 
+        public byte Act4MinChannels { get; set; }
+
         public bool InShutdown { get; set; }
 
         public List<Quest> Quests { get; set; }
@@ -522,7 +524,7 @@ namespace OpenNos.GameObject
         {
             InBazaarRefreshMode = true;
             CommunicationServiceClient.Instance.UpdateBazaar(ServerGroup, bazaarItemId);
-            SpinWait.SpinUntil(() => !InBazaarRefreshMode, TimeSpan.FromSeconds(5));
+            SpinWait.SpinUntil(() => !InBazaarRefreshMode);
         }
 
         public void ChangeMap(long id, short? mapId = null, short? mapX = null, short? mapY = null)
@@ -1027,6 +1029,7 @@ namespace OpenNos.GameObject
             MaxSpLevel = byte.Parse(ConfigurationManager.AppSettings["MaxSPLevel"]);
             MaxHeroLevel = byte.Parse(ConfigurationManager.AppSettings["MaxHeroLevel"]);
             HeroicStartLevel = byte.Parse(ConfigurationManager.AppSettings["HeroicStartLevel"]);
+            Act4MinChannels = byte.Parse(ConfigurationManager.AppSettings["ChannelsBeforeAct4"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Act4RaidStart = DateTime.Now;
             Act4AngelStat = new Act4Stat();
@@ -1862,7 +1865,7 @@ namespace OpenNos.GameObject
                     ShouldRespawn = false
                 };
                 monster.Initialize(instance);
-                monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<Act4RaidType, FactionType>((Act4RaidType)RandomNumber(0, 3), (FactionType)faction)));
+                monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<Act4RaidType, FactionType>((Act4RaidType)RandomNumber(0, 4), (FactionType)faction)));
                 instance.AddMonster(monster);
                 instance.Broadcast(monster.GenerateIn());
                 Observable.Timer(TimeSpan.FromSeconds(300)).Subscribe(o =>

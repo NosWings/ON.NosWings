@@ -56,8 +56,8 @@ namespace OpenNos.GameObject
             Loyalty = 1000;
             PositionY = (short)(owner.PositionY + 1);
             PositionX = (short)(owner.PositionX + 1);
-            MapX = (short)(owner.PositionX + 1);
-            MapY = (short)(owner.PositionY + 1);
+            MapX = ServerManager.Instance.MinilandRandomPos().X;
+            MapY = ServerManager.Instance.MinilandRandomPos().Y;
             Direction = 2;
             CharacterId = owner.CharacterId;
             Owner = owner;

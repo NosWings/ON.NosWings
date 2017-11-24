@@ -595,7 +595,7 @@ namespace OpenNos.GameObject
                     if (Monsters.Count(s => s.IsAlive) == 0)
                     {
                         OnMapClean.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e); });
-                        OnMapClean.ToList().RemoveAll(s => s != null);
+                        OnMapClean.Clear();
                     }
 
                     Parallel.ForEach(Monsters.Where(s => s.Life == null), m => { m.StartLife(); });

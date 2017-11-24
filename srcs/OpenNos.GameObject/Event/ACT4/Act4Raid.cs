@@ -92,8 +92,8 @@ namespace OpenNos.GameObject.Event
                     bossParametter.Add(new MonsterToSummon(629, new MapCell { X = 26, Y = 25 }, null, true) { DeathEvents = new List<EventContainer>() });
                     raidMap = 139;
                     boxVnum = 942;
-                    destX = 0;
-                    destY = 74;
+                    destX = 26;
+                    destY = 7;
                     _bossPortalX = 201;
                     _bossPortalY = 93;
                     break;

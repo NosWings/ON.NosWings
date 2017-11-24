@@ -740,22 +740,19 @@ namespace OpenNos.GameObject
                             List<ItemInstance> newInv = null;
                             foreach (RollGeneratedItemDTO rollitem in rolls)
                             {
-                                if (newInv != null)
+                                if (rollitem.Probability == 10000)
                                 {
+                                    session.Character.GiftAdd(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
                                     continue;
                                 }
                                 currentrnd += rollitem.Probability;
-                                if (currentrnd < rnd)
+                                if (newInv != null || currentrnd < rnd)
                                 {
                                     continue;
                                 }
                                 newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount, upgrade: rollitem.ItemGeneratedUpgrade);
-                                if (!newInv.Any())
-                                {
-                                    continue;
-                                }
                                 short slot = inv.Slot;
-                                if (slot == -1)
+                                if (!newInv.Any() || slot == -1)
                                 {
                                     continue;
                                 }

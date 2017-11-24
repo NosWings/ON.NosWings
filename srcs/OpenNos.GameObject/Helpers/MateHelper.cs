@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using OpenNos.Core;
 
 namespace OpenNos.GameObject.Helpers
@@ -45,6 +48,87 @@ namespace OpenNos.GameObject.Helpers
         #endregion
 
         #region Methods
+
+        #region PetBuffs
+
+        // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
+        public void AddPetBuff(ClientSession session)
+        {
+            IEnumerable<Mate> equipMates = session.Character.Mates.Where(s => s.IsTeamMember);
+            IEnumerable<Mate> mates = equipMates as IList<Mate> ?? equipMates.ToList();
+            // FIBI
+            if (mates.Any(s => s.Monster.NpcMonsterVNum == 670) && session.Character.Buff.All(s => s.Card.CardId != 374))
+            {
+                session.Character.AddBuff(new Buff(374), false);
+            }
+            // PADBRA
+            if (mates.Any(s => s.Monster.NpcMonsterVNum == 836) && session.Character.Buff.All(s => s.Card.CardId != 381))
+            {
+                session.Character.AddBuff(new Buff(381), false);
+            }
+            // INFERNO
+            if (mates.Any(s => s.Monster.NpcMonsterVNum == 2105) && session.Character.Buff.All(s => s.Card.CardId != 383))
+            {
+                session.Character.AddBuff(new Buff(383), false);
+            }
+            // LUCKY PIG
+            if ((mates.Any(s => s.Monster.NpcMonsterVNum == 178) || mates.Any(s => s.Monster.NpcMonsterVNum == 536)) && session.Character.Buff.All(s => s.Card.CardId != 107))
+            {
+                session.Character.AddBuff(new Buff(108), false);
+            }
+            // RUDY LOUBARD
+            if (mates.Any(s => s.Monster.NpcMonsterVNum == 830) && session.Character.Buff.All(s => s.Card.CardId != 377))
+            {
+                session.Character.AddBuff(new Buff(377), false);
+            }
+            // RATUFU COWBOY
+            if (mates.Any(s => s.Monster.NpcMonsterVNum == 844) && session.Character.Buff.All(s => s.Card.CardId != 391))
+            {
+                session.Character.AddBuff(new Buff(391), false);
+            }
+            // RATUFU NAVY
+            if (mates.Any(s => s.Monster.NpcMonsterVNum == 838) && session.Character.Buff.All(s => s.Card.CardId != 385))
+            {
+                session.Character.AddBuff(new Buff(385), false);
+            }
+            // RATUFU INDIEN
+            if (mates.Any(s => s.Monster.NpcMonsterVNum == 842) && session.Character.Buff.All(s => s.Card.CardId != 399))
+            {
+                session.Character.AddBuff(new Buff(399), false);
+            }
+            // RATUFU NINJA
+            if (mates.Any(s => s.Monster.NpcMonsterVNum == 841) && session.Character.Buff.All(s => s.Card.CardId != 394))
+            {
+                session.Character.AddBuff(new Buff(394), false);
+            }
+            // LEO LE LACHE
+            if (mates.Any(s => s.Monster.NpcMonsterVNum == 840) && session.Character.Buff.All(s => s.Card.CardId != 442))
+            {
+                session.Character.AddBuff(new Buff(442), false);
+            }
+            // RATUFU VIKING
+            if (mates.Any(s => s.Monster.NpcMonsterVNum == 843) && session.Character.Buff.All(s => s.Card.CardId != 403))
+            {
+                session.Character.AddBuff(new Buff(403), false);
+            }
+        }
+
+        public void RemovePetBuffs(ClientSession session)
+        {
+            session.Character.RemoveBuff(374);
+            session.Character.RemoveBuff(381);
+            session.Character.RemoveBuff(383);
+            session.Character.RemoveBuff(108);
+            session.Character.RemoveBuff(377);
+            session.Character.RemoveBuff(391);
+            session.Character.RemoveBuff(385);
+            session.Character.RemoveBuff(399);
+            session.Character.RemoveBuff(394);
+            session.Character.RemoveBuff(442);
+            session.Character.RemoveBuff(403);
+        }
+
+        #endregion PetBuffs
 
         #region Concentrate
 

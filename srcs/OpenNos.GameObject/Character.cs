@@ -649,12 +649,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void LoadQuests()
-        {
-            Quests = new ConcurrentBag<CharacterQuest>();
-            DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).ToList().ForEach(q => Quests.Add(new CharacterQuest(q)));
-        }
-
         public string GenerateAct6()
         {
             return
@@ -894,65 +888,8 @@ namespace OpenNos.GameObject
                         Session.Character.RemoveBuff(339);
                     }
                 }
-
-                // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
-                IEnumerable<Mate> equipMates = Mates.Where(s => s.IsTeamMember);
-                IEnumerable<Mate> mates = equipMates as IList<Mate> ?? equipMates.ToList();
-                // FIBI
-                if (mates.Any(s => s.Monster.NpcMonsterVNum == 670) && Buff.All(s => s.Card.CardId != 374))
-                {
-                    Session.Character.AddBuff(new Buff(374), false);
-                }
-                // PADBRA
-                if (mates.Any(s => s.Monster.NpcMonsterVNum == 836) && Buff.All(s => s.Card.CardId != 381))
-                {
-                    Session.Character.AddBuff(new Buff(381), false);
-                }
-                // INFERNO
-                if (mates.Any(s => s.Monster.NpcMonsterVNum == 2105) && Buff.All(s => s.Card.CardId != 383))
-                {
-                    Session.Character.AddBuff(new Buff(383), false);
-                }
-                // LUCKY PIG
-                if ((mates.Any(s => s.Monster.NpcMonsterVNum == 178) || mates.Any(s => s.Monster.NpcMonsterVNum == 536)) && Buff.All(s => s.Card.CardId != 107))
-                {
-                    Session.Character.AddBuff(new Buff(108), false);
-                }
-                // RUDY LOUBARD
-                if (mates.Any(s => s.Monster.NpcMonsterVNum == 830) && Buff.All(s => s.Card.CardId != 377))
-                {
-                    Session.Character.AddBuff(new Buff(377), false);
-                }
-                // RATUFU COWBOY
-                if (mates.Any(s => s.Monster.NpcMonsterVNum == 844) && Buff.All(s => s.Card.CardId != 391))
-                {
-                    Session.Character.AddBuff(new Buff(391), false);
-                }
-                // RATUFU NAVY
-                if (mates.Any(s => s.Monster.NpcMonsterVNum == 838) && Buff.All(s => s.Card.CardId != 385))
-                {
-                    Session.Character.AddBuff(new Buff(385), false);
-                }
-                // RATUFU INDIEN
-                if (mates.Any(s => s.Monster.NpcMonsterVNum == 842) && Buff.All(s => s.Card.CardId != 399))
-                {
-                    Session.Character.AddBuff(new Buff(399), false);
-                }
-                // RATUFU NINJA
-                if (mates.Any(s => s.Monster.NpcMonsterVNum == 841) && Buff.All(s => s.Card.CardId != 394))
-                {
-                    Session.Character.AddBuff(new Buff(394), false);
-                }
-                // LEO LE LACHE
-                if (mates.Any(s => s.Monster.NpcMonsterVNum == 840) && Buff.All(s => s.Card.CardId != 442))
-                {
-                    Session.Character.AddBuff(new Buff(442), false);
-                }
-                // RATUFU VIKING
-                if (mates.Any(s => s.Monster.NpcMonsterVNum == 843) && Buff.All(s => s.Card.CardId != 403))
-                {
-                    Session.Character.AddBuff(new Buff(403), false);
-                }
+                // Add pet buffs
+                MateHelper.Instance.AddPetBuff(Session);
                 if (UseSp)
                 {
                     switch (SpInstance?.Design)
@@ -3821,6 +3758,14 @@ namespace OpenNos.GameObject
             #region Total Damage
 
             int totalDamage = baseDamage + elementalDamage;
+
+            if (target.HasBuff(CardType.LightAndShadow, (byte)AdditionalTypes.LightAndShadow.InflictDamageToMP))
+            {
+                int manaReduction = (int) (target.GetBuff(CardType.LightAndShadow, (byte)AdditionalTypes.LightAndShadow.InflictDamageToMP)[0] * totalDamage / 100D);
+                manaReduction = target.Mp - manaReduction <= 0 ? target.Mp : manaReduction;
+                totalDamage -= manaReduction;
+                target.Mp = manaReduction;
+            }
             if (totalDamage < 5)
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);
@@ -3842,13 +3787,6 @@ namespace OpenNos.GameObject
 
             #endregion
 
-
-            if (target.HasBuff(CardType.LightAndShadow, (byte) AdditionalTypes.LightAndShadow.InflictDamageToMP))
-            {
-                int manaReduction = (int) ((double)target.GetBuff(CardType.LightAndShadow, (byte) AdditionalTypes.LightAndShadow.InflictDamageToMP)[0] * totalDamage / 100);
-                totalDamage -= manaReduction;
-                target.Mp -= manaReduction;
-            }
             if (target.HasBuff(CardType.NoDefeatAndNoDamage,
                 (byte) AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
             {
@@ -5467,11 +5405,7 @@ namespace OpenNos.GameObject
                 }
 
                 //Quest
-                IEnumerable<long> currentlySavedQuest = DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).Select(s => s.QuestId);
-                foreach (long questToDelete in currentlySavedQuest.Except(Quests.Select(s => s.QuestId)))
-                {
-                    DaoFactory.CharacterQuestDao.Delete(CharacterId, questToDelete);
-                }
+                DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).ToList().ForEach(q => DaoFactory.CharacterQuestDao.Delete(CharacterId, q.QuestId));
                 foreach (CharacterQuest qst in Quests)
                 {
                     CharacterQuestDTO dto = new CharacterQuestDTO()
