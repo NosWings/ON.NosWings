@@ -15,10 +15,10 @@
         TsPoint = 11,
         Dialog1 = 12,
         Collect3 = 13, //Collect in TimeSpace
-        YouNeed = 14,
+        Required = 14,
         Wear = 15,
         Needed = 16,
-        Collect4 = 17, //Quest item on Monster
+        Collect4 = 17,
         TransmitGold = 18,
         GoTo = 19,
         Collect5 = 20, // Collect from map entity ( Ice Flower / Water )

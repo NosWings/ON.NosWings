@@ -308,7 +308,7 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     case QuestType.Inspect: // NpcVNum - Objective - ItemVNum //
-                                    case QuestType.YouNeed: // npcVNum - Objective - ItemVNum //
+                                    case QuestType.Required: // npcVNum - Objective - ItemVNum //
                                         data = int.Parse(currentLine[1]);
                                         objective = int.Parse(currentLine[3]);
                                         specialData = int.Parse(currentLine[2]);

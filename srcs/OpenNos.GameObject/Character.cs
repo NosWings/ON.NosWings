@@ -478,7 +478,7 @@ namespace OpenNos.GameObject
                     Timestamp = DateTime.Now
                 });
             }
-            if (characterQuest.Quest.QuestType == (int) QuestType.TimesSpace || characterQuest.Quest.QuestType == (int) QuestType.Product)
+            if (characterQuest.Quest.QuestType == (int) QuestType.TimesSpace || characterQuest.Quest.QuestType == (int) QuestType.Product || characterQuest.Quest.QuestType == (int)QuestType.Collect3)
             {
                 AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId, isMain);
                 return;
