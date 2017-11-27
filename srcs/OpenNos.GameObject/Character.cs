@@ -68,6 +68,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastSkillCombo { get; set; }
 
+        public DateTime LastQuest { get; set; }
+
         public ConcurrentBag<BCard> EquipmentBCards { get; set; }
 
         public ConcurrentBag<BCard> PassiveSkillBcards { get; set; }
@@ -527,82 +529,102 @@ namespace OpenNos.GameObject
             return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.Quest.ThirdObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.FourthObjective ?? 0}.{quest.FourthObjective}.0.0.{(quest.QuestId == newQuestId ? 1 : 0)}")}";
         }
 
-        public void IncrementQuestObjective(CharacterQuest quest, byte data = 0)
+        public void IncrementQuests(QuestType type, int firstData = 0, int secondData = 0, int thirdData = 0)
         {
-            bool isFinish = false;
-            if (quest == null || Quests.All(q => q != quest))
+            foreach (CharacterQuest quest in Quests.Where(q => q != null && q.Quest.QuestType == (int)type))
             {
-                return;
+                switch ((QuestType)quest.Quest.QuestType)
+                {
+                    case QuestType.Capture1:
+                    case QuestType.Capture2:
+                    case QuestType.WinRaid:
+                    case QuestType.Collect1:
+                    case QuestType.Collect2:
+                    case QuestType.Collect3:
+                    case QuestType.Collect4:
+                    case QuestType.Collect5:
+                    case QuestType.Hunt:
+                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => IncrementObjective(quest, d.Key));
+                        break;
+
+                    case QuestType.Product:
+                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => IncrementObjective(quest, d.Key, secondData));
+                        break;
+
+                    case QuestType.Dialog1:
+                    case QuestType.Dialog2:
+                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => IncrementObjective(quest, d.Key, isOver:true));
+                        break;
+
+                    case QuestType.Wear:
+                        if (quest.Quest.FirstSpecialData == firstData && Session.Character.Inventory.Any(i => i.Value.ItemVNum == quest.Quest.FirstData && i.Value.Type == InventoryType.Wear))
+                        {
+                            IncrementObjective(quest, isOver: true);
+                        }
+                        break;
+
+                    case QuestType.Brings:
+                    case QuestType.Required:
+                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => {
+                            if (Inventory.CountItem(d.Value[1]) >= d.Value[2])
+                            {
+                                Inventory.RemoveItemAmount(d.Value[1], d.Value[2]);
+                                IncrementObjective(quest, d.Key, d.Value[2]);
+                            }
+                        });
+                        break;
+
+                    case QuestType.GoTo:
+                        if (quest.Quest.FirstData == firstData && quest.Quest.FirstObjective == secondData && quest.Quest.FirstSpecialData == thirdData)
+                        {
+                            IncrementObjective(quest, isOver: true);
+                        }
+                        break;
+
+                    case QuestType.Use:
+                        quest.Data.Where(d => d.Value[0] == firstData && Mates.Any(m => m.NpcMonsterVNum == d.Value[1] && m.IsTeamMember)).ToList().ForEach(d => IncrementObjective(quest, d.Key, d.Value[2]));
+                        break;
+
+                    case QuestType.FlowerQuest:
+                        if (firstData + 10 < Level)
+                        {
+                            continue;
+                        }
+                        IncrementObjective(quest, 1);
+                        break;
+
+                    //TODO : Later 
+                    case QuestType.TsPoint:
+                    case QuestType.TimesSpace:
+                    case QuestType.NumberOfKill:
+                    case QuestType.Inspect:
+                    case QuestType.Needed:
+                    case QuestType.TargetReput:
+                    case QuestType.TransmitGold:
+                        break;
+                }
             }
-            switch ((QuestType) quest.Quest.QuestType)
+        }
+
+        private void IncrementObjective(CharacterQuest quest, byte objective = 0, int amount = 1, bool isOver = false)
+        {
+            bool isFinish = isOver;
+            switch (objective)
             {
-                case QuestType.Collect3:
-                case QuestType.Collect5:
+                case 1:
+                    quest.FirstObjective += amount;
                     break;
 
-                case QuestType.Dialog1:
-                case QuestType.Dialog2:
-                case QuestType.Brings:
-                case QuestType.Wear:
-                case QuestType.Use:
-                case QuestType.GoTo:
-                    isFinish = true;
+                case 2:
+                    quest.SecondObjective += amount;
                     break;
 
-                case QuestType.FlowerQuest:
-                case QuestType.WinRaid:
-                    quest.FirstObjective++;
+                case 3:
+                    quest.ThirdObjective += amount;
                     break;
 
-                case QuestType.Collect1:
-                case QuestType.Collect2:
-                case QuestType.Collect4:
-                case QuestType.Capture1:
-                case QuestType.Capture2:
-                case QuestType.Hunt:
-                    switch (data)
-                    {
-                        case 1:
-                            quest.FirstObjective++;
-                            break;
-
-                        case 2:
-                            quest.SecondObjective++;
-                            break;
-
-                        case 3:
-                            quest.ThirdObjective++;
-                            break;
-
-                        case 4:
-                            quest.SecondObjective++;
-                            break;
-                    }
-                    break;
-
-                case QuestType.Inspect:
-                    break;
-
-                case QuestType.Product:
-                    quest.FirstObjective += data + quest.FirstObjective > quest.Quest.FirstObjective ? quest.Quest.FirstObjective - quest.FirstObjective : data;
-                    break;
-
-                case QuestType.Needed:
-                    break;
-
-                case QuestType.TargetReput:
-                    break;
-
-                case QuestType.TransmitGold:
-                    break;
-
-                case QuestType.YouNeed:
-                    break;
-
-                //TODO : Later 
-                case QuestType.TsPoint:
-                case QuestType.TimesSpace:
-                case QuestType.NumberOfKill:
+                case 4:
+                    quest.FourthObjective += amount;
                     break;
             }
 
@@ -615,7 +637,8 @@ namespace OpenNos.GameObject
 
             if (isFinish)
             {
-                if (CustomQuestRewards((QuestType) quest.Quest.QuestType))
+                LastQuest = DateTime.Now;
+                if (CustomQuestRewards((QuestType)quest.Quest.QuestType))
                 {
                     RemoveQuest(quest.QuestId);
                     return;
@@ -2580,15 +2603,17 @@ namespace OpenNos.GameObject
                 }
 
                 // end owner set
-                if (!Session.HasCurrentMapInstance)
+                if (!Session.HasCurrentMapInstance || monsterToAttack.Monster.MonsterType == MonsterType.Special)
                 {
                     return;
                 }
 
                 List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMapInstance.Map.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || s.MapTypeId == null).ToList();
+
+                #region Quest
+
                 List<DropDTO> questDropList = new List<DropDTO>();
 
-                //Drop QuestItem 
                 foreach (CharacterQuest qst in Quests.Where(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Quest.FirstSpecialData == monsterToAttack.MonsterVNum))
                 {
                     questDropList.Add(new DropDTO()
@@ -2597,30 +2622,12 @@ namespace OpenNos.GameObject
                         Amount = 1,
                         MonsterVNum = monsterToAttack.MonsterVNum,
                         DropId = ServerManager.Instance.GetNextDropId(),
-                        DropChance = qst.Quest.SpecialData ?? 0
+                        DropChance = (qst.Quest.SpecialData ?? 0) * ServerManager.Instance.DropRate
                     });
                 }
 
-                if (monsterToAttack.Monster.MonsterType == MonsterType.Special)
-                {
-                    return;
-                }
-
-                #region Quest
-
-                if (monsterToAttack.Monster.Level + 10 > Level && Quests.Any(q => q.Quest.QuestType == (byte) QuestType.FlowerQuest))
-                {
-                    IncrementQuestObjective(Quests.FirstOrDefault(q => q.Quest.QuestType == (byte) QuestType.FlowerQuest));
-                }
-                int vnum = monsterToAttack.MonsterVNum;
-                foreach (CharacterQuest qst in Quests.Where(q => q.Quest.QuestType == (int)QuestType.Hunt))
-                {
-                    byte data = (byte)(qst.Quest.FirstData == vnum ? 1 : (qst.Quest.SecondData == vnum ? 2 : (qst.Quest.ThirdData == vnum ? 3 : (qst.Quest.FourthData == vnum ? 4 : 0))));
-                    if (data != 0)
-                    {
-                        IncrementQuestObjective(qst, data);
-                    }
-                }
+                IncrementQuests(QuestType.FlowerQuest, monsterToAttack.Monster.Level);
+                IncrementQuests(QuestType.Hunt, monsterToAttack.MonsterVNum);
 
                 #endregion
 

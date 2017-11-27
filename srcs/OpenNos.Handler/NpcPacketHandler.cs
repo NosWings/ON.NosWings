@@ -598,10 +598,7 @@ namespace OpenNos.Handler
                 Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, Session.Character.CharacterId, 1324));
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
-                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Product && inv.ItemVNum == q.Quest.FirstData))
-                {
-                    Session.Character.IncrementQuestObjective(qst, rec.Amount);
-                }
+                Session.Character.IncrementQuests(QuestType.Product, inv.ItemVNum, rec.Amount);
             }
         }
 
@@ -877,15 +874,14 @@ namespace OpenNos.Handler
 
                 #region Quest
 
-                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => ((q.Quest.QuestType == (int) QuestType.Dialog1 || q.Quest.QuestType == (int) QuestType.Dialog2) && q.Quest.FirstData == npc.NpcVNum) // Quest dialog
-                || (q.Quest.QuestType == (int) QuestType.Wear && q.Quest.FirstSpecialData == npc.NpcVNum && Session.Character.Inventory.Any(i => i.Value.ItemVNum == q.Quest.FirstData && i.Value.Type == InventoryType.Wear)) // Quest wear
-                || ((q.Quest.QuestType == (int) QuestType.Brings || q.Quest.QuestType == (int) QuestType.YouNeed) && q.Quest.FirstData == npc.NpcVNum && Session.Character.Inventory.Where(i => i.Value.ItemVNum == q.Quest.FirstSpecialData).Count() > q.Quest.FirstObjective))) // Quest brings & Needed Quest
+                Session.Character.IncrementQuests(QuestType.Dialog1, npc.NpcVNum);
+                Session.Character.IncrementQuests(QuestType.Dialog2, npc.NpcVNum);
+                Session.Character.IncrementQuests(QuestType.Wear, npc.NpcVNum);
+                Session.Character.IncrementQuests(QuestType.Brings, npc.NpcVNum);
+                Session.Character.IncrementQuests(QuestType.Required, npc.NpcVNum);
+
+                if (Session.Character.LastQuest.AddSeconds(1) > DateTime.Now)
                 {
-                    if (qst.Quest.QuestType == (int) QuestType.Brings || qst.Quest.QuestType == (int) QuestType.YouNeed)
-                    {
-                        Session.Character.Inventory.RemoveItemAmount((int)qst.Quest.FirstSpecialData, qst.Quest.FirstObjective);
-                    }
-                    Session.Character.IncrementQuestObjective(qst);
                     return;
                 }
 

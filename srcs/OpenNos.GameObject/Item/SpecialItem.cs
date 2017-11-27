@@ -767,13 +767,7 @@ namespace OpenNos.GameObject
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;
             }
-            foreach (CharacterQuest qst in session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Use))
-            {
-                if (qst.Quest.FirstData == inv.ItemVNum && session.Character.Mates.Any(m => m.NpcMonsterVNum == qst.Quest.FirstSpecialData && m.IsTeamMember))
-                {
-                    session.Character.IncrementQuestObjective(qst);
-                }
-            }
+            session.Character.IncrementQuests(QuestType.Use, inv.ItemVNum);
         }
 
 

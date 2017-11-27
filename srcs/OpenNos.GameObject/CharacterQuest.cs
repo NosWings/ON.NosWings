@@ -22,6 +22,7 @@ namespace OpenNos.GameObject
         {
             QuestId = questId;
             CharacterId = characterId;
+            LoadData();
         }
 
         public CharacterQuest(CharacterQuestDTO characterQuestDto)
@@ -34,11 +35,14 @@ namespace OpenNos.GameObject
             QuestId = characterQuestDto.QuestId;
             CharacterId = characterQuestDto.CharacterId;
             IsMainQuest = characterQuestDto.IsMainQuest;
+            LoadData();
         }
 
         #endregion
 
         #region Properties
+
+        public Dictionary<byte, int[]> Data { get; set; }
 
         public Quest Quest
         {
@@ -55,6 +59,14 @@ namespace OpenNos.GameObject
 
         #region Methods
 
+        public void LoadData()
+        {
+            Data = new Dictionary<byte, int[]>();
+            Data.Add(1, new int[] { Quest.FirstData, Quest.FirstSpecialData ?? -1, Quest.FirstObjective});
+            Data.Add(2, new int[] { Quest.SecondData ?? -1, Quest.SecondSpecialData ?? -1, Quest.SecondObjective ?? 0 });
+            Data.Add(3, new int[] { Quest.ThirdData ?? -1, Quest.ThirdSpecialData ?? -1, Quest.ThirdObjective ?? 0 });
+            Data.Add(4, new int[] { Quest.FourthData ?? -1, Quest.FourthSpecialData ?? -1, Quest.FourthObjective ?? 0 });
+        }
         #endregion
     }
 }

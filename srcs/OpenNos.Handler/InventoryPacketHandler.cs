@@ -624,27 +624,10 @@ namespace OpenNos.Handler
                         }
                         Session.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
-                        int vnum = mapItem.ItemVNum;
-                        foreach (CharacterQuest qst in Session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Collect2))
-                        {
-                            byte data = (byte)(qst.Quest.FirstData == vnum ? 1 : (qst.Quest.SecondData == vnum ? 2 : (qst.Quest.ThirdData == vnum ? 3 : (qst.Quest.FourthData == vnum ? 4 : 0))));
-                            if (data != 0)
-                            {
-                                Session.Character.IncrementQuestObjective(qst, data);
-                            }
-                        }
+                        
                     }
                     else if (mapItemInstance.Item.ItemType == ItemType.Quest1)
                     {
-                        int vnum = mapItem.ItemVNum;
-                        foreach (CharacterQuest qst in Session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Collect4))
-                        {
-                            byte data = (byte)(qst.Quest.FirstData == vnum ? 1 : (qst.Quest.SecondData == vnum ? 2 : (qst.Quest.ThirdData == vnum ? 3 : (qst.Quest.FourthData == vnum ? 4 : 0))));
-                            if (data != 0)
-                            {
-                                Session.Character.IncrementQuestObjective(qst, data);
-                            }
-                        }
                         Session.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                     }
@@ -685,16 +668,6 @@ namespace OpenNos.Handler
                                 {
                                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {inv.Item.Name} x {mapItem.Amount}", 10));
                                 }
-
-                                int vnum = mapItem.ItemVNum;
-                                foreach (CharacterQuest qst in Session.Character.Quests.Where(q => q.Quest.QuestType == (int)QuestType.Collect1))
-                                {
-                                    byte data = (byte)(qst.Quest.FirstData == vnum ? 1 : (qst.Quest.SecondData == vnum ? 2 : (qst.Quest.ThirdData == vnum ? 3 : (qst.Quest.FourthData == vnum ? 4 : 0))));
-                                    if (data != 0)
-                                    {
-                                        Session.Character.IncrementQuestObjective(qst, data);
-                                    }
-                                }
                             }
                             else
                             {
@@ -702,6 +675,9 @@ namespace OpenNos.Handler
                             }
                         }
                     }
+                    Session.Character.IncrementQuests(QuestType.Collect1, mapItem.ItemVNum);
+                    Session.Character.IncrementQuests(QuestType.Collect2, mapItem.ItemVNum);
+                    Session.Character.IncrementQuests(QuestType.Collect4, mapItem.ItemVNum);
                 }
                 else
                 {
