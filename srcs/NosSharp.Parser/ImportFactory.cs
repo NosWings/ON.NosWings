@@ -307,13 +307,13 @@ namespace OpenNos.Import.Console
                                         objective = 10;
                                         break;
 
-                                    case QuestType.Inspect: // NpcVNum - ItemVNum - Objective //
+                                    case QuestType.Inspect: // NpcVNum - Objective - ItemVNum //
+                                    case QuestType.YouNeed: // npcVNum - Objective - ItemVNum //
                                         data = int.Parse(currentLine[1]);
                                         objective = int.Parse(currentLine[3]);
                                         specialData = int.Parse(currentLine[2]);
                                         break;
 
-                                    case QuestType.YouNeed: // npcVNum - Objective - ItemVNum //
                                     default:
                                         data = int.Parse(currentLine[1]);
                                         objective = int.Parse(currentLine[2]);

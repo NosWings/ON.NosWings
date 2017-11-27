@@ -236,6 +236,12 @@ namespace OpenNos.Import.Console
                     {
                         factory.ImportRecipe();
                     }
+                    System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_QUESTS")} [Y/n]");
+                    key = System.Console.ReadKey(true);
+                    if (key.KeyChar != 'n')
+                    {
+                        factory.ImportQuests();
+                    }
                 }
                 System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("DONE")}");
                 Thread.Sleep(5000);
