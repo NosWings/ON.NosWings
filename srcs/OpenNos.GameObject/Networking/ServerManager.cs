@@ -1156,7 +1156,6 @@ namespace OpenNos.GameObject
                     _generalDrops = monsterDropGrouping.ToList();
                 }
             });
-            _lastDropId = (short)(_generalDrops.OrderBy(d => d.DropId).FirstOrDefault().DropId + 1);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.Sum(i => i.Value.Count)));
 
             // initialize monsterskills

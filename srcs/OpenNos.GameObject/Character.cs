@@ -2612,16 +2612,13 @@ namespace OpenNos.GameObject
 
                 #region Quest
 
-                List<DropDTO> questDropList = new List<DropDTO>();
-
                 foreach (CharacterQuest qst in Quests.Where(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Quest.FirstSpecialData == monsterToAttack.MonsterVNum))
                 {
-                    questDropList.Add(new DropDTO()
+                    droplist.Add(new DropDTO()
                     {
                         ItemVNum = (short)qst.Quest.FirstData,
                         Amount = 1,
                         MonsterVNum = monsterToAttack.MonsterVNum,
-                        DropId = ServerManager.Instance.GetNextDropId(),
                         DropChance = (qst.Quest.SpecialData ?? 0) * ServerManager.Instance.DropRate
                     });
                 }
@@ -2722,7 +2719,7 @@ namespace OpenNos.GameObject
                 }
                 int dropRate = ServerManager.Instance.DropRate * MapInstance.DropRate;
                 int x = 0;
-                foreach (DropDTO drop in droplist.Concat(questDropList).OrderBy(s => random.Next()))
+                foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
                 {
                     if (x >= 4)
                     {
@@ -2781,7 +2778,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.HasCurrentMapInstance)
                             {
-                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY, questDropList.Contains(drop));
+                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY, Quests.Any(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Quest.FirstData == drop.ItemVNum));
                             }
                         });
                     }
