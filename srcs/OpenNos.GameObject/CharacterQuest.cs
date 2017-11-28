@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using OpenNos.Data;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -61,6 +56,10 @@ namespace OpenNos.GameObject
 
         public void LoadData()
         {
+            if (Quest == null)
+            {
+                return;
+            }
             Data = new Dictionary<byte, int[]>();
             Data.Add(1, new int[] { Quest.FirstData, Quest.FirstSpecialData ?? -1, Quest.FirstObjective});
             Data.Add(2, new int[] { Quest.SecondData ?? -1, Quest.SecondSpecialData ?? -1, Quest.SecondObjective ?? 0 });

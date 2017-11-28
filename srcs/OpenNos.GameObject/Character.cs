@@ -531,7 +531,7 @@ namespace OpenNos.GameObject
 
         public void IncrementQuests(QuestType type, int firstData = 0, int secondData = 0, int thirdData = 0)
         {
-            foreach (CharacterQuest quest in Quests.Where(q => q != null && q.Quest.QuestType == (int)type))
+            foreach (CharacterQuest quest in Quests.Where(q => q?.Quest?.QuestType == (int)type))
             {
                 switch ((QuestType)quest.Quest.QuestType)
                 {
