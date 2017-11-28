@@ -176,8 +176,8 @@ namespace OpenNos.Import.Console
                                 }
 
                                 // Main Quest Order
-                                if (quest.QuestId >= 1500 && quest.QuestId < 1751 || quest.QuestId >= 3000 && quest.QuestId < 3101
-                                 || quest.QuestId >= 3200 && quest.QuestId < 3331 || quest.QuestId >= 3340 && quest.QuestId < 3374)
+                                if (quest.QuestId >= 1500 && quest.QuestId < 1523 || quest.QuestId >= 1525 && quest.QuestId < 1690 || quest.QuestId >= 1694 && quest.QuestId < 1751 
+                                 || quest.QuestId >= 3000 && quest.QuestId < 3101 || quest.QuestId >= 3200 && quest.QuestId < 3331 || quest.QuestId >= 3340 && quest.QuestId < 3374)
                                 {
                                     quest.NextQuestId = quest.QuestId + 1;
                                 }
@@ -187,6 +187,12 @@ namespace OpenNos.Import.Console
                                     {
                                         case 1997:
                                             quest.NextQuestId = 1500;
+                                            break;
+                                        case 1523:
+                                            quest.NextQuestId = 1525;
+                                            break;
+                                        case 1690:
+                                            quest.NextQuestId = 1694;
                                             break;
                                         case 1751:
                                             quest.NextQuestId = 3000;
