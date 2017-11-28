@@ -600,6 +600,9 @@ namespace OpenNos.Handler
 
                     // initialize and rarify
                     item.Rarify(null);
+                    Session.Character.IncrementQuests(QuestType.Collect1, mapItem.ItemVNum);
+                    Session.Character.IncrementQuests(QuestType.Collect2, mapItem.ItemVNum);
+                    Session.Character.IncrementQuests(QuestType.Collect4, mapItem.ItemVNum);
                 }
 
                 if (mapItem.ItemVNum != 1046)
@@ -675,9 +678,6 @@ namespace OpenNos.Handler
                             }
                         }
                     }
-                    Session.Character.IncrementQuests(QuestType.Collect1, mapItem.ItemVNum);
-                    Session.Character.IncrementQuests(QuestType.Collect2, mapItem.ItemVNum);
-                    Session.Character.IncrementQuests(QuestType.Collect4, mapItem.ItemVNum);
                 }
                 else
                 {
