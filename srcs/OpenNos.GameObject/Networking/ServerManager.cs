@@ -68,8 +68,6 @@ namespace OpenNos.GameObject
 
         private List<DropDTO> _generalDrops;
 
-        private short _lastDropId;
-
         private long _lastGroupId;
 
         public ConcurrentDictionary<long, Group> _groups;
@@ -855,11 +853,6 @@ namespace OpenNos.GameObject
         public IEnumerable<MapInstance> GetMapInstancesByMapInstanceType(MapInstanceType type)
         {
             return Mapinstances.Values.Where(s => s.MapInstanceType == type);
-        }
-
-        public short GetNextDropId()
-        {
-            return _lastDropId++;
         }
 
         public long GetNextGroupId()

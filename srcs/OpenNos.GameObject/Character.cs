@@ -480,7 +480,9 @@ namespace OpenNos.GameObject
                     Timestamp = DateTime.Now
                 });
             }
-            if (characterQuest.Quest.QuestType == (int) QuestType.TimesSpace || characterQuest.Quest.QuestType == (int) QuestType.Product || characterQuest.Quest.QuestType == (int)QuestType.Collect3)
+            if (characterQuest.Quest.QuestType == (int)QuestType.TimesSpace || characterQuest.Quest.QuestType == (int)QuestType.Product || characterQuest.Quest.QuestType == (int)QuestType.Collect3
+                || characterQuest.Quest.QuestType == (int)QuestType.TransmitGold || characterQuest.Quest.QuestType == (int)QuestType.TsPoint || characterQuest.Quest.QuestType == (int)QuestType.NumberOfKill
+                || characterQuest.Quest.QuestType == (int)QuestType.TargetReput || characterQuest.Quest.QuestType == (int)QuestType.Inspect || characterQuest.Quest.QuestType == (int)QuestType.Needed)
             {
                 AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId, isMain);
                 return;
