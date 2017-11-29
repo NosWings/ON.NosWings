@@ -32,74 +32,68 @@ namespace OpenNos.GameObject
                 return string.Empty;
             }
 
-            return $"qr {GetRewardPacket(QuestRewards.FirstOrDefault())} {GetRewardPacket(QuestRewards.Skip(1).FirstOrDefault())} {GetRewardPacket(QuestRewards.Skip(2).FirstOrDefault())} {GetRewardPacket(QuestRewards.Skip(3).FirstOrDefault())} {InfoId}";
+            return $"qr {GetRewardPacket()} {InfoId}";
 
-            string GetRewardPacket(QuestRewardDTO reward)
+            string GetRewardPacket()
             {
-                if (reward == null)
+                string str = "";
+                for (int a = 0; a < 4; a++)
                 {
-                    return "0 0 0";
+                    QuestRewardDTO reward = QuestRewards.Skip(a).FirstOrDefault();
+                    if (reward == null)
+                    {
+                        str += "0 0 0 ";
+                        continue;
+                    }
+                    switch ((QuestRewardType)reward.RewardType)
+                    {
+                        // Item
+                        case QuestRewardType.EquipItem:
+                        case QuestRewardType.EtcMainItem:
+                            character.GiftAdd((short)reward.Data, (byte)(reward.Amount == 0 ? 1 : reward.Amount), reward.Design, reward.Upgrade, (sbyte)reward.Rarity, true);
+                            str += $"{reward.RewardType} {reward.Data} {(reward.Amount == 0 ? 1 : reward.Amount)} ";
+                            break;
+
+                        // Gold
+                        case QuestRewardType.Gold:
+                        case QuestRewardType.SecondGold:
+                        case QuestRewardType.ThirdGold:
+                        case QuestRewardType.FourthGold:
+                            character.GetGold(reward.Amount, true);
+                            str += $"{reward.RewardType} 0 {(reward.Amount == 0 ? 1 : reward.Amount)} ";
+                            break;
+
+                        case QuestRewardType.Reput: // Reputation
+                            character.GetReput(reward.Amount);
+                            str += $"{reward.RewardType} 0 0";
+                            break;
+
+                        case QuestRewardType.Exp: // Experience
+                            character.GetXp((long)(CharacterHelper.Instance.XpData[reward.Data > 255 ? 255 : reward.Data] * reward.Amount / 100D));
+                            str += $"{reward.RewardType} 0 0 ";
+                            break;
+
+                        case QuestRewardType.SecondExp: // % Experience
+                            character.GetXp((long)(CharacterHelper.Instance.XpData[character.Level] * reward.Amount / 100D));
+                            str += $"{reward.RewardType} 0 0 ";
+                            break;
+
+                        case QuestRewardType.JobExp: // JobExperience
+                            character.GetJobExp((long)((character.Class == (byte)ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXpData[reward.Data > 255 ? 255 : reward.Data] : CharacterHelper.Instance.SecondJobXpData[reward.Data > 255 ? 255 : reward.Data]) * reward.Amount / 100D));
+                            str += $"{reward.RewardType} 0 0 ";
+                            break;
+
+                        case QuestRewardType.SecondJobExp: // % JobExperience
+                            character.GetJobExp((long)((character.Class == (byte)ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXpData[character.Level] : CharacterHelper.Instance.SecondJobXpData[character.Level]) * reward.Amount / 100D));
+                            str += $"{reward.RewardType} 0 0 ";
+                            break;
+
+                        default:
+                            str += "0 0 0 ";
+                            break;
+                    }
                 }
-                switch ((QuestRewardType) reward.RewardType)
-                {
-                    // Item
-                    case QuestRewardType.EquipItem:
-                    case QuestRewardType.EtcMainItem:
-                        character.GiftAdd((short) reward.Data, (byte) (reward.Amount == 0 ? 1 : reward.Amount), reward.Design, reward.Upgrade, (sbyte) reward.Rarity, true);
-                        return $"{reward.RewardType} {reward.Data} {(reward.Amount == 0 ? 1 : reward.Amount)}";
-
-                    // Gold
-                    case QuestRewardType.Gold:
-                    case QuestRewardType.SecondGold:
-                    case QuestRewardType.ThirdGold:
-                    case QuestRewardType.FourthGold:
-                        character.GetGold(reward.Amount, true);
-                        return $"{reward.RewardType} 0 {(reward.Amount == 0 ? 1 : reward.Amount)}";
-
-                    // Reputation
-                    case QuestRewardType.Reput:
-                        character.GetReput(reward.Amount);
-                        return $"{reward.RewardType} 0 0";
-
-                    // Experience
-                    case QuestRewardType.Exp:
-                        if (reward.Data > 255)
-                        {
-                            return "0 0 0";
-                        }
-                        character.GetXp((long) (CharacterHelper.Instance.XpData[reward.Data] / 100D * reward.Amount));
-                        return $"{reward.RewardType} 0 0";
-
-                    // % Experience
-                    case QuestRewardType.SecondExp:
-                        if (reward.Data > 255)
-                        {
-                            return "0 0 0";
-                        }
-                        character.GetXp((long)(CharacterHelper.Instance.XpData[character.Level] / 100D * reward.Amount));
-                        return $"{reward.RewardType} 0 0";
-
-                    // JobExperience
-                    case QuestRewardType.JobExp:
-                        if (reward.Data > 255)
-                        {
-                            return "0 0 0";
-                        }
-                        character.GetJobExp((long) ((character.Class == (byte) ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXpData[reward.Data] : CharacterHelper.Instance.SecondJobXpData[reward.Data]) / 100D * reward.Amount));
-                        return $"{reward.RewardType} 0 0";
-
-                    // % JobExperience
-                    case QuestRewardType.SecondJobExp:
-                        if (reward.Data > 255)
-                        {
-                            return "0 0 0";
-                        }
-                        character.GetJobExp((long)((character.Class == (byte)ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXpData[character.Level] : CharacterHelper.Instance.SecondJobXpData[character.Level]) / 100D * reward.Amount));
-                        return $"{reward.RewardType} 0 0";
-
-                    default:
-                        return "0 0 0";
-                }
+                return str;
             }
         }
 
