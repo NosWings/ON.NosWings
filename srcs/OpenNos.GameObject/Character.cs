@@ -2614,16 +2614,22 @@ namespace OpenNos.GameObject
 
                 #region Quest
 
-                foreach (CharacterQuest qst in Quests.Where(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Quest.FirstSpecialData == monsterToAttack.MonsterVNum))
+                Quests.Where(q => (q.Quest?.QuestType == (int)QuestType.Collect4 || q.Quest?.QuestType == (int)QuestType.Collect2)).ToList().ForEach(qst =>
                 {
-                    droplist.Add(new DropDTO()
+                    qst.Data.ToList().ForEach(d =>
                     {
-                        ItemVNum = (short)qst.Quest.FirstData,
-                        Amount = 1,
-                        MonsterVNum = monsterToAttack.MonsterVNum,
-                        DropChance = (qst.Quest.SpecialData ?? 0) * ServerManager.Instance.DropRate
+                        if (d.Value[1] == monsterToAttack.MonsterVNum)
+                        {
+                            droplist.Add(new DropDTO()
+                            {
+                                ItemVNum = (short)d.Value[0],
+                                Amount = 1,
+                                MonsterVNum = monsterToAttack.MonsterVNum,
+                                DropChance = qst.Quest?.SecondSpecialData ?? 0 * ServerManager.Instance.DropRate
+                            });
+                        }
                     });
-                }
+                });
 
                 IncrementQuests(QuestType.FlowerQuest, monsterToAttack.Monster.Level);
                 IncrementQuests(QuestType.Hunt, monsterToAttack.MonsterVNum);
@@ -2780,7 +2786,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.HasCurrentMapInstance)
                             {
-                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY, Quests.Any(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Quest.FirstData == drop.ItemVNum));
+                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY, Quests.Any(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Data.Any(d => d.Value[0] == drop.ItemVNum)));
                             }
                         });
                     }
