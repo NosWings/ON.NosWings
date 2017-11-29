@@ -559,7 +559,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case QuestType.Wear:
-                        if (quest.Quest.FirstSpecialData == firstData && Session.Character.Inventory.Any(i => i.Value.ItemVNum == quest.Quest.FirstData && i.Value.Type == InventoryType.Wear))
+                        if (quest.Quest.FirstSpecialData == firstData && (Session.Character.Inventory.Any(i => i.Value.ItemVNum == quest.Quest.FirstData && i.Value.Type == InventoryType.Wear) || (quest.QuestId == 1541 || quest.QuestId == 1546) && Class != ClassType.Adventurer))
                         {
                             IncrementObjective(quest, isOver: true);
                         }
