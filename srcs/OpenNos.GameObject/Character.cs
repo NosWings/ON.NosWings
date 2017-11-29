@@ -614,19 +614,19 @@ namespace OpenNos.GameObject
             switch (objective)
             {
                 case 1:
-                    quest.FirstObjective += amount;
+                    quest.FirstObjective += quest.FirstObjective >= quest.Quest.FirstObjective ? 0 : amount;
                     break;
 
                 case 2:
-                    quest.SecondObjective += amount;
+                    quest.SecondObjective += quest.SecondObjective >= quest.Quest.SecondObjective ? 0 : amount;
                     break;
 
                 case 3:
-                    quest.ThirdObjective += amount;
+                    quest.ThirdObjective += quest.ThirdObjective >= quest.Quest.ThirdObjective ? 0 : amount;
                     break;
 
                 case 4:
-                    quest.FourthObjective += amount;
+                    quest.FourthObjective += quest.FourthObjective >= quest.Quest.FourthObjective ? 0 : amount;
                     break;
             }
 

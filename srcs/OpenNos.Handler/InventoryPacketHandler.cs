@@ -629,11 +629,6 @@ namespace OpenNos.Handler
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                         
                     }
-                    else if (mapItemInstance.Item.ItemType == ItemType.Quest1)
-                    {
-                        Session.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
-                    }
                     else
                     {
                         lock (Session.Character.Inventory)
