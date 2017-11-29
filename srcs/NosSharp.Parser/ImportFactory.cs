@@ -176,35 +176,42 @@ namespace OpenNos.Import.Console
                                 }
 
                                 // Main Quest Order
-                                if (quest.QuestId >= 1500 && quest.QuestId < 1523 || quest.QuestId >= 1525 && quest.QuestId < 1690 || quest.QuestId >= 1694 && quest.QuestId < 1751 
-                                 || quest.QuestId >= 3000 && quest.QuestId < 3101 || quest.QuestId >= 3200 && quest.QuestId < 3331 || quest.QuestId >= 3340 && quest.QuestId < 3374)
+                                bool hasNextId = true;
+                                switch (quest.QuestId)
                                 {
-                                    quest.NextQuestId = quest.QuestId + 1;
+                                    case 1997:
+                                        quest.NextQuestId = 1500;
+                                        break;
+                                    case 1523:
+                                    case 1532:
+                                        quest.NextQuestId = quest.QuestId + 2;
+                                        break;
+                                    case 1527:
+                                    case 1553:
+                                        quest.NextQuestId = quest.QuestId + 3;
+                                        break;
+                                    case 1690:
+                                        quest.NextQuestId = 1694;
+                                        break;
+                                    case 1751:
+                                        quest.NextQuestId = 3000;
+                                        break;
+                                    case 3101:
+                                        quest.NextQuestId = 3200;
+                                        break;
+                                    case 3331:
+                                        quest.NextQuestId = 3340;
+                                        break;
+
+                                    default:
+                                        hasNextId = false;
+                                        break;
                                 }
-                                else
+                                if (hasNextId || quest.QuestId < 1500 && quest.QuestId >= 1751 || quest.QuestId < 3000 && quest.QuestId >= 3374)
                                 {
-                                    switch (quest.QuestId)
-                                    {
-                                        case 1997:
-                                            quest.NextQuestId = 1500;
-                                            break;
-                                        case 1523:
-                                            quest.NextQuestId = 1525;
-                                            break;
-                                        case 1690:
-                                            quest.NextQuestId = 1694;
-                                            break;
-                                        case 1751:
-                                            quest.NextQuestId = 3000;
-                                            break;
-                                        case 3101:
-                                            quest.NextQuestId = 3200;
-                                            break;
-                                        case 3331:
-                                            quest.NextQuestId = 3340;
-                                            break;
-                                    }
+                                    continue;
                                 }
+                                quest.NextQuestId = quest.QuestId + 1;
                                 break;
 
                             case "LEVEL":
