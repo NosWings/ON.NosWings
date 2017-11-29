@@ -236,6 +236,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastPvpRevive { get; set; }
 
+        public DateTime LastQuestSummon { get; set; }
+
         public DateTime LastSkillUse { get; set; }
 
         public double LastSp { get; set; }
@@ -814,6 +816,20 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void CheckHuntQuest()
+        {
+            CharacterQuest quest = Quests.FirstOrDefault(q => q.Quest?.QuestType == (int)QuestType.Hunt && q.Quest?.TargetMap == MapInstance.Map.MapId && q.Quest?.TargetX == PositionX && q.Quest?.TargetY == PositionY);
+            if (quest == null)
+            {
+                return;
+            }
+            ConcurrentBag<MonsterToSummon> monsters = new ConcurrentBag<MonsterToSummon>();
+            for (int a = 0; a < quest.Quest.FirstObjective / 2 + 1; a++)
+            {
+                monsters.Add(new MonsterToSummon((short)quest.Quest.FirstData, new MapCell { X = PositionX, Y = PositionY }, this, true));
+            }
+            EventHelper.Instance.RunEvent(new EventContainer(MapInstance, EventActionType.SPAWNMONSTERS, monsters.AsEnumerable()));
+        }
         public void UpdateBushFire()
         {
             Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
@@ -1051,6 +1067,12 @@ namespace OpenNos.GameObject
                             }
                             */
                             Session.SendPacket(GenerateStat());
+                        }
+
+                        if (Session.Character.LastQuestSummon.AddSeconds(7) < DateTime.Now)
+                        {
+                            Session.Character.CheckHuntQuest();
+                            Session.Character.LastQuestSummon = DateTime.Now;
                         }
                     }
                 }

@@ -794,7 +794,6 @@ namespace OpenNos.Handler
 
                 // Ask for rewards
                 case 4:
-
                     break;
             }
         }
