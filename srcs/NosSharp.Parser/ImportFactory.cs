@@ -22,6 +22,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using CloneExtensions;
 
 namespace OpenNos.Import.Console
 {
@@ -145,7 +146,6 @@ namespace OpenNos.Import.Console
             }
 
             QuestDTO quest = new QuestDTO();
-            List<QuestRewardDTO> questRewards = new List<QuestRewardDTO>();
             List<QuestRewardDTO> rewards = new List<QuestRewardDTO>();
 
 
@@ -165,7 +165,6 @@ namespace OpenNos.Import.Console
                                     QuestType = int.Parse(currentLine[2]),
                                     InfoId = int.Parse(currentLine[1])
                                 };
-                                questRewards.Clear();
                                 break;
 
                             case "LINK":
@@ -372,12 +371,13 @@ namespace OpenNos.Import.Console
                             case "PRIZE":
                                 for (int a = 1; a < 5; a++)
                                 {
-                                    if (int.Parse(currentLine[a]) != -1 && dictionaryRewards.ContainsKey(long.Parse(currentLine[a])))
+                                    if (!dictionaryRewards.ContainsKey(long.Parse(currentLine[a])))
                                     {
-                                        QuestRewardDTO currentReward = dictionaryRewards[long.Parse(currentLine[a])];
-                                        currentReward.QuestId = quest.QuestId;
-                                        questRewards.Add(currentReward);
+                                        continue;
                                     }
+                                    QuestRewardDTO currentReward = dictionaryRewards[long.Parse(currentLine[a])].GetClone();
+                                    currentReward.QuestId = quest.QuestId;
+                                    rewards.Add(currentReward);
                                 }
                                 break;
 
@@ -386,7 +386,6 @@ namespace OpenNos.Import.Console
                                 {
                                     quests.Add(quest);
                                     qstCounter++;
-                                    rewards.AddRange(questRewards);
                                 }
                                 break;
                         }
