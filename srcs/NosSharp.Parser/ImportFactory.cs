@@ -183,6 +183,13 @@ namespace OpenNos.Import.Console
                                         break;
                                     case 1523:
                                     case 1532:
+                                    case 1580:
+                                    case 1610:
+                                    case 1618:
+                                    case 1636:
+                                    case 1647:
+                                    case 1664:
+                                    case 3075:
                                         quest.NextQuestId = quest.QuestId + 2;
                                         break;
                                     case 1527:
