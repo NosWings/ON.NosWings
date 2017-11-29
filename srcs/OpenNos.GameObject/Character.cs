@@ -579,7 +579,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case QuestType.GoTo:
-                        if (quest.Quest.FirstData == firstData && quest.Quest.FirstObjective == secondData && quest.Quest.FirstSpecialData == thirdData)
+                        if (quest.Quest.TargetMap == firstData && Math.Abs(secondData - quest.Quest.TargetX ?? 0) < 3 && Math.Abs(thirdData - quest.Quest.TargetY ?? 0) < 3)
                         {
                             IncrementObjective(quest, isOver: true);
                         }
@@ -818,7 +818,7 @@ namespace OpenNos.GameObject
 
         public void CheckHuntQuest()
         {
-            CharacterQuest quest = Quests.FirstOrDefault(q => q.Quest?.QuestType == (int)QuestType.Hunt && q.Quest?.TargetMap == MapInstance.Map.MapId && q.Quest?.TargetX == PositionX && q.Quest?.TargetY == PositionY);
+            CharacterQuest quest = Quests.FirstOrDefault(q => q.Quest?.QuestType == (int)QuestType.Hunt && q.Quest?.TargetMap == MapInstance.Map.MapId && Math.Abs(PositionX - q.Quest?.TargetX ?? 0) < 2 && Math.Abs(PositionY - q.Quest?.TargetY ?? 0) < 2);
             if (quest == null)
             {
                 return;
@@ -826,7 +826,7 @@ namespace OpenNos.GameObject
             ConcurrentBag<MonsterToSummon> monsters = new ConcurrentBag<MonsterToSummon>();
             for (int a = 0; a < quest.Quest.FirstObjective / 2 + 1; a++)
             {
-                monsters.Add(new MonsterToSummon((short)quest.Quest.FirstData, new MapCell { X = PositionX, Y = PositionY }, this, true));
+                monsters.Add(new MonsterToSummon((short)quest.Quest.FirstData, new MapCell { X = (short) (PositionX + ServerManager.Instance.RandomNumber(-2,3)), Y = (short)(PositionY + ServerManager.Instance.RandomNumber(-2, 3)) }, this, true));
             }
             EventHelper.Instance.RunEvent(new EventContainer(MapInstance, EventActionType.SPAWNMONSTERS, monsters.AsEnumerable()));
         }
