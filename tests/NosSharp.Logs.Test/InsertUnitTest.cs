@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using OpenNos.Logger;
 
 namespace NosSharp.Logs.Test
 {
@@ -32,17 +30,13 @@ namespace NosSharp.Logs.Test
         [TestMethod]
         public void TestInsertMultipleLogs()
         {
-            NosSharpLogger logger = new NosSharpLogger("NosSharpTest");
-
-            IMongoCollection<BsonDocument> collectionByName = logger.GetCollectionByName(CollectionName);
-
             IEnumerable<BsonDocument> documents = Enumerable.Range(0, 100).Select(i => new BsonDocument
             {
                 {"Character", $"Blowa - {i}"},
                 {"ChatType", "World"},
                 {"Data", "Hello World - NosSharp"},
             });
-            logger.InsertLogs(documents, CollectionName);
+            _logger.InsertLogs(documents, CollectionName);
         }
     }
 }

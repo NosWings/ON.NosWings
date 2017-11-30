@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\srcs\NosSharp.Logs\NosSharp.Logs.csproj" />
+    <ProjectReference Include="..\..\srcs\NosSharp.Logs\NosSharp.Logs.csproj" />
   </ItemGroup>
 
   <ItemGroup>

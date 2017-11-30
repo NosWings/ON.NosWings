@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace OpenNos.Logger
+namespace NosSharp.Logs
 {
     public class NosSharpLogger
     {
