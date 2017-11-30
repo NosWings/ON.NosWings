@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Extensions
 {
     public static class ConcurrentBagExtensions
     {

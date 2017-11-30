@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
+using OpenNos.Core.Extensions;
 using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.GameObject

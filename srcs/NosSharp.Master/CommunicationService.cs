@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Newtonsoft.Json;
+using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Master.Controllers;

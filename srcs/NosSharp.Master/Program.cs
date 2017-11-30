@@ -23,6 +23,7 @@ using Hik.Communication.ScsServices.Service;
 using log4net;
 using Microsoft.Owin.Hosting;
 using OpenNos.Core;
+using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;

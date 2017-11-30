@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using OpenNos.Core;
+using OpenNos.Core.Extensions;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;

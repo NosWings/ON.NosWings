@@ -28,6 +28,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using OpenNos.Core.Extensions;
 
 namespace OpenNos.Handler
 {
