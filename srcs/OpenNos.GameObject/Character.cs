@@ -30,6 +30,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using OpenNos.Core.Extensions;
 using static OpenNos.Domain.BCardType;
+using OpenNos.GameObject.Logs.Classes;
 
 namespace OpenNos.GameObject
 {
@@ -59,11 +60,20 @@ namespace OpenNos.GameObject
             PassiveSkillBcards = new ConcurrentBag<BCard>();
             ObservableBag = new Dictionary<short, IDisposable>();
             Quests = new List<CharacterQuest>();
+            CharacterLog = new CharacterLog
+            {
+                AccountName = Session.Account.Name,
+                AccountId = AccountId,
+                CharacterId = CharacterId,
+                CharacterName = Name
+            };
         }
 
         #endregion
 
         #region Properties
+
+        public CharacterLog CharacterLog { get; }
 
         public Dictionary<short, IDisposable> ObservableBag { get; set; }
 

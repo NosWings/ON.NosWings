@@ -166,6 +166,9 @@
     <Compile Include="Helpers\RewardsHelper.cs" />
     <Compile Include="Helpers\ShellGeneratorHelper.cs" />
     <Compile Include="Helpers\VipHelper.cs" />
+    <Compile Include="Logs\Classes\CharacterLog.cs" />
+    <Compile Include="Logs\Classes\ChatLog.cs" />
+    <Compile Include="Logs\Classes\TradeLog.cs" />
     <Compile Include="Map\Zone.cs" />
     <Compile Include="Event\EventContainer.cs" />
     <Compile Include="Event\Schedule.cs" />
