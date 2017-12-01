@@ -1,20 +1,15 @@
 ﻿using System;
 using OpenNos.Domain;
+using NosSharp.Logs;
 
 namespace OpenNos.GameObject.Logs.Classes
 {
-    public class ChatLog
+    public class ChatLog : AbstractLog
     {
-        public ChatLog()
+        public ChatLog() : base("ChatLogs")
         {
-            Date = DateTime.Now;
         }
 
-        /// <summary>
-        /// Date when it has been sent
-        /// </summary>
-        public DateTime Date { get; }
-        
         /// <summary>
         /// Character Sender
         /// </summary>

@@ -15,6 +15,12 @@ namespace NosSharp.Logs
             Database = Client.GetDatabase(database);
         }
 
+        public NosSharpLogger(string connection, string database)
+        {
+            Client = new MongoClient(connection);
+            Database = Client.GetDatabase(database);
+        }
+
         public async void InsertLog(BsonDocument log, string collectionName)
         {
             IMongoCollection<BsonDocument> collection = Database.GetCollection<BsonDocument>(collectionName);
@@ -24,6 +30,7 @@ namespace NosSharp.Logs
                 await Database.CreateCollectionAsync(collectionName);
                 collection = Database.GetCollection<BsonDocument>(collectionName);
             }
+
             await collection.InsertOneAsync(log);
         }
 
@@ -36,6 +43,7 @@ namespace NosSharp.Logs
                 await Database.CreateCollectionAsync(collectionName);
                 collection = Database.GetCollection<BsonDocument>(collectionName);
             }
+
             await collection.InsertManyAsync(logs);
         }
 

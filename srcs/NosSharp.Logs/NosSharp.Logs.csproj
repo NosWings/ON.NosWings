@@ -53,6 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractLog.cs" />
+    <Compile Include="ILog.cs" />
+    <Compile Include="LogManager.cs" />
     <Compile Include="NosSharpLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

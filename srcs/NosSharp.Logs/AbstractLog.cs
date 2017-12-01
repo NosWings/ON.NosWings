@@ -1,20 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NosSharp.Logs
 {
-    public abstract class AbstractLog
+    public abstract class AbstractLog : ILog
     {
-        protected AbstractLog()
+        protected AbstractLog(string collection)
         {
+            Collection = collection;
             Date = DateTime.Now;
         }
 
+        /// <summary>
+        /// The date when the log has been created
+        /// </summary>
         public DateTime Date { get; }
 
-        public abstract string Collection { get; }
+
+        /// <summary>
+        /// The collection where the log need to be stored
+        /// </summary>
+        public string Collection { get; }
     }
 }

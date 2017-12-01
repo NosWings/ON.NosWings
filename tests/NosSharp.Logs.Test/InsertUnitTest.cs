@@ -9,9 +9,9 @@ namespace NosSharp.Logs.Test
     [TestClass]
     public class InsertUnitTest
     {
-        private static readonly NosSharpLogger _logger = new NosSharpLogger("NosSharpTest");
+        private static readonly NosSharpLogger Logger = new NosSharpLogger("NosSharpTest");
         private const string CollectionName = "TestInsertLogs";
-        readonly IMongoCollection<BsonDocument> _collectionByName = _logger.GetCollectionByName(CollectionName);
+        readonly IMongoCollection<BsonDocument> _collectionByName = Logger.GetCollectionByName(CollectionName);
 
         [TestMethod]
         public void TestInsertSingleLog()
@@ -24,7 +24,7 @@ namespace NosSharp.Logs.Test
                 {"ChatType", "World"},
                 {"Data", "Hello World - NosSharp"},
             };
-            _logger.InsertLog(testLog1, CollectionName);
+            Logger.InsertLog(testLog1, CollectionName);
         }
 
         [TestMethod]
@@ -36,7 +36,7 @@ namespace NosSharp.Logs.Test
                 {"ChatType", "World"},
                 {"Data", "Hello World - NosSharp"},
             });
-            _logger.InsertLogs(documents, CollectionName);
+            Logger.InsertLogs(documents, CollectionName);
         }
     }
 }

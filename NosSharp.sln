@@ -28,6 +28,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.Handler", "srcs\OpenNos.Handler\OpenNos.Handler.csproj", "{A6748A8D-0D96-41B9-A110-DBF692AFC56D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.GameObject", "srcs\OpenNos.GameObject\OpenNos.GameObject.csproj", "{EADD17BE-20A4-4589-830E-E41BE9314928}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4DB01AEF-B784-43BA-A188-B7CF0232DC9E} = {4DB01AEF-B784-43BA-A188-B7CF0232DC9E}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.DAL.EF", "srcs\OpenNos.DAL.EF\OpenNos.DAL.EF.csproj", "{4AECC47D-098A-4493-8E1E-D10EDBB7A189}"
 EndProject
@@ -49,13 +52,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NosSharp.Logs", "srcs\NosSh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NosSharp.Logs.Test", "tests\NosSharp.Logs.Test\NosSharp.Logs.Test.csproj", "{1720D598-516B-4903-8A58-FBC545BE981C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NosSharp.CLI.Test", "tests\NosSharp.CLI.Test\NosSharp.CLI.Test.csproj", "{22D94CBA-488B-47A6-85A8-35B2D2843DCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NosSharp.CLI.Test", "tests\NosSharp.CLI.Test\NosSharp.CLI.Test.csproj", "{22D94CBA-488B-47A6-85A8-35B2D2843DCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NosSharp.Master.Test", "tests\NosSharp.Master.Test\NosSharp.Master.Test.csproj", "{1BAA5158-2F06-4DBA-9C7E-CD2D9FA09BD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NosSharp.Master.Test", "tests\NosSharp.Master.Test\NosSharp.Master.Test.csproj", "{1BAA5158-2F06-4DBA-9C7E-CD2D9FA09BD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NosSharp.Database.Test", "tests\NosSharp.Database.Test\NosSharp.Database.Test.csproj", "{5E9033BE-C778-4592-9658-6F1B78112558}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NosSharp.Database.Test", "tests\NosSharp.Database.Test\NosSharp.Database.Test.csproj", "{5E9033BE-C778-4592-9658-6F1B78112558}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NosSharp.Utilities", "srcs\NosSharp.Utilities\NosSharp.Utilities.csproj", "{1B6CD777-AFE2-4006-9CA5-878589D3A931}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NosSharp.Utilities", "srcs\NosSharp.Utilities\NosSharp.Utilities.csproj", "{1B6CD777-AFE2-4006-9CA5-878589D3A931}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using NosSharp.Logs;
 
 namespace OpenNos.GameObject.Logs.Classes
 {
-    internal class TradeLog
-    {   
+    internal class TradeLog : AbstractLog
+    {
+        public TradeLog() : base("TradeLogs")
+        {
+        }
+
         internal class TradeCharacter
         {
             internal TradeCharacter(CharacterLog character)
@@ -18,13 +23,6 @@ namespace OpenNos.GameObject.Logs.Classes
 
             public IEnumerable<ItemInstance> Items { get; set; }
         }
-
-        public TradeLog()
-        {
-            Date = DateTime.Now;
-        }
-
-        public DateTime Date { get; }
 
         public TradeCharacter FirstCharacter { get; set; }
 
