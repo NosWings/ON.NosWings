@@ -9,7 +9,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using OpenNos.Data;
 using OpenNos.Domain;
 
@@ -46,7 +45,7 @@ namespace OpenNos.Master.Library.Client
                 }
             }
         }
-        
+
         #endregion
 
         #region Events
@@ -73,7 +72,6 @@ namespace OpenNos.Master.Library.Client
 
         public event EventHandler ShutdownEvent;
 
-
         #endregion
 
         #region Properties
@@ -82,12 +80,8 @@ namespace OpenNos.Master.Library.Client
 
         public CommunicationStates CommunicationState
         {
-            get
-            {
-                return _client.CommunicationState;
-            }
+            get { return _client.CommunicationState; }
         }
-
 
         #endregion
 
@@ -167,7 +161,7 @@ namespace OpenNos.Master.Library.Client
         {
             _client.ServiceProxy.RegisterAccountLogin(accountId, sessionId, accountName);
         }
-        
+
         public bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId)
         {
             return _client.ServiceProxy.ConnectAccountInternal(worldId, accountId, sessionId);
@@ -192,7 +186,7 @@ namespace OpenNos.Master.Library.Client
         {
             return _client.ServiceProxy.RetrieveServerStatistics();
         }
-        
+
         public SerializableWorldServer GetPreviousChannelByAccountId(long accountId)
         {
             return _client.ServiceProxy.GetPreviousChannelByAccountId(accountId);
@@ -307,7 +301,6 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.SendMail(worldGroup, mail);
         }
 
-    
         #endregion
     }
 }
