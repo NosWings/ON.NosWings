@@ -15,6 +15,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Hik.Communication.ScsServices.Service;
+using OpenNos.GameObject;
 using OpenNos.Master.Library.Data;
 
 namespace OpenNos.Master
@@ -36,6 +37,8 @@ namespace OpenNos.Master
             LoginServers = new List<IScsServiceClient>();
             ConnectedAccounts = new ConcurrentBag<AccountSession>();
             AuthentificatedClients = new List<long>();
+            Act4AngelStat = new Act4Stat();
+            Act4DemonStat = new Act4Stat();
         }
 
         #endregion
@@ -54,6 +57,10 @@ namespace OpenNos.Master
         public List<IScsServiceClient> LoginServers { get; set; }
 
         public List<WorldServer> WorldServers { get; set; }
+
+        public Act4Stat Act4AngelStat { get; set; }
+
+        public Act4Stat Act4DemonStat { get; set; }
 
         #endregion
     }

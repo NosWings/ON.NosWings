@@ -87,6 +87,16 @@ namespace OpenNos.Master.Library.Client
 
         #region Methods
 
+        public void SaveAct4(Act4Stat angelStats, Act4Stat demonStats)
+        {
+            _client.ServiceProxy.SaveAct4(angelStats, demonStats);
+        }
+
+        public Act4Stat[] RestoreAct4()
+        {
+            return _client.ServiceProxy.RestoreAct4();
+        }
+
         public bool Authenticate(string authKey)
         {
             return _client.ServiceProxy.Authenticate(authKey);

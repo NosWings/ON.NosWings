@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using Newtonsoft.Json;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
@@ -43,6 +44,18 @@ namespace OpenNos.Master.Server
         #endregion
 
         #region Methods
+
+
+        public void SaveAct4(Act4Stat angelStats, Act4Stat demonStats)
+        {
+            MsManager.Instance.Act4AngelStat = angelStats;
+            MsManager.Instance.Act4DemonStat = demonStats;
+        }
+
+        public Act4Stat[] RestoreAct4()
+        {
+            return new[] {MsManager.Instance.Act4AngelStat, MsManager.Instance.Act4DemonStat};
+        }
 
         public bool Authenticate(string authKey)
         {
@@ -120,6 +133,7 @@ namespace OpenNos.Master.Server
             }
             Logger.Log.Info($"[{act4Channel.WorldGroup}] ACT4 Channel elected on ChannelId : {act4Channel.ChannelId} ");
             act4Channel.IsAct4 = true;
+            ServerManager.Instance.RestoreAct4();
             return act4Channel.Serializable;
         }
 
@@ -310,18 +324,6 @@ namespace OpenNos.Master.Server
             if (!MsManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
             {
                 return null;
-            }
-            if (MsManager.Instance.WorldServers.Count >= ServerManager.Instance.Act4MinChannels && !MsManager.Instance.WorldServers.Any(w => w.IsAct4))
-            {
-                WorldServer a4 = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIp, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup)
-                {
-                    ServiceClient = CurrentClient,
-                    ChannelId = 51,
-                    Serializable = new SerializableWorldServer(worldServer.Id, worldServer.EndPointIp, worldServer.EndPointPort, worldServer.AccountLimit, worldServer.WorldGroup),
-                    IsAct4 = true
-                };
-                MsManager.Instance.WorldServers.Add(a4);
-                return a4.ChannelId;
             }
             WorldServer ws = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIp, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup)
             {

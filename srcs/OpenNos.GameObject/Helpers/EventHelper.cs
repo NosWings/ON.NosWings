@@ -23,6 +23,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using OpenNos.Core.Extensions;
+using OpenNos.Master.Library.Data;
 
 namespace OpenNos.GameObject.Helpers
 {

@@ -222,6 +222,18 @@ namespace OpenNos.GameObject
 
         #region Methods
 
+        public void SaveAct4()
+        {
+            CommunicationServiceClient.Instance.SaveAct4(Act4AngelStat, Act4DemonStat);
+            Logger.Log.Debug(Language.Instance.GetMessageFromKey("GLACERNON_SAVED"));
+        }
+
+        public void RestoreAct4()
+        {
+            Act4AngelStat = CommunicationServiceClient.Instance.RestoreAct4()[0];
+            Act4DemonStat = CommunicationServiceClient.Instance.RestoreAct4()[1];
+        }
+
         public void AddGroup(Group group)
         {
             _groups[group.GroupId] = group;

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OpenNos.GameObject
+namespace OpenNos.Master.Library.Data
 {
     public class Act4Stat
     {
@@ -21,7 +25,7 @@ namespace OpenNos.GameObject
 
         public int MinutesUntilReset
         {
-            get { return (int) (_nextMonth - DateTime.Now).TotalMinutes; }
+            get { return (int)(_nextMonth - DateTime.Now).TotalMinutes; }
         }
 
         public byte Mode { get; set; }
@@ -32,18 +36,17 @@ namespace OpenNos.GameObject
             set
             {
                 _percentage = value;
-                ServerManager.Instance.Act4Process();
             }
         }
 
         public short CurrentTime
         {
-            get { return Mode == 0 ? (short) 0 : (short) (_latestUpdate.AddSeconds(_totalTime) - DateTime.Now).TotalSeconds; }
+            get { return Mode == 0 ? (short)0 : (short)(_latestUpdate.AddSeconds(_totalTime) - DateTime.Now).TotalSeconds; }
         }
 
         public short TotalTime
         {
-            get { return Mode == 0 ? (short) 0 : _totalTime; }
+            get { return Mode == 0 ? (short)0 : _totalTime; }
             set
             {
                 _latestUpdate = DateTime.Now;
