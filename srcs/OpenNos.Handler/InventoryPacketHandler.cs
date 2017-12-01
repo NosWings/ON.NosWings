@@ -630,6 +630,8 @@ namespace OpenNos.Handler
                     {
                         lock (Session.Character.Inventory)
                         {
+                            byte amount = mapItem.Amount;
+                            
                             if (mapItemInstance is WearableInstance wear)
                             {
                                 wear.Upgrade = mapItemInstance.Item.BasicUpgrade;
