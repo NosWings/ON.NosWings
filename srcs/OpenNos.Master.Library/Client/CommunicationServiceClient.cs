@@ -6,8 +6,6 @@ using OpenNos.DAL;
 using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Configuration;
 using OpenNos.Data;
 using OpenNos.Domain;

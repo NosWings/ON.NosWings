@@ -1,8 +1,6 @@
 ﻿using Hik.Communication.ScsServices.Service;
 using OpenNos.Master.Library.Data;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using OpenNos.Data;
 using OpenNos.Domain;
 

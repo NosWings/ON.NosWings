@@ -1,8 +1,7 @@
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
-    
+
     public partial class Aphrodite93 : DbMigration
     {
         public override void Up()

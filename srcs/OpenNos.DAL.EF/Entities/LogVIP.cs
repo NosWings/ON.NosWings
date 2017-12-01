@@ -14,7 +14,6 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using OpenNos.Domain;
 
 namespace OpenNos.DAL.EF
 {

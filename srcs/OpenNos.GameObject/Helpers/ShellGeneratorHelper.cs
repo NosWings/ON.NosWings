@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenNos.Core;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject.Helpers

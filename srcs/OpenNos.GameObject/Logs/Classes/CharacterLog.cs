@@ -1,7 +1,4 @@
-﻿using System;
-using NosSharp.Logs;
-
-namespace OpenNos.GameObject.Logs.Classes
+﻿namespace OpenNos.GameObject.Logs.Classes
 {
     public class CharacterLog
     {

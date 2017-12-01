@@ -15,7 +15,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Hik.Communication.ScsServices.Service;
-using OpenNos.GameObject;
 using OpenNos.Master.Library.Data;
 
 namespace OpenNos.Master

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.Data
+﻿namespace OpenNos.Data
 {
     public class QuestDTO : MappingBaseDTO
     {

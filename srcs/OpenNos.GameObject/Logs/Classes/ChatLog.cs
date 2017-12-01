@@ -1,5 +1,4 @@
-﻿using System;
-using OpenNos.Domain;
+﻿using OpenNos.Domain;
 using NosSharp.Logs;
 
 namespace OpenNos.GameObject.Logs.Classes

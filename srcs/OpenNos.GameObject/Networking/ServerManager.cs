@@ -27,7 +27,6 @@ using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.Domain;
-using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;

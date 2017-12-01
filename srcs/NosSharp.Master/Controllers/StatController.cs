@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
-using OpenNos.Domain;
 using OpenNos.Master.Library.Client;
 using System.Collections.Generic;
 using System.Web.Http;
 using Newtonsoft.Json;
 using OpenNos.Core;
-using OpenNos.Master.Library.Data;
 
 namespace OpenNos.Master.Server
 {
