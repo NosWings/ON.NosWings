@@ -118,13 +118,13 @@ namespace OpenNos.Master.Server
 
         public SerializableWorldServer GetAct4ChannelInfo(string worldGroup)
         {
-            WorldServer act4Channel = MsManager.Instance.WorldServers.FirstOrDefault(s => s.IsAct4 && s.WorldGroup == worldGroup);
+            WorldServer act4Channel = MSManager.Instance.WorldServers.FirstOrDefault(s => s.IsAct4 && s.WorldGroup == worldGroup);
 
             if (act4Channel != null)
             {
                 return act4Channel.Serializable;
             }
-            act4Channel = MsManager.Instance.WorldServers.FirstOrDefault(s => s.ChannelId == 51);
+            act4Channel = MSManager.Instance.WorldServers.FirstOrDefault(s => s.WorldGroup == worldGroup);
             if (act4Channel == null)
             {
                 return null;
