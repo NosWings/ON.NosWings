@@ -16,6 +16,8 @@
 
         public int FourthObjective { get; set; }
 
+        public int FifthObjective { get; set; }
+
         public bool IsMainQuest { get; set; }
 
         #endregion
