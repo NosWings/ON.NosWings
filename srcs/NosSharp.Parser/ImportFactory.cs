@@ -213,7 +213,7 @@ namespace OpenNos.Import.Console
                                         hasNextId = false;
                                         break;
                                 }
-                                if (hasNextId || quest.QuestId < 1500 && quest.QuestId >= 1751 || quest.QuestId < 3000 && quest.QuestId >= 3374)
+                                if (hasNextId || quest.QuestId < 1500 || quest.QuestId >= 1751 && quest.QuestId < 3000 || quest.QuestId >= 3374)
                                 {
                                     continue;
                                 }
