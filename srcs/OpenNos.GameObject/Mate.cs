@@ -22,6 +22,7 @@ using static OpenNos.Domain.BCardType;
 using System.Collections.Concurrent;
 using OpenNos.Core;
 using System.Reactive.Linq;
+using OpenNos.Core.Extensions;
 using OpenNos.PathFinder;
 
 namespace OpenNos.GameObject

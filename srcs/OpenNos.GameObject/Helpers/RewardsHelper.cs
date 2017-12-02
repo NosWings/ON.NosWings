@@ -1,6 +1,4 @@
-﻿using OpenNos.Core;
-
-namespace OpenNos.GameObject.Helpers
+﻿namespace OpenNos.GameObject.Helpers
 {
     public class RewardsHelper
     {

@@ -25,7 +25,6 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using System.Threading;
 
 namespace OpenNos.Login
 {

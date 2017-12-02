@@ -145,7 +145,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Act4Stat.cs" />
     <Compile Include="Act6Stats.cs" />
     <Compile Include="ArenaTeamMember.cs" />
     <Compile Include="ArenaMember.cs" />
@@ -166,6 +165,9 @@
     <Compile Include="Helpers\RewardsHelper.cs" />
     <Compile Include="Helpers\ShellGeneratorHelper.cs" />
     <Compile Include="Helpers\VipHelper.cs" />
+    <Compile Include="Logs\Classes\CharacterLog.cs" />
+    <Compile Include="Logs\Classes\ChatLog.cs" />
+    <Compile Include="Logs\Classes\TradeLog.cs" />
     <Compile Include="Map\Zone.cs" />
     <Compile Include="Event\EventContainer.cs" />
     <Compile Include="Event\Schedule.cs" />
@@ -466,6 +468,10 @@
     <Compile Include="Item\Instance\WearableInstance.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NosSharp.Logs\NosSharp.Logs.csproj">
+      <Project>{4db01aef-b784-43ba-a188-b7cf0232dc9e}</Project>
+      <Name>NosSharp.Logs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
       <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
       <Name>OpenNos.Core</Name>

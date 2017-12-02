@@ -160,6 +160,7 @@ namespace OpenNos.World
         {
             ServerManager.Instance.InShutdown = true;
             Logger.Log.Debug(Language.Instance.GetMessageFromKey("SERVER_CRASH"));
+            ServerManager.Instance.SaveAct4();
             CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
@@ -174,6 +175,7 @@ namespace OpenNos.World
             ServerManager.Instance.InShutdown = true;
             Logger.Log.Error((Exception)e.ExceptionObject);
             Logger.Log.Debug(Language.Instance.GetMessageFromKey("SERVER_CRASH"));
+            ServerManager.Instance.SaveAct4();
             CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));

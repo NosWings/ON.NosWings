@@ -3,7 +3,6 @@ using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.Master.Server.Controllers.ControllersParam;
 

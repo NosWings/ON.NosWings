@@ -13,15 +13,15 @@
  */
 
 using System;
-using OpenNos.Data;
+using OpenNos.Master.Library.Data;
 
-namespace OpenNos.Master.Library.Data
+namespace OpenNos.Master
 {
-    public class AccountConnection
+    public class AccountSession
     {
         #region Instantiation
 
-        public AccountConnection(long accountId, long session, string accountName)
+        public AccountSession(long accountId, long session, string accountName)
         {
             AccountId = accountId;
             SessionId = session;

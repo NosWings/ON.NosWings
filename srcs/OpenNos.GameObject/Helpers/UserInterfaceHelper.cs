@@ -16,7 +16,6 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
 using OpenNos.DAL;
 
 namespace OpenNos.GameObject.Helpers

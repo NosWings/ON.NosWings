@@ -28,6 +28,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using OpenNos.Core.Extensions;
 
 namespace OpenNos.Handler
 {
@@ -1428,7 +1429,7 @@ namespace OpenNos.Handler
                 {
                     EventHelper.Instance.RunEvent(e);
                 });
-                Session.CurrentMapInstance?.OnMoveOnMapEvents?.ToList().RemoveAll(s => s != null);
+                Session.CurrentMapInstance?.OnMoveOnMapEvents?.Clear();
             }
             else
             {

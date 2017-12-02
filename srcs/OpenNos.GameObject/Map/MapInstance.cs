@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using OpenNos.Core;
+using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.Domain;

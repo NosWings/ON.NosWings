@@ -160,11 +160,9 @@
     <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data">
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Xml" />
     <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
     </Reference>
@@ -349,6 +347,10 @@
     <Compile Include="Migrations\201711241728253_Aphrodite94.cs" />
     <Compile Include="Migrations\201711241728253_Aphrodite94.Designer.cs">
       <DependentUpon>201711241728253_Aphrodite94.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712021309025_Aphrodite95.cs" />
+    <Compile Include="Migrations\201712021309025_Aphrodite95.Designer.cs">
+      <DependentUpon>201712021309025_Aphrodite95.cs</DependentUpon>
     </Compile>
     <Compile Include="QuestDAO.cs" />
     <Compile Include="QuestRewardDAO.cs" />
@@ -979,6 +981,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711241728253_Aphrodite94.resx">
       <DependentUpon>201711241728253_Aphrodite94.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712021309025_Aphrodite95.resx">
+      <DependentUpon>201712021309025_Aphrodite95.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

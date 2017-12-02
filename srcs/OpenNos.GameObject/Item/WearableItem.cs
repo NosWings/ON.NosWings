@@ -19,6 +19,7 @@ using OpenNos.GameObject.Helpers;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using OpenNos.Core.Extensions;
 
 namespace OpenNos.GameObject
 {
