@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
                     }
                     if (session.Character.Level < 15 || session.Character.JobLevel < 20)
                     {
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_LOW_LVL"), 0));
                         return;
                     }
                     if (packet.Type == (byte)session.Character.Class)

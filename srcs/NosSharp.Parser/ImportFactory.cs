@@ -110,7 +110,7 @@ namespace OpenNos.Import.Console
                                         reward.Amount = int.Parse(currentLine[1]);
                                         break;
 
-                                    case QuestRewardType.EquipItem:
+                                    case QuestRewardType.WearItem:
                                         reward.Data = int.Parse(currentLine[1]);
                                         reward.Amount = 1;
                                         break;

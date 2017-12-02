@@ -48,7 +48,7 @@ namespace OpenNos.GameObject
                     switch ((QuestRewardType)reward.RewardType)
                     {
                         // Item
-                        case QuestRewardType.EquipItem:
+                        case QuestRewardType.WearItem:
                         case QuestRewardType.EtcMainItem:
                             character.GiftAdd((short)reward.Data, (byte)(reward.Amount == 0 ? 1 : reward.Amount), reward.Design, reward.Upgrade, (sbyte)reward.Rarity, true);
                             str += $"{reward.RewardType} {reward.Data} {(reward.Amount == 0 ? 1 : reward.Amount)} ";

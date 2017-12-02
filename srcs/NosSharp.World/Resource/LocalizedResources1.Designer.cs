@@ -1816,15 +1816,6 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Your level is too high!.
-        /// </summary>
-        internal static string HIGH_LVL {
-            get {
-                return ResourceManager.GetString("HIGH_LVL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à The hunt of the dark horn began..
         /// </summary>
         internal static string HORN_APPEAR {
@@ -2307,15 +2298,6 @@ namespace OpenNos.World.Resource {
         internal static string LOW_JOB_LVL {
             get {
                 return ResourceManager.GetString("LOW_JOB_LVL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Your level is too low!.
-        /// </summary>
-        internal static string LOW_LVL {
-            get {
-                return ResourceManager.GetString("LOW_LVL", resourceCulture);
             }
         }
         
@@ -4215,6 +4197,24 @@ namespace OpenNos.World.Resource {
         internal static string TOO_BIG {
             get {
                 return ResourceManager.GetString("TOO_BIG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Your level is too high!.
+        /// </summary>
+        internal static string TOO_HIGH_LVL {
+            get {
+                return ResourceManager.GetString("TOO_HIGH_LVL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Your level is too low!.
+        /// </summary>
+        internal static string TOO_LOW_LVL {
+            get {
+                return ResourceManager.GetString("TOO_LOW_LVL", resourceCulture);
             }
         }
         

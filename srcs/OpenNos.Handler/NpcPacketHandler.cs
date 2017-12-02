@@ -198,7 +198,7 @@ namespace OpenNos.Handler
                                         }
                                         if (Session.Character.Level < SkillMiniumLevel)
                                         {
-                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_LOW_LVL"), 0));
                                             return;
                                         }
                                         foreach (CharacterSkill skill in Session.Character.Skills.Select(s=>s.Value))

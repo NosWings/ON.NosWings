@@ -8,7 +8,7 @@
         SecondExp = 4,
         JobExp = 5,
         EtcMainItem = 7,
-        EquipItem = 8,
+        WearItem = 8,
         Reput = 9,
         ThirdGold = 10,
         FourthGold = 11,
