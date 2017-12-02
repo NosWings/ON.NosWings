@@ -45,6 +45,12 @@ namespace OpenNos.DAL.EF
 
         public int? FourthSpecialData { get; set; }
 
+        public int? FifthData { get; set; }
+
+        public int? FifthObjective { get; set; }
+
+        public int? FifthSpecialData { get; set; }
+
         public short? TargetMap { get; set; }
 
         public short? TargetX { get; set; }
