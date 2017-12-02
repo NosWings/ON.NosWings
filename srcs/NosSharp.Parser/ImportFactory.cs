@@ -175,7 +175,6 @@ namespace OpenNos.Import.Console
                                 }
 
                                 // Main Quest Order
-                                bool hasNextId = true;
                                 switch (quest.QuestId)
                                 {
                                     case 1997:
@@ -210,14 +209,13 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     default:
-                                        hasNextId = false;
+                                        if (quest.QuestId < 1500 || quest.QuestId >= 1751 && quest.QuestId < 3000 || quest.QuestId >= 3374)
+                                        {
+                                            continue;
+                                        }
+                                        quest.NextQuestId = quest.QuestId + 1;
                                         break;
                                 }
-                                if (hasNextId || quest.QuestId < 1500 || quest.QuestId >= 1751 && quest.QuestId < 3000 || quest.QuestId >= 3374)
-                                {
-                                    continue;
-                                }
-                                quest.NextQuestId = quest.QuestId + 1;
                                 break;
 
                             case "LEVEL":
@@ -288,7 +286,6 @@ namespace OpenNos.Import.Console
 
                                     case QuestType.Wear: // Item VNum - * - NpcVNum //
                                         data = int.Parse(currentLine[2]);
-                                        objective = 1;
                                         specialData = int.Parse(currentLine[1]);
                                         break;
 
@@ -312,14 +309,12 @@ namespace OpenNos.Import.Console
 
                                     case QuestType.Use: // Item to use - * - mateVnum //
                                         data = int.Parse(currentLine[1]);
-                                        objective = 1;
                                         specialData = int.Parse(currentLine[2]);
                                         break;
 
                                     case QuestType.Dialog1: // npcVNum - * - * //
                                     case QuestType.Dialog2: // npcVNum - * - * //
                                         data = int.Parse(currentLine[1]);
-                                        objective = 1;
                                         break;
 
                                     case QuestType.FlowerQuest:

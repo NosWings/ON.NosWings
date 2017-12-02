@@ -495,7 +495,8 @@ namespace OpenNos.GameObject
             }
             if (characterQuest.Quest.QuestType == (int)QuestType.TimesSpace || characterQuest.Quest.QuestType == (int)QuestType.Product || characterQuest.Quest.QuestType == (int)QuestType.Collect3
                 || characterQuest.Quest.QuestType == (int)QuestType.TransmitGold || characterQuest.Quest.QuestType == (int)QuestType.TsPoint || characterQuest.Quest.QuestType == (int)QuestType.NumberOfKill
-                || characterQuest.Quest.QuestType == (int)QuestType.TargetReput || characterQuest.Quest.QuestType == (int)QuestType.Inspect || characterQuest.Quest.QuestType == (int)QuestType.Needed)
+                || characterQuest.Quest.QuestType == (int)QuestType.TargetReput || characterQuest.Quest.QuestType == (int)QuestType.Inspect || characterQuest.Quest.QuestType == (int)QuestType.Needed
+                || characterQuest.Quest.QuestType == (int)QuestType.Collect5)
             {
                 AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId, isMain);
                 return;
@@ -557,7 +558,6 @@ namespace OpenNos.GameObject
                     case QuestType.Collect2:
                     case QuestType.Collect3:
                     case QuestType.Collect4:
-                    case QuestType.Collect5:
                     case QuestType.Hunt:
                         quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => IncrementObjective(quest, d.Key));
                         break;
@@ -616,6 +616,7 @@ namespace OpenNos.GameObject
                     case QuestType.Needed:
                     case QuestType.TargetReput:
                     case QuestType.TransmitGold:
+                    case QuestType.Collect5:
                         break;
                 }
             }
@@ -654,17 +655,18 @@ namespace OpenNos.GameObject
 
             Session.SendPacket($"qsti {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.{quest.FourthObjective}.{quest.Quest.FourthObjective ?? 0}.{quest.FifthObjective}.{quest.Quest.FifthObjective ?? 0}.0");
 
-            if (isFinish)
+            if (!isFinish)
             {
-                LastQuest = DateTime.Now;
-                if (CustomQuestRewards((QuestType)quest.Quest.QuestType))
-                {
-                    RemoveQuest(quest.QuestId);
-                    return;
-                }
-                Session.SendPacket(quest.Quest.GetRewardPacket(this));
-                RemoveQuest(quest.QuestId);
+                return;
             }
+            LastQuest = DateTime.Now;
+            if (CustomQuestRewards((QuestType)quest.Quest.QuestType))
+            {
+                RemoveQuest(quest.QuestId);
+                return;
+            }
+            Session.SendPacket(quest.Quest.GetRewardPacket(this));
+            RemoveQuest(quest.QuestId);
         }
 
         public bool CustomQuestRewards(QuestType type)
