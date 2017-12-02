@@ -131,7 +131,7 @@ namespace OpenNos.Master.Server
             }
             Logger.Log.Info($"[{act4Channel.WorldGroup}] ACT4 Channel elected on ChannelId : {act4Channel.ChannelId} ");
             act4Channel.IsAct4 = true;
-            ServerManager.Instance.RestoreAct4();
+            //ServerManager.Instance.RestoreAct4();
             return act4Channel.Serializable;
         }
 

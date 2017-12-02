@@ -109,6 +109,31 @@ namespace OpenNos.GameObject.Helpers
             {
                 session.Character.AddBuff(new Buff(403), false);
             }
+            // Miaou fou
+            if (mates.Any(s => s.Monster.Skills.Any(sk => sk.SkillVNum == 1524)))
+            {
+                session.SendPacket(session.Character.GeneratePetskill(1524));
+            }
+            // roi des pirates pussifer
+            if (mates.Any(s => s.Monster.Skills.Any(sk => sk.SkillVNum == 1516)))
+            {
+                session.SendPacket(session.Character.GeneratePetskill(1516));
+            }
+            // Amiral (le chat chelou)
+            if (mates.Any(s => s.Monster.Skills.Any(sk => sk.SkillVNum == 1515)))
+            {
+                session.SendPacket(session.Character.GeneratePetskill(1515));
+            }
+            // Baron scratch ? 
+            if (mates.Any(s => s.Monster.Skills.Any(sk => sk.SkillVNum == 1514)))
+            {
+                session.SendPacket(session.Character.GeneratePetskill(1514));
+            }
+            // Purcival
+            if (mates.Any(s => s.Monster.Skills.Any(sk => sk.SkillVNum == 1513)))
+            {
+                session.SendPacket(session.Character.GeneratePetskill(1513));
+            }
         }
 
         public void RemovePetBuffs(ClientSession session)
@@ -124,6 +149,7 @@ namespace OpenNos.GameObject.Helpers
             session.Character.RemoveBuff(394);
             session.Character.RemoveBuff(442);
             session.Character.RemoveBuff(403);
+            session.Character.GeneratePetskill();
         }
 
         #endregion PetBuffs

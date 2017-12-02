@@ -60,20 +60,20 @@ namespace OpenNos.GameObject
             PassiveSkillBcards = new ConcurrentBag<BCard>();
             ObservableBag = new Dictionary<short, IDisposable>();
             Quests = new List<CharacterQuest>();
-            CharacterLog = new CharacterLog
+            /*CharacterLog = new CharacterLog
             {
                 AccountName = Session.Account.Name,
                 AccountId = AccountId,
                 CharacterId = CharacterId,
                 CharacterName = Name
-            };
+            };*/
         }
 
         #endregion
 
         #region Properties
 
-        public CharacterLog CharacterLog { get; }
+        //public CharacterLog CharacterLog { get; }
 
         public Dictionary<short, IDisposable> ObservableBag { get; set; }
 
@@ -453,6 +453,12 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+
+        public string GeneratePetskill(int VNum = -1)
+        {
+            return $"petski {VNum}";
+        }
 
         public void AddQuest(long questId)
         {

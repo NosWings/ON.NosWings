@@ -105,6 +105,7 @@ namespace OpenNos.GameObject
                                     {
                                         // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
                                         MateHelper.Instance.RemovePetBuffs(session);
+                                        MateHelper.Instance.AddPetBuff(session);
                                         teammate.IsTeamMember = false;
                                         teammate.MapX = teammate.PositionX;
                                         teammate.MapY = teammate.PositionY;
