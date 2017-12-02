@@ -541,7 +541,7 @@ namespace OpenNos.GameObject
             short a = 0;
             short b = 6;
             Quests.ToList().ForEach(qst => qst.QuestNumber = qst.IsMainQuest ? (short) 5 : (qst.Quest.QuestType == (byte) QuestType.WinRaid ? b++ : a++));
-            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.{quest.FourthObjective}.{quest.Quest.FourthObjective ?? 0}.0.0.{(quest.QuestId == newQuestId ? 1 : 0)}")}";
+            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.{quest.FourthObjective}.{quest.Quest.FourthObjective ?? 0}.0.{quest.Quest.FifthObjective ?? 0}.{(quest.QuestId == newQuestId ? 1 : 0)}")}";
         }
 
         public void IncrementQuests(QuestType type, int firstData = 0, int secondData = 0, int thirdData = 0)
@@ -641,6 +641,10 @@ namespace OpenNos.GameObject
                 case 4:
                     quest.FourthObjective += quest.FourthObjective >= quest.Quest.FourthObjective ? 0 : amount;
                     break;
+
+                case 5:
+                    //quest.FourthObjective += quest.FourthObjective >= quest.Quest.FifthObjective ? 0 : amount;
+                    break;
             }
 
             if (quest.FirstObjective >= quest.Quest.FirstObjective && quest.SecondObjective >= (quest.Quest.SecondObjective ?? 0) && quest.ThirdObjective >= (quest.Quest.ThirdObjective ?? 0))
@@ -648,7 +652,7 @@ namespace OpenNos.GameObject
                 isFinish = true;
             }
 
-            Session.SendPacket($"qsti {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.{quest.FourthObjective}.{quest.Quest.FourthObjective ?? 0}.0.0.0");
+            Session.SendPacket($"qsti {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.{quest.FourthObjective}.{quest.Quest.FourthObjective ?? 0}.0.{quest.Quest.FifthObjective ?? 0}.0");
 
             if (isFinish)
             {

@@ -65,6 +65,7 @@ namespace OpenNos.GameObject
             Data.Add(2, new int[] { Quest.SecondData ?? -1, Quest.SecondSpecialData ?? -1, Quest.SecondObjective ?? 0 });
             Data.Add(3, new int[] { Quest.ThirdData ?? -1, Quest.ThirdSpecialData ?? -1, Quest.ThirdObjective ?? 0 });
             Data.Add(4, new int[] { Quest.FourthData ?? -1, Quest.FourthSpecialData ?? -1, Quest.FourthObjective ?? 0 });
+            Data.Add(5, new int[] { Quest.FifthData ?? -1, Quest.FifthSpecialData ?? -1, Quest.FifthObjective ?? 0 });
         }
         #endregion
     }
