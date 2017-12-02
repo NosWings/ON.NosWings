@@ -13,23 +13,15 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
+        public CharacterQuest()
+        {
+
+        }
+
         public CharacterQuest(long questId, long characterId)
         {
             QuestId = questId;
             CharacterId = characterId;
-            LoadData();
-        }
-
-        public CharacterQuest(CharacterQuestDTO characterQuestDto)
-        {
-            Id = characterQuestDto.Id;
-            FirstObjective = characterQuestDto.FirstObjective;
-            SecondObjective = characterQuestDto.SecondObjective;
-            ThirdObjective = characterQuestDto.ThirdObjective;
-            FourthObjective = characterQuestDto.FourthObjective;
-            QuestId = characterQuestDto.QuestId;
-            CharacterId = characterQuestDto.CharacterId;
-            IsMainQuest = characterQuestDto.IsMainQuest;
             LoadData();
         }
 
@@ -67,6 +59,12 @@ namespace OpenNos.GameObject
             Data.Add(4, new int[] { Quest.FourthData ?? -1, Quest.FourthSpecialData ?? -1, Quest.FourthObjective ?? 0 });
             Data.Add(5, new int[] { Quest.FifthData ?? -1, Quest.FifthSpecialData ?? -1, Quest.FifthObjective ?? 0 });
         }
+
+        public override void Initialize()
+        {
+            LoadData();
+        }
+
         #endregion
     }
 }

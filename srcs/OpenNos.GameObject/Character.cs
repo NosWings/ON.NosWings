@@ -5451,21 +5451,7 @@ namespace OpenNos.GameObject
 
                 //Quest
                 DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).ToList().ForEach(q => DaoFactory.CharacterQuestDao.Delete(CharacterId, q.QuestId));
-                foreach (CharacterQuest qst in Quests)
-                {
-                    CharacterQuestDTO dto = new CharacterQuestDTO()
-                    {
-                        Id = qst.Id,
-                        CharacterId = CharacterId,
-                        QuestId = qst.QuestId,
-                        FirstObjective = qst.FirstObjective,
-                        SecondObjective = qst.SecondObjective,
-                        ThirdObjective = qst.ThirdObjective,
-                        FourthObjective = qst.FourthObjective,
-                        IsMainQuest = qst.IsMainQuest
-                    };
-                    DaoFactory.CharacterQuestDao.InsertOrUpdate(dto);
-                }
+                Quests.ToList().ForEach(qst => DaoFactory.CharacterQuestDao.InsertOrUpdate(qst));
 
                 foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
                 {
