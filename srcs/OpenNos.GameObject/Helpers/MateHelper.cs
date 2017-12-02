@@ -149,7 +149,7 @@ namespace OpenNos.GameObject.Helpers
             session.Character.RemoveBuff(394);
             session.Character.RemoveBuff(442);
             session.Character.RemoveBuff(403);
-            session.Character.GeneratePetskill();
+            session.SendPacket(session.Character.GeneratePetskill());
         }
 
         #endregion PetBuffs
