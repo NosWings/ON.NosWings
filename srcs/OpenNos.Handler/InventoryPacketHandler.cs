@@ -632,10 +632,6 @@ namespace OpenNos.Handler
                         {
                             byte amount = mapItem.Amount;
                             
-                            if (mapItemInstance is WearableInstance wear)
-                            {
-                                wear.Upgrade = mapItemInstance.Item.BasicUpgrade;
-                            }
                             ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
                             if (inv != null)
                             {
