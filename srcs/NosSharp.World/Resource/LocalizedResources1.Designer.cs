@@ -2707,6 +2707,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à New mission goal..
+        /// </summary>
+        internal static string NEW_MISSION {
+            get {
+                return ResourceManager.GetString("NEW_MISSION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Your NosMate name&apos;s has been changed.
         /// </summary>
         internal static string NEW_NAME_PET {
@@ -3094,6 +3103,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Only the team leader can start the Raid..
+        /// </summary>
+        internal static string ONLY_TEAM_LEADER_CAN_START {
+            get {
+                return ResourceManager.GetString("ONLY_TEAM_LEADER_CAN_START", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Packet arrived, packet: {0}.
         /// </summary>
         internal static string PACKET_ARRIVED {
@@ -3445,11 +3463,29 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} join the raid team..
+        /// </summary>
+        internal static string RAID_JOIN {
+            get {
+                return ResourceManager.GetString("RAID_JOIN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à The Raid Leader changed !.
         /// </summary>
         internal static string RAID_LEADER_CHANGE {
             get {
                 return ResourceManager.GetString("RAID_LEADER_CHANGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à As the raid recommended level does not correspond to your level, a raidbox cannot be given even if the raid task is completed..
+        /// </summary>
+        internal static string RAID_LEVEL_INCORRECT {
+            get {
+                return ResourceManager.GetString("RAID_LEVEL_INCORRECT", resourceCulture);
             }
         }
         
@@ -3468,6 +3504,15 @@ namespace OpenNos.World.Resource {
         internal static string RAID_SUCCEED {
             get {
                 return ResourceManager.GetString("RAID_SUCCEED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The Raidteam is now unregistered..
+        /// </summary>
+        internal static string RAID_UNREGISTERED {
+            get {
+                return ResourceManager.GetString("RAID_UNREGISTERED", resourceCulture);
             }
         }
         
@@ -3679,6 +3724,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} is searching for members to do the raid {1} !.
+        /// </summary>
+        internal static string SEARCH_TEAM_MEMBERS {
+            get {
+                return ResourceManager.GetString("SEARCH_TEAM_MEMBERS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Seeds of power used!.
         /// </summary>
         internal static string SEED_USED {
@@ -3855,6 +3909,15 @@ namespace OpenNos.World.Resource {
         internal static string SHOP_NOT_ALLOWED {
             get {
                 return ResourceManager.GetString("SHOP_NOT_ALLOWED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Raid members can not do an exchange..
+        /// </summary>
+        internal static string SHOP_NOT_ALLOWED_IN_RAID {
+            get {
+                return ResourceManager.GetString("SHOP_NOT_ALLOWED_IN_RAID", resourceCulture);
             }
         }
         
@@ -4143,6 +4206,15 @@ namespace OpenNos.World.Resource {
         internal static string SUM_SUCCESS {
             get {
                 return ResourceManager.GetString("SUM_SUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Someone won the jackpot at the Mystere box!.
+        /// </summary>
+        internal static string SUPER_REWARD {
+            get {
+                return ResourceManager.GetString("SUPER_REWARD", resourceCulture);
             }
         }
         
@@ -4521,6 +4593,15 @@ namespace OpenNos.World.Resource {
         internal static string WORLD_SERVER_CONSOLE_TITLE {
             get {
                 return ResourceManager.GetString("WORLD_SERVER_CONSOLE_TITLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This raid can&apos;t started on this portal..
+        /// </summary>
+        internal static string WRONG_MAP {
+            get {
+                return ResourceManager.GetString("WRONG_MAP", resourceCulture);
             }
         }
         

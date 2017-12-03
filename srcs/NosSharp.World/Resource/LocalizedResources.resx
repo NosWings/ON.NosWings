@@ -1636,4 +1636,31 @@
   <data name="MATE_WILL_BE_BACK" xml:space="preserve">
     <value>Mate died !  he will be back in 3 min</value>
   </data>
+  <data name="NEW_MISSION" xml:space="preserve">
+    <value>New mission goal.</value>
+  </data>
+  <data name="ONLY_TEAM_LEADER_CAN_START" xml:space="preserve">
+    <value>Only the team leader can start the Raid.</value>
+  </data>
+  <data name="RAID_JOIN" xml:space="preserve">
+    <value>{0} join the raid team.</value>
+  </data>
+  <data name="RAID_LEVEL_INCORRECT" xml:space="preserve">
+    <value>As the raid recommended level does not correspond to your level, a raidbox cannot be given even if the raid task is completed.</value>
+  </data>
+  <data name="RAID_UNREGISTERED" xml:space="preserve">
+    <value>The Raidteam is now unregistered.</value>
+  </data>
+  <data name="SEARCH_TEAM_MEMBERS" xml:space="preserve">
+    <value>{0} is searching for members to do the raid {1} !</value>
+  </data>
+  <data name="SHOP_NOT_ALLOWED_IN_RAID" xml:space="preserve">
+    <value>Raid members can not do an exchange.</value>
+  </data>
+  <data name="SUPER_REWARD" xml:space="preserve">
+    <value>Someone won the jackpot at the Mystere box!</value>
+  </data>
+  <data name="WRONG_MAP" xml:space="preserve">
+    <value>This raid can't started on this portal.</value>
+  </data>
 </root>
