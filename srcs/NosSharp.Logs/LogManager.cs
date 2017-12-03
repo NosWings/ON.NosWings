@@ -53,12 +53,14 @@ namespace NosSharp.Logs
             foreach (IGrouping<string, ILog> abstractLogs in _logs.GroupBy(s => s.Collection))
             {
                 _logger.InsertLogs(abstractLogs.Select(g => g.ToBsonDocument()), abstractLogs.Key);
+                Console.WriteLine($"Successfully flushed logs type : {abstractLogs.Key}");
             }
 
             _logs.Clear();
         }
 
         #region Disposable Pattern
+
         // Flag: Has Dispose already been called?
         private bool _disposed;
 
@@ -91,6 +93,7 @@ namespace NosSharp.Logs
         {
             Dispose(false);
         }
+
         #endregion
 
 
