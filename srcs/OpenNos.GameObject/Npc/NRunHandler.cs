@@ -595,24 +595,6 @@ namespace OpenNos.GameObject
                 case 3000:
                     if (npc != null)
                     {
-                        if (packet.Type == 0 && packet.Value == 2)
-                        {
-                            if (session.Character.Group?.Raid == null)
-                            {
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("YOU_HAVE_TO_BE_IN_RAID"), 10));
-                                return;
-                            }
-                            long? questId = ServerManager.Instance.Quests.FirstOrDefault(q => q.QuestType == (byte) QuestType.WinRaid && q.FirstData == session.Character.Group?.Raid.Id)?.QuestId;
-                            if (questId != null)
-                            {
-                                session.Character.AddQuest((long)questId, false);
-                            }
-                            else
-                            {
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_QUEST_FOR_THIS_RAID"), 10));
-
-                            }
-                        }
                     }
                     break;
 
