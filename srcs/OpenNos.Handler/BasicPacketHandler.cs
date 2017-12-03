@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenNos.Core.Extensions;
+using System.Reactive.Linq;
 
 namespace OpenNos.Handler
 {
@@ -1399,13 +1400,17 @@ namespace OpenNos.Handler
             }
             if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(5) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
             {
-                if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                double waitingTime = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate }) / (double)Session.Character.Speed * 2.5;
+                Observable.Timer(TimeSpan.FromMilliseconds((int)(waitingTime * 1000))).Subscribe(s =>
                 {
-                    Session.Character.MapX = walkPacket.XCoordinate;
-                    Session.Character.MapY = walkPacket.YCoordinate;
-                }
-                Session.Character.PositionX = walkPacket.XCoordinate;
-                Session.Character.PositionY = walkPacket.YCoordinate;
+                    if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                    {
+                        Session.Character.MapX = walkPacket.XCoordinate;
+                        Session.Character.MapY = walkPacket.YCoordinate;
+                    }
+                    Session.Character.PositionX = walkPacket.XCoordinate;
+                    Session.Character.PositionY = walkPacket.YCoordinate;
+                });
 
                 if (Session.Character.LastMonsterAggro.AddSeconds(5) > DateTime.Now)
                 {
