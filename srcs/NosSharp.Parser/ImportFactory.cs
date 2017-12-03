@@ -152,7 +152,7 @@ namespace OpenNos.Import.Console
                                     SecondData = int.Parse(currentLine[7 + i * 6]) / 4,
                                     ThirdData = int.Parse(currentLine[5 + i * 6]),
                                     IsLevelScaled = Convert.ToBoolean(first % 4),
-                                    IsLevelDivided = (first % 4) == 2,
+                                    IsLevelDivided = Math.Abs(first % 4) == 2,
                                 };
                                 bcards.Add(bcard);
                             }
