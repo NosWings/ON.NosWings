@@ -67,7 +67,7 @@ namespace OpenNos.Handler
                         session = ServerManager.Instance.GetSessionByCharacterName(packet.Target) ?? Session;
                     }
 
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_BALANCE"), session.Account.BankMoney), 10));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_BALANCE"), session.Account.BankMoney), 11));
                     break;
 
                 case "Deposit":
@@ -85,7 +85,7 @@ namespace OpenNos.Handler
 
                     Session.Character.Gold -= amount;
                     Session.Account.BankMoney += amount;
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_WITHDRAW"), amount), 10));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_WITHDRAW"), amount), 11));
                     Session.SendPacket(Session.Character.GenerateGold());
                     break;
 
@@ -101,44 +101,44 @@ namespace OpenNos.Handler
 
                     if (target == null)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PLAYER_DISCONNECTED"), amount), 10));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PLAYER_DISCONNECTED"), amount), 11));
                         return;
                     }
 
                     if (amount > Session.Account.BankMoney)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_BALANCE"), 10));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_BALANCE"), 11));
                         return;
                     }
 
                     Session.Account.BankMoney -= amount;
                     target.Account.BankMoney += amount;
 
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_TRANSFER_TO"), packet.Target, amount), 10));
-                    target.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_TRANSFER_FROM"), Session.Character.Name, amount), 10));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_TRANSFER_TO"), packet.Target, amount), 11));
+                    target.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_TRANSFER_FROM"), Session.Character.Name, amount), 11));
                     break;
 
                 case "Rank":
                     if (Session.Account.BankMoney == 0)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BANK_UNRANKED"), 10));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BANK_UNRANKED"), 11));
                     }
 
                     long rank = DaoFactory.AccountDao.GetBankRanking(Session.Account.AccountId);
 
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_RANKING"), rank), 10));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_RANKING"), rank), 11));
                     break;
 
                 case "Withdraw":
                     if (!packet.Amount.HasValue)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 10));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 11));
                         return;
                     }
 
                     if (Session.Account.BankMoney == 0)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_BALANCE"), 10));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_BALANCE"), 11));
                         return;
                     }
 
@@ -160,12 +160,12 @@ namespace OpenNos.Handler
 
                     Session.Character.Gold += amount;
                     Session.Account.BankMoney -= amount;
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_WITHDRAW"), amount), 10));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_WITHDRAW"), amount), 11));
                     Session.SendPacket(Session.Character.GenerateGold());
 
                     break;
                 default:
-                    Session.SendPacket(Session.Character.GenerateSay(BankCommandPacket.ReturnHelp(), 10));
+                    Session.SendPacket(Session.Character.GenerateSay(BankCommandPacket.ReturnHelp(), 11));
                     break;
             }
         }
@@ -1356,7 +1356,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
 
             // TODO: OPTIMIZE!
-            List<Type> classes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass && t.Namespace == "OpenNos.GameObject.CommandPackets").OrderBy(x => x.Name)
+            List<Type> classes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass && t.Namespace == "OpenNos.GameObject.Packets.CommandPackets").OrderBy(x => x.Name)
                 .ToList();
             foreach (Type type in classes)
             {

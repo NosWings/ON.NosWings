@@ -371,9 +371,7 @@ namespace NosSharp.Master
                     dictionary[accountConnections.Key].Add(i.Character);
                 }
             }
-            string tmp = JsonConvert.SerializeObject(dictionary);
-            Logger.Log.Info($"[MASTER] :  Stats {tmp}");
-            return tmp;
+            return JsonConvert.SerializeObject(dictionary);
         }
 
         public int? SendMessageToCharacter(SCSCharacterMessage message)
