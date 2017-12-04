@@ -86,8 +86,6 @@ namespace NosSharp.Parser
 
                 if (key.KeyChar != 'n')
                 {
-                    DaoFactory.BCardDao.Clean();
-                    Console.WriteLine(@"BCards Cleaned");
                     factory.ImportMaps();
                     factory.LoadMaps();
                     factory.ImportRespawnMapType();
