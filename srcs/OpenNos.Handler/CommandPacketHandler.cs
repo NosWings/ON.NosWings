@@ -25,6 +25,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.CommandPackets;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Packets.CommandPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 
@@ -48,6 +49,72 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
+
+        public void ManageBankAccount(BankCommandPacket packet)
+        {
+            long amount;
+            switch (packet.Subcommand)
+            {
+                case "Balance":
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_BALANCE"), Session.Account.BankMoney), 10));
+                    break;
+                case "Deposit":
+                    if (!packet.Amount.HasValue)
+                    {
+                        return;
+                    }
+                    amount = packet.Amount.Value;
+
+                    if (amount > Session.Character.Gold)
+                    {
+                        amount = Session.Character.Gold;
+                    }
+
+                    Session.Character.Gold -= amount;
+                    Session.Account.BankMoney += amount;
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_WITHDRAW"), amount), 10));
+                    Session.SendPacket(Session.Character.GenerateGold());
+
+                    break;
+                case "Withdraw":
+                    if (!packet.Amount.HasValue)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 10));
+                        return;
+                    }
+                    if (Session.Account.BankMoney == 0)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_BALANCE"), 10));
+                        return;
+                    }
+
+                    amount = packet.Amount.Value;
+                    if (amount <= 0)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 10));
+                    }
+
+                    if (Session.Character.Gold + amount > ServerManager.Instance.MaxGold)
+                    {
+                        amount = ServerManager.Instance.MaxGold - Session.Character.Gold;
+                    }
+
+                    if (Session.Account.BankMoney < amount && Session.Account.BankMoney > 0)
+                    {
+                        amount = Session.Account.BankMoney;
+                    }
+
+                    Session.Character.Gold += amount;
+                    Session.Account.BankMoney -= amount;
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_WITHDRAW"), amount), 10));
+                    Session.SendPacket(Session.Character.GenerateGold());
+
+                    break;
+                default:
+                    Session.SendPacket(Session.Character.GenerateSay(BankCommandPacket.ReturnHelp(), 10));
+                    break;
+            }
+        }
 
         public void AddQuest(AddQuestPacket addQuestPacket)
         {
@@ -180,10 +247,10 @@ namespace OpenNos.Handler
                 switch (characterPacket.Property)
                 {
                     case "-h":
-                        Session.SendPacket("$Character [Type] [Value] <PlayerName>");
-                        Session.SendPacket("[Types] : Name Level JobLevel HeroLevel");
-                        Session.SendPacket("[Types] : Gold Compliment Reputation Gender");
-                        Session.SendPacket("[Types] : Dignity Stats Class");
+                        Session.SendPacket(Session.Character.GenerateSay("$Character [Type] [Value] <PlayerName>", 10));
+                        Session.SendPacket(Session.Character.GenerateSay("[Types] : Name Level JobLevel HeroLevel", 10));
+                        Session.SendPacket(Session.Character.GenerateSay("[Types] : Gold Compliment Reputation Gender", 10));
+                        Session.SendPacket(Session.Character.GenerateSay("[Types] : Dignity Stats Class", 10));
                         break;
                     case "Name":
                         if (DaoFactory.CharacterDao.LoadByName(characterPacket.Value) != null)

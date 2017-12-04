@@ -4572,14 +4572,10 @@ namespace OpenNos.GameObject
                 Session.Character.Gold = ServerManager.Instance.MaxGold;
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
             }
-            if (isQuest)
-            {
-                Session.SendPacket(GenerateSay($"Quest reward: [ {ServerManager.Instance.GetItem(1046).Name} x {val} ]", 10));
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(1046).Name} x {val}", 10));
-            }
+
+            Session.SendPacket(isQuest
+                ? GenerateSay($"Quest reward: [ {ServerManager.Instance.GetItem(1046).Name} x {val} ]", 10)
+                : Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(1046).Name} x {val}", 10));
             Session.SendPacket(Session.Character.GenerateGold());
         }
 
