@@ -771,6 +771,7 @@ namespace OpenNos.GameObject.Item
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;
             }
+            session.Character.IncrementQuests(QuestType.Use, inv.ItemVNum);
         }
 
 

@@ -53,7 +53,7 @@ namespace OpenNos.GameObject.Npc
                     }
                     if (session.Character.Level < 15 || session.Character.JobLevel < 20)
                     {
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_LOW_LVL"), 0));
                         return;
                     }
                     if (packet.Type == (byte)session.Character.Class)
@@ -599,23 +599,6 @@ namespace OpenNos.GameObject.Npc
                 case 3000:
                     if (npc != null)
                     {
-                        if (packet.Type == 0 && packet.Value == 2)
-                        {
-                            if (session.Character.Group?.Raid == null)
-                            {
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("YOU_HAVE_TO_BE_IN_RAID"), 10));
-                                return;
-                            }
-                            switch ((RaidDesignType)session.Character.Group?.Raid.Id)
-                            {
-                                case RaidDesignType.Cuby:
-                                    break;
-
-                                default:
-                                    session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_QUEST_FOR_THIS_RAID"), 10));
-                                    break;
-                            }
-                        }
                     }
                     break;
 

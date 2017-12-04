@@ -357,7 +357,7 @@
   <data name="LOW_JOB_LVL" xml:space="preserve">
     <value>Your joblevel is too low!</value>
   </data>
-  <data name="LOW_LVL" xml:space="preserve">
+  <data name="TOO_LOW_LVL" xml:space="preserve">
     <value>Your level is too low!</value>
   </data>
   <data name="LOW_REP" xml:space="preserve">
@@ -1626,6 +1626,9 @@
   </data>
   <data name="RAID_REGISTRED" xml:space="preserve">
     <value>Team was registred</value>
+  </data>
+  <data name="TOO_HIGH_LVL" xml:space="preserve">
+    <value>Your level is too high!</value>
   </data>
   <data name="ALREADY_IN_FAMILY" xml:space="preserve">
     <value>You're already in a family</value>

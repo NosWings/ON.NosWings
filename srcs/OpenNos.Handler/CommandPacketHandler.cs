@@ -174,7 +174,7 @@ namespace OpenNos.Handler
         {
             if (ServerManager.Instance.Quests.Any(q => q.QuestId == addQuestPacket.QuestId))
             {
-                Session.Character.AddQuest(addQuestPacket.QuestId);
+                Session.Character.AddQuest(addQuestPacket.QuestId, false);
                 return;
             }
 

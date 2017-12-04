@@ -787,21 +787,21 @@ namespace OpenNos.Handler
             {
                 // On Target Dest
                 case 1:
-                    CharacterQuest goToQuest = Session.Character.Quests.FirstOrDefault(q => q.Quest.QuestType == (int)QuestType.GoTo
-                    && q.Quest.FirstData == Session.CurrentMapInstance.Map.MapId
-                    && q.Quest.SecondData == Session.Character.PositionX
-                    && q.Quest.ThirdData == Session.Character.PositionY);
-
-                    if (goToQuest != null)
-                    {
-                        Session.Character.IncrementQuestObjective(goToQuest);
-                    }
+                    Session.Character.IncrementQuests(QuestType.GoTo, Session.CurrentMapInstance.Map.MapId, Session.Character.PositionX, Session.Character.PositionY);
                     break;
 
+                // Give Up Quest
+                case 3:
+                    CharacterQuest charQuest = Session.Character.Quests?.FirstOrDefault(q => q.QuestNumber == qtPacket.Data);
+                    if (charQuest == null || charQuest.IsMainQuest)
+                    {
+                        return;
+                    }
+                    Session.Character.RemoveQuest(charQuest.QuestId, true);
+                    break;
 
                 // Ask for rewards
                 case 4:
-
                     break;
             }
         }

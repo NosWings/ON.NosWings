@@ -408,6 +408,7 @@ namespace OpenNos.GameObject.Helpers
                                                 }
                                             }
                                         }
+                                        sess.Character.IncrementQuests(QuestType.WinRaid, grp.Raid?.Id ?? -1);
                                     }
                                     // Remove monster when raid is over
                                     foreach (MapMonster mapMonster in evt.MapInstance.Monsters.Where(s => !s.IsBoss))

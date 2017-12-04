@@ -13,6 +13,8 @@ namespace OpenNos.DAL.Interface
 
         List<QuestDTO> LoadAll();
 
+        QuestDTO LoadById(long questId);
+
         #endregion
     }
 }

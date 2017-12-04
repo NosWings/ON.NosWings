@@ -44,26 +44,28 @@ namespace NosSharp.Parser
             }
             ConsoleKeyInfo key = new ConsoleKeyInfo();
             Logger.Log.Warn(Language.Instance.GetMessageFromKey("NEED_TREE"));
-            Console.BackgroundColor = ConsoleColor.Blue;
-            Console.WriteLine(@"Root");
-            Console.ResetColor();
-            Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Card.txt");
-            Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Item.txt");
-            Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_MapIDData.txt");
-            Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_monster.txt");
-            Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Skill.txt");
-            Console.WriteLine(@"-----packet.txt");
-            Console.WriteLine(@"-----Card.dat");
-            Console.WriteLine(@"-----Item.dat");
-            Console.WriteLine(@"-----MapIDData.dat");
-            Console.WriteLine(@"-----monster.dat");
-            Console.WriteLine(@"-----Skill.dat");
-            Console.BackgroundColor = ConsoleColor.Blue;
-            Console.WriteLine(@"-----map");
-            Console.ResetColor();
-            Console.WriteLine(@"----------0");
-            Console.WriteLine(@"----------1");
-            Console.WriteLine(@"----------...");
+            System.Console.BackgroundColor = ConsoleColor.Blue;
+            System.Console.WriteLine(@"Root");
+            System.Console.ResetColor();
+            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Card.txt");
+            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Item.txt");
+            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_MapIDData.txt");
+            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_monster.txt");
+            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Skill.txt");
+            System.Console.WriteLine(@"-----packet.txt");
+            System.Console.WriteLine(@"-----Card.dat");
+            System.Console.WriteLine(@"-----Item.dat");
+            System.Console.WriteLine(@"-----MapIDData.dat");
+            System.Console.WriteLine(@"-----monster.dat");
+            System.Console.WriteLine(@"-----Skill.dat");
+            System.Console.WriteLine(@"-----quest.dat");
+            System.Console.WriteLine(@"-----qstprize.dat");
+            System.Console.BackgroundColor = ConsoleColor.Blue;
+            System.Console.WriteLine(@"-----map");
+            System.Console.ResetColor();
+            System.Console.WriteLine(@"----------0");
+            System.Console.WriteLine(@"----------1");
+            System.Console.WriteLine(@"----------...");
 
             try
             {
@@ -106,6 +108,7 @@ namespace NosSharp.Parser
                     factory.ImportShopItems();
                     factory.ImportShopSkills();
                     factory.ImportRecipe();
+                    factory.ImportQuests();
                 }
                 else
                 {
@@ -228,6 +231,12 @@ namespace NosSharp.Parser
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportRecipe();
+                    }
+                    System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_QUESTS")} [Y/n]");
+                    key = System.Console.ReadKey(true);
+                    if (key.KeyChar != 'n')
+                    {
+                        factory.ImportQuests();
                     }
                 }
                 Console.WriteLine($@"{Language.Instance.GetMessageFromKey("DONE")}");

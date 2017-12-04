@@ -291,6 +291,8 @@ namespace OpenNos.GameObject.Buff
                                                     character.Session.SendPackets(character.Mates.Where(s => s.IsTeamMember)
                                                         .OrderBy(s => s.MateType)
                                                         .Select(s => s.GeneratePst()));
+                                                    character.IncrementQuests(QuestType.Capture1, monster.MonsterVNum);
+                                                    character.IncrementQuests(QuestType.Capture2, monster.MonsterVNum);
                                                 }
                                                 else { character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CAPTURE_FAILED"), 0)); }
                                             }

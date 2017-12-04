@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\bin\Mediator</OutputPath>
+    <OutputPath>..\..\bin\Mediator\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

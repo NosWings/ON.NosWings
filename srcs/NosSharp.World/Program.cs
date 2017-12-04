@@ -206,6 +206,7 @@ namespace NosSharp.World
             DaoFactory.CharacterRelationDao.RegisterMapping(typeof(CharacterRelationDTO)).InitializeMapper();
             DaoFactory.CharacterSkillDao.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
             DaoFactory.CharacterQuestDao.RegisterMapping(typeof(CharacterQuestDTO)).InitializeMapper();
+            DaoFactory.CharacterQuestDao.RegisterMapping(typeof(CharacterQuest)).InitializeMapper();
             DaoFactory.ComboDao.RegisterMapping(typeof(ComboDTO)).InitializeMapper();
             DaoFactory.DropDao.RegisterMapping(typeof(DropDTO)).InitializeMapper();
             DaoFactory.GeneralLogDao.RegisterMapping(typeof(GeneralLogDTO)).InitializeMapper();

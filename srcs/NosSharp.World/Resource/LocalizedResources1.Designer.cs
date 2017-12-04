@@ -2302,15 +2302,6 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Your level is too low!.
-        /// </summary>
-        internal static string LOW_LVL {
-            get {
-                return ResourceManager.GetString("LOW_LVL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Your reputation is too low!.
         /// </summary>
         internal static string LOW_REP {
@@ -3427,6 +3418,15 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} quests parsed !.
+        /// </summary>
+        internal static string QUEST_PARSED {
+            get {
+                return ResourceManager.GetString("QUEST_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à {0} Quests loaded!.
         /// </summary>
         internal static string QUESTS_LOADED {
@@ -3675,6 +3675,15 @@ namespace NosSharp.World.Resource {
         internal static string RETRY_SEARCH_ARENA_TEAM {
             get {
                 return ResourceManager.GetString("RETRY_SEARCH_ARENA_TEAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} quests rewards parsed !.
+        /// </summary>
+        internal static string REWARD_PARSED {
+            get {
+                return ResourceManager.GetString("REWARD_PARSED", resourceCulture);
             }
         }
         
@@ -4260,6 +4269,24 @@ namespace NosSharp.World.Resource {
         internal static string TOO_BIG {
             get {
                 return ResourceManager.GetString("TOO_BIG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Your level is too high!.
+        /// </summary>
+        internal static string TOO_HIGH_LVL {
+            get {
+                return ResourceManager.GetString("TOO_HIGH_LVL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Your level is too low!.
+        /// </summary>
+        internal static string TOO_LOW_LVL {
+            get {
+                return ResourceManager.GetString("TOO_LOW_LVL", resourceCulture);
             }
         }
         
