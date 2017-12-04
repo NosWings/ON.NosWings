@@ -37,6 +37,8 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<BCardDTO> LoadBySkillVNum(short vNum);
 
+        void Clean();
+
         #endregion
     }
 }
