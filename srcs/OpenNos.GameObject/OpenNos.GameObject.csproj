@@ -219,6 +219,7 @@
     <Compile Include="Packets\ClientPackets\RxitPacket.cs" />
     <Compile Include="Packets\ClientPackets\SellPacket.cs" />
     <Compile Include="Packets\ClientPackets\ShoppingPacket.cs" />
+    <Compile Include="Packets\ClientPackets\UpetPacket.cs" />
     <Compile Include="Packets\ClientPackets\UseItemPacket.cs" />
     <Compile Include="Packets\CommandPackets\Act4ConnectPacket.cs" />
     <Compile Include="Packets\CommandPackets\AddPartnerPacket.cs" />
