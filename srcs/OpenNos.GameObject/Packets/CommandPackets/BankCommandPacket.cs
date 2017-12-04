@@ -16,9 +16,12 @@ namespace OpenNos.GameObject.Packets.CommandPackets
         [PacketIndex(1)]
         public long? Amount { get; set; }
 
+        [PacketIndex(2)]
+        public string Target { get; set; }
+
         public static string ReturnHelp()
         {
-            return "$Bank [Withdraw/Deposit/Balance] <Amount>";
+            return "$Bank [Balance/Deposit/Top/Transfer/Withdraw] <Amount> <Target>";
         }
     }
 }

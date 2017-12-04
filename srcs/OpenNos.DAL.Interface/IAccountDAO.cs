@@ -24,6 +24,8 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult Delete(long accountId);
 
+        long GetBankRanking(long accountId);
+
         SaveResult InsertOrUpdate(ref AccountDTO account);
 
         AccountDTO LoadById(long accountId);
