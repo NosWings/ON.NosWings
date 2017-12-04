@@ -22,6 +22,12 @@ using OpenNos.GameObject.Packets.ClientPackets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.GameObject.Item;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
+using OpenNos.GameObject.Packets.ServerPackets;
 
 namespace OpenNos.Handler
 {

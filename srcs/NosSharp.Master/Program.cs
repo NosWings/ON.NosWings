@@ -28,11 +28,13 @@ using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Npc;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Interface;
-using OpenNos.Master.Server;
 
-namespace OpenNos.Master
+namespace NosSharp.Master
 {
     internal class Program
     {

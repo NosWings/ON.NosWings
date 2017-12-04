@@ -14,7 +14,7 @@
 
 using System;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Serializing
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class PacketAliasAttribute : Attribute

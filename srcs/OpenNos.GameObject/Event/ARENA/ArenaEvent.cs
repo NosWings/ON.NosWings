@@ -8,6 +8,9 @@ using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject.Event.ARENA
 {
@@ -553,7 +556,7 @@ namespace OpenNos.GameObject.Event.ARENA
                 {
                     if (sess.Session?.Character.Buff.Any(bf => bf.Card.CardId == 491) == false)
                     {
-                        sess.Session?.Character.AddBuff(new Buff(491));
+                        sess.Session?.Character.AddBuff(new Buff.Buff(491));
                     }
                 });
             }
@@ -567,7 +570,7 @@ namespace OpenNos.GameObject.Event.ARENA
                 {
                     if (sess.Session?.Character.Buff.Any(bf => bf.Card.CardId == 490) == false)
                     {
-                        sess.Session?.Character.AddBuff(new Buff(490));
+                        sess.Session?.Character.AddBuff(new Buff.Buff(490));
                     }
                 });
             }

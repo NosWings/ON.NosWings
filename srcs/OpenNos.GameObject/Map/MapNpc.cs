@@ -12,19 +12,23 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.Domain;
-using OpenNos.GameObject.Helpers;
-using OpenNos.PathFinder;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using OpenNos.Core;
 using OpenNos.Core.Extensions;
+using OpenNos.Data;
+using OpenNos.Domain;
+using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
+using OpenNos.GameObject.Packets.ServerPackets;
+using OpenNos.PathFinder.PathFinder;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Map
 {
     public class MapNpc : MapNpcDTO
     {

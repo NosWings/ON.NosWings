@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Data.Base;
 using OpenNos.Domain;
 
 namespace OpenNos.Data

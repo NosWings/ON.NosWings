@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using OpenNos.Domain;
+using OpenNos.GameObject.Buff;
 
 namespace OpenNos.GameObject.Helpers
 {

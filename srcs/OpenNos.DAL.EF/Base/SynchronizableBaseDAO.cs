@@ -1,14 +1,15 @@
-﻿using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data.Base;
+using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Entities.Base;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.EF.Base
 {
     public abstract class SynchronizableBaseDAO<TEntity, TDTO> : MappingBaseDAO<TEntity, TDTO>, ISynchronizableBaseDAO<TDTO>
         where TDTO : SynchronizableBaseDTO

@@ -1,12 +1,12 @@
-﻿using System.Web.Http;
-using OpenNos.Master.Library.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Web.Http;
 using Newtonsoft.Json;
+using NosSharp.Master.Controllers.ControllersParameters;
 using OpenNos.Domain;
-using OpenNos.Master.Server.Controllers.ControllersParam;
+using OpenNos.Master.Library.Client;
 
-namespace OpenNos.Master.Server.Controllers
+namespace NosSharp.Master.Controllers
 {
     public class AuthorityController : ApiController
     {

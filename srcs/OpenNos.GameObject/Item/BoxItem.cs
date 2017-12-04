@@ -12,14 +12,17 @@
  * GNU General Public License for more details.
  */
 
+using System.Collections.Generic;
+using System.Linq;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
-using System.Collections.Generic;
-using System.Linq;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Item
 {
     public class BoxItem : Item
     {

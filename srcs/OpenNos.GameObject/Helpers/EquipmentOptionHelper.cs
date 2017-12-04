@@ -2,6 +2,7 @@
 using System.Linq;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Buff;
 
 namespace OpenNos.GameObject.Helpers
 {

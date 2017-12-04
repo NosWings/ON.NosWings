@@ -1,7 +1,7 @@
-﻿using OpenNos.Domain;
-using System;
+﻿using System;
+using OpenNos.Domain;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Serializing
 {
     public class PacketHeaderAttribute : Attribute
     {

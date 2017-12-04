@@ -12,13 +12,15 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.Threading;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
-using System;
-using System.Threading;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Networking;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Item
 {
     public class FoodItem : Item
     {

@@ -1,4 +1,6 @@
-﻿namespace OpenNos.GameObject.Helpers
+﻿using OpenNos.GameObject.Networking;
+
+namespace OpenNos.GameObject.Helpers
 {
     public class RewardsHelper
     {

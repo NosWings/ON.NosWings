@@ -12,20 +12,24 @@
  * GNU General Public License for more details.
  */
 
-using CloneExtensions;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.Domain;
-using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using CloneExtensions;
+using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.DAL;
+using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
-using System.Reactive.Linq;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Item
 {
     public class SpecialItem : Item
     {
@@ -310,7 +314,7 @@ namespace OpenNos.GameObject
                     }
                     session.Character.IsOnBoost = true;
                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(885), session.Character.MapX, session.Character.MapY);
-                    session.Character.AddBuff(new Buff(336));
+                    session.Character.AddBuff(new Buff.Buff(336));
                     session.Character.Speed += 5;
                     switch (session.Character.Morph)
                     {

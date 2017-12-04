@@ -29,8 +29,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
 using OpenNos.Core.Extensions;
+using OpenNos.GameObject.Buff;
+using OpenNos.GameObject.Item.Instance;
 using static OpenNos.Domain.BCardType;
 using OpenNos.GameObject.Logs.Classes;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
+using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.PathFinder.PathFinder;
 
 namespace OpenNos.GameObject
 {
@@ -87,7 +94,7 @@ namespace OpenNos.GameObject
 
         public Node[,] BrushFire { get; set; }
 
-        public ConcurrentBag<Buff> Buff { get; internal set; }
+        public ConcurrentBag<Buff.Buff> Buff { get; internal set; }
 
         private ConcurrentBag<BCard> SkillBcards { get; }
 
@@ -643,11 +650,11 @@ namespace OpenNos.GameObject
                 case QuestType.FlowerQuest:
                     if (ServerManager.Instance.RandomNumber() < 50)
                     {
-                        AddBuff(new Buff(378, Level));
+                        AddBuff(new Buff.Buff(378, Level));
                     }
                     else
                     {
-                        AddBuff(new Buff(379, Level));
+                        AddBuff(new Buff.Buff(379, Level));
                     }
                     return true;
 
@@ -902,33 +909,33 @@ namespace OpenNos.GameObject
                     switch (SpInstance?.Design)
                     {
                         case 6:
-                            AddBuff(new Buff(387), false);
+                            AddBuff(new Buff.Buff(387), false);
                             break;
                         case 7:
-                            AddBuff(new Buff(395), false);
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(395), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 8:
-                            AddBuff(new Buff(396), false);
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(396), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 9:
-                            AddBuff(new Buff(397), false);
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(397), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 10:
-                            AddBuff(new Buff(398), false);
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(398), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 11:
-                            AddBuff(new Buff(410), false);
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(410), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 12:
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 13:
-                            AddBuff(new Buff(444), false);
+                            AddBuff(new Buff.Buff(444), false);
                             break;
                     }
                 }
@@ -1046,7 +1053,7 @@ namespace OpenNos.GameObject
                     if (MeditationDictionary.ContainsKey(534) && MeditationDictionary[534] < DateTime.Now)
                     {
                         Session.SendPacket(GenerateEff(4344));
-                        AddBuff(new Buff(534, Level));
+                        AddBuff(new Buff.Buff(534, Level));
                         RemoveBuff(533);
                         RemoveBuff(532);
                         MeditationDictionary.Remove(534);
@@ -1054,7 +1061,7 @@ namespace OpenNos.GameObject
                     else if (MeditationDictionary.ContainsKey(533) && MeditationDictionary[533] < DateTime.Now)
                     {
                         Session.SendPacket(GenerateEff(4343));
-                        AddBuff(new Buff(533, Level));
+                        AddBuff(new Buff.Buff(533, Level));
                         RemoveBuff(532);
                         RemoveBuff(534);
                         MeditationDictionary.Remove(533);
@@ -1062,7 +1069,7 @@ namespace OpenNos.GameObject
                     else if (MeditationDictionary.ContainsKey(532) && MeditationDictionary[532] < DateTime.Now)
                     {
                         Session.SendPacket(GenerateEff(4343));
-                        AddBuff(new Buff(532, Level));
+                        AddBuff(new Buff.Buff(532, Level));
                         RemoveBuff(534);
                         RemoveBuff(533);
                         MeditationDictionary.Remove(532);
@@ -1858,7 +1865,7 @@ namespace OpenNos.GameObject
 
             if (skill.Type == 1)
             {
-                if (Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) < 4)
+                if (Map.Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) < 4)
                 {
                     baseDamage = (int)(baseDamage * 0.85);
                 }
@@ -2147,7 +2154,7 @@ namespace OpenNos.GameObject
                 {
                     continue;
                 }
-                int distance = Map.GetDistance(new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }, new MapCell { X = session.Character.PositionX, Y = session.Character.PositionY });
+                int distance = Map.Map.GetDistance(new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }, new MapCell { X = session.Character.PositionX, Y = session.Character.PositionY });
                 if (distance >= nearestDistance)
                 {
                     continue;
@@ -3485,7 +3492,7 @@ namespace OpenNos.GameObject
 
             if (skill.Type == 1)
             {
-                if (Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = target.PositionX, Y = target.PositionY }) < 4)
+                if (Map.Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = target.PositionX, Y = target.PositionY }) < 4)
                 {
                     baseDamage = (int)(baseDamage * 0.85);
                 }
@@ -3785,7 +3792,7 @@ namespace OpenNos.GameObject
                 (byte) AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
             {
                 target.ChargeValue = totalDamage;
-                target.AddBuff(new Buff(0), false);
+                target.AddBuff(new Buff.Buff(0), false);
                 totalDamage = 0;
                 hitmode = 1;
             }
@@ -5395,7 +5402,7 @@ namespace OpenNos.GameObject
                     DaoFactory.CharacterQuestDao.InsertOrUpdate(dto);
                 }
 
-                foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
+                foreach (Buff.Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
                 {
                     StaticBuffDTO bf = new StaticBuffDTO
                     {
@@ -5437,7 +5444,7 @@ namespace OpenNos.GameObject
 
         public void SendGift(long id, short vnum, byte amount, sbyte rare, byte upgrade, bool isNosmall)
         {
-            Item it = ServerManager.Instance.GetItem(vnum);
+            Item.Item it = ServerManager.Instance.GetItem(vnum);
 
             if (it == null)
             {
@@ -6135,7 +6142,7 @@ namespace OpenNos.GameObject
         /// <param name="cardId"></param>
         public void RemoveBuff(short cardId)
         {
-            Buff indicator = Buff.FirstOrDefault(s => s?.Card?.CardId == cardId);
+            Buff.Buff indicator = Buff.FirstOrDefault(s => s?.Card?.CardId == cardId);
             if (indicator == null)
             {
                 return;
@@ -6182,12 +6189,12 @@ namespace OpenNos.GameObject
 
         public void AddStaticBuff(StaticBuffDTO staticBuff)
         {
-            Buff bf = new Buff(staticBuff.CardId, Session.Character.Level)
+            Buff.Buff bf = new Buff.Buff(staticBuff.CardId, Session.Character.Level)
             {
                 Start = DateTime.Now,
                 StaticBuff = true
             };
-            Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
+            Buff.Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
 
             if (staticBuff.RemainingTime < -1)
             {
@@ -6236,7 +6243,7 @@ namespace OpenNos.GameObject
                     if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
                         bf.Card.TimeoutBuffChance)
                     {
-                        AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
+                        AddBuff(new Buff.Buff(bf.Card.TimeoutBuff, Level));
                     }
                 });
             }
@@ -6245,7 +6252,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), bf.Card.Name), 12));
         }
 
-        public void AddBuff(Buff indicator, bool notify = true)
+        public void AddBuff(Buff.Buff indicator, bool notify = true)
         {
             int buffTime = 0;
             if (indicator?.Card == null)
@@ -6293,14 +6300,14 @@ namespace OpenNos.GameObject
                 RemoveBuff(indicator.Card.CardId);
                 if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
                 {
-                    AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
+                    AddBuff(new Buff.Buff(indicator.Card.TimeoutBuff, Level));
                 }
             });
         }
 
         private void RemoveBuff(int id)
         {
-            Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
+            Buff.Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
             if (indicator == null)
             {
                 return;
@@ -6543,7 +6550,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            foreach (Buff buff in Buff)
+            foreach (Buff.Buff buff in Buff)
             {
                 foreach (BCard entry in buff.Card.BCards.Where(s =>
                     s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&

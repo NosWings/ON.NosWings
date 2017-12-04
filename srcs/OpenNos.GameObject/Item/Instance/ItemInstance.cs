@@ -12,11 +12,12 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.Data;
 using OpenNos.Domain;
-using System;
+using OpenNos.GameObject.Networking;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Item.Instance
 {
     public class ItemInstance : ItemInstanceDTO
     {

@@ -23,10 +23,14 @@ using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.Domain;
+using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
-using OpenNos.PathFinder;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
+using OpenNos.PathFinder.PathFinder;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Map
 {
     public class MapInstance : BroadcastableBase
     {

@@ -12,12 +12,12 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenNos.Core;
 
-namespace OpenNos.World
+namespace NosSharp.World
 {
     public class WorldEncryption : EncryptionBase
     {

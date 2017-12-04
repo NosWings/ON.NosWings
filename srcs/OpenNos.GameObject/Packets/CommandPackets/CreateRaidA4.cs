@@ -1,7 +1,7 @@
-﻿using OpenNos.Core;
+﻿using OpenNos.Core.Serializing;
 using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Packets.CommandPackets
 {
     [PacketHeader("$CreateRaid", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class CreateRaidPacket : PacketDefinition

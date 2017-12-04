@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenNos.Master.Controllers
+namespace NosSharp.Master.Controllers
 {
     internal class GlacernonController
     {

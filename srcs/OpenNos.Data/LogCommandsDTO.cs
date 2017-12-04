@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using OpenNos.Data.Base;
 
 namespace OpenNos.Data
 {

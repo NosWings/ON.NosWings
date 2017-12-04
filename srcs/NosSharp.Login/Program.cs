@@ -12,21 +12,24 @@
  * GNU General Public License for more details.
  */
 
-using log4net;
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.Data;
-using OpenNos.GameObject;
-using OpenNos.Handler;
-using OpenNos.Master.Library.Client;
 using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
+using log4net;
+using OpenNos.Core;
+using OpenNos.Core.Serializing;
+using OpenNos.Data;
+using OpenNos.DAL;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.GameObject;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.Handler;
+using OpenNos.Master.Library.Client;
 
-namespace OpenNos.Login
+namespace NosSharp.Login
 {
     public class Program
     {

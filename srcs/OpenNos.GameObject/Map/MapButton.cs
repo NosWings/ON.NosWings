@@ -1,7 +1,8 @@
-﻿using OpenNos.GameObject.Helpers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Helpers;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Map
 {
     public class MapButton
     {

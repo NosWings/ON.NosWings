@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using OpenNos.GameObject.Event;
 
 namespace OpenNos.GameObject
 {

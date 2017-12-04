@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Serializing
 {
     public static class PacketFactory
     {

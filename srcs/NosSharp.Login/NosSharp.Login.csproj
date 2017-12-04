@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Exe</OutputType>
-    <AssemblyName>OpenNos.Login</AssemblyName>
+    <AssemblyName>NosSharp.Login</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <WarningLevel>4</WarningLevel>
@@ -52,7 +52,7 @@
     <SlowCheetahTargets Condition=" '$(SlowCheetah_EnableImportFromNuGet)'=='true' and Exists('$(SlowCheetah_NuGetImportPath)') ">$(SlowCheetah_NuGetImportPath)</SlowCheetahTargets>
   </PropertyGroup>
   <PropertyGroup>
-    <RootNamespace>OpenNos.Login</RootNamespace>
+    <RootNamespace>NosSharp.Login</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>560EC2E0480BCE4C5C9A11BAD7B9C1B4DC409632</ManifestCertificateThumbprint>
@@ -94,7 +94,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>OpenNos.Login.Program</StartupObject>
+    <StartupObject>NosSharp.Login.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>nossharp-logo.ico</ApplicationIcon>

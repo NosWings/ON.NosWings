@@ -15,6 +15,7 @@
 using OpenNos.Domain;
 using System;
 using System.Linq;
+using OpenNos.Core.Serializing;
 
 namespace OpenNos.Core.Handling
 {

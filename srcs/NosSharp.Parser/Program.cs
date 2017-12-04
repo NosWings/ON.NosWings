@@ -12,19 +12,19 @@
  * GNU General Public License for more details.
  */
 
-using log4net;
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.Data;
 using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using log4net;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL;
+using OpenNos.DAL.EF.Helpers;
 
-namespace OpenNos.Import.Console
+namespace NosSharp.Parser
 {
     public class Program
     {

@@ -1,6 +1,7 @@
 ﻿using OpenNos.Domain;
+using OpenNos.GameObject.Map;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Event
 {
     public class EventContainer
     {

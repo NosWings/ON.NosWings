@@ -1,11 +1,12 @@
 ﻿using System;
-using OpenNos.Master.Library.Client;
 using System.Collections.Generic;
 using System.Web.Http;
 using Newtonsoft.Json;
 using OpenNos.Core;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 
-namespace OpenNos.Master.Server
+namespace NosSharp.Master.Controllers
 {
     public class StatController : ApiController
     {

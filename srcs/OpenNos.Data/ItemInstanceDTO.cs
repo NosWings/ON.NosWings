@@ -14,6 +14,8 @@
 
 using OpenNos.Domain;
 using System;
+using OpenNos.Data.Base;
+using OpenNos.Data.Interfaces;
 
 namespace OpenNos.Data
 {

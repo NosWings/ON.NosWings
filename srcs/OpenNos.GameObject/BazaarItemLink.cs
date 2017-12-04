@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using OpenNos.GameObject.Item.Instance;
 
 namespace OpenNos.GameObject
 {

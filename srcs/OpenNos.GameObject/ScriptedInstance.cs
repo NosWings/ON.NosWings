@@ -23,6 +23,9 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Xml;
+using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {

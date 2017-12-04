@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System;
+using OpenNos.Data.Base;
 
-namespace OpenNos.GameObject
+namespace OpenNos.Data
 {
     public class MinilandObjectDTO : MappingBaseDTO
     {

@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
+using System.Collections.Generic;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Server;
-using System.Collections.Generic;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Networking
 {
     public class NetworkClient : ScsServerClient, INetworkClient
     {

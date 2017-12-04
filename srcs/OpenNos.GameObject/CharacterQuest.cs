@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using OpenNos.Data;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {

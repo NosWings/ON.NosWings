@@ -27,6 +27,9 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
 using static OpenNos.Domain.BCardType;
 
 namespace OpenNos.Handler

@@ -15,6 +15,7 @@
 using System.Collections.Concurrent;
 using OpenNos.Data;
 using System.Collections.Generic;
+using OpenNos.GameObject.Buff;
 
 namespace OpenNos.GameObject
 {

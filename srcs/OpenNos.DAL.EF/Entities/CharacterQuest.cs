@@ -1,4 +1,6 @@
-﻿namespace OpenNos.DAL.EF
+﻿using OpenNos.DAL.EF.Entities.Base;
+
+namespace OpenNos.DAL.EF.Entities
 {
     public class CharacterQuest : SynchronizableBaseEntity
     {

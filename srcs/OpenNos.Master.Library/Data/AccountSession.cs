@@ -13,9 +13,8 @@
  */
 
 using System;
-using OpenNos.Master.Library.Data;
 
-namespace OpenNos.Master
+namespace OpenNos.Master.Library.Data
 {
     public class AccountSession
     {

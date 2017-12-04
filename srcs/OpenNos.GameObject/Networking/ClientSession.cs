@@ -12,11 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Core.Handling;
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
-using OpenNos.Domain;
-using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,8 +19,16 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using OpenNos.Core;
+using OpenNos.Core.Handling;
+using OpenNos.Core.Networking;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Serializing;
+using OpenNos.Domain;
+using OpenNos.GameObject.Map;
+using OpenNos.Master.Library.Client;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Networking
 {
     public class ClientSession
     {
@@ -309,7 +312,7 @@ namespace OpenNos.GameObject
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
-            Character.Buff = new ConcurrentBag<Buff>();
+            Character.Buff = new ConcurrentBag<Buff.Buff>();
         }
 
         private void ClearReceiveQueue()

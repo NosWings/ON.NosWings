@@ -12,17 +12,18 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Domain;
-using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading;
+using OpenNos.Core;
+using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
 
-namespace OpenNos.GameObject.Event
+namespace OpenNos.GameObject.Event.INSTANTBATTLE
 {
     public static class InstantBattle
     {
@@ -177,7 +178,7 @@ namespace OpenNos.GameObject.Event
             }
         }
 
-        private static IEnumerable<Tuple<short, int, short, short>> GenerateDrop(Map map, short vnum, int amountofdrop, int amount)
+        private static IEnumerable<Tuple<short, int, short, short>> GenerateDrop(Map.Map map, short vnum, int amountofdrop, int amount)
         {
             List<Tuple<short, int, short, short>> dropParameters = new List<Tuple<short, int, short, short>>();
             for (int i = 0; i < amountofdrop; i++)
@@ -188,7 +189,7 @@ namespace OpenNos.GameObject.Event
             return dropParameters;
         }
 
-        private static List<Tuple<short, int, short, short>> GetInstantBattleDrop(Map map, short instantbattletype, int wave)
+        private static List<Tuple<short, int, short, short>> GetInstantBattleDrop(Map.Map map, short instantbattletype, int wave)
         {
             List<Tuple<short, int, short, short>> dropParameters = new List<Tuple<short, int, short, short>>();
             switch (instantbattletype)
@@ -380,7 +381,7 @@ namespace OpenNos.GameObject.Event
             return dropParameters;
         }
 
-        private static ConcurrentBag<MonsterToSummon> GetInstantBattleMonster(Map map, short instantbattletype, int wave)
+        private static ConcurrentBag<MonsterToSummon> GetInstantBattleMonster(Map.Map map, short instantbattletype, int wave)
         {
             ConcurrentBag<MonsterToSummon> summonParameters = new ConcurrentBag<MonsterToSummon>();
 

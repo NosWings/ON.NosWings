@@ -1,4 +1,4 @@
-﻿namespace OpenNos.Data
+﻿namespace OpenNos.Data.Interfaces
 {
     public interface IBoxInstance : ISpecialistInstance
     {

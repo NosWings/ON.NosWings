@@ -19,6 +19,8 @@ using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {

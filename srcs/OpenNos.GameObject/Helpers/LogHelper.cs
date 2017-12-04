@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenNos.Core;
+using OpenNos.Core.Serializing;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.Domain;

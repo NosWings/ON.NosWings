@@ -23,7 +23,14 @@ using System.Collections.Concurrent;
 using OpenNos.Core;
 using System.Reactive.Linq;
 using OpenNos.Core.Extensions;
+using OpenNos.GameObject.Buff;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
+using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.PathFinder;
+using OpenNos.PathFinder.PathFinder;
 
 namespace OpenNos.GameObject
 {
@@ -45,7 +52,7 @@ namespace OpenNos.GameObject
 
         public Mate(Character owner, NpcMonster npcMonster, byte level, MateType matetype)
         {
-            Buffs = new ConcurrentBag<Buff>();
+            Buffs = new ConcurrentBag<Buff.Buff>();
             SkillBcards = new ConcurrentBag<BCard>();
             NpcMonsterVNum = npcMonster.NpcMonsterVNum;
             Monster = npcMonster;
@@ -75,7 +82,7 @@ namespace OpenNos.GameObject
 
         public Node[,] BrushFire { get; set; }
 
-        public ConcurrentBag<Buff> Buffs { get; internal set; }
+        public ConcurrentBag<Buff.Buff> Buffs { get; internal set; }
 
         public short CloseDefence { get; set; }
 
@@ -166,7 +173,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void AddBuff(Buff indicator)
+        public void AddBuff(Buff.Buff indicator)
         {
             if (indicator?.Card == null)
             {
@@ -208,7 +215,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            foreach (Buff buff in Buffs.Where(s => s?.Card?.BCards != null))
+            foreach (Buff.Buff buff in Buffs.Where(s => s?.Card?.BCards != null))
             {
                 foreach (BCard entry in buff.Card.BCards.Where(s =>
                     s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
@@ -1035,7 +1042,7 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-            Buffs = new ConcurrentBag<Buff>();
+            Buffs = new ConcurrentBag<Buff.Buff>();
             SkillBcards = new ConcurrentBag<BCard>();
             byte type = (byte)(Monster.AttackClass == 2 ? 1 : 0);
             Concentrate = (short)(MateHelper.Instance.Concentrate[type, Level] + (Monster.Concentrate - MateHelper.Instance.Concentrate[type, Monster.Level]));
@@ -1171,7 +1178,7 @@ namespace OpenNos.GameObject
 
         private void RemoveBuff(int id)
         {
-            Buff indicator = Buffs.FirstOrDefault(s => s.Card.CardId == id);
+            Buff.Buff indicator = Buffs.FirstOrDefault(s => s.Card.CardId == id);
             if (indicator == null)
             {
                 return;

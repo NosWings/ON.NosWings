@@ -12,13 +12,14 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Core.Networking;
+using OpenNos.Domain;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Networking
 {
     public class SessionManager
     {

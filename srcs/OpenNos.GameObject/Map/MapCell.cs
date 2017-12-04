@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Map
 {
     public class MapCell
     {

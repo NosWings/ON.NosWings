@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenNos.PathFinder
+namespace OpenNos.PathFinder.PathFinder
 {
     public static class Heuristic
     {

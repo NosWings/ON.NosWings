@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenNos.GameObject.CommandPackets;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Packets.VipPackets;
 
 namespace OpenNos.GameObject.Helpers
 {

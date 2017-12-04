@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -57,57 +58,57 @@ namespace OpenNos.GameObject.Helpers
             // FIBI
             if (mates.Any(s => s.Monster.NpcMonsterVNum == 670) && session.Character.Buff.All(s => s.Card.CardId != 374))
             {
-                session.Character.AddBuff(new Buff(374), false);
+                session.Character.AddBuff(new Buff.Buff(374), false);
             }
             // PADBRA
             if (mates.Any(s => s.Monster.NpcMonsterVNum == 836) && session.Character.Buff.All(s => s.Card.CardId != 381))
             {
-                session.Character.AddBuff(new Buff(381), false);
+                session.Character.AddBuff(new Buff.Buff(381), false);
             }
             // INFERNO
             if (mates.Any(s => s.Monster.NpcMonsterVNum == 2105) && session.Character.Buff.All(s => s.Card.CardId != 383))
             {
-                session.Character.AddBuff(new Buff(383), false);
+                session.Character.AddBuff(new Buff.Buff(383), false);
             }
             // LUCKY PIG
             if ((mates.Any(s => s.Monster.NpcMonsterVNum == 178) || mates.Any(s => s.Monster.NpcMonsterVNum == 536)) && session.Character.Buff.All(s => s.Card.CardId != 107))
             {
-                session.Character.AddBuff(new Buff(108), false);
+                session.Character.AddBuff(new Buff.Buff(108), false);
             }
             // RUDY LOUBARD
             if (mates.Any(s => s.Monster.NpcMonsterVNum == 830) && session.Character.Buff.All(s => s.Card.CardId != 377))
             {
-                session.Character.AddBuff(new Buff(377), false);
+                session.Character.AddBuff(new Buff.Buff(377), false);
             }
             // RATUFU COWBOY
             if (mates.Any(s => s.Monster.NpcMonsterVNum == 844) && session.Character.Buff.All(s => s.Card.CardId != 391))
             {
-                session.Character.AddBuff(new Buff(391), false);
+                session.Character.AddBuff(new Buff.Buff(391), false);
             }
             // RATUFU NAVY
             if (mates.Any(s => s.Monster.NpcMonsterVNum == 838) && session.Character.Buff.All(s => s.Card.CardId != 385))
             {
-                session.Character.AddBuff(new Buff(385), false);
+                session.Character.AddBuff(new Buff.Buff(385), false);
             }
             // RATUFU INDIEN
             if (mates.Any(s => s.Monster.NpcMonsterVNum == 842) && session.Character.Buff.All(s => s.Card.CardId != 399))
             {
-                session.Character.AddBuff(new Buff(399), false);
+                session.Character.AddBuff(new Buff.Buff(399), false);
             }
             // RATUFU NINJA
             if (mates.Any(s => s.Monster.NpcMonsterVNum == 841) && session.Character.Buff.All(s => s.Card.CardId != 394))
             {
-                session.Character.AddBuff(new Buff(394), false);
+                session.Character.AddBuff(new Buff.Buff(394), false);
             }
             // LEO LE LACHE
             if (mates.Any(s => s.Monster.NpcMonsterVNum == 840) && session.Character.Buff.All(s => s.Card.CardId != 442))
             {
-                session.Character.AddBuff(new Buff(442), false);
+                session.Character.AddBuff(new Buff.Buff(442), false);
             }
             // RATUFU VIKING
             if (mates.Any(s => s.Monster.NpcMonsterVNum == 843) && session.Character.Buff.All(s => s.Card.CardId != 403))
             {
-                session.Character.AddBuff(new Buff(403), false);
+                session.Character.AddBuff(new Buff.Buff(403), false);
             }
             // Miaou fou
             if (mates.Any(s => s.Monster.Skills.Any(sk => sk.SkillVNum == 1524)))

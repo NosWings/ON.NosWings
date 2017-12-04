@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System;
+using OpenNos.Data.Interfaces;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Item.Instance
 {
     public class BoxInstance : SpecialistInstance, IBoxInstance
     {

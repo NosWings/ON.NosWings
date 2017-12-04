@@ -12,35 +12,27 @@
  * GNU General Public License for more details.
  */
 
-using Hik.Communication.Scs.Communication.EndPoints.Tcp;
-using Hik.Communication.ScsServices.Service;
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Domain;
-using OpenNos.Master.Library.Data;
-using OpenNos.Master.Library.Interface;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using Hik.Communication.Scs.Communication.EndPoints.Tcp;
+using Hik.Communication.ScsServices.Service;
 using Newtonsoft.Json;
+using NosSharp.Master.Controllers;
+using OpenNos.Core;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
-using OpenNos.GameObject;
-using OpenNos.Master.Controllers;
+using OpenNos.DAL;
+using OpenNos.Domain;
+using OpenNos.Master;
+using OpenNos.Master.Library.Data;
+using OpenNos.Master.Library.Interface;
 
-namespace OpenNos.Master.Server
+namespace NosSharp.Master
 {
     internal class CommunicationService : ScsService, ICommunicationService
     {
-        #region Instantiation
-
-        public CommunicationService()
-        {
-        }
-
-        #endregion
-
         #region Methods
 
 
@@ -568,7 +560,7 @@ namespace OpenNos.Master.Server
             else
             {
                 AccountSession account = MsManager.Instance.ConnectedAccounts.FirstOrDefault(s => s.AccountId == character.AccountId);
-                account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().ChangeAuthority(account.AccountId, authority);
+                account?.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().ChangeAuthority(account.AccountId, authority);
             }
             return true;
         }

@@ -14,8 +14,9 @@
 
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using OpenNos.DAL.EF.Entities.Base;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.EF.Entities
 {
     public class EquipmentOption : SynchronizableBaseEntity
     {

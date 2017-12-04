@@ -30,6 +30,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using OpenNos.Core.Extensions;
 using System.Reactive.Linq;
+using OpenNos.Core.Handling;
+using OpenNos.Core.Serializing;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
 
 namespace OpenNos.Handler
 {

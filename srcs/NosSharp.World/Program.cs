@@ -12,15 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using log4net;
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.Data;
-using OpenNos.GameObject;
-using OpenNos.Handler;
-using OpenNos.Master.Library.Client;
-using OpenNos.Master.Library.Data;
 using System;
 using System.Configuration;
 using System.Diagnostics;
@@ -30,9 +21,25 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using OpenNos.World.Resource;
+using log4net;
+using NosSharp.World.Resource;
+using OpenNos.Core;
+using OpenNos.Core.Serializing;
+using OpenNos.Data;
+using OpenNos.DAL;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.GameObject;
+using OpenNos.GameObject.Buff;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
+using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.Handler;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 
-namespace OpenNos.World
+namespace NosSharp.World
 {
     public class Program
     {

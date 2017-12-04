@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace OpenNos.Parser.Resource {
+namespace NosSharp.Parser.Resource {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace OpenNos.Parser.Resource {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OpenNos.Parser.Resource.LocalizedResources", typeof(LocalizedResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("NosSharp.Parser.Resource.LocalizedResources", typeof(LocalizedResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

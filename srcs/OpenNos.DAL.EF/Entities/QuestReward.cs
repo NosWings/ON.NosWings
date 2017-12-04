@@ -1,4 +1,4 @@
-﻿namespace OpenNos.DAL.EF
+﻿namespace OpenNos.DAL.EF.Entities
 {
     public class QuestReward
     {

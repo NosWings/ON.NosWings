@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NosSharp.Logs;
+using OpenNos.GameObject.Item.Instance;
 
 namespace OpenNos.GameObject.Logs.Classes
 {
