@@ -3362,6 +3362,14 @@ namespace NosSharp.Parser
                         // item.DesignId = Convert.ToInt16(currentLine[6]);
                         switch (item.VNum)
                         {
+                            case 4101:
+                            case 4102:
+                            case 4103:
+                            case 4104:
+                            case 4105:
+                                item.EquipmentSlot = 0;
+                                break;
+
                             case 1906:
                                 item.Morph = 2368;
                                 item.Speed = 20;
