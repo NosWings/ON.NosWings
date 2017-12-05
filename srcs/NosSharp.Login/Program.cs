@@ -16,6 +16,7 @@ using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using log4net;
 using OpenNos.Core;
@@ -73,7 +74,7 @@ namespace NosSharp.Login
                     {
                         // register EF -> GO and GO -> EF mappings
                         RegisterMappings();
-
+                        
                         // initialize PacketSerialization
                         PacketFactory.Initialize<WalkPacket>();
 

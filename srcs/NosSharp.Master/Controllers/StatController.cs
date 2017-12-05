@@ -16,7 +16,6 @@ namespace NosSharp.Master.Controllers
             try
             {
                 string tmp = CommunicationServiceClient.Instance.RetrieveServerStatistics();
-                Logger.Log.Info($"[WEBAPI] Stats : {tmp}");
                 Dictionary<int, List<AccountSession.CharacterSession>> newDictionary = JsonConvert.DeserializeObject<Dictionary<int, List<AccountSession.CharacterSession>>>(tmp);
 
                 return newDictionary;
