@@ -515,7 +515,7 @@ namespace OpenNos.GameObject
                 AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId, isMain);
                 return;
             }
-            if (characterQuest.Quest.TargetMap == MapInstance.Map.MapId)
+            if (characterQuest.Quest.TargetMap != null)
             {
                 Session.SendPacket(characterQuest.Quest.TargetPacket());
             }
@@ -531,7 +531,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if (questToRemove.Quest.TargetMap == MapInstance.Map.MapId)
+            if (questToRemove.Quest.TargetMap != null)
             {
                 Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
             }
