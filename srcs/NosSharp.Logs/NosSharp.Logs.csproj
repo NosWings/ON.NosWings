@@ -47,10 +47,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractLog.cs" />
-    <Compile Include="ILog.cs" />
-    <Compile Include="LogManager.cs" />
-    <Compile Include="NosSharpLogger.cs" />
+    <Compile Include="AbstractLoggable.cs" />
+    <Compile Include="ILoggable.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="LoggableManager.cs" />
+    <Compile Include="Loggers\MongoLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

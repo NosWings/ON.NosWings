@@ -3,9 +3,9 @@ using NosSharp.Logs;
 
 namespace OpenNos.GameObject.Logs.Classes
 {
-    public class ChatLog : AbstractLog
+    public class ChatLoggable : AbstractLoggable
     {
-        public ChatLog() : base("ChatLogs")
+        public ChatLoggable() : base("ChatLogs")
         {
         }
 
@@ -40,7 +40,7 @@ namespace OpenNos.GameObject.Logs.Classes
         public int? TargetCharacterId { get; set; }
 
         /// <summary>
-        /// Channel from where the ChatLog has been created
+        /// Channel from where the ChatLoggable has been created
         /// </summary>
         public int ChannelId { get; set; }
     }

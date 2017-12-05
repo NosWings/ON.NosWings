@@ -33,6 +33,8 @@ using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Npc;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Interface;
+using NosSharp.Logs;
+using NosSharp.Logs.Loggers;
 
 namespace NosSharp.Master
 {
@@ -54,8 +56,10 @@ namespace NosSharp.Master
 
                 // initialize Logger
                 Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
+
+                LoggableManager.Instance.InitializeLogger(new MongoLogger("NosSharp.Login"));
                 
-                Console.Title = @"[Nos#] Master Server";
+                Console.Title = @"N# - Master Server";
                 string ipAddress = ConfigurationManager.AppSettings["MasterIP"];
                 int port = Convert.ToInt32(ConfigurationManager.AppSettings["MasterPort"]);
 

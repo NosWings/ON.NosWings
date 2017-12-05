@@ -4,9 +4,9 @@ using OpenNos.GameObject.Item.Instance;
 
 namespace OpenNos.GameObject.Logs.Classes
 {
-    internal class TradeLog : AbstractLog
+    internal class TradeLoggable : AbstractLoggable
     {
-        public TradeLog() : base("TradeLogs")
+        public TradeLoggable() : base("TradeLogs")
         {
         }
 

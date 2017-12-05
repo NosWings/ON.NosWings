@@ -2,7 +2,7 @@
 
 namespace NosSharp.Logs
 {
-    public interface ILog
+    public interface ILoggable
     {
         DateTime Date { get; }
         string Collection { get; }
