@@ -303,6 +303,10 @@ namespace OpenNos.Handler
                         {
                             return;
                         }
+                        if (Session.Character.CharacterId <= 0) // Wtf ?
+                        {
+                            return;
+                        }
                         targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
 
                         if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId) && ServerManager.Instance.IsCharacterMemberOfGroup(pjoinPacket.CharacterId))

@@ -57,7 +57,7 @@ namespace OpenNos.Handler
 
         public void ManageBankAccount(BankCommandPacket packet)
         {
-            if (string.IsNullOrEmpty(packet.Subcommand))
+            if (string.IsNullOrEmpty(packet?.Subcommand))
             {
                 Session.SendPacket(Session.Character.GenerateSay("========= KFCBANK - HELP =========", 11));
                 Session.SendPacket(Session.Character.GenerateSay("$Bank Balance", 11));
