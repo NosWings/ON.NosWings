@@ -406,14 +406,13 @@ namespace OpenNos.Handler
                 Session.Character.LoadInventory();
                 Session.Character.LoadQuicklists();
                 Session.Character.GenerateMiniland();
-                // TODO REMOVE THAT SHIT BECAUSE FLEMME
                 DaoFactory.CharacterQuestDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(q => Session.Character.Quests.Add(q as CharacterQuest));
                 if (!Session.Character.Quests.Any(s => s.IsMainQuest))
                 {
                     CharacterQuestDTO firstQuest = new CharacterQuestDTO { CharacterId = Session.Character.CharacterId, QuestId = 1997, IsMainQuest = true };
                     DaoFactory.CharacterQuestDao.InsertOrUpdate(firstQuest);
+                    Session.Character.Quests.Add(firstQuest as CharacterQuest);
                 }
-                DaoFactory.CharacterQuestDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(q => Session.Character.Quests.Add(q as CharacterQuest));
                 DaoFactory.MateDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
                 {
                     Mate mate = (Mate)s;
