@@ -59,7 +59,12 @@ namespace OpenNos.Handler
         {
             if (string.IsNullOrEmpty(packet.Subcommand))
             {
-                Session.SendPacket(Session.Character.GenerateSay(BankCommandPacket.ReturnHelp(), 11));
+                Session.SendPacket(Session.Character.GenerateSay("========= KFCBANK - HELP =========", 11));
+                Session.SendPacket(Session.Character.GenerateSay("$Bank Balance", 11));
+                Session.SendPacket(Session.Character.GenerateSay("$Bank Deposit 100", 11));
+                Session.SendPacket(Session.Character.GenerateSay("$Bank Withdraw 100", 11));
+                Session.SendPacket(Session.Character.GenerateSay("$Bank Transfer 100 ReceiverName", 11));
+                Session.SendPacket(Session.Character.GenerateSay("==================================", 11));
                 return;
             }
             long amount;
@@ -170,7 +175,12 @@ namespace OpenNos.Handler
 
                     break;
                 default:
-                    Session.SendPacket(Session.Character.GenerateSay(BankCommandPacket.ReturnHelp(), 11));
+                    Session.SendPacket(Session.Character.GenerateSay("========= KFCBANK - HELP =========", 11));
+                    Session.SendPacket(Session.Character.GenerateSay("$Bank Balance", 11));
+                    Session.SendPacket(Session.Character.GenerateSay("$Bank Deposit 100", 11));
+                    Session.SendPacket(Session.Character.GenerateSay("$Bank Withdraw 100", 11));
+                    Session.SendPacket(Session.Character.GenerateSay("$Bank Transfer 100 ReceiverName", 11));
+                    Session.SendPacket(Session.Character.GenerateSay("==================================", 11));
                     break;
             }
         }

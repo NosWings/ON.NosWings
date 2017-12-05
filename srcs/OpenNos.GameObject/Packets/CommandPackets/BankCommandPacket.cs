@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Core;
-using OpenNos.Core.Serializing;
+﻿using OpenNos.Core.Serializing;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Packets.CommandPackets
 {
-    [PacketHeader("$Bank", PassNonParseablePacket = true)]
-    public class BankCommandPacket
+    [PacketHeader("$Bank", PassNonParseablePacket = true, Authority = AuthorityType.User)]
+    public class BankCommandPacket : PacketDefinition
     {
         [PacketIndex(0)]
         public string Subcommand { get; set; }
