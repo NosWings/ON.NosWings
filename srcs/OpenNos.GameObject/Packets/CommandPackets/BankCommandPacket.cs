@@ -8,7 +8,7 @@ using OpenNos.Core.Serializing;
 
 namespace OpenNos.GameObject.Packets.CommandPackets
 {
-    [PacketHeader("$Bank")]
+    [PacketHeader("$Bank", PassNonParseablePacket = true)]
     public class BankCommandPacket
     {
         [PacketIndex(0)]

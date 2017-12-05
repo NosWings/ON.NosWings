@@ -57,6 +57,11 @@ namespace OpenNos.Handler
 
         public void ManageBankAccount(BankCommandPacket packet)
         {
+            if (string.IsNullOrEmpty(packet.Subcommand))
+            {
+                Session.SendPacket(Session.Character.GenerateSay(BankCommandPacket.ReturnHelp(), 11));
+                return;
+            }
             long amount;
             switch (packet.Subcommand)
             {

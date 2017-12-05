@@ -18,12 +18,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using log4net;
-using NosSharp.Logs;
-using NosSharp.Logs.Loggers;
 using NosSharp.World.Resource;
 using OpenNos.Core;
 using OpenNos.Core.Serializing;
@@ -49,7 +46,6 @@ namespace NosSharp.World
 
         private static EventHandler _exitHandler;
         private static ManualResetEvent _run = new ManualResetEvent(true);
-        private static readonly ILogger WorldLogger = new MongoLogger("NosSharp.World");
 
         #endregion
 
@@ -80,7 +76,6 @@ namespace NosSharp.World
 
             // initialize Loggers
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
-            LoggableManager.Instance.InitializeLogger(WorldLogger);
 
             Console.Title = string.Format(LocalizedResources.WORLD_SERVER_CONSOLE_TITLE, 0, 0, 0, 0);
             short port = Convert.ToInt16(ConfigurationManager.AppSettings["WorldPort"]);
