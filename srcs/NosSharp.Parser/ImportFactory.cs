@@ -4464,7 +4464,7 @@ namespace NosSharp.Parser
                                 SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10 + 1),
                                 IsLevelScaled = Convert.ToBoolean(first % 4),
                                 IsLevelDivided = (first % 4) == 2,
-                                FirstData = (short)(first / 4),
+                                FirstData = (short)((first > 0 ? first : -first) / 4),
                                 SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
                                 ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
                             };
