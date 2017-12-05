@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
+using OpenNos.Core.Extensions;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
@@ -411,8 +412,9 @@ namespace OpenNos.Handler
                 {
                     CharacterQuestDTO firstQuest = new CharacterQuestDTO { CharacterId = Session.Character.CharacterId, QuestId = 1997, IsMainQuest = true };
                     DaoFactory.CharacterQuestDao.InsertOrUpdate(firstQuest);
-                    Session.Character.Quests.Add(firstQuest as CharacterQuest);
+                    Session.Character.Quests.Clear();
                 }
+                DaoFactory.CharacterQuestDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(q => Session.Character.Quests.Add(q as CharacterQuest));
                 DaoFactory.MateDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
                 {
                     Mate mate = (Mate)s;
