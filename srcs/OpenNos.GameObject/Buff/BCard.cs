@@ -264,6 +264,13 @@ namespace OpenNos.GameObject.Buff
                                                 int capturerate = 100 - (monster.CurrentHp / monster.Monster.MaxHP + 1) / 2;
                                                 if (ServerManager.Instance.RandomNumber() <= capturerate)
                                                 {
+                                                    if (character.Quests.Any(q => q.Quest.QuestType == (int) QuestType.Capture1 && q.Data.Any(d => d.Value[0] == monster.MonsterVNum)))
+                                                    {
+                                                        character.IncrementQuests(QuestType.Capture1, monster.MonsterVNum);
+                                                        return;
+                                                    }
+                                                    character.IncrementQuests(QuestType.Capture2, monster.MonsterVNum);
+
                                                     int level = monster.Monster.Level - 15 < 1 ? 1 : monster.Monster.Level - 15;
                                                     Mate currentmate = character.Mates?.FirstOrDefault(m => m.IsTeamMember && m.MateType == MateType.Pet);
                                                     monster.MapInstance.DespawnMonster(monster);
@@ -291,8 +298,6 @@ namespace OpenNos.GameObject.Buff
                                                     character.Session.SendPackets(character.Mates.Where(s => s.IsTeamMember)
                                                         .OrderBy(s => s.MateType)
                                                         .Select(s => s.GeneratePst()));
-                                                    character.IncrementQuests(QuestType.Capture1, monster.MonsterVNum);
-                                                    character.IncrementQuests(QuestType.Capture2, monster.MonsterVNum);
                                                 }
                                                 else { character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CAPTURE_FAILED"), 0)); }
                                             }
