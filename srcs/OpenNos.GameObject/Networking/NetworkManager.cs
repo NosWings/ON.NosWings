@@ -87,7 +87,7 @@ namespace OpenNos.GameObject.Networking
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), client.ClientId);
                 client.Initialize(_fallbackEncryptor);
-                client.SendPacket($"fail {Language.Instance.GetMessageFromKey("CONNECTION_LOST")}");
+                client.SendPacket("failc 1");
                 client.Disconnect();
                 return null;
             }

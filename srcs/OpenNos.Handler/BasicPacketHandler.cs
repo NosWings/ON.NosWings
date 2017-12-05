@@ -1238,6 +1238,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateTit());
             Session.SendPacket(Session.Character.GenerateSpPoint());
             Session.SendPacket("rsfi 1 1 0 9 0 9");
+            Session.Character.Quests?.Where(q => q?.Quest?.TargetMap != null).ToList().ForEach(qst => Session.SendPacket(qst.Quest.TargetPacket()));
             if (Session.Character.Hp <= 0)
             {
                 ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);

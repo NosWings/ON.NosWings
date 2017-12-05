@@ -68,11 +68,13 @@ namespace OpenNos.Core.Networking
 
         public void SendPacket(string packet, byte priority = 10)
         {
-            if (!IsDisposing && packet != null && packet != string.Empty)
+            if (IsDisposing || string.IsNullOrEmpty(packet))
             {
-                ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
-                SendMessage(rawMessage, priority);
+                return;
             }
+
+            ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
+            SendMessage(rawMessage, priority);
         }
 
         public void SendPacketFormat(string packet, params object[] param)

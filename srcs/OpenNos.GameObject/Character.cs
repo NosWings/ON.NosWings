@@ -515,7 +515,7 @@ namespace OpenNos.GameObject
                 AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId, isMain);
                 return;
             }
-            if (characterQuest.Quest.TargetMap == MapInstance.Map.MapId)
+            if (characterQuest.Quest.TargetMap != null)
             {
                 Session.SendPacket(characterQuest.Quest.TargetPacket());
             }
@@ -531,7 +531,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if (questToRemove.Quest.TargetMap == MapInstance.Map.MapId)
+            if (questToRemove.Quest.TargetMap != null)
             {
                 Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
             }
@@ -2678,7 +2678,7 @@ namespace OpenNos.GameObject
                                 ItemVNum = (short)d.Value[0],
                                 Amount = 1,
                                 MonsterVNum = monsterToAttack.MonsterVNum,
-                                DropChance = qst.Quest?.SecondSpecialData ?? 0 * ServerManager.Instance.DropRate
+                                DropChance = qst.Quest.SpecialData ?? 100 * ServerManager.Instance.DropRate
                             });
                         }
                     });
@@ -4613,19 +4613,23 @@ namespace OpenNos.GameObject
 
         public void GetXp(long val)
         {
+            if (Level >= ServerManager.Instance.MaxLevel)
+            {
+                return;
+            }
             LevelXp += val * ServerManager.Instance.XpRate * (int)(1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D);
             GenerateLevelXpLevelUp();
         }
 
         public void GetJobExp(long val)
         {
-            if (UseSp && SpInstance != null)
+            if (UseSp && SpInstance != null && SpInstance.SpLevel < ServerManager.Instance.MaxSpLevel)
             {
                 int multiplier = SpInstance.SpLevel < 10 ? 10 : SpInstance.SpLevel < 19 ? 5 : 1;
                 SpInstance.XP += (int) ((val * (multiplier + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D) * ((double)Authority / 100 + 1)));
                 GenerateSpXpLevelUp();
             }
-            else
+            else if (JobLevel < ServerManager.Instance.MaxJobLevel)
             {
                 JobLevelXp += (int) (val * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D));
                 GenerateJobXpLevelUp();

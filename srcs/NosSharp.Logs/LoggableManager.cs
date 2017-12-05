@@ -5,37 +5,42 @@ using MongoDB.Bson;
 
 namespace NosSharp.Logs
 {
-    public class LogManager : IDisposable
+    public class LoggableManager : IDisposable
     {
-        private readonly NosSharpLogger _logger;
-        private readonly List<ILog> _logs;
+        private ILogger _logger;
+        private readonly List<ILoggable> _logs;
         private readonly long _maxLogToFlush;
 
         /// <summary>
-        ///     LogManager instanciate a NosSharpLogger client
+        ///     LogManager uses an ILogger to store its logs
         /// </summary>
-        public LogManager()
+        public LoggableManager()
         {
             _maxLogToFlush = 1500;
-            _logs = new List<ILog>();
-            _logger = new NosSharpLogger("mongodb://localhost:27017", "NosSharp.Logs");
+            _logs = new List<ILoggable>();
+            _logger = null;
+        }
+
+        public void InitializeLogger(ILogger logger)
+        {
+            _logger = logger;
         }
 
         /// <summary>
         /// Add logs
         /// </summary>
-        /// <param name="log"></param>
-        public void AddLog(ILog log)
+        /// <param name="loggable"></param>
+        public void AddLog(ILoggable loggable)
         {
             if (_logs.Count > _maxLogToFlush)
             {
                 Flush();
             }
 
-            _logs.Add(log);
+            _logs.Add(loggable);
         }
 
-        public void AddLog(IEnumerable<ILog> logs)
+        public void AddLog(IEnumerable<ILoggable> logs)
         {
             if (_logs.Count > _maxLogToFlush)
             {
@@ -50,12 +55,7 @@ namespace NosSharp.Logs
         /// </summary>
         private void Flush()
         {
-            foreach (IGrouping<string, ILog> abstractLogs in _logs.GroupBy(s => s.Collection))
-            {
-                _logger.InsertLogs(abstractLogs.Select(g => g.ToBsonDocument()), abstractLogs.Key);
-                Console.WriteLine($"Successfully flushed logs type : {abstractLogs.Key}");
-            }
-
+            _logger.InsertLogs(_logs);
             _logs.Clear();
         }
 
@@ -89,7 +89,7 @@ namespace NosSharp.Logs
             _disposed = true;
         }
 
-        ~LogManager()
+        ~LoggableManager()
         {
             Dispose(false);
         }
@@ -99,11 +99,11 @@ namespace NosSharp.Logs
 
         #region Singleton
 
-        private LogManager _instance;
+        private static LoggableManager _instance;
 
-        public LogManager Instance
+        public static LoggableManager Instance
         {
-            get { return _instance ?? (_instance = new LogManager()); }
+            get { return _instance ?? (_instance = new LoggableManager()); }
         }
 
         #endregion

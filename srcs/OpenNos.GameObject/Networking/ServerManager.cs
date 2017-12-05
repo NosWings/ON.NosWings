@@ -592,7 +592,6 @@ namespace OpenNos.GameObject.Networking
                 {
                     session.Character.CloseShop();
                 }
-                session.Character.Quests.Where(q => q.Quest.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.Quest.RemoveTargetPacket()));
                 session.Character.LeaveTalentArena();
                 session.CurrentMapInstance.RemoveMonstersTarget(session.Character);
                 session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(mate => session.CurrentMapInstance.RemoveMonstersTarget(mate));
@@ -788,7 +787,6 @@ namespace OpenNos.GameObject.Networking
                     e.Item2.Add(session.Character.CharacterId);
                     EventHelper.Instance.RunEvent(e.Item1, session);
                 });
-                session.Character.Quests.Where(q => q.Quest.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.Quest.TargetPacket()));
             }
             catch (Exception)
             {

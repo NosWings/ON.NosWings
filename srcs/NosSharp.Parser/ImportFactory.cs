@@ -372,8 +372,8 @@ namespace NosSharp.Parser
                                 else if (quest.FifthData == null)
                                 {
                                     quest.FifthData = data;
-                                    quest.FifthData = objective;
-                                    quest.FifthData = specialData;
+                                    quest.FifthObjective = objective;
+                                    quest.FifthSpecialData = specialData;
                                 }
                                 break;
 
@@ -3068,7 +3068,7 @@ namespace NosSharp.Parser
                             SubType = (byte)((int.Parse(currentLine[4]) + 1 )* 10 + 1 + (first < 0 ? 1 : 0)),
                             IsLevelScaled = Convert.ToBoolean(first % 4),
                             IsLevelDivided = (first % 4) == 2,
-                            FirstData = (short)(first > 0 ? first : -first / 4),
+                            FirstData = (short)((first > 0 ? first : -first) / 4),
                             SecondData = (short)(int.Parse(currentLine[6]) / 4),
                             ThirdData = (short)(int.Parse(currentLine[7]) / 4),
                         };
