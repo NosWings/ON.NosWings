@@ -311,7 +311,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LIMIT_EXCEEDED"), 0));
                 return;
             }
-            if (price > (medal != null || Session.Character.Authority >= AuthorityType.Vip ? maxGold : 1000000))
+            if (price > (medal != null || Session.Character.Authority >= AuthorityType.Vip ? maxGold : 1000000 * it.Amount))
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PRICE_EXCEEDED"), 0));
                 return;

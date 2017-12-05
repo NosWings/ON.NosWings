@@ -6041,7 +6041,7 @@ namespace OpenNos.GameObject
             {
                 int levelSum = group.Characters.Sum(g => g.Character.HeroLevel);
                 partySize = group.CharacterCount;
-                partyPenalty = 12f / partySize / levelSum;
+                partyPenalty = 4 / levelSum;
             }
 
             int heroXp = (int)Math.Round(monster.HeroXp * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.Instance.HeroXpRate * MapInstance.XpRate);
@@ -6063,7 +6063,7 @@ namespace OpenNos.GameObject
             {
                 int levelSum = group.Characters.Sum(g => g.Character.JobLevel);
                 partySize = group.CharacterCount;
-                partyPenalty = 12f / partySize / levelSum;
+                partyPenalty = 4 / levelSum;
             }
 
             int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.Instance.XpRate * MapInstance.XpRate);
@@ -6087,7 +6087,7 @@ namespace OpenNos.GameObject
             {
                 int levelSum = group.Characters.Sum(g => g.Character.Level);
                 partySize = group.CharacterCount;
-                partyPenalty = 12f / partySize / levelSum;
+                partyPenalty = 4 / levelSum;
             }
 
             long xpcalculation = levelDifference < 5 ? monster.XP : monster.XP / 3 * 2;
