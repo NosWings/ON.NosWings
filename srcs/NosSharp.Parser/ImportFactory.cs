@@ -372,8 +372,8 @@ namespace NosSharp.Parser
                                 else if (quest.FifthData == null)
                                 {
                                     quest.FifthData = data;
-                                    quest.FifthData = objective;
-                                    quest.FifthData = specialData;
+                                    quest.FifthObjective = objective;
+                                    quest.FifthSpecialData = specialData;
                                 }
                                 break;
 
