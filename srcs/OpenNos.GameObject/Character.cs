@@ -2678,7 +2678,7 @@ namespace OpenNos.GameObject
                                 ItemVNum = (short)d.Value[0],
                                 Amount = 1,
                                 MonsterVNum = monsterToAttack.MonsterVNum,
-                                DropChance = qst.Quest?.SecondSpecialData ?? 0 * ServerManager.Instance.DropRate
+                                DropChance = qst.Quest.SpecialData ?? 100 * ServerManager.Instance.DropRate
                             });
                         }
                     });
