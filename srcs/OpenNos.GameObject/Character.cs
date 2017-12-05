@@ -4613,6 +4613,10 @@ namespace OpenNos.GameObject
 
         public void GetXp(long val)
         {
+            if (Level >= ServerManager.Instance.MaxLevel)
+            {
+                return;
+            }
             LevelXp += val * ServerManager.Instance.XpRate * (int)(1 + GetBuff(CardType.Item, (byte) AdditionalTypes.Item.EXPIncreased)[0] / 100D);
             GenerateLevelXpLevelUp();
         }
