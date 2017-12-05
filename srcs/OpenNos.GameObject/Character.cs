@@ -4619,13 +4619,13 @@ namespace OpenNos.GameObject
 
         public void GetJobExp(long val)
         {
-            if (UseSp && SpInstance != null)
+            if (UseSp && SpInstance != null && SpInstance.SpLevel < ServerManager.Instance.MaxSpLevel)
             {
                 int multiplier = SpInstance.SpLevel < 10 ? 10 : SpInstance.SpLevel < 19 ? 5 : 1;
                 SpInstance.XP += (int) ((val * (multiplier + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D) * ((double)Authority / 100 + 1)));
                 GenerateSpXpLevelUp();
             }
-            else
+            else if (JobLevel < ServerManager.Instance.MaxJobLevel)
             {
                 JobLevelXp += (int) (val * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D));
                 GenerateJobXpLevelUp();
