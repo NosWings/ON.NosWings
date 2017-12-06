@@ -2661,6 +2661,7 @@ namespace OpenNos.GameObject
                 {
                     group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long) dropOwner) && g.GroupType == GroupType.Group);
                 }
+                IncrementQuests(QuestType.Hunt, monsterToAttack.MonsterVNum);
 
                 // end owner set
                 if (!Session.HasCurrentMapInstance || monsterToAttack.Monster.MonsterType == MonsterType.Special)
@@ -2690,7 +2691,6 @@ namespace OpenNos.GameObject
                 });
 
                 IncrementQuests(QuestType.FlowerQuest, monsterToAttack.Monster.Level);
-                IncrementQuests(QuestType.Hunt, monsterToAttack.MonsterVNum);
 
                 #endregion
 
