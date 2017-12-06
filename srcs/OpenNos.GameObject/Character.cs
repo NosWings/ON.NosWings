@@ -20,7 +20,6 @@ using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
-using OpenNos.PathFinder;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -905,6 +904,53 @@ namespace OpenNos.GameObject
             }
             else
             {
+                // HEAL
+                if (LastHealth.AddSeconds(2) <= DateTime.Now)
+                {
+                    int heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreHP)[0];
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
+                    if (Hp + heal < HpLoad())
+                    {
+                        Hp += heal;
+                        change = true;
+                    }
+                    else
+                    {
+                        if (Hp != (int)HpLoad())
+                        {
+                            change = true;
+                        }
+                        Hp = (int)HpLoad();
+                    }
+                    if (change)
+                    {
+                        Session.SendPacket(GenerateStat());
+                    }
+                }
+
+                // DEBUFF HP LOSS
+                if (LastHealth.AddSeconds(2) <= DateTime.Now)
+                {
+                    int debuff = (int)(GetBuff(CardType.RecoveryAndDamagePercent, (byte)AdditionalTypes.RecoveryAndDamagePercent.HPReduced)[0] * (HpLoad() / 100));
+                    if (Hp - debuff > 1)
+                    {
+                        Hp -= debuff;
+                        change = true;
+                    }
+                    else
+                    {
+                        if (Hp != 1)
+                        {
+                            change = true;
+                        }
+                        Hp = 1;
+                    }
+                    if (change)
+                    {
+                        Session.SendPacket(GenerateStat());
+                    }
+                }
+
                 if (CurrentMinigame != 0 && LastEffect.AddSeconds(3) <= DateTime.Now)
                 {
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(CurrentMinigame));
@@ -996,54 +1042,6 @@ namespace OpenNos.GameObject
                             break;
                     }
                 }
-
-                // HEAL
-                if (LastHealth.AddSeconds(2) <= DateTime.Now)
-                {
-                    int heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreHP)[0];
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
-                    if (Hp + heal < HpLoad())
-                    {
-                        Hp += heal;
-                        change = true;
-                    }
-                    else
-                    {
-                        if (Hp != (int)HpLoad())
-                        {
-                            change = true;
-                        }
-                        Hp = (int)HpLoad();
-                    }
-                    if (change)
-                    {
-                        Session.SendPacket(GenerateStat());
-                    }
-                }
-
-                // DEBUFF HP LOSS
-                if (LastHealth.AddSeconds(2) <= DateTime.Now)
-                {
-                    int debuff = (int)(GetBuff(CardType.RecoveryAndDamagePercent, (byte)AdditionalTypes.RecoveryAndDamagePercent.HPReduced)[0] * (HpLoad() / 100));
-                    if (Hp - debuff > 1)
-                    {
-                        Hp -= debuff;
-                        change = true;
-                    }
-                    else
-                    {
-                        if (Hp != 1)
-                        {
-                            change = true;
-                        }
-                        Hp = 1;
-                    }
-                    if (change)
-                    {
-                        Session.SendPacket(GenerateStat());
-                    }
-                }
-
 
                 if (LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
                 {
