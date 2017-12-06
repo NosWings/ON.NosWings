@@ -184,7 +184,7 @@ namespace NosSharp.World
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();
             Thread.Sleep(5000);
-            Process.Start("OpenNos.World.exe");
+            Process.Start("NosSharp.World.exe");
         }
 
         private static void RegisterMappings()
