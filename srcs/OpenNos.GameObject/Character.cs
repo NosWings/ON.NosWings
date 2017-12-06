@@ -4622,15 +4622,21 @@ namespace OpenNos.GameObject
         {
             if (UseSp && SpInstance != null)
             {
+                if (SpInstance.SpLevel >= ServerManager.Instance.MaxSpLevel)
+                {
+                    return;
+                }
                 int multiplier = SpInstance.SpLevel < 10 ? 10 : SpInstance.SpLevel < 19 ? 5 : 1;
-                SpInstance.XP += (int) ((val * (multiplier + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D) * ((double)Authority / 100 + 1)));
+                SpInstance.XP += (int)((val * (multiplier + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D) * ((double)Authority / 100 + 1)));
                 GenerateSpXpLevelUp();
+                return;
             }
-            else
+            if (JobLevel >= ServerManager.Instance.MaxJobLevel)
             {
-                JobLevelXp += (int) (val * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D));
-                GenerateJobXpLevelUp();
+                return;
             }
+            JobLevelXp += (int)(val * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D));
+            GenerateJobXpLevelUp();
         }
 
         public void GetReput(long val)

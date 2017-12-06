@@ -3,6 +3,7 @@ using System.Linq;
 using NosSharp.Enums;
 using OpenNos.Data;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {
@@ -69,11 +70,21 @@ namespace OpenNos.GameObject
                             break;
 
                         case QuestRewardType.Exp: // Experience
+                            if (character.Level >= ServerManager.Instance.MaxLevel)
+                            {
+                                str += "0 0 0 ";
+                                break;
+                            }
                             character.GetXp((long)(CharacterHelper.Instance.XpData[reward.Data > 255 ? 255 : reward.Data] * reward.Amount / 100D));
                             str += $"{reward.RewardType} 0 0 ";
                             break;
 
                         case QuestRewardType.SecondExp: // % Experience
+                            if (character.Level >= ServerManager.Instance.MaxLevel)
+                            {
+                                str += "0 0 0 ";
+                                break;
+                            }
                             character.GetXp((long)(CharacterHelper.Instance.XpData[character.Level] * reward.Amount / 100D));
                             str += $"{reward.RewardType} 0 0 ";
                             break;
