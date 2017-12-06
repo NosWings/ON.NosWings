@@ -1,8 +1,8 @@
 ﻿using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 using System.Threading.Tasks;
+using NosSharp.Enums;
 using OpenNos.Data;
-using OpenNos.Domain;
 
 namespace OpenNos.Master.Library.Client
 {

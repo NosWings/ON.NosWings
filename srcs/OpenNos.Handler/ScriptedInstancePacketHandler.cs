@@ -1,6 +1,5 @@
 ﻿using CloneExtensions;
 using OpenNos.Core;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ServerPackets;
@@ -9,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.Core.Handling;
 using OpenNos.GameObject.Map;

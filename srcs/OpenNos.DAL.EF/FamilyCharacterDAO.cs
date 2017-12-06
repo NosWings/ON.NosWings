@@ -18,10 +18,10 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NosSharp.Enums;
 using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.Entities;
 

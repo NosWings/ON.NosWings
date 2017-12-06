@@ -34,12 +34,13 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICLIClient.cs" />
-    <Compile Include="ICLICommand.cs" />
+    <Compile Include="Commands\UpdateFamilyCommand.cs" />
+    <Compile Include="Interfaces\AbstractCLICommand.cs" />
+    <Compile Include="Interfaces\ICLIClient.cs" />
+    <Compile Include="Interfaces\ICLICommand.cs" />
+    <Compile Include="Interfaces\ICLIProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

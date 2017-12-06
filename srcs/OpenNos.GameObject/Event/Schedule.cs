@@ -13,7 +13,7 @@
  */
 
 using System;
-using OpenNos.Domain;
+using NosSharp.Enums;
 
 namespace OpenNos.GameObject.Event
 {

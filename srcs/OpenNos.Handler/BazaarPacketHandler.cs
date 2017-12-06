@@ -15,13 +15,13 @@
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using NosSharp.Enums;
 using OpenNos.Core.Handling;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;

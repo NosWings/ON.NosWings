@@ -17,9 +17,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Serializing;
-using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.GameObject.Networking

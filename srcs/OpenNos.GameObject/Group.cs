@@ -13,12 +13,12 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Domain;
 using System.Collections.Generic;
 using System.Linq;
 using System;
 using OpenNos.GameObject.Helpers;
 using System.Collections.Concurrent;
+using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;

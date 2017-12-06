@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenNos.Domain;
+using NosSharp.Enums;
 
 namespace OpenNos.Core.Serializing
 {

@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
+using NosSharp.Enums;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;

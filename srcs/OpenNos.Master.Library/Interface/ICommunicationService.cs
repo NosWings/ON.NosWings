@@ -1,8 +1,8 @@
 ﻿using Hik.Communication.ScsServices.Service;
 using OpenNos.Master.Library.Data;
 using System;
+using NosSharp.Enums;
 using OpenNos.Data;
-using OpenNos.Domain;
 
 namespace OpenNos.Master.Library.Interface
 {

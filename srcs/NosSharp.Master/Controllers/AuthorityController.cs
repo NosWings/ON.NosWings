@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using Newtonsoft.Json;
+using NosSharp.Enums;
 using NosSharp.Master.Controllers.ControllersParameters;
-using OpenNos.Domain;
 using OpenNos.Master.Library.Client;
 
 namespace NosSharp.Master.Controllers

@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Xml;
-using OpenNos.Domain;
+using NosSharp.Enums;
 
 namespace OpenNos.GameObject.Event
 {

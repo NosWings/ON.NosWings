@@ -1,5 +1,5 @@
-﻿using OpenNos.Core.Serializing;
-using OpenNos.Domain;
+﻿using NosSharp.Enums;
+using OpenNos.Core.Serializing;
 
 namespace OpenNos.GameObject.Packets.CommandPackets
 {

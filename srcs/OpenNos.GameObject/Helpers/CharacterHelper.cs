@@ -14,7 +14,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using OpenNos.Domain;
+using NosSharp.Enums;
 
 namespace OpenNos.GameObject.Helpers
 {

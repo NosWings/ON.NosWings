@@ -19,12 +19,12 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.Core.Networking;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Serializing;
-using OpenNos.Domain;
 using OpenNos.GameObject.Map;
 using OpenNos.Master.Library.Client;
 

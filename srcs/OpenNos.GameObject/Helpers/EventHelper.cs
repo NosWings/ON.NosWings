@@ -13,7 +13,6 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Domain;
 using OpenNos.GameObject.Event;
 using OpenNos.PathFinder;
 using System;
@@ -22,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.GameObject.Event.ACT4;
 using OpenNos.GameObject.Event.ICEBREAKER;

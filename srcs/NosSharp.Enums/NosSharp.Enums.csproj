@@ -7,8 +7,8 @@
     <ProjectGuid>{20ADDDDD-DAD9-44F3-9BEB-026C73090660}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenNos.Domain</RootNamespace>
-    <AssemblyName>OpenNos.Domain</AssemblyName>
+    <RootNamespace>NosSharp.Enums</RootNamespace>
+    <AssemblyName>NosSharp.Enums</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StyleCopTreatErrorsAsWarnings>True</StyleCopTreatErrorsAsWarnings>

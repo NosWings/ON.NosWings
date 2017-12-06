@@ -15,13 +15,13 @@
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.Master.Library.Client;
 using System;
 using System.Configuration;
 using System.Linq;
+using NosSharp.Enums;
 using OpenNos.Core.Handling;
 using OpenNos.GameObject.Networking;
 

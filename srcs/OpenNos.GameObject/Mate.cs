@@ -13,15 +13,15 @@
  */
 
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static OpenNos.Domain.BCardType;
+using static NosSharp.Enums.BCardType;
 using System.Collections.Concurrent;
 using OpenNos.Core;
 using System.Reactive.Linq;
+using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Item.Instance;

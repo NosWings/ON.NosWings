@@ -1,4 +1,4 @@
-﻿using OpenNos.Domain;
+﻿using NosSharp.Enums;
 using NosSharp.Logs;
 
 namespace OpenNos.GameObject.Logs.Classes

@@ -8,10 +8,13 @@ namespace NosSharp.CLI.Interfaces
 {
     public interface ICliProxy
     {
+        /// <summary>
+        /// 
+        /// </summary>
         void UpdateNosbazaar();
 
         /// <summary>
-        /// This Method will ask to the Mediator to update Family
+        /// Ask to the Mediator to broke an UpdateFamily to Clients
         /// </summary>
         /// <param name="familyId">FamilyId that needs to be updated</param>
         /// <param name="isFactionChange">Is Family changing faction</param>

@@ -2,7 +2,7 @@
 
 namespace NosSharp.CLI.Commands
 {
-    class UpdateFamilyCommand : AbstractCliCommand
+    public class UpdateFamilyCommand : AbstractCliCommand
     {
         private readonly long _familyId;
         private readonly bool _isFactionChange;

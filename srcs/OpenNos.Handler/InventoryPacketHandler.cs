@@ -14,7 +14,6 @@
 
 using OpenNos.Core;
 using OpenNos.Core.Handling;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ClientPackets;
@@ -25,12 +24,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
-using static OpenNos.Domain.BCardType;
+using static NosSharp.Enums.BCardType;
 
 namespace OpenNos.Handler
 {

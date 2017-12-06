@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ClientPackets;
@@ -30,6 +29,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using OpenNos.Core.Extensions;
 using System.Reactive.Linq;
+using NosSharp.Enums;
 using OpenNos.Core.Handling;
 using OpenNos.Core.Serializing;
 using OpenNos.GameObject.Item.Instance;

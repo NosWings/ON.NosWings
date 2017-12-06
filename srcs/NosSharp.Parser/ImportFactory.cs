@@ -19,10 +19,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CloneExtensions;
+using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.DAL;
-using OpenNos.Domain;
 
 namespace NosSharp.Parser
 {

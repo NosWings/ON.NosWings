@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
+using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Extensions;
 using OpenNos.Core.Handling;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;

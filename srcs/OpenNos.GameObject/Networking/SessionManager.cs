@@ -15,9 +15,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Networking;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Networking
 {

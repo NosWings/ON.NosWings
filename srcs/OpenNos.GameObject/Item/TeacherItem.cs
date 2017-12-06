@@ -13,9 +13,9 @@
  */
 
 using System.Linq;
+using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;

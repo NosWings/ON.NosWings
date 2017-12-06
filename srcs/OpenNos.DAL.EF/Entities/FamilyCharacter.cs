@@ -13,7 +13,7 @@
  */
 
 using System.ComponentModel.DataAnnotations;
-using OpenNos.Domain;
+using NosSharp.Enums;
 
 namespace OpenNos.DAL.EF.Entities
 {

@@ -1,4 +1,4 @@
-﻿namespace OpenNos.Domain
+﻿namespace NosSharp.Enums
 {
     public enum QuestRewardType : byte
     {

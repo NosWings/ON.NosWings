@@ -1,4 +1,4 @@
-﻿using OpenNos.Domain;
+﻿using NosSharp.Enums;
 using OpenNos.GameObject.Map;
 
 namespace OpenNos.GameObject.Event

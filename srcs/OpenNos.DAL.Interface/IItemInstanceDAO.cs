@@ -14,9 +14,9 @@
 
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
+using NosSharp.Enums;
 
 namespace OpenNos.DAL.Interface
 {
