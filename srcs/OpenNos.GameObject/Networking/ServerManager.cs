@@ -189,6 +189,8 @@ namespace OpenNos.GameObject.Networking
 
         public List<ScriptedInstance> Raids { get; set; }
 
+        public List<ScriptedInstance> TimeSpaces { get; set; }
+
         public List<Group> GroupList { get; set; } = new List<Group>();
 
         public List<ArenaMember> ArenaMembers { get; set; } = new List<ArenaMember>();
@@ -2035,6 +2037,7 @@ namespace OpenNos.GameObject.Networking
         private void LoadScriptedInstances()
         {
             Raids = new List<ScriptedInstance>();
+            TimeSpaces = new List<ScriptedInstance>();
             Parallel.ForEach(Mapinstances, map =>
             {
                 foreach (ScriptedInstanceDTO scriptedInstanceDto in DaoFactory.ScriptedInstanceDao.LoadByMap(map.Value.Map.MapId).ToList())
@@ -2044,6 +2047,7 @@ namespace OpenNos.GameObject.Networking
                     {
                         case ScriptedInstanceType.TimeSpace:
                             si.LoadGlobals();
+                            TimeSpaces.Add(si);
                             map.Value.ScriptedInstances.Add(si);
                             break;
                         case ScriptedInstanceType.Raid:
