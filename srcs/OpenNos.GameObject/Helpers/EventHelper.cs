@@ -363,6 +363,11 @@ namespace OpenNos.GameObject.Helpers
                                 {
                                     ScriptedInstance instance = client.Character.Family.Act4Raid;
 
+                                    if (instance == null)
+                                    {
+                                        return;
+                                    }
+
                                     Instance.RunEvent(new EventContainer(evt.MapInstance, EventActionType.REMOVEPORTAL, instance.FirstMap.Portals.FirstOrDefault(port => port.DestinationMapInstanceId == client.CurrentMapInstance.MapInstanceId)));
 
                                     Instance.ScheduleEvent(TimeSpan.FromSeconds(5), new EventContainer(evt.MapInstance, EventActionType.SENDPACKET, 
@@ -386,7 +391,7 @@ namespace OpenNos.GameObject.Helpers
                                                 cli.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                             }
                                         }
-                                        sess.Character.IncrementQuests(QuestType.WinRaid, grp.Raid?.Id ?? -1);
+                                        cli.Character.IncrementQuests(QuestType.WinRaid, instance.Id);
                                     }
 
                                     Observable.Timer(TimeSpan.FromSeconds(15)).Subscribe(s =>
