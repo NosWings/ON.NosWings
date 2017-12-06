@@ -206,8 +206,6 @@ namespace OpenNos.GameObject
 
         public bool IsDead { get; set; }
 
-        public bool IsOnBoost { set; get; }
-
         /// <summary>
         /// Defines if the Character Is currently sending or getting items thru exchange.
         /// </summary>

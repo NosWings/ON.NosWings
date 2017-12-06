@@ -308,11 +308,10 @@ namespace OpenNos.GameObject.Item
 
                 //speed booster
                 case 998:
-                    if (!session.Character.IsVehicled || session.Character.IsOnBoost)
+                    if (!session.Character.IsVehicled || session.Character.Buff.Any(s => s.Card.CardId == 336))
                     {
                         return;
                     }
-                    session.Character.IsOnBoost = true;
                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(885), session.Character.MapX, session.Character.MapY);
                     session.Character.AddBuff(new Buff.Buff(336));
                     session.Character.Speed += 5;
@@ -331,7 +330,6 @@ namespace OpenNos.GameObject.Item
                     Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(o =>
                     {
                         session.Character.Speed -= 5;
-                        session.Character.IsOnBoost = false;
                         switch (session.Character.Morph)
                         {
                             case 2526: // White male unicorn
