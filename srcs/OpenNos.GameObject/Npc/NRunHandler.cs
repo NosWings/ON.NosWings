@@ -416,21 +416,16 @@ namespace OpenNos.GameObject.Npc
                     break;
 
                 case 150:
-                    if (npc != null)
+                    if (session.Character?.Family == null || npc == null)
                     {
-                        if (session.Character?.Family != null)
-                        {
-                            if (session.Character.Family.LandOfDeath == null)
-                            {
-                                session.Character.Family.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
-                            }
-                            ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
-                        }
-                        else
-                        {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
-                        }
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
+                        break;
                     }
+                    if (session.Character?.Family?.LandOfDeath == null)
+                    {
+                        session.Character.Family.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
+                    }
+                    ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
                     break;
 
                 case 301:
