@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NosSharp.CLI\NosSharp.CLI.csproj" />
     <ProjectReference Include="..\OpenNos.Master.Library\OpenNos.Master.Library.csproj" />
   </ItemGroup>
 

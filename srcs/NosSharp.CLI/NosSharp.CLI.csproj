@@ -35,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\UpdateFamilyCommand.cs" />
+    <Compile Include="Commands\UpdateNosBazaar.cs" />
     <Compile Include="Interfaces\AbstractCLICommand.cs" />
     <Compile Include="Interfaces\ICLIClient.cs" />
     <Compile Include="Interfaces\ICLICommand.cs" />

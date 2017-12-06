@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenNos.Master;
 using OpenNos.Master.Library.Data;
+using NosSharp.CLI.Interfaces;
 
 namespace NosSharp.Mediator
 {
     public class MasterMediator
     {
+        #region Members
+
+        private Dictionary<Guid, ICliClient> _clients;
+
+        #endregion
+
         #region Instanciation
 
         /// <summary>
@@ -14,6 +20,7 @@ namespace NosSharp.Mediator
         /// </summary>
         public MasterMediator()
         {
+            _clients = new Dictionary<Guid, ICliClient>();
             _worldServers = new Dictionary<Guid, SerializableWorldServer>();
             _sessions = new Dictionary<long, AccountSession>();
         }
