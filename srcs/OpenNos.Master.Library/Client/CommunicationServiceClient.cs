@@ -205,11 +205,6 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.GetAct4ChannelInfo(worldGroup);
         }
 
-        public int[] GlacernonStats(sbyte type, short points)
-        {
-            return _client.ServiceProxy.GlacernonStats(type, points);
-        }
-
         public bool IsCrossServerLoginPermitted(long accountId, int sessionId)
         {
             return _client.ServiceProxy.IsCrossServerLoginPermitted(accountId, sessionId);

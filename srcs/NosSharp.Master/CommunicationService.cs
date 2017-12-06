@@ -278,26 +278,6 @@ namespace NosSharp.Master
             return false;
         }
 
-        public int[] GlacernonStats(sbyte type, short points)
-        {
-            switch (type)
-            {
-                case (sbyte)StatsType.None:
-                    return new[] {GlacernonController.Instance.AngelPercentage, GlacernonController.Instance.DemonPercentage};
-                case (sbyte) StatsType.Angel:
-                    GlacernonController.Instance.AngelPercentage += points;
-                    break;
-                case (sbyte)StatsType.Demon:
-                    GlacernonController.Instance.DemonPercentage += points;
-                    break;
-                case (sbyte)StatsType.Reset:
-                    GlacernonController.Instance.AngelPercentage = 0;
-                    GlacernonController.Instance.DemonPercentage = 0;
-                    break;
-            }
-            return new[] { GlacernonController.Instance.AngelPercentage, GlacernonController.Instance.DemonPercentage };
-        }
-
         public SerializableWorldServer GetPreviousChannelByAccountId(long accountId)
         {
             if (!MsManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))

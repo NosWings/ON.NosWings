@@ -178,8 +178,6 @@ namespace OpenNos.Master.Library.Interface
 
         bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId);
 
-        int[] GlacernonStats(sbyte type, short points);
-
         SerializableWorldServer GetPreviousChannelByAccountId(long accountId);
 
         SerializableWorldServer GetAct4ChannelInfo(string worldGroup);
