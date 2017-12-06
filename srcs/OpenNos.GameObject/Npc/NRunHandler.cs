@@ -418,7 +418,7 @@ namespace OpenNos.GameObject.Npc
                 case 150:
                     if (npc != null)
                     {
-                        if (session.Character.Family != null)
+                        if (session.Character?.Family != null)
                         {
                             if (session.Character.Family.LandOfDeath == null)
                             {
