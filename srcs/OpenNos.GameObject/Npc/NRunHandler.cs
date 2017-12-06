@@ -12,20 +12,23 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Domain;
-using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL;
+using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
-using System.Collections.Concurrent;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Npc
 {
     public static class NRunHandler
     {
@@ -50,7 +53,7 @@ namespace OpenNos.GameObject
                     }
                     if (session.Character.Level < 15 || session.Character.JobLevel < 20)
                     {
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_LOW_LVL"), 0));
                         return;
                     }
                     if (packet.Type == (byte)session.Character.Class)
@@ -105,6 +108,7 @@ namespace OpenNos.GameObject
                                     {
                                         // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
                                         MateHelper.Instance.RemovePetBuffs(session);
+                                        MateHelper.Instance.AddPetBuff(session);
                                         teammate.IsTeamMember = false;
                                         teammate.MapX = teammate.PositionX;
                                         teammate.MapY = teammate.PositionY;
@@ -412,21 +416,16 @@ namespace OpenNos.GameObject
                     break;
 
                 case 150:
-                    if (npc != null)
+                    if (session.Character?.Family == null || npc == null)
                     {
-                        if (session.Character.Family != null)
-                        {
-                            if (session.Character.Family.LandOfDeath == null)
-                            {
-                                session.Character.Family.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
-                            }
-                            ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
-                        }
-                        else
-                        {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
-                        }
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
+                        break;
                     }
+                    if (session.Character?.Family?.LandOfDeath == null)
+                    {
+                        session.Character.Family.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
+                    }
+                    ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
                     break;
 
                 case 301:
@@ -595,23 +594,6 @@ namespace OpenNos.GameObject
                 case 3000:
                     if (npc != null)
                     {
-                        if (packet.Type == 0 && packet.Value == 2)
-                        {
-                            if (session.Character.Group?.Raid == null)
-                            {
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("YOU_HAVE_TO_BE_IN_RAID"), 10));
-                                return;
-                            }
-                            switch ((RaidDesignType)session.Character.Group?.Raid.Id)
-                            {
-                                case RaidDesignType.Cuby:
-                                    break;
-
-                                default:
-                                    session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_QUEST_FOR_THIS_RAID"), 10));
-                                    break;
-                            }
-                        }
                     }
                     break;
 

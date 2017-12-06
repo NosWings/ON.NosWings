@@ -12,12 +12,12 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using NosSharp.Enums;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.EF.Entities
 {
     /// <summary>
     /// Do Not forget to change Mapping in Item GO when changing this class

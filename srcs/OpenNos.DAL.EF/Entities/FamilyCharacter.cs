@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System.ComponentModel.DataAnnotations;
+using NosSharp.Enums;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.EF.Entities
 {
     public class FamilyCharacter
     {

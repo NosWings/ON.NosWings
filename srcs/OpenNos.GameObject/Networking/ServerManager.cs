@@ -22,16 +22,22 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using NosSharp.Enums;
 using OpenNos.Core;
+using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.DAL;
-using OpenNos.Domain;
+using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Item;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Npc;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Networking
 {
     public class ServerManager : BroadcastableBase
     {
@@ -48,11 +54,11 @@ namespace OpenNos.GameObject
 
         public bool ShutdownStop;
 
-        private static readonly List<Item> Items = new List<Item>();
+        private static readonly List<Item.Item> Items = new List<Item.Item>();
 
         private static readonly ConcurrentDictionary<Guid, MapInstance> Mapinstances = new ConcurrentDictionary<Guid, MapInstance>();
 
-        private static readonly List<Map> Maps = new List<Map>();
+        private static readonly List<Map.Map> Maps = new List<Map.Map>();
 
         private static readonly List<NpcMonster> Npcs = new List<NpcMonster>();
 
@@ -185,6 +191,8 @@ namespace OpenNos.GameObject
 
         public List<ScriptedInstance> Raids { get; set; }
 
+        public List<ScriptedInstance> TimeSpaces { get; set; }
+
         public List<Group> GroupList { get; set; } = new List<Group>();
 
         public List<ArenaMember> ArenaMembers { get; set; } = new List<ArenaMember>();
@@ -222,6 +230,18 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public void SaveAct4()
+        {
+            CommunicationServiceClient.Instance.SaveAct4(Act4AngelStat, Act4DemonStat);
+            Logger.Log.Debug(Language.Instance.GetMessageFromKey("GLACERNON_SAVED"));
+        }
+
+        public void RestoreAct4()
+        {
+            Act4AngelStat = CommunicationServiceClient.Instance.RestoreAct4()[0];
+            Act4DemonStat = CommunicationServiceClient.Instance.RestoreAct4()[1];
+        }
 
         public void AddGroup(Group group)
         {
@@ -576,7 +596,6 @@ namespace OpenNos.GameObject
                 {
                     session.Character.CloseShop();
                 }
-                session.Character.Quests.Where(q => q.Quest.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.Quest.RemoveTargetPacket()));
                 session.Character.LeaveTalentArena();
                 session.CurrentMapInstance.RemoveMonstersTarget(session.Character);
                 session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(mate => session.CurrentMapInstance.RemoveMonstersTarget(mate));
@@ -775,7 +794,6 @@ namespace OpenNos.GameObject
                     e.Item2.Add(session.Character.CharacterId);
                     EventHelper.Instance.RunEvent(e.Item1, session);
                 });
-                session.Character.Quests.Where(q => q.Quest.TargetMap == session.CurrentMapInstance?.Map.MapId).ToList().ForEach(qst => session.SendPacket(qst.Quest.TargetPacket()));
             }
             catch (Exception)
             {
@@ -801,7 +819,7 @@ namespace OpenNos.GameObject
 
         public MapInstance GenerateMapInstance(short mapId, MapInstanceType type, InstanceBag mapclock)
         {
-            Map map = Maps.FirstOrDefault(m => m.MapId.Equals(mapId));
+            Map.Map map = Maps.FirstOrDefault(m => m.MapId.Equals(mapId));
             if (map == null)
             {
                 return null;
@@ -845,7 +863,7 @@ namespace OpenNos.GameObject
             return Groups?.SingleOrDefault(g => g.IsMemberOfGroup(characterId));
         }
 
-        public Item GetItem(short vnum)
+        public Item.Item GetItem(short vnum)
         {
             return Items.FirstOrDefault(m => m.VNum.Equals(vnum));
         }
@@ -1036,7 +1054,7 @@ namespace OpenNos.GameObject
             Act6Zenas = new Act6Stats();
 
             OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DaoFactory.ItemDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
-            ConcurrentDictionary<short, Item> item = new ConcurrentDictionary<short, Item>();
+            ConcurrentDictionary<short, Item.Item> item = new ConcurrentDictionary<short, Item.Item>();
             Parallel.ForEach(itemPartitioner, itemDto =>
             {
                 switch (itemDto.ItemType)
@@ -1258,11 +1276,11 @@ namespace OpenNos.GameObject
                 int i = 0;
                 int monstercount = 0;
                 OrderablePartitioner<MapDTO> mapPartitioner = Partitioner.Create(DaoFactory.MapDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
-                ConcurrentDictionary<short, Map> mapList = new ConcurrentDictionary<short, Map>();
+                ConcurrentDictionary<short, Map.Map> mapList = new ConcurrentDictionary<short, Map.Map>();
                 Parallel.ForEach(mapPartitioner, map =>
                 {
                     Guid guid = Guid.NewGuid();
-                    Map mapinfo = new Map(map.MapId, map.Data)
+                    Map.Map mapinfo = new Map.Map(map.MapId, map.Data)
                     {
                         Music = map.Music
                     };
@@ -1346,7 +1364,7 @@ namespace OpenNos.GameObject
                 {
                     Act4Maps = new List<MapInstance>();
                 }
-                foreach (Map m in Maps.Where(s => s.MapTypes.Any(o => o.MapTypeId == (short) MapTypeEnum.Act4 || o.MapTypeId == (short) MapTypeEnum.Act42)))
+                foreach (Map.Map m in Maps.Where(s => s.MapTypes.Any(o => o.MapTypeId == (short) MapTypeEnum.Act4 || o.MapTypeId == (short) MapTypeEnum.Act42)))
                 {
                     MapInstance act4Map = GenerateMapInstance(m.MapId, MapInstanceType.Act4Instance, new InstanceBag());
                     if (act4Map.Map.MapId == 153)
@@ -1567,7 +1585,10 @@ namespace OpenNos.GameObject
 
         public void SaveAll()
         {
-            Parallel.ForEach(Sessions.Where(s => s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null), session => { session.Character?.Save(); });
+            foreach (ClientSession session in Sessions.Where(s => s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null))
+            {
+                session.Character.Save();
+            }
             DaoFactory.BazaarItemDao.RemoveOutDated();
         }
 
@@ -1798,6 +1819,8 @@ namespace OpenNos.GameObject
 
             Observable.Interval(TimeSpan.FromMinutes(1)).Subscribe(x => { Act4FlowerProcess(); });
 
+            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { SaveAll(); });
+
             Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x => { BotProcess(); });
 
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { RemoveItemProcess(); });
@@ -2024,6 +2047,7 @@ namespace OpenNos.GameObject
         private void LoadScriptedInstances()
         {
             Raids = new List<ScriptedInstance>();
+            TimeSpaces = new List<ScriptedInstance>();
             Act4Raids = new List<ScriptedInstance>();
             Parallel.ForEach(Mapinstances, map =>
             {
@@ -2034,6 +2058,7 @@ namespace OpenNos.GameObject
                     {
                         case ScriptedInstanceType.TimeSpace:
                             si.LoadGlobals();
+                            TimeSpaces.Add(si);
                             map.Value.ScriptedInstances.Add(si);
                             break;
                         case ScriptedInstanceType.Raid:

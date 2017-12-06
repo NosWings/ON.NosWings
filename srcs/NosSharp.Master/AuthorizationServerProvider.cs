@@ -1,11 +1,11 @@
-﻿using Microsoft.Owin.Security.OAuth;
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Owin.Security.OAuth;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL;
 
-namespace OpenNos.Master.Server
+namespace NosSharp.Master
 {
     public class AuthorizationServerProvider : OAuthAuthorizationServerProvider
     {

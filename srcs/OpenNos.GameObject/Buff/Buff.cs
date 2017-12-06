@@ -14,8 +14,9 @@
 
 using System;
 using System.Linq;
+using OpenNos.GameObject.Networking;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Buff
 {
     public class Buff
     {

@@ -15,13 +15,19 @@
 using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ClientPackets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NosSharp.Enums;
+using OpenNos.GameObject.Item;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
+using OpenNos.GameObject.Packets.ServerPackets;
 
 namespace OpenNos.Handler
 {
@@ -198,7 +204,7 @@ namespace OpenNos.Handler
                                         }
                                         if (Session.Character.Level < SkillMiniumLevel)
                                         {
-                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_LOW_LVL"), 0));
                                             return;
                                         }
                                         foreach (CharacterSkill skill in Session.Character.Skills.Select(s=>s.Value))
@@ -598,6 +604,7 @@ namespace OpenNos.Handler
                 Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, Session.Character.CharacterId, 1324));
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
+                Session.Character.IncrementQuests(QuestType.Product, inv.ItemVNum, rec.Amount);
             }
         }
 
@@ -870,6 +877,22 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
+
+                #region Quest
+
+                Session.Character.IncrementQuests(QuestType.Dialog1, npc.NpcVNum);
+                Session.Character.IncrementQuests(QuestType.Dialog2, npc.NpcVNum);
+                Session.Character.IncrementQuests(QuestType.Wear, npc.NpcVNum);
+                Session.Character.IncrementQuests(QuestType.Brings, npc.NpcVNum);
+                Session.Character.IncrementQuests(QuestType.Required, npc.NpcVNum);
+
+                if (Session.Character.LastQuest.AddSeconds(1) > DateTime.Now)
+                {
+                    return;
+                }
+
+                #endregion
+
                 if (npc.Npc.Drops.Any(s => s.MonsterVNum != null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));

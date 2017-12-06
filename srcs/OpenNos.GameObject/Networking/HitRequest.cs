@@ -13,8 +13,8 @@
  */
 
 using OpenNos.Data;
-using OpenNos.Domain;
 using System;
+using NosSharp.Enums;
 
 namespace OpenNos.GameObject.Networking
 {

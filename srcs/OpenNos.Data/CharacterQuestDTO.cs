@@ -1,4 +1,6 @@
-﻿namespace OpenNos.Data
+﻿using OpenNos.Data.Base;
+
+namespace OpenNos.Data
 {
     public class CharacterQuestDTO : SynchronizableBaseDTO
     {

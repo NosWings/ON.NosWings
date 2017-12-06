@@ -12,7 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
+using NosSharp.Enums;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {
@@ -63,8 +66,11 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            WearableInstance wearableInstance = instance as WearableInstance;
-            wearableInstance?.RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);
+            if (instance is WearableInstance wearableInstance)
+            {
+                wearableInstance?.RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);
+                wearableInstance.Upgrade = instance.Item.BasicUpgrade;
+            }
         }
 
         #endregion

@@ -12,16 +12,20 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.Domain;
-using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reactive.Linq;
+using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Buff
 {
     public class BCard : BCardDTO
     {
@@ -260,6 +264,13 @@ namespace OpenNos.GameObject
                                                 int capturerate = 100 - (monster.CurrentHp / monster.Monster.MaxHP + 1) / 2;
                                                 if (ServerManager.Instance.RandomNumber() <= capturerate)
                                                 {
+                                                    if (character.Quests.Any(q => q.Quest.QuestType == (int) QuestType.Capture1 && q.Data.Any(d => d.Value[0] == monster.MonsterVNum)))
+                                                    {
+                                                        character.IncrementQuests(QuestType.Capture1, monster.MonsterVNum);
+                                                        return;
+                                                    }
+                                                    character.IncrementQuests(QuestType.Capture2, monster.MonsterVNum);
+
                                                     int level = monster.Monster.Level - 15 < 1 ? 1 : monster.Monster.Level - 15;
                                                     Mate currentmate = character.Mates?.FirstOrDefault(m => m.IsTeamMember && m.MateType == MateType.Pet);
                                                     monster.MapInstance.DespawnMonster(monster);

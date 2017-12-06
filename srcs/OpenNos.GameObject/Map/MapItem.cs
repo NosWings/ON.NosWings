@@ -15,8 +15,10 @@
 using System;
 using System.Collections.Generic;
 using OpenNos.Data;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Networking;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Map
 {
     public abstract class MapItem
     {

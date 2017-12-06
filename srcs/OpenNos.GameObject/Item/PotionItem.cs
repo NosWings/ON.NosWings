@@ -12,12 +12,14 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System;
 using System.Linq;
-using OpenNos.Domain;
+using NosSharp.Enums;
+using OpenNos.Data;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Networking;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Item
 {
     public class PotionItem : Item
     {

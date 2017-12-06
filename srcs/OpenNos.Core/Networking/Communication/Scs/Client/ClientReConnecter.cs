@@ -14,6 +14,7 @@
 
 using OpenNos.Core.Networking.Communication.Scs.Communication;
 using System;
+using OpenNos.Core.Networking.Communication.Scs.Threading;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Client
 {

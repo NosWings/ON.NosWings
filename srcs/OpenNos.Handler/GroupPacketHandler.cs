@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Linq;
+using NosSharp.Enums;
 using OpenNos.Core;
-using OpenNos.Domain;
+using OpenNos.Core.Extensions;
+using OpenNos.Core.Handling;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Packets.ClientPackets;
 
 namespace OpenNos.Handler
 {
@@ -296,6 +300,10 @@ namespace OpenNos.Handler
                     if (targetSession != null)
                     {
                         if (targetSession.Character.GroupSentRequestCharacterIds.Count <= 0)
+                        {
+                            return;
+                        }
+                        if (Session.Character.CharacterId <= 0) // Wtf ?
                         {
                             return;
                         }

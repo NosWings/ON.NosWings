@@ -12,6 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Data.Base;
+using OpenNos.Data.Interfaces;
+
 namespace OpenNos.Data
 {
     public class MapDTO : MappingBaseDTO, IMapDTO

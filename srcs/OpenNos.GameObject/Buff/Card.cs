@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System.Collections.Generic;
+using OpenNos.Data;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Buff
 {
     public class Card : CardDTO
     {

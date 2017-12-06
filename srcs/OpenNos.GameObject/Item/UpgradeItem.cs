@@ -12,12 +12,14 @@
  * GNU General Public License for more details.
  */
 
+using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Networking;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Item
 {
     public class UpgradeItem : Item
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenNos.PathFinder
+namespace OpenNos.PathFinder.PathFinder
 {
     internal class MinHeap
     {

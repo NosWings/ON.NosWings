@@ -15,13 +15,17 @@
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using NosSharp.Enums;
+using OpenNos.Core.Handling;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Packets.ClientPackets;
 
 namespace OpenNos.Handler
 {
@@ -307,7 +311,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LIMIT_EXCEEDED"), 0));
                 return;
             }
-            if (price > (medal != null || Session.Character.Authority >= AuthorityType.Vip ? maxGold : 1000000))
+            if (price > (medal != null || Session.Character.Authority >= AuthorityType.Vip ? maxGold : 1000000 * it.Amount))
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PRICE_EXCEEDED"), 0));
                 return;

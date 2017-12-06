@@ -1,7 +1,7 @@
-﻿using OpenNos.Core;
-using OpenNos.Domain;
+﻿using NosSharp.Enums;
+using OpenNos.Core.Serializing;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Packets.ClientPackets
 {
     [PacketHeader("suctl")]
     public class SuctlPacket : PacketDefinition

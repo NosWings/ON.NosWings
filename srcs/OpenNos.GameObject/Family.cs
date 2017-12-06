@@ -14,11 +14,13 @@
 
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
+using NosSharp.Enums;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {

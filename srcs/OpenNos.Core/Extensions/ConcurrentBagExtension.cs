@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Extensions
 {
     public static class ConcurrentBagExtensions
     {
@@ -10,7 +10,7 @@ namespace OpenNos.Core
 
         public static void Clear<T>(this ConcurrentBag<T> queue)
         {
-            while (queue.TryTake(out T item))
+            while (queue.TryTake(out T _))
             {
                 // NOTHING
             }
@@ -18,7 +18,7 @@ namespace OpenNos.Core
 
         public static ConcurrentBag<T> Where<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate)
         {
-            return new ConcurrentBag<T>(queue.AsEnumerable().Where(predicate));
+            return new ConcurrentBag<T>(queue.ToList().Where(predicate));
         }
 
         #endregion

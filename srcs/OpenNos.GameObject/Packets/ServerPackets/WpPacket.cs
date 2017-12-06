@@ -1,6 +1,6 @@
-﻿using OpenNos.Core;
+﻿using OpenNos.Core.Serializing;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Packets.ServerPackets
 {
     [PacketHeader("wp")]
     public class WpPacket : PacketDefinition

@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
+using NosSharp.Enums;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Networking
 {
     public class BroadcastPacket
     {

@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using OpenNos.DAL.EF.DB;
 using System.Linq;
+using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
@@ -59,6 +61,23 @@ namespace OpenNos.DAL.EF
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
                 return context.Quest.ToList().Select(d => _mapper.Map<QuestDTO>(d)).ToList();
+            }
+        }
+
+
+        public QuestDTO LoadById(long questId)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<QuestDTO>(context.Quest.FirstOrDefault(s => s.QuestId.Equals(questId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

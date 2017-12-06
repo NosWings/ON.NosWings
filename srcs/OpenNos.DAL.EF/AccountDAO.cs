@@ -18,10 +18,13 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.Domain;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using NosSharp.Enums;
+using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
@@ -53,6 +56,23 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public long GetBankRanking(long accountId)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    Account account = context.Account.First(c => c.AccountId.Equals(accountId));
+                    return context.Account.Where(s => s.BankMoney > account.BankMoney).OrderByDescending(s => s.BankMoney).Count() + 1;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("ERROR_GETTING_RANK"), accountId, e.Message), e);
+                return 0;
+            }
+        }
+
         public SaveResult InsertOrUpdate(ref AccountDTO account)
         {
             try
@@ -67,6 +87,7 @@ namespace OpenNos.DAL.EF
                         account = Insert(account, context);
                         return SaveResult.Inserted;
                     }
+
                     account = Update(entity, account, context);
                     return SaveResult.Updated;
                 }
@@ -95,6 +116,7 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
             }
+
             return null;
         }
 
@@ -115,6 +137,7 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
             }
+
             return null;
         }
 
@@ -164,6 +187,7 @@ namespace OpenNos.DAL.EF
                 context.Entry(entity).State = EntityState.Modified;
                 context.SaveChanges();
             }
+
             return _mapper.Map<AccountDTO>(entity);
         }
 

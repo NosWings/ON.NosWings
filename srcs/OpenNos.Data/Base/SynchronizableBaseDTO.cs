@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenNos.Data
+namespace OpenNos.Data.Base
 {
     public abstract class SynchronizableBaseDTO : MappingBaseDTO
     {

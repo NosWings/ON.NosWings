@@ -12,9 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System;
 using System.Linq;
+using NosSharp.Enums;
+using OpenNos.Core.Serializing;
 
 namespace OpenNos.Core.Handling
 {

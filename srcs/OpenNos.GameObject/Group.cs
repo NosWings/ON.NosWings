@@ -13,12 +13,15 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Domain;
 using System.Collections.Generic;
 using System.Linq;
 using System;
 using OpenNos.GameObject.Helpers;
 using System.Collections.Concurrent;
+using NosSharp.Enums;
+using OpenNos.Core.Extensions;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {
@@ -95,7 +98,7 @@ namespace OpenNos.GameObject
             lock (_syncObj)
             {
                 _order++;
-                List<ClientSession> sessions = Characters.Where(s => Map.GetDistance(s.Character, character) < 50).ToList();
+                List<ClientSession> sessions = Characters.Where(s => Map.Map.GetDistance(s.Character, character) < 50).ToList();
                 if (_order > sessions.Count - 1) // if order wents out of amount of ppl, reset it -> zero based index
                 {
                     _order = 0;

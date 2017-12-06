@@ -12,12 +12,14 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
+using NosSharp.Enums;
 using OpenNos.DAL;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Packets.ClientPackets;
 
 namespace OpenNos.GameObject.Helpers
 {

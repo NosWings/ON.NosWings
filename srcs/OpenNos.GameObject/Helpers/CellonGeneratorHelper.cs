@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
+using NosSharp.Enums;
 using OpenNos.Data;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {

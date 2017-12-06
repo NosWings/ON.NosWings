@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenNos.PathFinder
+namespace OpenNos.PathFinder.PathFinder
 {
     public static class BestFirstSearch
     {

@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using OpenNos.DAL.EF.DB;
 using System.Linq;
+using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {

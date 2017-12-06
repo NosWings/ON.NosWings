@@ -1,10 +1,12 @@
 ﻿using OpenNos.Core;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
 using System.Linq;
+using NosSharp.Enums;
+using OpenNos.Core.Handling;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Packets.ClientPackets;
 
@@ -18,6 +20,73 @@ namespace OpenNos.Handler
         }
 
         private ClientSession Session { get; }
+
+
+        /// <summary>
+        /// u_pet packet
+        /// </summary>
+        /// <param name="upetPacket"></param>
+        public void SpecialSkill(UpetPacket upetPacket)
+        {
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
+            if (Session.Character.IsMuted() && penalty != null)
+            {
+                if (Session.Character.Gender == GenderType.Female)
+                {
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                }
+                else
+                {
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                }
+                return;
+            }
+            Mate attacker = Session.Character.Mates.FirstOrDefault(x => x.MateTransportId == upetPacket.MateTransportId);
+            if (attacker == null)
+            {
+                return;
+            }
+            NpcMonsterSkill mateSkill = null;
+            if (attacker.Monster.Skills.Any())
+            {
+                mateSkill = attacker.Monster.Skills.FirstOrDefault(x => x.Rate == 0);
+            }
+            if (mateSkill == null)
+            {
+                mateSkill = new NpcMonsterSkill
+                {
+                    SkillVNum = 200
+                };
+            }
+            if (attacker.IsSitting)
+            {
+                return;
+            }
+            switch (upetPacket.TargetType)
+            {
+                case UserType.Monster:
+                    if (attacker.Hp > 0)
+                    {
+                        MapMonster target = Session?.CurrentMapInstance?.GetMonster(upetPacket.TargetId);
+                        AttackMonster(attacker, mateSkill, target);
+                    }
+                    return;
+
+                case UserType.Npc:
+                    return;
+
+                case UserType.Player:
+                    return;
+
+                case UserType.Object:
+                    return;
+
+                default:
+                    return;
+            }
+        }
 
         /// <summary>
         /// suctl packet

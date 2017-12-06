@@ -14,7 +14,7 @@
 
 using System.Collections.Generic;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.EF.Entities
 {
     public class Recipe
     {

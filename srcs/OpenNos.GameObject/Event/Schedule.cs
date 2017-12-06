@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System;
+using NosSharp.Enums;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Event
 {
     public class Schedule
     {

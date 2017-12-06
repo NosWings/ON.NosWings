@@ -1,4 +1,4 @@
-﻿namespace OpenNos.PathFinder
+﻿namespace OpenNos.PathFinder.PathFinder
 {
     public class GridPos
     {

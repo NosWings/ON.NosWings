@@ -12,18 +12,19 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using CloneExtensions;
+using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL;
 
-namespace OpenNos.Import.Console
+namespace NosSharp.Parser
 {
     public class ImportFactory
     {
@@ -65,6 +66,347 @@ namespace OpenNos.Import.Console
                 Password = EncryptionBase.Sha512("test")
             };
             DaoFactory.AccountDao.InsertOrUpdate(ref acc2);
+        }
+
+        public void ImportQuests()
+        {
+            string fileQuestDat = $"{_folder}\\quest.dat";
+            string fileRewardsDat = $"{_folder}\\qstprize.dat";
+            int qstCounter = 0;
+            List<QuestDTO> quests = new List<QuestDTO>();
+            Dictionary<long, QuestRewardDTO> dictionaryRewards = new Dictionary<long, QuestRewardDTO>();
+            QuestRewardDTO reward = new QuestRewardDTO();
+            string line;
+
+            using (StreamReader questRewardStream = new StreamReader(fileRewardsDat, Encoding.GetEncoding(1252)))
+            {
+                while ((line = questRewardStream.ReadLine()) != null)
+                {
+                    string[] currentLine = line.Split('\t');
+                    if (currentLine.Length <= 1 && currentLine[0] != "END")
+                    {
+                        continue;
+                    }
+                    switch (currentLine[0])
+                    {
+                        case "VNUM":
+                            reward = new QuestRewardDTO
+                            {
+                                QuestRewardId = long.Parse(currentLine[1]),
+                                RewardType = byte.Parse(currentLine[2])
+                            };
+                            break;
+
+                        case "DATA":
+                            if (currentLine.Length < 3)
+                            {
+                                return;
+                            }
+                            switch ((QuestRewardType) reward.RewardType)
+                            {
+                                case QuestRewardType.Exp:
+                                case QuestRewardType.SecondExp:
+                                case QuestRewardType.JobExp:
+                                case QuestRewardType.SecondJobExp:
+                                    reward.Data = int.Parse(currentLine[2]) == -1 ? 0 : int.Parse(currentLine[2]);
+                                    reward.Amount = int.Parse(currentLine[1]);
+                                    break;
+
+                                case QuestRewardType.WearItem:
+                                    reward.Data = int.Parse(currentLine[1]);
+                                    reward.Amount = 1;
+                                    break;
+
+                                case QuestRewardType.EtcMainItem:
+                                    reward.Data = int.Parse(currentLine[1]);
+                                    reward.Amount = int.Parse(currentLine[5]) == -1 ? 1 : int.Parse(currentLine[5]);
+                                    break;
+
+                                case QuestRewardType.Gold:
+                                case QuestRewardType.SecondGold:
+                                case QuestRewardType.ThirdGold:
+                                case QuestRewardType.FourthGold:
+                                case QuestRewardType.Reput:
+                                    reward.Data = 0;
+                                    reward.Amount = int.Parse(currentLine[1]);
+                                    break;
+
+                                default:
+                                    reward.Data = int.Parse(currentLine[1]);
+                                    reward.Amount = int.Parse(currentLine[2]);
+                                    break;
+                            }
+                            break;
+
+                        case "END":
+                            dictionaryRewards[reward.QuestRewardId] = reward;
+                            break;
+                    }
+                }
+                questRewardStream.Close();
+            }
+
+            QuestDTO quest = new QuestDTO();
+            List<QuestRewardDTO> rewards = new List<QuestRewardDTO>();
+
+
+            using (StreamReader questStream = new StreamReader(fileQuestDat, Encoding.GetEncoding(1252)))
+            {
+                while ((line = questStream.ReadLine()) != null)
+                {
+                    string[] currentLine = line.Split('\t');
+                    if (currentLine.Length > 1 || currentLine[0] == "END")
+                    {
+                        switch (currentLine[0])
+                        {
+                            case "VNUM":
+                                quest = new QuestDTO()
+                                {
+                                    QuestId = long.Parse(currentLine[1]),
+                                    QuestType = int.Parse(currentLine[2]),
+                                    InfoId = int.Parse(currentLine[1])
+                                };
+                                break;
+
+                            case "LINK":
+                                if (int.Parse(currentLine[1]) != -1) // Base Quest Order (ex: SpQuest)
+                                {
+                                    quest.NextQuestId = int.Parse(currentLine[1]);
+                                    continue;
+                                }
+
+                                // Main Quest Order
+                                switch (quest.QuestId)
+                                {
+                                    case 1997:
+                                        quest.NextQuestId = 1500;
+                                        break;
+                                    case 1523:
+                                    case 1532:
+                                    case 1580:
+                                    case 1610:
+                                    case 1618:
+                                    case 1636:
+                                    case 1647:
+                                    case 1664:
+                                    case 3075:
+                                        quest.NextQuestId = quest.QuestId + 2;
+                                        break;
+                                    case 1527:
+                                    case 1553:
+                                        quest.NextQuestId = quest.QuestId + 3;
+                                        break;
+                                    case 1690:
+                                        quest.NextQuestId = 1694;
+                                        break;
+                                    case 1751:
+                                        quest.NextQuestId = 3000;
+                                        break;
+                                    case 3101:
+                                        quest.NextQuestId = 3200;
+                                        break;
+                                    case 3331:
+                                        quest.NextQuestId = 3340;
+                                        break;
+
+                                    default:
+                                        if (quest.QuestId < 1500 || quest.QuestId >= 1751 && quest.QuestId < 3000 || quest.QuestId >= 3374)
+                                        {
+                                            continue;
+                                        }
+                                        quest.NextQuestId = quest.QuestId + 1;
+                                        break;
+                                }
+                                break;
+
+                            case "LEVEL":
+                                quest.LevelMin = byte.Parse(currentLine[1]);
+                                quest.LevelMax = byte.Parse(currentLine[2]);
+                                break;
+
+                            case "TALK":
+                                if (int.Parse(currentLine[1]) > 0)
+                                {
+                                    quest.StartDialogId = int.Parse(currentLine[1]);
+                                }
+                                if (int.Parse(currentLine[2]) > 0)
+                                {
+                                    quest.EndDialogId = int.Parse(currentLine[2]);
+                                }
+                                break;
+
+                            case "TARGET":
+                                if (int.Parse(currentLine[3]) > 0)
+                                {
+                                    quest.TargetMap = short.Parse(currentLine[3]);
+                                    quest.TargetX = short.Parse(currentLine[1]);
+                                    quest.TargetY = short.Parse(currentLine[2]);
+                                }
+                                break;
+
+                            case "DATA":
+                                if (currentLine.Length < 3)
+                                {
+                                    return;
+                                }
+                                int? data = null, objective = null, specialData = null, secondSpecialData = null;
+                                switch ((QuestType)quest.QuestType)
+                                {
+                                    case QuestType.Hunt:
+                                    case QuestType.Capture1:
+                                    case QuestType.Capture2:
+                                    case QuestType.Collect1:
+                                    case QuestType.Product:
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[2]);
+                                        break;
+
+                                    case QuestType.Brings: // npcVNum - ItemCount - ItemVNum //
+                                    case QuestType.Collect3: // ItemVNum - Objective - TsId //
+                                    case QuestType.Needed: // ItemVNum - Objective - npcVNum //
+                                    case QuestType.Collect5: // ItemVNum - Objective - npcVNum //
+                                        data = int.Parse(currentLine[2]);
+                                        objective = int.Parse(currentLine[3]);
+                                        specialData = int.Parse(currentLine[1]);
+                                        break;
+
+                                    case QuestType.Collect4: // ItemVNum - Objective - MonsterVNum - DropRate // 
+                                    case QuestType.Collect2: // ItemVNum - Objective - MonsterVNum - DropRate // 
+                                        data = int.Parse(currentLine[2]);
+                                        objective = int.Parse(currentLine[3]);
+                                        specialData = int.Parse(currentLine[1]);
+                                        secondSpecialData = int.Parse(currentLine[4]);
+                                        break;
+
+                                    case QuestType.TimesSpace: // TS Lvl - Objective - TS Id //
+                                    case QuestType.TsPoint:
+                                        data = int.Parse(currentLine[4]);
+                                        objective = int.Parse(currentLine[2]);
+                                        specialData = int.Parse(currentLine[1]);
+                                        break;
+
+                                    case QuestType.Wear: // Item VNum - * - NpcVNum //
+                                        data = int.Parse(currentLine[2]);
+                                        specialData = int.Parse(currentLine[1]);
+                                        break;
+
+                                    case QuestType.TransmitGold: // NpcVNum - Gold x10K - * //
+                                        data = int.Parse(currentLine[1]); 
+                                        objective = int.Parse(currentLine[2]) * 10000;
+                                        break;
+
+                                    case QuestType.GoTo: // Map - PosX - PosY //
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[2]);
+                                        specialData = int.Parse(currentLine[3]);
+                                        break;
+
+                                    case QuestType.WinRaid: // Design - Objective - ? //
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[2]);
+                                        specialData = int.Parse(currentLine[3]);
+                                        quest.IsDaily = true;
+                                        break;
+
+                                    case QuestType.Use: // Item to use - * - mateVnum //
+                                        data = int.Parse(currentLine[1]);
+                                        specialData = int.Parse(currentLine[2]);
+                                        break;
+
+                                    case QuestType.Dialog1: // npcVNum - * - * //
+                                    case QuestType.Dialog2: // npcVNum - * - * //
+                                        data = int.Parse(currentLine[1]);
+                                        break;
+
+                                    case QuestType.FlowerQuest:
+                                        objective = 10;
+                                        break;
+
+                                    case QuestType.Inspect: // NpcVNum - Objective - ItemVNum //
+                                    case QuestType.Required: // npcVNum - Objective - ItemVNum //
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[3]);
+                                        specialData = int.Parse(currentLine[2]);
+                                        break;
+
+                                    default:
+                                        data = int.Parse(currentLine[1]);
+                                        objective = int.Parse(currentLine[2]);
+                                        specialData = int.Parse(currentLine[3]);
+                                        break;
+
+                                }
+                                if (specialData < 0)
+                                {
+                                    specialData = null;
+                                }
+                                if (secondSpecialData < 0)
+                                {
+                                    secondSpecialData = null;
+                                }
+                                if (quest.FirstData == 0)
+                                {
+                                    quest.FirstData = data ?? 0;
+                                    quest.FirstObjective = objective ?? 1;
+                                    quest.FirstSpecialData = specialData;
+                                    quest.SpecialData = secondSpecialData;
+                                }
+                                else if (quest.SecondData == null)
+                                {
+                                    quest.SecondData = data;
+                                    quest.SecondObjective = objective;
+                                    quest.SecondSpecialData = specialData;
+                                }
+                                else if (quest.ThirdData == null)
+                                {
+                                    quest.ThirdData = data;
+                                    quest.ThirdObjective = objective;
+                                    quest.ThirdSpecialData = specialData;
+                                }
+                                else if (quest.FourthData == null)
+                                {
+                                    quest.FourthData = data;
+                                    quest.FourthObjective = objective;
+                                    quest.FourthSpecialData = specialData;
+                                }
+                                else if (quest.FifthData == null)
+                                {
+                                    quest.FifthData = data;
+                                    quest.FifthObjective = objective;
+                                    quest.FifthSpecialData = specialData;
+                                }
+                                break;
+
+                            case "PRIZE":
+                                for (int a = 1; a < 5; a++)
+                                {
+                                    if (!dictionaryRewards.ContainsKey(long.Parse(currentLine[a])))
+                                    {
+                                        continue;
+                                    }
+                                    QuestRewardDTO currentReward = dictionaryRewards[long.Parse(currentLine[a])].GetClone();
+                                    currentReward.QuestId = quest.QuestId;
+                                    rewards.Add(currentReward);
+                                }
+                                break;
+
+                            case "END":
+                                if (DaoFactory.QuestDao.LoadById(quest.QuestId) == null)
+                                {
+                                    quests.Add(quest);
+                                    qstCounter++;
+                                }
+                                break;
+                        }
+                    }
+                }
+                DaoFactory.QuestDao.Insert(quests);
+                DaoFactory.QuestRewardDao.Insert(rewards);
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("QUEST_PARSED"), qstCounter));
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("REWARD_PARSED"), rewards.Count));
+
+                questStream.Close();
+            }
         }
 
         public void ImportCards()
@@ -152,7 +494,7 @@ namespace OpenNos.Import.Console
                                     SecondData = int.Parse(currentLine[7 + i * 6]) / 4,
                                     ThirdData = int.Parse(currentLine[5 + i * 6]),
                                     IsLevelScaled = Convert.ToBoolean(first % 4),
-                                    IsLevelDivided = (first % 4) == 2,
+                                    IsLevelDivided = Math.Abs(first % 4) == 2,
                                 };
                                 bcards.Add(bcard);
                             }
@@ -881,33 +1223,34 @@ namespace OpenNos.Import.Console
         {
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("e_info") && o[1].Equals("10")))
             {
-                if (currentPacket.Length > 25)
+                if (currentPacket.Length <= 25)
                 {
-                    NpcMonsterDTO npcMonster = DaoFactory.NpcMonsterDao.LoadByVNum(short.Parse(currentPacket[2]));
-                    if (npcMonster == null)
-                    {
-                        continue;
-                    }
-                    npcMonster.AttackClass = byte.Parse(currentPacket[5]);
-                    npcMonster.AttackUpgrade = byte.Parse(currentPacket[7]);
-                    npcMonster.DamageMinimum = short.Parse(currentPacket[8]);
-                    npcMonster.DamageMaximum = short.Parse(currentPacket[9]);
-                    npcMonster.Concentrate = short.Parse(currentPacket[10]);
-                    npcMonster.CriticalChance = byte.Parse(currentPacket[11]);
-                    npcMonster.CriticalRate = short.Parse(currentPacket[12]);
-                    npcMonster.DefenceUpgrade = byte.Parse(currentPacket[13]);
-                    npcMonster.CloseDefence = short.Parse(currentPacket[14]);
-                    npcMonster.DefenceDodge = short.Parse(currentPacket[15]);
-                    npcMonster.DistanceDefence = short.Parse(currentPacket[16]);
-                    npcMonster.DistanceDefenceDodge = short.Parse(currentPacket[17]);
-                    npcMonster.MagicDefence = short.Parse(currentPacket[18]);
-                    npcMonster.FireResistance = sbyte.Parse(currentPacket[19]);
-                    npcMonster.WaterResistance = sbyte.Parse(currentPacket[20]);
-                    npcMonster.LightResistance = sbyte.Parse(currentPacket[21]);
-                    npcMonster.DarkResistance = sbyte.Parse(currentPacket[22]);
-                    
-                    DaoFactory.NpcMonsterDao.InsertOrUpdate(ref npcMonster);
+                    continue;
                 }
+                NpcMonsterDTO npcMonster = DaoFactory.NpcMonsterDao.LoadByVNum(short.Parse(currentPacket[2]));
+                if (npcMonster == null)
+                {
+                    continue;
+                }
+                npcMonster.AttackClass = byte.Parse(currentPacket[5]);
+                npcMonster.AttackUpgrade = byte.Parse(currentPacket[7]);
+                npcMonster.DamageMinimum = short.Parse(currentPacket[8]);
+                npcMonster.DamageMaximum = short.Parse(currentPacket[9]);
+                npcMonster.Concentrate = short.Parse(currentPacket[10]);
+                npcMonster.CriticalChance = byte.Parse(currentPacket[11]);
+                npcMonster.CriticalRate = short.Parse(currentPacket[12]);
+                npcMonster.DefenceUpgrade = byte.Parse(currentPacket[13]);
+                npcMonster.CloseDefence = short.Parse(currentPacket[14]);
+                npcMonster.DefenceDodge = short.Parse(currentPacket[15]);
+                npcMonster.DistanceDefence = short.Parse(currentPacket[16]);
+                npcMonster.DistanceDefenceDodge = short.Parse(currentPacket[17]);
+                npcMonster.MagicDefence = short.Parse(currentPacket[18]);
+                npcMonster.FireResistance = sbyte.Parse(currentPacket[19]);
+                npcMonster.WaterResistance = sbyte.Parse(currentPacket[20]);
+                npcMonster.LightResistance = sbyte.Parse(currentPacket[21]);
+                npcMonster.DarkResistance = sbyte.Parse(currentPacket[22]);
+                    
+                DaoFactory.NpcMonsterDao.InsertOrUpdate(ref npcMonster);
             }
         }
 
@@ -2725,7 +3068,7 @@ namespace OpenNos.Import.Console
                             SubType = (byte)((int.Parse(currentLine[4]) + 1 )* 10 + 1 + (first < 0 ? 1 : 0)),
                             IsLevelScaled = Convert.ToBoolean(first % 4),
                             IsLevelDivided = (first % 4) == 2,
-                            FirstData = (short)(first > 0 ? first : -first / 4),
+                            FirstData = (short)((first > 0 ? first : -first) / 4),
                             SecondData = (short)(int.Parse(currentLine[6]) / 4),
                             ThirdData = (short)(int.Parse(currentLine[7]) / 4),
                         };
@@ -3019,6 +3362,14 @@ namespace OpenNos.Import.Console
                         // item.DesignId = Convert.ToInt16(currentLine[6]);
                         switch (item.VNum)
                         {
+                            case 4101:
+                            case 4102:
+                            case 4103:
+                            case 4104:
+                            case 4105:
+                                item.EquipmentSlot = 0;
+                                break;
+
                             case 1906:
                                 item.Morph = 2368;
                                 item.Speed = 20;
@@ -4121,7 +4472,7 @@ namespace OpenNos.Import.Console
                                 SubType = (byte)((int.Parse(currentLine[5 + 5 * i]) + 1) * 10 + 1),
                                 IsLevelScaled = Convert.ToBoolean(first % 4),
                                 IsLevelDivided = (first % 4) == 2,
-                                FirstData = (short)(first / 4),
+                                FirstData = (short)((first > 0 ? first : -first) / 4),
                                 SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
                                 ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
                             };

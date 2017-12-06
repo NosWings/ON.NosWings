@@ -14,7 +14,7 @@
 
 using System;
 
-namespace OpenNos.Data
+namespace OpenNos.Data.Interfaces
 {
     public interface IItemInstance
     {

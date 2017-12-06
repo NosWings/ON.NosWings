@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using OpenNos.GameObject.Event;
 
 namespace OpenNos.GameObject
 {

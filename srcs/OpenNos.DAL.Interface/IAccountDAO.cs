@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using NosSharp.Enums;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.Domain;
 
 namespace OpenNos.DAL.Interface
 {
@@ -23,6 +23,8 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         DeleteResult Delete(long accountId);
+
+        long GetBankRanking(long accountId);
 
         SaveResult InsertOrUpdate(ref AccountDTO account);
 

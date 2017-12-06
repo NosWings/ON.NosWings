@@ -12,16 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Domain;
-using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Core.Serializing;
+using OpenNos.GameObject.Helpers;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Networking
 {
     public abstract class BroadcastableBase : IDisposable
     {

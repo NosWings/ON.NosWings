@@ -8,6 +8,7 @@ using OpenNos.DAL.EF.Entities;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.Base;
 
 namespace OpenNos.DAL.EF
 {

@@ -1,11 +1,11 @@
-﻿using AutoMapper;
-using OpenNos.Core;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
+using OpenNos.Core;
+using OpenNos.Data.Base;
+using OpenNos.DAL.Interface;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.EF.Base
 {
     public class MappingBaseDAO<TEntity, TDTO> : IMappingBaseDAO
         where TDTO : MappingBaseDTO

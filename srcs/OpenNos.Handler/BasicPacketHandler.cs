@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ClientPackets;
@@ -28,6 +27,15 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using OpenNos.Core.Extensions;
+using System.Reactive.Linq;
+using NosSharp.Enums;
+using OpenNos.Core.Handling;
+using OpenNos.Core.Serializing;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
 
 namespace OpenNos.Handler
 {
@@ -787,21 +795,21 @@ namespace OpenNos.Handler
             {
                 // On Target Dest
                 case 1:
-                    CharacterQuest goToQuest = Session.Character.Quests.FirstOrDefault(q => q.Quest.QuestType == (int)QuestType.GoTo
-                    && q.Quest.FirstData == Session.CurrentMapInstance.Map.MapId
-                    && q.Quest.SecondData == Session.Character.PositionX
-                    && q.Quest.ThirdData == Session.Character.PositionY);
-
-                    if (goToQuest != null)
-                    {
-                        Session.Character.IncrementQuestObjective(goToQuest);
-                    }
+                    Session.Character.IncrementQuests(QuestType.GoTo, Session.CurrentMapInstance.Map.MapId, Session.Character.PositionX, Session.Character.PositionY);
                     break;
 
+                // Give Up Quest
+                case 3:
+                    CharacterQuest charQuest = Session.Character.Quests?.FirstOrDefault(q => q.QuestNumber == qtPacket.Data);
+                    if (charQuest == null || charQuest.IsMainQuest)
+                    {
+                        return;
+                    }
+                    Session.Character.RemoveQuest(charQuest.QuestId, true);
+                    break;
 
                 // Ask for rewards
                 case 4:
-
                     break;
             }
         }
@@ -1238,6 +1246,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateTit());
             Session.SendPacket(Session.Character.GenerateSpPoint());
             Session.SendPacket("rsfi 1 1 0 9 0 9");
+            Session.Character.Quests?.Where(q => q?.Quest?.TargetMap != null).ToList().ForEach(qst => Session.SendPacket(qst.Quest.TargetPacket()));
             if (Session.Character.Hp <= 0)
             {
                 ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
@@ -1436,7 +1445,7 @@ namespace OpenNos.Handler
                 {
                     EventHelper.Instance.RunEvent(e);
                 });
-                Session.CurrentMapInstance?.OnMoveOnMapEvents?.ToList().RemoveAll(s => s != null);
+                Session.CurrentMapInstance?.OnMoveOnMapEvents?.Clear();
             }
             else
             {

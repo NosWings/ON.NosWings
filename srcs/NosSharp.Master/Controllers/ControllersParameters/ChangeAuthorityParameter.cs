@@ -1,4 +1,4 @@
-﻿namespace OpenNos.Master.Server.Controllers.ControllersParam
+﻿namespace NosSharp.Master.Controllers.ControllersParameters
 {
 
     public class ChangeAuthorityParameter

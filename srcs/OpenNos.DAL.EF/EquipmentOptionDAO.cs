@@ -20,7 +20,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {

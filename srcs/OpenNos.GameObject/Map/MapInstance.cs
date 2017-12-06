@@ -18,14 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using NosSharp.Enums;
 using OpenNos.Core;
+using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.DAL;
-using OpenNos.Domain;
+using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
-using OpenNos.PathFinder;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
+using OpenNos.PathFinder.PathFinder;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Map
 {
     public class MapInstance : BroadcastableBase
     {
@@ -211,7 +216,7 @@ namespace OpenNos.GameObject
             _disposed = true;
         }
 
-        public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
+        public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY, bool isQuest = false)
         {
             // TODO: Parallelize, if possible.
             try
@@ -241,7 +246,7 @@ namespace OpenNos.GameObject
                 MonsterMapItem droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, owner ?? -1);
                 DroppedList[droppedItem.TransportId] = droppedItem;
                 Broadcast(
-                    $"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
+                    $"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} {(isQuest ? 1 : 0)} 0 -1");
             }
             catch (Exception e)
             {

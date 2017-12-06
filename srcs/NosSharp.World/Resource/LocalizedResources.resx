@@ -357,7 +357,7 @@
   <data name="LOW_JOB_LVL" xml:space="preserve">
     <value>Your joblevel is too low!</value>
   </data>
-  <data name="LOW_LVL" xml:space="preserve">
+  <data name="TOO_LOW_LVL" xml:space="preserve">
     <value>Your level is too low!</value>
   </data>
   <data name="LOW_REP" xml:space="preserve">
@@ -1457,7 +1457,7 @@
     <value>Searching opposing team</value>
   </data>
   <data name="WORLD_SERVER_CONSOLE_TITLE" xml:space="preserve">
-    <value>WORLD SERVER - ID : {0} | Players : {1} | IP : {2}:{3}</value>
+    <value>N# - WORLD SERVER - ID : {0} | Players : {1} | IP : {2}:{3}</value>
   </data>
   <data name="EQUALITY" xml:space="preserve">
     <value>Equality!</value>
@@ -1627,6 +1627,9 @@
   <data name="RAID_REGISTRED" xml:space="preserve">
     <value>Team was registred</value>
   </data>
+  <data name="TOO_HIGH_LVL" xml:space="preserve">
+    <value>Your level is too high!</value>
+  </data>
   <data name="ALREADY_IN_FAMILY" xml:space="preserve">
     <value>You're already in a family</value>
   </data>
@@ -1641,5 +1644,56 @@
   </data>
   <data name="ACT4_RAID_OPEN" xml:space="preserve">
     <value>The raid {0} is open !</value>
+  </data>
+  <data name="NEW_MISSION" xml:space="preserve">
+    <value>New mission goal.</value>
+  </data>
+  <data name="ONLY_TEAM_LEADER_CAN_START" xml:space="preserve">
+    <value>Only the team leader can start the Raid.</value>
+  </data>
+  <data name="RAID_JOIN" xml:space="preserve">
+    <value>{0} join the raid team.</value>
+  </data>
+  <data name="RAID_LEVEL_INCORRECT" xml:space="preserve">
+    <value>As the raid recommended level does not correspond to your level, a raidbox cannot be given even if the raid task is completed.</value>
+  </data>
+  <data name="RAID_UNREGISTERED" xml:space="preserve">
+    <value>The Raidteam is now unregistered.</value>
+  </data>
+  <data name="SEARCH_TEAM_MEMBERS" xml:space="preserve">
+    <value>{0} is searching for members to do the raid {1} !</value>
+  </data>
+  <data name="SHOP_NOT_ALLOWED_IN_RAID" xml:space="preserve">
+    <value>Raid members can not do an exchange.</value>
+  </data>
+  <data name="SUPER_REWARD" xml:space="preserve">
+    <value>Someone won the jackpot at the Mystere box!</value>
+  </data>
+  <data name="WRONG_MAP" xml:space="preserve">
+    <value>This raid can't started on this portal.</value>
+  </data>
+  <data name="BANK_BALANCE" xml:space="preserve">
+    <value>KFCBANK : You have {0} Gold</value>
+  </data>
+  <data name="BANK_DEPOSIT" xml:space="preserve">
+    <value>KFCBANK : You just deposed {0} Gold</value>
+  </data>
+  <data name="BANK_RANKING" xml:space="preserve">
+    <value>KFCBANK : You are the {0} richest person of NosWings !</value>
+  </data>
+  <data name="BANK_TRANSFER_FROM" xml:space="preserve">
+    <value>KFCBANK : You just received {0} Gold from {1}</value>
+  </data>
+  <data name="BANK_TRANSFER_TO" xml:space="preserve">
+    <value>KFCBANK : You just sent {0} Gold to {1}</value>
+  </data>
+  <data name="BANK_UNRANKED" xml:space="preserve">
+    <value>KFCBANK : You are not ranked in the richest persons of NosWings !</value>
+  </data>
+  <data name="BANK_WITHDRAW" xml:space="preserve">
+    <value>KFCBANK : You just withdrawn {0} Gold</value>
+  </data>
+  <data name="NO_BALANCE" xml:space="preserve">
+    <value>KFCBANK : Your account has no sufficient funds</value>
   </data>
 </root>

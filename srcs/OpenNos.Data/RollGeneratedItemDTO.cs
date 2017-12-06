@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Data.Base;
+
 namespace OpenNos.Data
 {
     public class RollGeneratedItemDTO : MappingBaseDTO

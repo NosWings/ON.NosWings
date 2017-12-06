@@ -1,10 +1,10 @@
-﻿using OpenNos.Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using NosSharp.Enums;
 
-namespace OpenNos.Master.Server
+namespace NosSharp.Master
 {
     public class AuthorizeRoleAttribute : AuthorizeAttribute
     {

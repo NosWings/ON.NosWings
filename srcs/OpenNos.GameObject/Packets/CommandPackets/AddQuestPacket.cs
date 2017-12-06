@@ -1,7 +1,7 @@
-﻿using OpenNos.Core;
-using OpenNos.Domain;
+﻿using NosSharp.Enums;
+using OpenNos.Core.Serializing;
 
-namespace OpenNos.GameObject.CommandPackets
+namespace OpenNos.GameObject.Packets.CommandPackets
 {
     [PacketHeader("$AddQuest", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class AddQuestPacket : PacketDefinition

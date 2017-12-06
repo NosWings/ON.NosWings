@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using System;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {

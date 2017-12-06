@@ -17,7 +17,6 @@ using OpenNos.Core.Handling;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.Master.Library.Client;
 using System;
@@ -25,6 +24,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
+using NosSharp.Enums;
+using OpenNos.Core.Extensions;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Packets.ClientPackets;
 
 namespace OpenNos.Handler
 {
@@ -104,6 +109,7 @@ namespace OpenNos.Handler
                     };
 
                     SaveResult insertResult = DaoFactory.CharacterDao.InsertOrUpdate(ref newCharacter);
+                    CharacterQuestDTO firstQuest = new CharacterQuestDTO { CharacterId = newCharacter.CharacterId, QuestId = 1997, IsMainQuest = true };
                     CharacterSkillDTO sk1 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 200};
                     CharacterSkillDTO sk2 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 201};
                     CharacterSkillDTO sk3 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 209};
@@ -136,6 +142,7 @@ namespace OpenNos.Handler
                         Slot = 3,
                         Pos = 1
                     };
+                    DaoFactory.CharacterQuestDao.InsertOrUpdate(firstQuest);
                     DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst1);
                     DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst2);
                     DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst3);
@@ -400,7 +407,12 @@ namespace OpenNos.Handler
                 Session.Character.LoadInventory();
                 Session.Character.LoadQuicklists();
                 Session.Character.GenerateMiniland();
-                DaoFactory.CharacterQuestDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(q => Session.Character.Quests.Add(new CharacterQuest(q)));
+                if (!DaoFactory.CharacterQuestDao.LoadByCharacterId(Session.Character.CharacterId).Any(s => s.IsMainQuest))
+                {
+                    CharacterQuestDTO firstQuest = new CharacterQuestDTO { CharacterId = Session.Character.CharacterId, QuestId = 1997, IsMainQuest = true };
+                    DaoFactory.CharacterQuestDao.InsertOrUpdate(firstQuest);
+                }
+                DaoFactory.CharacterQuestDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(q => Session.Character.Quests.Add(q as CharacterQuest));
                 DaoFactory.MateDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
                 {
                     Mate mate = (Mate)s;

@@ -13,9 +13,8 @@
  */
 
 using System.Collections.Generic;
-using OpenNos.Core;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Helpers
 {
     public class MappingHelper
     {

@@ -14,7 +14,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.EF.Entities
 {
     public class RollGeneratedItem
     {

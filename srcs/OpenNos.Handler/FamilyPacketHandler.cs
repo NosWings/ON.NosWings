@@ -16,18 +16,19 @@ using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NosSharp.Enums;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.Handler
 {

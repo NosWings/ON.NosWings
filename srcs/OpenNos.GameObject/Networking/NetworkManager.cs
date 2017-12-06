@@ -12,14 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
-using OpenNos.Core.Networking.Communication.Scs.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Core.Networking;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using OpenNos.Core.Networking.Communication.Scs.Server;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Networking
 {
     public class NetworkManager<TEncryptorT> : SessionManager
         where TEncryptorT : EncryptionBase
@@ -86,7 +87,7 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), client.ClientId);
                 client.Initialize(_fallbackEncryptor);
-                client.SendPacket($"fail {Language.Instance.GetMessageFromKey("CONNECTION_LOST")}");
+                client.SendPacket("failc 1");
                 client.Disconnect();
                 return null;
             }

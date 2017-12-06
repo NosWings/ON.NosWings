@@ -1,5 +1,6 @@
-﻿using OpenNos.Domain;
-using System;
+﻿using System;
+using NosSharp.Enums;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {

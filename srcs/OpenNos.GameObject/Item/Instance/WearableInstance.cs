@@ -15,12 +15,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Data;
-using OpenNos.Domain;
+using OpenNos.Data.Interfaces;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Networking;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Item.Instance
 {
     public class WearableInstance : ItemInstance, IWearableInstance
     {

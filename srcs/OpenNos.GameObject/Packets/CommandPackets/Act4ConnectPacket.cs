@@ -1,7 +1,7 @@
-﻿using OpenNos.Core;
-using OpenNos.Domain;
+﻿using NosSharp.Enums;
+using OpenNos.Core.Serializing;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Packets.CommandPackets
 {
     [PacketHeader("$Act4Connect", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class Act4ConnectPacket : PacketDefinition

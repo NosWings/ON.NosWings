@@ -18,8 +18,11 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
@@ -109,6 +112,19 @@ namespace OpenNos.DAL.EF
                 {
                     yield return _mapper.Map<BCardDTO>(card);
                 }
+            }
+        }
+
+        public void Clean()
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                DbSet<BCard> dbSet = context.BCard;
+                foreach (BCard entity in dbSet)
+                {
+                    dbSet.Remove(entity);
+                }
+                context.SaveChanges();
             }
         }
 

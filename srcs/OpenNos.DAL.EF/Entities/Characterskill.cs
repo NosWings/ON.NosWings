@@ -12,7 +12,9 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.DAL.EF
+using OpenNos.DAL.EF.Entities.Base;
+
+namespace OpenNos.DAL.EF.Entities
 {
     public class CharacterSkill : SynchronizableBaseEntity
     {

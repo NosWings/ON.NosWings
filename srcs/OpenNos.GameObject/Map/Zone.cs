@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
+using OpenNos.GameObject.Event;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Map
 {
     public class ZoneEvent
     {

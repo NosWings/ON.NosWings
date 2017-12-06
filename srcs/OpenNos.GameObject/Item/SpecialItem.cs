@@ -12,20 +12,24 @@
  * GNU General Public License for more details.
  */
 
-using CloneExtensions;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.Domain;
-using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using CloneExtensions;
+using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.DAL;
+using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
-using System.Reactive.Linq;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Item
 {
     public class SpecialItem : Item
     {
@@ -304,13 +308,12 @@ namespace OpenNos.GameObject
 
                 //speed booster
                 case 998:
-                    if (!session.Character.IsVehicled || session.Character.IsOnBoost)
+                    if (!session.Character.IsVehicled || session.Character.Buff.Any(s => s.Card.CardId == 336))
                     {
                         return;
                     }
-                    session.Character.IsOnBoost = true;
                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(885), session.Character.MapX, session.Character.MapY);
-                    session.Character.AddBuff(new Buff(336));
+                    session.Character.AddBuff(new Buff.Buff(336));
                     session.Character.Speed += 5;
                     switch (session.Character.Morph)
                     {
@@ -327,7 +330,6 @@ namespace OpenNos.GameObject
                     Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(o =>
                     {
                         session.Character.Speed -= 5;
-                        session.Character.IsOnBoost = false;
                         switch (session.Character.Morph)
                         {
                             case 2526: // White male unicorn
@@ -767,6 +769,7 @@ namespace OpenNos.GameObject
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;
             }
+            session.Character.IncrementQuests(QuestType.Use, inv.ItemVNum);
         }
 
 

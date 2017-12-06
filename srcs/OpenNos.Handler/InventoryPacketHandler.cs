@@ -14,7 +14,6 @@
 
 using OpenNos.Core;
 using OpenNos.Core.Handling;
-using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ClientPackets;
@@ -25,8 +24,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using NosSharp.Enums;
+using OpenNos.Core.Extensions;
 using OpenNos.Data;
-using static OpenNos.Domain.BCardType;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using static NosSharp.Enums.BCardType;
 
 namespace OpenNos.Handler
 {
@@ -600,6 +604,9 @@ namespace OpenNos.Handler
 
                     // initialize and rarify
                     item.Rarify(null);
+                    Session.Character.IncrementQuests(QuestType.Collect1, mapItem.ItemVNum);
+                    Session.Character.IncrementQuests(QuestType.Collect2, mapItem.ItemVNum);
+                    Session.Character.IncrementQuests(QuestType.Collect4, mapItem.ItemVNum);
                 }
 
                 if (mapItem.ItemVNum != 1046)
@@ -620,34 +627,18 @@ namespace OpenNos.Handler
                         //Flower Quest
                         if (mapItem.ItemVNum == 1086 && ServerManager.Instance.FlowerQuestId != null)
                         {
-                            Session.Character.AddQuest((long) ServerManager.Instance.FlowerQuestId);
+                            Session.Character.AddQuest((long) ServerManager.Instance.FlowerQuestId, false);
                         }
                         Session.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
+                        
                     }
                     else
                     {
                         lock (Session.Character.Inventory)
                         {
                             byte amount = mapItem.Amount;
-                            if (mapItemInstance is WearableInstance wear)
-                            {
-                                // Jugez pas, j'ai vraiment la flemme
-                                switch (wear.ItemVNum)
-                                {
-                                    case 4902:
-                                    case 4905:
-                                    case 4908:
-                                    case 4911:
-                                    case 4914:
-                                    case 4917:
-                                    case 4920:
-                                    case 4923:
-                                    case 4926:
-                                        wear.Upgrade = 10;
-                                        break;
-                                }
-                            }
+                            
                             ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
                             if (inv != null)
                             {

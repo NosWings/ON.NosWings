@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Serializing
 {
     public class PacketIndexAttribute : Attribute
     {

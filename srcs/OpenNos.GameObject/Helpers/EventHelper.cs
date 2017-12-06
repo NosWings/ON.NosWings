@@ -13,7 +13,6 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Domain;
 using OpenNos.GameObject.Event;
 using OpenNos.PathFinder;
 using System;
@@ -22,6 +21,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using NosSharp.Enums;
+using OpenNos.Core.Extensions;
+using OpenNos.GameObject.Event.ACT4;
+using OpenNos.GameObject.Event.ICEBREAKER;
+using OpenNos.GameObject.Event.INSTANTBATTLE;
+using OpenNos.GameObject.Event.LOD;
+using OpenNos.GameObject.Event.MINILANDREFRESH;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.Master.Library.Data;
+using OpenNos.PathFinder.PathFinder;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -376,6 +386,7 @@ namespace OpenNos.GameObject.Helpers
                                                 cli.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                             }
                                         }
+                                        sess.Character.IncrementQuests(QuestType.WinRaid, grp.Raid?.Id ?? -1);
                                     }
 
                                     Observable.Timer(TimeSpan.FromSeconds(15)).Subscribe(s =>

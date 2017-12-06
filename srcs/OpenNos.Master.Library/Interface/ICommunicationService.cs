@@ -1,10 +1,8 @@
 ﻿using Hik.Communication.ScsServices.Service;
 using OpenNos.Master.Library.Data;
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using NosSharp.Enums;
 using OpenNos.Data;
-using OpenNos.Domain;
 
 namespace OpenNos.Master.Library.Interface
 {
@@ -180,8 +178,6 @@ namespace OpenNos.Master.Library.Interface
 
         bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId);
 
-        int[] GlacernonStats(sbyte type, short points);
-
         SerializableWorldServer GetPreviousChannelByAccountId(long accountId);
 
         SerializableWorldServer GetAct4ChannelInfo(string worldGroup);
@@ -191,5 +187,9 @@ namespace OpenNos.Master.Library.Interface
         void SendMail(string worldGroup, MailDTO mail);
 
         bool ChangeAuthority(string worldGroup, string characterName, AuthorityType authority);
+
+        void SaveAct4(Act4Stat angelStats, Act4Stat demonStats);
+
+        Act4Stat[] RestoreAct4();
     }
 }

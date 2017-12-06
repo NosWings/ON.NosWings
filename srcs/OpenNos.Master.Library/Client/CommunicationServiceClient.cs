@@ -6,12 +6,9 @@ using OpenNos.DAL;
 using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
+using NosSharp.Enums;
 using OpenNos.Data;
-using OpenNos.Domain;
 
 namespace OpenNos.Master.Library.Client
 {
@@ -46,7 +43,7 @@ namespace OpenNos.Master.Library.Client
                 }
             }
         }
-        
+
         #endregion
 
         #region Events
@@ -73,7 +70,6 @@ namespace OpenNos.Master.Library.Client
 
         public event EventHandler ShutdownEvent;
 
-
         #endregion
 
         #region Properties
@@ -82,16 +78,22 @@ namespace OpenNos.Master.Library.Client
 
         public CommunicationStates CommunicationState
         {
-            get
-            {
-                return _client.CommunicationState;
-            }
+            get { return _client.CommunicationState; }
         }
-
 
         #endregion
 
         #region Methods
+
+        public void SaveAct4(Act4Stat angelStats, Act4Stat demonStats)
+        {
+            _client.ServiceProxy.SaveAct4(angelStats, demonStats);
+        }
+
+        public Act4Stat[] RestoreAct4()
+        {
+            return _client.ServiceProxy.RestoreAct4();
+        }
 
         public bool Authenticate(string authKey)
         {
@@ -167,7 +169,7 @@ namespace OpenNos.Master.Library.Client
         {
             _client.ServiceProxy.RegisterAccountLogin(accountId, sessionId, accountName);
         }
-        
+
         public bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId)
         {
             return _client.ServiceProxy.ConnectAccountInternal(worldId, accountId, sessionId);
@@ -192,7 +194,7 @@ namespace OpenNos.Master.Library.Client
         {
             return _client.ServiceProxy.RetrieveServerStatistics();
         }
-        
+
         public SerializableWorldServer GetPreviousChannelByAccountId(long accountId)
         {
             return _client.ServiceProxy.GetPreviousChannelByAccountId(accountId);
@@ -201,11 +203,6 @@ namespace OpenNos.Master.Library.Client
         public SerializableWorldServer GetAct4ChannelInfo(string worldGroup)
         {
             return _client.ServiceProxy.GetAct4ChannelInfo(worldGroup);
-        }
-
-        public int[] GlacernonStats(sbyte type, short points)
-        {
-            return _client.ServiceProxy.GlacernonStats(type, points);
         }
 
         public bool IsCrossServerLoginPermitted(long accountId, int sessionId)
@@ -307,7 +304,6 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.SendMail(worldGroup, mail);
         }
 
-    
         #endregion
     }
 }

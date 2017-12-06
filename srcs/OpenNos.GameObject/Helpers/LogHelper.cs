@@ -1,8 +1,9 @@
 ﻿using System;
+using NosSharp.Enums;
 using OpenNos.Core;
+using OpenNos.Core.Serializing;
 using OpenNos.Data;
 using OpenNos.DAL;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {

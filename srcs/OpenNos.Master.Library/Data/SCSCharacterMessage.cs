@@ -1,5 +1,5 @@
-﻿using OpenNos.Domain;
-using System;
+﻿using System;
+using NosSharp.Enums;
 
 namespace OpenNos.Master.Library.Data
 {

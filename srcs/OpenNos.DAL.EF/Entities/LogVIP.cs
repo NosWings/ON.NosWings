@@ -14,9 +14,8 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using OpenNos.Domain;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.EF.Entities
 {
     public class LogVip
     {

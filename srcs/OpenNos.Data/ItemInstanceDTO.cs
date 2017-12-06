@@ -12,8 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System;
+using NosSharp.Enums;
+using OpenNos.Data.Base;
+using OpenNos.Data.Interfaces;
 
 namespace OpenNos.Data
 {

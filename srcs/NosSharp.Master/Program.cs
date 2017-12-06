@@ -12,33 +12,35 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.Configuration;
+using System.Globalization;
+using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Service;
 using log4net;
 using Microsoft.Owin.Hosting;
 using OpenNos.Core;
+using OpenNos.Core.Extensions;
+using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
-using OpenNos.Data;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Npc;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Interface;
-using System;
-using System.Configuration;
-using System.Diagnostics;
-using System.Globalization;
-using System.Reactive.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace OpenNos.Master.Server
+namespace NosSharp.Master
 {
     internal class Program
     {
         #region Members
 
-        private static ManualResetEvent run = new ManualResetEvent(true);
+        private static ManualResetEvent _run = new ManualResetEvent(true);
 
         #endregion
 
@@ -53,7 +55,7 @@ namespace OpenNos.Master.Server
                 // initialize Logger
                 Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
                 
-                Console.Title = @"[Nos#] Master Server";
+                Console.Title = @"N# - Master Server";
                 string ipAddress = ConfigurationManager.AppSettings["MasterIP"];
                 int port = Convert.ToInt32(ConfigurationManager.AppSettings["MasterPort"]);
 
@@ -82,7 +84,7 @@ namespace OpenNos.Master.Server
                     // AUTO SESSION KICK
                     Observable.Interval(TimeSpan.FromMinutes(3)).Subscribe(x =>
                     {
-                        Parallel.ForEach(MSManager.Instance.ConnectedAccounts.Where(s => s.LastPulse.AddMinutes(3) <= DateTime.Now), connection =>
+                        Parallel.ForEach(MsManager.Instance.ConnectedAccounts.Where(s => s.LastPulse.AddMinutes(3) <= DateTime.Now), connection =>
                         {
                             CommunicationServiceClient.Instance.KickSession(connection.AccountId, null);
                         });
@@ -90,7 +92,7 @@ namespace OpenNos.Master.Server
 
                     CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
-                    Console.Title = $"[Nos#] Master - Players : {MSManager.Instance.ConnectedAccounts.Count}";
+                    Console.Title = $"[Nos#] Master - Players : {MsManager.Instance.ConnectedAccounts.Count}";
                 }
                 catch (Exception ex)
                 {

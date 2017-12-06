@@ -15,12 +15,10 @@
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
-using OpenNos.PathFinder;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -28,7 +26,18 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
-using static OpenNos.Domain.BCardType;
+using NosSharp.Enums;
+using OpenNos.Core.Extensions;
+using OpenNos.GameObject.Buff;
+using OpenNos.GameObject.Item.Instance;
+using static NosSharp.Enums.BCardType;
+using OpenNos.GameObject.Logs.Classes;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
+using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.PathFinder.PathFinder;
+using OpenNos.GameObject.Event;
 
 namespace OpenNos.GameObject
 {
@@ -57,16 +66,27 @@ namespace OpenNos.GameObject
             SkillBcards = new ConcurrentBag<BCard>();
             PassiveSkillBcards = new ConcurrentBag<BCard>();
             ObservableBag = new Dictionary<short, IDisposable>();
-            Quests = new List<CharacterQuest>();
+            Quests = new ConcurrentBag<CharacterQuest>();
+            /*CharacterLog = new CharacterLog
+            {
+                AccountName = Session.Account.Name,
+                AccountId = AccountId,
+                CharacterId = CharacterId,
+                CharacterName = Name
+            };*/
         }
 
         #endregion
 
         #region Properties
 
+        public CharacterLog CharacterLog { get; }
+
         public Dictionary<short, IDisposable> ObservableBag { get; set; }
 
         public DateTime LastSkillCombo { get; set; }
+
+        public DateTime LastQuest { get; set; }
 
         public ConcurrentBag<BCard> EquipmentBCards { get; set; }
 
@@ -76,7 +96,7 @@ namespace OpenNos.GameObject
 
         public Node[,] BrushFire { get; set; }
 
-        public ConcurrentBag<Buff> Buff { get; internal set; }
+        public ConcurrentBag<Buff.Buff> Buff { get; internal set; }
 
         private ConcurrentBag<BCard> SkillBcards { get; }
 
@@ -185,8 +205,6 @@ namespace OpenNos.GameObject
 
         public bool IsDead { get; set; }
 
-        public bool IsOnBoost { set; get; }
-
         /// <summary>
         /// Defines if the Character Is currently sending or getting items thru exchange.
         /// </summary>
@@ -233,6 +251,8 @@ namespace OpenNos.GameObject
         public int LastPulse { get; set; }
 
         public DateTime LastPvpRevive { get; set; }
+
+        public DateTime LastQuestSummon { get; set; }
 
         public DateTime LastSkillUse { get; set; }
 
@@ -289,7 +309,7 @@ namespace OpenNos.GameObject
 
         public int TotalTime { get; set; }
 
-        public List<CharacterQuest> Quests { get; set; }
+        public ConcurrentBag<CharacterQuest> Quests { get; set; }
 
         public List<QuicklistEntryDTO> QuicklistEntries { get; private set; }
 
@@ -443,18 +463,35 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void AddQuest(long questId)
+
+        public string GeneratePetskill(int VNum = -1)
+        {
+            return $"petski {VNum}";
+        }
+
+        public void AddQuest(long questId, bool isMain = false)
         {
             CharacterQuest characterQuest = new CharacterQuest(questId, CharacterId);
-            if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || Quests.Count >= 5)
+            if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || (isMain & Quests.Any(q => q.IsMainQuest)) || (Quests.Where(q => q.Quest.QuestType != (byte) QuestType.WinRaid).ToList().Count >= 5 && characterQuest.Quest.QuestType != (byte) QuestType.WinRaid && !isMain))
             {
                 return;
             }
+            if (characterQuest.Quest.LevelMin > Level)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_LOW_LVL"), 0));
+                return;
+            }
+            // Remove Lvl max system because the max lvl on every main quest is 99 and the max lvl on the serv is 150.
+            /*if (characterQuest.Quest.LevelMax < Level)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_HIGH_LVL"), 0));
+                return;
+            }*/
             if (characterQuest.Quest.IsDaily)
             {
                 if(GeneralLogs.Any(s => s.LogType == "DailyQuest" && s.LogData == characterQuest.QuestId.ToString() && s.Timestamp.Date == DateTime.Today))
                 {
-                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("QUEST_ALREADY_DONE"), 12));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("QUEST_ALREADY_DONE"), 0));
                     return;
                 }
                 GeneralLogs.Add(new GeneralLogDTO
@@ -467,136 +504,163 @@ namespace OpenNos.GameObject
                     Timestamp = DateTime.Now
                 });
             }
-            if (characterQuest.Quest.TargetMap == MapInstance.Map.MapId)
+            if (characterQuest.Quest.QuestType == (int)QuestType.TimesSpace && ServerManager.Instance.TimeSpaces.All(t => t.LevelMinimum != characterQuest.Quest.FirstData) || characterQuest.Quest.QuestType == (int)QuestType.Product || characterQuest.Quest.QuestType == (int)QuestType.Collect3
+                || characterQuest.Quest.QuestType == (int)QuestType.TransmitGold || characterQuest.Quest.QuestType == (int)QuestType.TsPoint || characterQuest.Quest.QuestType == (int)QuestType.NumberOfKill
+                || characterQuest.Quest.QuestType == (int)QuestType.TargetReput || characterQuest.Quest.QuestType == (int)QuestType.Inspect || characterQuest.Quest.QuestType == (int)QuestType.Needed
+                || characterQuest.Quest.QuestType == (int)QuestType.Collect5)
+            {
+                AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId, isMain);
+                return;
+            }
+            if (characterQuest.Quest.TargetMap != null)
             {
                 Session.SendPacket(characterQuest.Quest.TargetPacket());
             }
+            characterQuest.IsMainQuest = isMain;
             Quests.Add(characterQuest);
-            Session.SendPacket(GenerateQuestsPacket());
+            Session.SendPacket(GenerateQuestsPacket(questId));
         }
 
-        public void RemoveQuest(long questId)
+        public void RemoveQuest(long questId, bool IsGivingUp = false)
         {
             CharacterQuest questToRemove = Quests.FirstOrDefault(q => q.QuestId == questId);
-            if (questToRemove != null)
-            {
-                if (questToRemove.Quest.TargetMap == MapInstance.Map.MapId)
-                {
-                    Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
-                }
-                Quests.Remove(questToRemove);
-                Session.SendPacket(GenerateQuestsPacket());
-                if (questToRemove.Quest.EndDialogId != null)
-                {
-                    Session.SendPacket(GenerateNpcDialog((int)questToRemove.Quest.EndDialogId));
-                }
-                if (questToRemove.Quest.NextQuestId == null)
-                {
-                    return;
-                }
-                AddQuest((long) questToRemove.Quest.NextQuestId);
-            }
-        }
-
-        public string GenerateQuestsPacket()
-        {
-            short i = 0;
-            Quests.ForEach(qst => qst.QuestNumber = i++);
-            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.Quest.ThirdObjective ?? 0}.{quest.ThirdObjective}.0.0.0.0.0")}";
-        }
-
-        public void IncrementQuestObjective(CharacterQuest quest, byte data = 0)
-        {
-            bool isFinish = false;
-            if (quest == null || Quests.All(q => q != quest))
+            if (questToRemove == null)
             {
                 return;
             }
-            switch ((QuestType) quest.Quest.QuestType)
+            if (questToRemove.Quest.TargetMap != null)
             {
-                case QuestType.Brings:
+                Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
+            }
+            Quests = Quests.Where(q => q.QuestId != questId);
+            Session.SendPacket(GenerateQuestsPacket());
+            if (IsGivingUp)
+            {
+                return;
+            }
+            if (questToRemove.Quest.EndDialogId != null)
+            {
+                Session.SendPacket(GenerateNpcDialog((int)questToRemove.Quest.EndDialogId));
+            }
+            if (questToRemove.Quest.NextQuestId != null)
+            {
+                AddQuest((long)questToRemove.Quest.NextQuestId, questToRemove.IsMainQuest);
+            }
+        }
+
+        public string GenerateQuestsPacket(long newQuestId = -1)
+        {
+            short a = 0;
+            short b = 6;
+            Quests.ToList().ForEach(qst =>
+            {
+                qst.QuestNumber = qst.IsMainQuest
+                    ? (short) 5
+                    : (qst.Quest.QuestType == (byte) QuestType.WinRaid ? b++ : a++);
+            });
+            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.{quest.FourthObjective}.{quest.Quest.FourthObjective ?? 0}.{quest.FifthObjective}.{quest.Quest.FifthObjective ?? 0}.{(quest.QuestId == newQuestId ? 1 : 0)}")}";
+        }
+
+        public void IncrementQuests(QuestType type, int firstData = 0, int secondData = 0, int thirdData = 0)
+        {
+            foreach (CharacterQuest quest in Quests.Where(q => q?.Quest?.QuestType == (int)type))
+            {
+                switch ((QuestType)quest.Quest.QuestType)
+                {
+                    case QuestType.Capture1:
+                    case QuestType.Capture2:
+                    case QuestType.WinRaid:
+                    case QuestType.Collect1:
+                    case QuestType.Collect2:
+                    case QuestType.Collect3:
+                    case QuestType.Collect4:
+                    case QuestType.Hunt:
+                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => IncrementObjective(quest, d.Key));
+                        break;
+
+                    case QuestType.Product:
+                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => IncrementObjective(quest, d.Key, secondData));
+                        break;
+
+                    case QuestType.Dialog1:
+                    case QuestType.Dialog2:
+                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => IncrementObjective(quest, d.Key, isOver:true));
+                        break;
+
+                    case QuestType.Wear:
+                        if (quest.Quest.FirstSpecialData == firstData && (Session.Character.Inventory.Any(i => i.Value.ItemVNum == quest.Quest.FirstData && i.Value.Type == InventoryType.Wear) || (quest.QuestId == 1541 || quest.QuestId == 1546) && Class != ClassType.Adventurer))
+                        {
+                            IncrementObjective(quest, isOver: true);
+                        }
+                        break;
+
+                    case QuestType.Brings:
+                    case QuestType.Required:
+                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => {
+                            if (Inventory.CountItem(d.Value[1]) >= d.Value[2])
+                            {
+                                Inventory.RemoveItemAmount(d.Value[1], d.Value[2]);
+                                IncrementObjective(quest, d.Key, d.Value[2]);
+                            }
+                        });
+                        break;
+
+                    case QuestType.GoTo:
+                        if (quest.Quest.TargetMap == firstData && Math.Abs(secondData - quest.Quest.TargetX ?? 0) < 3 && Math.Abs(thirdData - quest.Quest.TargetY ?? 0) < 3)
+                        {
+                            IncrementObjective(quest, isOver: true);
+                        }
+                        break;
+
+                    case QuestType.Use:
+                        quest.Data.Where(d => d.Value[0] == firstData && Mates.Any(m => m.NpcMonsterVNum == d.Value[1] && m.IsTeamMember)).ToList().ForEach(d => IncrementObjective(quest, d.Key, d.Value[2]));
+                        break;
+
+                    case QuestType.FlowerQuest:
+                        if (firstData + 10 < Level)
+                        {
+                            continue;
+                        }
+                        IncrementObjective(quest, 1);
+                        break;
+
+                    //TODO : Later 
+                    case QuestType.TsPoint:
+                    case QuestType.TimesSpace:
+                    case QuestType.NumberOfKill:
+                    case QuestType.Inspect:
+                    case QuestType.Needed:
+                    case QuestType.TargetReput:
+                    case QuestType.TransmitGold:
+                    case QuestType.Collect5:
+                        break;
+                }
+            }
+        }
+
+        private void IncrementObjective(CharacterQuest quest, byte objective = 0, int amount = 1, bool isOver = false)
+        {
+            bool isFinish = isOver;
+            switch (objective)
+            {
+                case 1:
+                    quest.FirstObjective += quest.FirstObjective >= quest.Quest.FirstObjective ? 0 : amount;
                     break;
 
-                case QuestType.Capture1:
-                case QuestType.Capture2:
-                    quest.FirstObjective++;
+                case 2:
+                    quest.SecondObjective += quest.SecondObjective >= quest.Quest.SecondObjective ? 0 : amount;
                     break;
 
-                case QuestType.Collect1:
-                case QuestType.Collect2:
-                case QuestType.Collect3:
-                case QuestType.Collect4:
-                case QuestType.Collect5:
+                case 3:
+                    quest.ThirdObjective += quest.ThirdObjective >= quest.Quest.ThirdObjective ? 0 : amount;
                     break;
 
-                case QuestType.Dialog1:
-                case QuestType.Dialog2:
-                    isFinish = true;
+                case 4:
+                    quest.FourthObjective += quest.FourthObjective >= quest.Quest.FourthObjective ? 0 : amount;
                     break;
 
-                case QuestType.FlowerQuest:
-                    quest.FirstObjective++;
-                    break;
-
-                case QuestType.GoTo:
-                    if (quest.Quest.FirstData == MapInstance.Map.MapId && quest.Quest.SecondData == PositionX && quest.Quest.ThirdData == PositionY)
-                    {
-                        isFinish = true;
-                    }
-                    break;
-
-                case QuestType.Hunt:
-                    switch (data)
-                    {
-                        case 1:
-                            quest.FirstObjective++;
-                            break;
-
-                        case 2:
-                            quest.SecondObjective++;
-                            break;
-
-                        case 3:
-                            quest.ThirdObjective++;
-                            break;
-                    }
-                    break;
-
-                case QuestType.Inspect:
-                    break;
-
-                case QuestType.Make:
-                    break;
-
-                case QuestType.Needed:
-                    break;
-
-                case QuestType.NumberOfKill:
-                    break;
-
-                case QuestType.TsPoint:
-                    break;
-
-                case QuestType.TargetReput:
-                    break;
-
-                case QuestType.TimesSpace:
-                    isFinish = true;
-                    break;
-
-                case QuestType.TransmitGold:
-                    break;
-
-                case QuestType.Use:
-                    break;
-
-                case QuestType.WinRaid:
-                    break;
-
-                case QuestType.YouNeed:
-                    break;
-
-                case QuestType.Wear:
+                case 5:
+                    quest.FifthObjective += quest.FifthObjective >= quest.Quest.FifthObjective ? 0 : amount;
                     break;
             }
 
@@ -605,18 +669,20 @@ namespace OpenNos.GameObject
                 isFinish = true;
             }
 
-            Session.SendPacket($"qsti {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.0.0.0.0.0");
+            Session.SendPacket($"qsti {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.{quest.FourthObjective}.{quest.Quest.FourthObjective ?? 0}.{quest.FifthObjective}.{quest.Quest.FifthObjective ?? 0}.0");
 
-            if (isFinish)
+            if (!isFinish)
             {
-                if (CustomQuestRewards((QuestType) quest.Quest.QuestType))
-                {
-                    RemoveQuest(quest.QuestId);
-                    return;
-                }
-                Session.SendPacket(quest.Quest.GetRewardPacket(this));
-                RemoveQuest(quest.QuestId);
+                return;
             }
+            LastQuest = DateTime.Now;
+            if (CustomQuestRewards((QuestType)quest.Quest.QuestType))
+            {
+                RemoveQuest(quest.QuestId);
+                return;
+            }
+            Session.SendPacket(quest.Quest.GetRewardPacket(this));
+            RemoveQuest(quest.QuestId);
         }
 
         public bool CustomQuestRewards(QuestType type)
@@ -626,11 +692,11 @@ namespace OpenNos.GameObject
                 case QuestType.FlowerQuest:
                     if (ServerManager.Instance.RandomNumber() < 50)
                     {
-                        AddBuff(new Buff(378, Level));
+                        AddBuff(new Buff.Buff(378, Level));
                     }
                     else
                     {
-                        AddBuff(new Buff(379, Level));
+                        AddBuff(new Buff.Buff(379, Level));
                     }
                     return true;
 
@@ -783,6 +849,20 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void CheckHuntQuest()
+        {
+            CharacterQuest quest = Quests.FirstOrDefault(q => q.Quest?.QuestType == (int)QuestType.Hunt && q.Quest?.TargetMap == MapInstance.Map.MapId && Math.Abs(PositionX - q.Quest?.TargetX ?? 0) < 2 && Math.Abs(PositionY - q.Quest?.TargetY ?? 0) < 2);
+            if (quest == null)
+            {
+                return;
+            }
+            ConcurrentBag<MonsterToSummon> monsters = new ConcurrentBag<MonsterToSummon>();
+            for (int a = 0; a < quest.Quest.FirstObjective / 2 + 1; a++)
+            {
+                monsters.Add(new MonsterToSummon((short)quest.Quest.FirstData, new MapCell { X = (short) (PositionX + ServerManager.Instance.RandomNumber(-2,3)), Y = (short)(PositionY + ServerManager.Instance.RandomNumber(-2, 3)) }, this, true));
+            }
+            EventHelper.Instance.RunEvent(new EventContainer(MapInstance, EventActionType.SPAWNMONSTERS, monsters.AsEnumerable()));
+        }
         public void UpdateBushFire()
         {
             Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
@@ -824,6 +904,53 @@ namespace OpenNos.GameObject
             }
             else
             {
+                // HEAL
+                if (LastHealth.AddSeconds(2) <= DateTime.Now)
+                {
+                    int heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreHP)[0];
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
+                    if (Hp + heal < HpLoad())
+                    {
+                        Hp += heal;
+                        change = true;
+                    }
+                    else
+                    {
+                        if (Hp != (int)HpLoad())
+                        {
+                            change = true;
+                        }
+                        Hp = (int)HpLoad();
+                    }
+                    if (change)
+                    {
+                        Session.SendPacket(GenerateStat());
+                    }
+                }
+
+                // DEBUFF HP LOSS
+                if (LastHealth.AddSeconds(2) <= DateTime.Now)
+                {
+                    int debuff = (int)(GetBuff(CardType.RecoveryAndDamagePercent, (byte)AdditionalTypes.RecoveryAndDamagePercent.HPReduced)[0] * (HpLoad() / 100));
+                    if (Hp - debuff > 1)
+                    {
+                        Hp -= debuff;
+                        change = true;
+                    }
+                    else
+                    {
+                        if (Hp != 1)
+                        {
+                            change = true;
+                        }
+                        Hp = 1;
+                    }
+                    if (change)
+                    {
+                        Session.SendPacket(GenerateStat());
+                    }
+                }
+
                 if (CurrentMinigame != 0 && LastEffect.AddSeconds(3) <= DateTime.Now)
                 {
                     Session.CurrentMapInstance?.Broadcast(GenerateEff(CurrentMinigame));
@@ -885,84 +1012,36 @@ namespace OpenNos.GameObject
                     switch (SpInstance?.Design)
                     {
                         case 6:
-                            AddBuff(new Buff(387), false);
+                            AddBuff(new Buff.Buff(387), false);
                             break;
                         case 7:
-                            AddBuff(new Buff(395), false);
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(395), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 8:
-                            AddBuff(new Buff(396), false);
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(396), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 9:
-                            AddBuff(new Buff(397), false);
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(397), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 10:
-                            AddBuff(new Buff(398), false);
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(398), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 11:
-                            AddBuff(new Buff(410), false);
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(410), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 12:
-                            AddBuff(new Buff(411), false);
+                            AddBuff(new Buff.Buff(411), false);
                             break;
                         case 13:
-                            AddBuff(new Buff(444), false);
+                            AddBuff(new Buff.Buff(444), false);
                             break;
                     }
                 }
-
-                // HEAL
-                if (LastHealth.AddSeconds(2) <= DateTime.Now)
-                {
-                    int heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreHP)[0];
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
-                    if (Hp + heal < HpLoad())
-                    {
-                        Hp += heal;
-                        change = true;
-                    }
-                    else
-                    {
-                        if (Hp != (int)HpLoad())
-                        {
-                            change = true;
-                        }
-                        Hp = (int)HpLoad();
-                    }
-                    if (change)
-                    {
-                        Session.SendPacket(GenerateStat());
-                    }
-                }
-
-                // DEBUFF HP LOSS
-                if (LastHealth.AddSeconds(2) <= DateTime.Now)
-                {
-                    int debuff = (int)(GetBuff(CardType.RecoveryAndDamagePercent, (byte)AdditionalTypes.RecoveryAndDamagePercent.HPReduced)[0] * (HpLoad() / 100));
-                    if (Hp - debuff > 1)
-                    {
-                        Hp -= debuff;
-                        change = true;
-                    }
-                    else
-                    {
-                        if (Hp != 1)
-                        {
-                            change = true;
-                        }
-                        Hp = 1;
-                    }
-                    if (change)
-                    {
-                        Session.SendPacket(GenerateStat());
-                    }
-                }
-
 
                 if (LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
                 {
@@ -1021,6 +1100,12 @@ namespace OpenNos.GameObject
                             */
                             Session.SendPacket(GenerateStat());
                         }
+
+                        if (Session.Character.LastQuestSummon.AddSeconds(7) < DateTime.Now)
+                        {
+                            Session.Character.CheckHuntQuest();
+                            Session.Character.LastQuestSummon = DateTime.Now;
+                        }
                     }
                 }
 
@@ -1029,7 +1114,7 @@ namespace OpenNos.GameObject
                     if (MeditationDictionary.ContainsKey(534) && MeditationDictionary[534] < DateTime.Now)
                     {
                         Session.SendPacket(GenerateEff(4344));
-                        AddBuff(new Buff(534, Level));
+                        AddBuff(new Buff.Buff(534, Level));
                         RemoveBuff(533);
                         RemoveBuff(532);
                         MeditationDictionary.Remove(534);
@@ -1037,7 +1122,7 @@ namespace OpenNos.GameObject
                     else if (MeditationDictionary.ContainsKey(533) && MeditationDictionary[533] < DateTime.Now)
                     {
                         Session.SendPacket(GenerateEff(4343));
-                        AddBuff(new Buff(533, Level));
+                        AddBuff(new Buff.Buff(533, Level));
                         RemoveBuff(532);
                         RemoveBuff(534);
                         MeditationDictionary.Remove(533);
@@ -1045,7 +1130,7 @@ namespace OpenNos.GameObject
                     else if (MeditationDictionary.ContainsKey(532) && MeditationDictionary[532] < DateTime.Now)
                     {
                         Session.SendPacket(GenerateEff(4343));
-                        AddBuff(new Buff(532, Level));
+                        AddBuff(new Buff.Buff(532, Level));
                         RemoveBuff(534);
                         RemoveBuff(533);
                         MeditationDictionary.Remove(532);
@@ -1841,7 +1926,7 @@ namespace OpenNos.GameObject
 
             if (skill.Type == 1)
             {
-                if (Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) < 4)
+                if (Map.Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) < 4)
                 {
                     baseDamage = (int)(baseDamage * 0.85);
                 }
@@ -2130,7 +2215,7 @@ namespace OpenNos.GameObject
                 {
                     continue;
                 }
-                int distance = Map.GetDistance(new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }, new MapCell { X = session.Character.PositionX, Y = session.Character.PositionY });
+                int distance = Map.Map.GetDistance(new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }, new MapCell { X = session.Character.PositionX, Y = session.Character.PositionY });
                 if (distance >= nearestDistance)
                 {
                     continue;
@@ -2572,36 +2657,36 @@ namespace OpenNos.GameObject
                 {
                     group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long) dropOwner) && g.GroupType == GroupType.Group);
                 }
+                IncrementQuests(QuestType.Hunt, monsterToAttack.MonsterVNum);
 
                 // end owner set
-                if (!Session.HasCurrentMapInstance)
+                if (!Session.HasCurrentMapInstance || monsterToAttack.Monster.MonsterType == MonsterType.Special)
                 {
                     return;
                 }
 
                 List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMapInstance.Map.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || s.MapTypeId == null).ToList();
-                if (monsterToAttack.Monster.MonsterType == MonsterType.Special)
-                {
-                    return;
-                }
 
                 #region Quest
 
-                if (monsterToAttack.Monster.Level + 10 > Level && Quests.Any(q => q.Quest.QuestType == (byte) QuestType.FlowerQuest))
+                Quests.Where(q => (q.Quest?.QuestType == (int)QuestType.Collect4 || q.Quest?.QuestType == (int)QuestType.Collect2)).ToList().ForEach(qst =>
                 {
-                    IncrementQuestObjective(Quests.FirstOrDefault(q => q.Quest.QuestType == (byte) QuestType.FlowerQuest));
-                }
-
-                foreach (CharacterQuest qst in Quests.Where(q => q.Quest.QuestType == (int) QuestType.Hunt).ToList())
-                {
-                    byte data = (byte) (qst.Quest.FirstData == monsterToAttack.MonsterVNum ? 1 :
-                                       (qst.Quest.SecondData == monsterToAttack.MonsterVNum ? 2 :
-                                       (qst.Quest.ThirdData == monsterToAttack.MonsterVNum ? 3 : 0)));
-                    if (data != 0)
+                    qst.Data.ToList().ForEach(d =>
                     {
-                        IncrementQuestObjective(qst, data);
-                    }
-                }
+                        if (d.Value[1] == monsterToAttack.MonsterVNum)
+                        {
+                            droplist.Add(new DropDTO()
+                            {
+                                ItemVNum = (short)d.Value[0],
+                                Amount = 1,
+                                MonsterVNum = monsterToAttack.MonsterVNum,
+                                DropChance = qst.Quest.SpecialData ?? 100 * ServerManager.Instance.DropRate
+                            });
+                        }
+                    });
+                });
+
+                IncrementQuests(QuestType.FlowerQuest, monsterToAttack.Monster.Level);
 
                 #endregion
 
@@ -2755,7 +2840,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.HasCurrentMapInstance)
                             {
-                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY, Quests.Any(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Data.Any(d => d.Value[0] == drop.ItemVNum)));
                             }
                         });
                     }
@@ -3468,7 +3553,7 @@ namespace OpenNos.GameObject
 
             if (skill.Type == 1)
             {
-                if (Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = target.PositionX, Y = target.PositionY }) < 4)
+                if (Map.Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = target.PositionX, Y = target.PositionY }) < 4)
                 {
                     baseDamage = (int)(baseDamage * 0.85);
                 }
@@ -3741,7 +3826,7 @@ namespace OpenNos.GameObject
                 int manaReduction = (int) (target.GetBuff(CardType.LightAndShadow, (byte)AdditionalTypes.LightAndShadow.InflictDamageToMP)[0] * totalDamage / 100D);
                 manaReduction = target.Mp - manaReduction <= 0 ? target.Mp : manaReduction;
                 totalDamage -= manaReduction;
-                target.Mp = manaReduction;
+                target.Mp -= manaReduction;
             }
             if (totalDamage < 5)
             {
@@ -3768,7 +3853,7 @@ namespace OpenNos.GameObject
                 (byte) AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
             {
                 target.ChargeValue = totalDamage;
-                target.AddBuff(new Buff(0), false);
+                target.AddBuff(new Buff.Buff(0), false);
                 totalDamage = 0;
                 hitmode = 1;
             }
@@ -4533,6 +4618,27 @@ namespace OpenNos.GameObject
             GenerateLevelXpLevelUp();
         }
 
+        public void GetJobExp(long val)
+        {
+            if (UseSp && SpInstance != null)
+            {
+                if (SpInstance.SpLevel >= ServerManager.Instance.MaxSpLevel)
+                {
+                    return;
+                }
+                int multiplier = SpInstance.SpLevel < 10 ? 10 : SpInstance.SpLevel < 19 ? 5 : 1;
+                SpInstance.XP += (int)((val * (multiplier + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D) * ((double)Authority / 100 + 1)));
+                GenerateSpXpLevelUp();
+                return;
+            }
+            if (JobLevel >= ServerManager.Instance.MaxJobLevel)
+            {
+                return;
+            }
+            JobLevelXp += (int)(val * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D));
+            GenerateJobXpLevelUp();
+        }
+
         public void GetReput(long val)
         {
             Reput += val * ServerManager.Instance.ReputRate;
@@ -4555,14 +4661,10 @@ namespace OpenNos.GameObject
                 Session.Character.Gold = ServerManager.Instance.MaxGold;
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
             }
-            if (isQuest)
-            {
-                Session.SendPacket(GenerateSay($"Quest reward: [ {ServerManager.Instance.GetItem(1046).Name} x {val} ]", 10));
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(1046).Name} x {val}", 10));
-            }
+
+            Session.SendPacket(isQuest
+                ? GenerateSay($"Quest reward: [ {ServerManager.Instance.GetItem(1046).Name} x {val} ]", 10)
+                : Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(1046).Name} x {val}", 10));
             Session.SendPacket(Session.Character.GenerateGold());
         }
 
@@ -5368,21 +5470,9 @@ namespace OpenNos.GameObject
 
                 //Quest
                 DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).ToList().ForEach(q => DaoFactory.CharacterQuestDao.Delete(CharacterId, q.QuestId));
-                foreach (CharacterQuest qst in Quests)
-                {
-                    CharacterQuestDTO dto = new CharacterQuestDTO()
-                    {
-                        Id = qst.Id,
-                        CharacterId = CharacterId,
-                        QuestId = qst.QuestId,
-                        FirstObjective = qst.FirstObjective,
-                        SecondObjective = qst.SecondObjective,
-                        ThirdObjective = qst.ThirdObjective
-                    };
-                    DaoFactory.CharacterQuestDao.InsertOrUpdate(dto);
-                }
+                Quests.ToList().ForEach(qst => DaoFactory.CharacterQuestDao.InsertOrUpdate(qst));
 
-                foreach (Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
+                foreach (Buff.Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
                 {
                     StaticBuffDTO bf = new StaticBuffDTO
                     {
@@ -5424,7 +5514,7 @@ namespace OpenNos.GameObject
 
         public void SendGift(long id, short vnum, byte amount, sbyte rare, byte upgrade, bool isNosmall)
         {
-            Item it = ServerManager.Instance.GetItem(vnum);
+            Item.Item it = ServerManager.Instance.GetItem(vnum);
 
             if (it == null)
             {
@@ -5954,7 +6044,7 @@ namespace OpenNos.GameObject
             {
                 int levelSum = group.Characters.Sum(g => g.Character.HeroLevel);
                 partySize = group.CharacterCount;
-                partyPenalty = 12f / partySize / levelSum;
+                partyPenalty = partySize > 2 ? 4f / levelSum : 3f / levelSum;
             }
 
             int heroXp = (int)Math.Round(monster.HeroXp * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.Instance.HeroXpRate * MapInstance.XpRate);
@@ -5976,7 +6066,7 @@ namespace OpenNos.GameObject
             {
                 int levelSum = group.Characters.Sum(g => g.Character.JobLevel);
                 partySize = group.CharacterCount;
-                partyPenalty = 12f / partySize / levelSum;
+                partyPenalty = partySize > 2 ? 4f / levelSum : 3f / levelSum;
             }
 
             int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.Instance.XpRate * MapInstance.XpRate);
@@ -6000,7 +6090,7 @@ namespace OpenNos.GameObject
             {
                 int levelSum = group.Characters.Sum(g => g.Character.Level);
                 partySize = group.CharacterCount;
-                partyPenalty = 12f / partySize / levelSum;
+                partyPenalty = partySize > 2 ? 4f / levelSum : 3f / levelSum;
             }
 
             long xpcalculation = levelDifference < 5 ? monster.XP : monster.XP / 3 * 2;
@@ -6122,7 +6212,7 @@ namespace OpenNos.GameObject
         /// <param name="cardId"></param>
         public void RemoveBuff(short cardId)
         {
-            Buff indicator = Buff.FirstOrDefault(s => s?.Card?.CardId == cardId);
+            Buff.Buff indicator = Buff.FirstOrDefault(s => s?.Card?.CardId == cardId);
             if (indicator == null)
             {
                 return;
@@ -6169,12 +6259,12 @@ namespace OpenNos.GameObject
 
         public void AddStaticBuff(StaticBuffDTO staticBuff)
         {
-            Buff bf = new Buff(staticBuff.CardId, Session.Character.Level)
+            Buff.Buff bf = new Buff.Buff(staticBuff.CardId, Session.Character.Level)
             {
                 Start = DateTime.Now,
                 StaticBuff = true
             };
-            Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
+            Buff.Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
 
             if (staticBuff.RemainingTime < -1)
             {
@@ -6223,7 +6313,7 @@ namespace OpenNos.GameObject
                     if (bf.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() <
                         bf.Card.TimeoutBuffChance)
                     {
-                        AddBuff(new Buff(bf.Card.TimeoutBuff, Level));
+                        AddBuff(new Buff.Buff(bf.Card.TimeoutBuff, Level));
                     }
                 });
             }
@@ -6232,7 +6322,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), bf.Card.Name), 12));
         }
 
-        public void AddBuff(Buff indicator, bool notify = true)
+        public void AddBuff(Buff.Buff indicator, bool notify = true)
         {
             int buffTime = 0;
             if (indicator?.Card == null)
@@ -6280,14 +6370,14 @@ namespace OpenNos.GameObject
                 RemoveBuff(indicator.Card.CardId);
                 if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
                 {
-                    AddBuff(new Buff(indicator.Card.TimeoutBuff, Level));
+                    AddBuff(new Buff.Buff(indicator.Card.TimeoutBuff, Level));
                 }
             });
         }
 
         private void RemoveBuff(int id)
         {
-            Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
+            Buff.Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
             if (indicator == null)
             {
                 return;
@@ -6530,7 +6620,7 @@ namespace OpenNos.GameObject
                 value2 += entry.SecondData;
             }
 
-            foreach (Buff buff in Buff)
+            foreach (Buff.Buff buff in Buff)
             {
                 foreach (BCard entry in buff.Card.BCards.Where(s =>
                     s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&

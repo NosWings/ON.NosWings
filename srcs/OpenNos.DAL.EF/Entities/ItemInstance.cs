@@ -15,8 +15,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using OpenNos.DAL.EF.Entities.Base;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.EF.Entities
 {
     public class ItemInstance : SynchronizableBaseEntity
     {

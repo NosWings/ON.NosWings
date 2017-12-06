@@ -12,6 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.GameObject.Item.Instance;
+using OpenNos.GameObject.Map;
+
 namespace OpenNos.GameObject
 {
     public class CharacterMapItem : MapItem

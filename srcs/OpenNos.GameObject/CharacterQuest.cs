@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using OpenNos.Data;
-using OpenNos.Domain;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {
@@ -18,25 +14,23 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
+        public CharacterQuest()
+        {
+
+        }
+
         public CharacterQuest(long questId, long characterId)
         {
             QuestId = questId;
             CharacterId = characterId;
-        }
-
-        public CharacterQuest(CharacterQuestDTO characterQuestDto)
-        {
-            Id = characterQuestDto.Id;
-            FirstObjective = characterQuestDto.FirstObjective;
-            SecondObjective = characterQuestDto.SecondObjective;
-            ThirdObjective = characterQuestDto.ThirdObjective;
-            QuestId = characterQuestDto.QuestId;
-            CharacterId = characterQuestDto.CharacterId;
+            LoadData();
         }
 
         #endregion
 
         #region Properties
+
+        public Dictionary<byte, int[]> Data { get; set; }
 
         public Quest Quest
         {
@@ -52,6 +46,25 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public void LoadData()
+        {
+            if (Quest == null)
+            {
+                return;
+            }
+            Data = new Dictionary<byte, int[]>();
+            Data.Add(1, new int[] { Quest.FirstData, Quest.FirstSpecialData ?? -1, Quest.FirstObjective});
+            Data.Add(2, new int[] { Quest.SecondData ?? -1, Quest.SecondSpecialData ?? -1, Quest.SecondObjective ?? 0 });
+            Data.Add(3, new int[] { Quest.ThirdData ?? -1, Quest.ThirdSpecialData ?? -1, Quest.ThirdObjective ?? 0 });
+            Data.Add(4, new int[] { Quest.FourthData ?? -1, Quest.FourthSpecialData ?? -1, Quest.FourthObjective ?? 0 });
+            Data.Add(5, new int[] { Quest.FifthData ?? -1, Quest.FifthSpecialData ?? -1, Quest.FifthObjective ?? 0 });
+        }
+
+        public override void Initialize()
+        {
+            LoadData();
+        }
 
         #endregion
     }

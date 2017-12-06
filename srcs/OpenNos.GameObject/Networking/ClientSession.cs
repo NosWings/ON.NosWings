@@ -12,11 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Core.Handling;
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
-using OpenNos.Domain;
-using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,8 +19,16 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Core.Handling;
+using OpenNos.Core.Networking;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Serializing;
+using OpenNos.GameObject.Map;
+using OpenNos.Master.Library.Client;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Networking
 {
     public class ClientSession
     {
@@ -102,7 +105,10 @@ namespace OpenNos.GameObject
             }
         }
 
-        public long ClientId => _client.ClientId;
+        public long ClientId
+        {
+            get { return _client.ClientId; }
+        }
 
         public MapInstance CurrentMapInstance { get; set; }
 
@@ -118,17 +124,29 @@ namespace OpenNos.GameObject
                 _handlerMethods = value;
             }
         }
-        public bool HasCurrentMapInstance => CurrentMapInstance != null;
+        public bool HasCurrentMapInstance
+        {
+            get { return CurrentMapInstance != null; }
+        }
 
         public bool HasSelectedCharacter { get; set; }
 
-        public bool HasSession => _client != null;
+        public bool HasSession
+        {
+            get { return _client != null; }
+        }
 
-        public string IpAddress => _client.IpAddress.Contains("tcp://") ? _client.IpAddress.Replace("tcp://", "") : _client.IpAddress;
+        public string IpAddress
+        {
+            get { return _client.IpAddress.Contains("tcp://") ? _client.IpAddress.Replace("tcp://", "") : _client.IpAddress; }
+        }
 
         public bool IsAuthenticated { get; set; }
 
-        public bool IsConnected => _client.IsConnected;
+        public bool IsConnected
+        {
+            get { return _client.IsConnected; }
+        }
 
         public bool IsDisposing
         {
@@ -143,9 +161,15 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool IsLocalhost => IpAddress.Contains("127.0.0.1");
+        public bool IsLocalhost
+        {
+            get { return IpAddress.Contains("127.0.0.1"); }
+        }
 
-        public bool IsOnMap => CurrentMapInstance != null;
+        public bool IsOnMap
+        {
+            get { return CurrentMapInstance != null; }
+        }
 
         public int LastKeepAliveIdentity { get; set; }
 
@@ -309,7 +333,7 @@ namespace OpenNos.GameObject
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
-            Character.Buff = new ConcurrentBag<Buff>();
+            Character.Buff = new ConcurrentBag<Buff.Buff>();
         }
 
         private void ClearReceiveQueue()

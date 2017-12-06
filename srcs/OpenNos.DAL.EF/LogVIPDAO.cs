@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using OpenNos.Data;
 using OpenNos.DAL.Interface;
@@ -7,6 +6,8 @@ using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Core;
+using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {

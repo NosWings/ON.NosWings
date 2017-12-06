@@ -13,6 +13,8 @@
  */
 
 using System.Collections.Concurrent;
+using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Map;
 
 namespace OpenNos.GameObject
 {

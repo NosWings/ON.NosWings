@@ -2,6 +2,7 @@
 using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
+using OpenNos.Data.Base;
 
 namespace OpenNos.DAL.Interface
 {
