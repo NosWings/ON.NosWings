@@ -1666,4 +1666,28 @@
   <data name="WRONG_MAP" xml:space="preserve">
     <value>This raid can't started on this portal.</value>
   </data>
+  <data name="BANK_BALANCE" xml:space="preserve">
+    <value>KFCBANK : You have {0} Gold</value>
+  </data>
+  <data name="BANK_DEPOSIT" xml:space="preserve">
+    <value>KFCBANK : You just deposed {0} Gold</value>
+  </data>
+  <data name="BANK_RANKING" xml:space="preserve">
+    <value>KFCBANK : You are the {0} richest person of NosWings !</value>
+  </data>
+  <data name="BANK_TRANSFER_FROM" xml:space="preserve">
+    <value>KFCBANK : You just received {0} Gold from {1}</value>
+  </data>
+  <data name="BANK_TRANSFER_TO" xml:space="preserve">
+    <value>KFCBANK : You just sent {0} Gold to {1}</value>
+  </data>
+  <data name="BANK_UNRANKED" xml:space="preserve">
+    <value>KFCBANK : You are not ranked in the richest persons of NosWings !</value>
+  </data>
+  <data name="BANK_WITHDRAW" xml:space="preserve">
+    <value>KFCBANK : You just withdrawn {0} Gold</value>
+  </data>
+  <data name="NO_BALANCE" xml:space="preserve">
+    <value>KFCBANK : Your account has no sufficient funds</value>
+  </data>
 </root>

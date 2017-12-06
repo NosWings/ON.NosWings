@@ -502,6 +502,69 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to KFCBANK : You have {0} Gold.
+        /// </summary>
+        internal static string BANK_BALANCE {
+            get {
+                return ResourceManager.GetString("BANK_BALANCE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KFCBANK : You just deposed {0} Gold.
+        /// </summary>
+        internal static string BANK_DEPOSIT {
+            get {
+                return ResourceManager.GetString("BANK_DEPOSIT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KFCBANK : You are the {0} richest person of NosWings !.
+        /// </summary>
+        internal static string BANK_RANKING {
+            get {
+                return ResourceManager.GetString("BANK_RANKING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KFCBANK : You just received {0} Gold from {1}.
+        /// </summary>
+        internal static string BANK_TRANSFER_FROM {
+            get {
+                return ResourceManager.GetString("BANK_TRANSFER_FROM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KFCBANK : You just sent {0} Gold to {1}.
+        /// </summary>
+        internal static string BANK_TRANSFER_TO {
+            get {
+                return ResourceManager.GetString("BANK_TRANSFER_TO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KFCBANK : You are not ranked in the richest persons of NosWings !.
+        /// </summary>
+        internal static string BANK_UNRANKED {
+            get {
+                return ResourceManager.GetString("BANK_UNRANKED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KFCBANK : You just withdrawn {0} Gold.
+        /// </summary>
+        internal static string BANK_WITHDRAW {
+            get {
+                return ResourceManager.GetString("BANK_WITHDRAW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This account has been locked to {0} for {1}..
         /// </summary>
         internal static string BANNED {
@@ -2739,6 +2802,15 @@ namespace NosSharp.World.Resource {
         internal static string NO_AMMO_SWORDSMAN {
             get {
                 return ResourceManager.GetString("NO_AMMO_SWORDSMAN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KFCBANK : Your account has no sufficient funds.
+        /// </summary>
+        internal static string NO_BALANCE {
+            get {
+                return ResourceManager.GetString("NO_BALANCE", resourceCulture);
             }
         }
         
