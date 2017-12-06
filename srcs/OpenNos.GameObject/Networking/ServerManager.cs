@@ -1580,7 +1580,10 @@ namespace OpenNos.GameObject.Networking
 
         public void SaveAll()
         {
-            Parallel.ForEach(Sessions.Where(s => s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null), session => { session.Character?.Save(); });
+            foreach (ClientSession session in Sessions.Where(s => s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null))
+            {
+                session.Character.Save();
+            }
             DaoFactory.BazaarItemDao.RemoveOutDated();
         }
 
@@ -1810,6 +1813,8 @@ namespace OpenNos.GameObject.Networking
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { GroupProcess(); });
 
             Observable.Interval(TimeSpan.FromMinutes(1)).Subscribe(x => { Act4FlowerProcess(); });
+
+            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { SaveAll(); });
 
             Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x => { BotProcess(); });
 
