@@ -664,7 +664,7 @@ namespace OpenNos.GameObject.Helpers
                     Act4Stat stat = raidParameters.Item2 == (byte) FactionType.Angel ? ServerManager.Instance.Act4AngelStat : ServerManager.Instance.Act4DemonStat;
                     stat.Mode = 3;
                     stat.TotalTime = 3600;
-                    Act4Raid.GenerateRaid(raidParameters.Item1, raidParameters.Item2);
+                    Act4Raid.Instance.GenerateRaid(raidParameters.Item1, raidParameters.Item2);
                     switch ((Act4RaidType)raidParameters.Item1)
                     {
                         case Act4RaidType.Morcos:

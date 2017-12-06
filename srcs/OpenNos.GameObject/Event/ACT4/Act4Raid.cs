@@ -11,12 +11,11 @@ using System.Reactive.Linq;
 
 namespace OpenNos.GameObject.Event.ACT4
 {
-    public static class Act4Raid
+    public class Act4Raid
     {
-
         #region Methods
 
-        public async static void GenerateRaid(byte type, byte faction)
+        public async void GenerateRaid(byte type, byte faction)
         {
             ScriptedInstance raid = ServerManager.Instance.Act4Raids.FirstOrDefault(r => r.Id == type);
             MapInstance lobby = ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 134);
@@ -55,6 +54,17 @@ namespace OpenNos.GameObject.Event.ACT4
                 family.Act4Raid.Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
                 family.Act4Raid = null;
             }
+        }
+
+        #endregion
+
+        #region Singleton
+
+        private static Act4Raid _instance;
+
+        public static Act4Raid Instance
+        {
+            get { return _instance ?? (_instance = new Act4Raid()); }
         }
 
         #endregion
