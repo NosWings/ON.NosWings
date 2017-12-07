@@ -184,6 +184,8 @@ namespace OpenNos.DAL.EF
                 entity.Authority = account.Authority;
                 entity.Name = account.Name;
                 entity.Password = account.Password;
+                entity.BankMoney = account.BankMoney;
+                entity.Money = account.Money;
                 context.Entry(entity).State = EntityState.Modified;
                 context.SaveChanges();
             }

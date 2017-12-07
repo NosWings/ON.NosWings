@@ -504,7 +504,7 @@ namespace OpenNos.GameObject
                     Timestamp = DateTime.Now
                 });
             }
-            if (characterQuest.Quest.QuestType == (int)QuestType.TimesSpace && ServerManager.Instance.TimeSpaces.All(t => t.LevelMinimum != characterQuest.Quest.FirstData) || characterQuest.Quest.QuestType == (int)QuestType.Product || characterQuest.Quest.QuestType == (int)QuestType.Collect3
+            if (characterQuest.Quest.QuestType == (int)QuestType.TimesSpace && ServerManager.Instance.TimeSpaces.All(t => t?.LevelMinimum != characterQuest.Quest.FirstData) || characterQuest.Quest.QuestType == (int)QuestType.Product || characterQuest.Quest.QuestType == (int)QuestType.Collect3
                 || characterQuest.Quest.QuestType == (int)QuestType.TransmitGold || characterQuest.Quest.QuestType == (int)QuestType.TsPoint || characterQuest.Quest.QuestType == (int)QuestType.NumberOfKill
                 || characterQuest.Quest.QuestType == (int)QuestType.TargetReput || characterQuest.Quest.QuestType == (int)QuestType.Inspect || characterQuest.Quest.QuestType == (int)QuestType.Needed
                 || characterQuest.Quest.QuestType == (int)QuestType.Collect5)
@@ -3821,16 +3821,16 @@ namespace OpenNos.GameObject
 
             int totalDamage = baseDamage + elementalDamage;
 
-            if (target.HasBuff(CardType.LightAndShadow, (byte)AdditionalTypes.LightAndShadow.InflictDamageToMP))
-            {
-                int manaReduction = (int) (target.GetBuff(CardType.LightAndShadow, (byte)AdditionalTypes.LightAndShadow.InflictDamageToMP)[0] * totalDamage / 100D);
-                manaReduction = target.Mp - manaReduction <= 0 ? target.Mp : manaReduction;
-                totalDamage -= manaReduction;
-                target.Mp -= manaReduction;
-            }
             if (totalDamage < 5)
             {
                 totalDamage = ServerManager.Instance.RandomNumber(1, 6);
+            }
+            if (target.HasBuff(CardType.LightAndShadow, (byte)AdditionalTypes.LightAndShadow.InflictDamageToMP))
+            {
+                int manaReduction = (int) (target.GetBuff(CardType.LightAndShadow, (byte)AdditionalTypes.LightAndShadow.InflictDamageToMP)[0] * totalDamage / 100D);
+                manaReduction = target.Mp - manaReduction < 1 ? 1 : manaReduction <= 0 ? target.Mp : manaReduction;
+                totalDamage -= manaReduction;
+                target.Mp -= manaReduction;
             }
             // OFFENSIVE POTION
             totalDamage += (int)((totalDamage * GetBuff(CardType.Item, (byte)AdditionalTypes.Item.AttackIncreased)[0] / 100D));

@@ -553,6 +553,16 @@ namespace NosSharp.Parser
             List<MapNpcDTO> npcs = new List<MapNpcDTO>();
             List<int> npcMvPacketsList = new List<int>();
             Dictionary<int, short> effPacketsDictionary = new Dictionary<int, short>();
+            npcs.Add(new MapNpcDTO // Add Broken Red Plate as Npc for quests
+            {
+                MapX = 102,
+                MapY = 154,
+                MapId = 5,
+                NpcVNum = 860,
+                Position = 2,
+                IsMoving = false,
+                EffectDelay = 4750
+            });
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
             {
@@ -1206,7 +1216,7 @@ namespace NosSharp.Parser
                 };
                 monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
 
-                if (DaoFactory.NpcMonsterDao.LoadByVNum(monster.MonsterVNum) == null || DaoFactory.MapMonsterDao.LoadById(monster.MapMonsterId) != null || monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0)
+                if (DaoFactory.NpcMonsterDao.LoadByVNum(monster.MonsterVNum) == null || DaoFactory.MapMonsterDao.LoadById(monster.MapMonsterId) != null || monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0 || monster.MonsterVNum == 860 /* remove Broken Red Plate for quests*/)
                 {
                     continue;
                 }

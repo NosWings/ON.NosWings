@@ -1917,7 +1917,7 @@ namespace OpenNos.Handler
                 {
                     kickSessionPacket.AccountName = string.Empty;
                 }
-
+                ServerManager.Instance.Sessions.FirstOrDefault(s => s.Account.Name == kickSessionPacket.AccountName)?.Disconnect();
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, kickSessionPacket, Session.IpAddress);
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 AccountDTO account = DaoFactory.AccountDao.LoadByName(kickSessionPacket.AccountName);
