@@ -41,11 +41,11 @@ namespace OpenNos.GameObject.Event.ACT4
                     s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), ((Act4RaidType)type).ToString()), 0)));
             }
 
-            foreach (Family family in ServerManager.Instance.FamilyList)
+            foreach (Family family in ServerManager.Instance.FamilyList.Where(f => f != null))
             {
-                family.Act4Raid = ServerManager.Instance.Act4Raids.FirstOrDefault(r => r.Id == type).GetClone();
-                family.Act4Raid.LoadScript(MapInstanceType.RaidInstance);
-                if (family.Act4Raid.FirstMap == null)
+                family.Act4Raid = ServerManager.Instance.Act4Raids.FirstOrDefault(r => r.Id == type)?.GetClone();
+                family.Act4Raid?.LoadScript(MapInstanceType.RaidInstance);
+                if (family.Act4Raid?.FirstMap == null)
                 {
                     continue;
                 }
@@ -54,9 +54,9 @@ namespace OpenNos.GameObject.Event.ACT4
 
             await Task.Delay(60 * 60 * 1000);
 
-            foreach (Family family in ServerManager.Instance.FamilyList)
+            foreach (Family family in ServerManager.Instance.FamilyList.Where(f => f?.Act4Raid != null))
             {
-                family.Act4Raid.Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
+                family.Act4Raid.Mapinstancedictionary?.Values.ToList().ForEach(m => m?.Dispose());
                 family.Act4Raid = null;
             }
         }
