@@ -257,6 +257,11 @@ namespace OpenNos.GameObject
             });
             _obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
             {
+                if (Type == ScriptedInstanceType.RaidAct4)
+                {
+                    _obs.Dispose();
+                    return;
+                }
                 if (_instancebag.Lives - _instancebag.DeadList.Count < 0)
                 {
                     Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 3)));
