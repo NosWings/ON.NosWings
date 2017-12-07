@@ -26,7 +26,6 @@ namespace OpenNos.GameObject.Event.ACT4
                 return;
             }
 
-            raid.FirstMap.InstanceBag.Lock = true;
             ServerManager.Instance.Act4RaidStart = DateTime.Now;
             lobby.CreatePortal(new Portal()
             {
@@ -46,6 +45,11 @@ namespace OpenNos.GameObject.Event.ACT4
             {
                 family.Act4Raid = ServerManager.Instance.Act4Raids.FirstOrDefault(r => r.Id == type).GetClone();
                 family.Act4Raid.LoadScript(MapInstanceType.RaidInstance);
+                if (family.Act4Raid.FirstMap == null)
+                {
+                    continue;
+                }
+                family.Act4Raid.FirstMap.InstanceBag.Lock = true;
             }
 
             await Task.Delay(60 * 60 * 1000);
