@@ -692,8 +692,8 @@ namespace OpenNos.Handler
                         {
                             ServerManager.Instance.ChangeMapInstance(leader.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
                         }
-                        else if (Session.Character.Family.Act4Raid.FirstMap == Session.CurrentMapInstance && Session.Character.Family.Act4Raid.StartX == portal.SourceX 
-                                && Session.Character.Family.Act4Raid.StartY == portal.SourceY)
+                        else if (Session.Character?.Family?.Act4Raid?.FirstMap == Session.CurrentMapInstance && Session.Character?.Family?.Act4Raid?.StartX == portal.SourceX 
+                                && Session?.Character?.Family?.Act4Raid?.StartY == portal.SourceY)
                         {
                             ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 134).MapInstanceId, portal.DestinationX, portal.DestinationY);
                             return;
