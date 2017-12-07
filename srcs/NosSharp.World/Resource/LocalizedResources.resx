@@ -1696,4 +1696,7 @@
   <data name="NO_BALANCE" xml:space="preserve">
     <value>KFCBANK : Your account has no sufficient funds</value>
   </data>
+  <data name="TELEPORTED_IN" xml:space="preserve">
+    <value>You will be teleported in {0} seconds.</value>
+  </data>
 </root>
