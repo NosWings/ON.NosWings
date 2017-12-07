@@ -26,6 +26,7 @@ namespace OpenNos.GameObject.Event.ACT4
                 return;
             }
 
+            raid.FirstMap.InstanceBag.Lock = true;
             ServerManager.Instance.Act4RaidStart = DateTime.Now;
             lobby.CreatePortal(new Portal()
             {
