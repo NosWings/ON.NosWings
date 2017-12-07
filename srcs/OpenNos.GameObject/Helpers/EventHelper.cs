@@ -323,173 +323,142 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.SCRIPTEND:
+                    ClientSession client = evt.MapInstance.Sessions.FirstOrDefault();
+                    if (client == null)
+                    {
+                        return;
+                    }
                     switch (evt.MapInstance.MapInstanceType)
                     {
                         case MapInstanceType.TimeSpaceInstance:
                             evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
-                            ClientSession client = evt.MapInstance.Sessions.FirstOrDefault();
-                            if (client != null)
+                            Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
+                            MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
+                            ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
+                            byte penalty = 0;
+                            if (si != null && penalty > (client.Character.Level - si.LevelMinimum) * 2)
                             {
-                                Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
-                                MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
-                                ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
-                                byte penalty = 0;
-                                if (si != null && penalty > (client.Character.Level - si.LevelMinimum) * 2)
-                                {
-                                    penalty = penalty > 100 ? (byte)100 : penalty;
-                                    client.SendPacket(client.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("TS_PENALTY"), penalty), 10));
-                                }
-                                int point = evt.MapInstance.InstanceBag.Point * (100 - penalty) / 100;
-                                string perfection = string.Empty;
-                                perfection += si != null && evt.MapInstance.InstanceBag.MonstersKilled >= si.MonsterAmount ? 1 : 0;
-                                perfection += evt.MapInstance.InstanceBag.NpcsKilled == 0 ? 1 : 0;
-                                perfection += si != null && evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0;
+                                penalty = penalty > 100 ? (byte)100 : penalty;
+                                client.SendPacket(client.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("TS_PENALTY"), penalty), 10));
+                            }
+                            int point = evt.MapInstance.InstanceBag.Point * (100 - penalty) / 100;
+                            string perfection = string.Empty;
+                            perfection += si != null && evt.MapInstance.InstanceBag.MonstersKilled >= si.MonsterAmount ? 1 : 0;
+                            perfection += evt.MapInstance.InstanceBag.NpcsKilled == 0 ? 1 : 0;
+                            perfection += si != null && evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0;
 
-                                if (si != null)
-                                {
-                                    evt.MapInstance.Broadcast(
-                                        $"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count} {evt.MapInstance.InstanceBag.MonstersKilled} {si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
-                                }
+                            if (si != null)
+                            {
+                                evt.MapInstance.Broadcast(
+                                    $"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count} {evt.MapInstance.InstanceBag.MonstersKilled} {si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
                             }
                             break;
+
                         case MapInstanceType.RaidInstance:
                             evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
-                            client = evt.MapInstance.Sessions.FirstOrDefault();
-
-                            if (client != null)
+                            
+                            if (client.Character?.Family?.Act4Raid?.Maps?.FirstOrDefault(m => m != client.Character?.Family?.Act4Raid?.FirstMap) == evt.MapInstance) // Act 4 raids
                             {
-                                // Act 4 raids
-                                if (client.Character.Family?.Act4Raid?.Maps?.FirstOrDefault(m => m != client.Character.Family.Act4Raid.FirstMap) == evt.MapInstance)
+                                ScriptedInstance instance = client.Character?.Family?.Act4Raid;
+                                if (instance?.FirstMap == null)
                                 {
-                                    ScriptedInstance instance = client.Character.Family.Act4Raid;
-
-                                    if (instance == null)
-                                    {
-                                        return;
-                                    }
-
-                                    Instance.RunEvent(new EventContainer(evt.MapInstance, EventActionType.REMOVEPORTAL, instance.FirstMap.Portals.FirstOrDefault(port => port.DestinationMapInstanceId == client.CurrentMapInstance.MapInstanceId)));
-
-                                    Instance.ScheduleEvent(TimeSpan.FromSeconds(5), new EventContainer(evt.MapInstance, EventActionType.SENDPACKET, 
-                                        UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TELEPORTED_IN"), 10), 0)));
-
-                                    foreach (ClientSession cli in evt.MapInstance.Sessions)
-                                    {
-                                        if (evt.MapInstance.Sessions.Count(s => s.IpAddress.Equals(cli.IpAddress)) > 2 || instance.GiftItems == null)
-                                        {
-                                            continue;
-                                        }
-                                        foreach (Gift gift in instance.GiftItems)
-                                        {
-                                            sbyte rare = 0;
-                                            if (gift.IsRandomRare)
-                                            {
-                                                rare = (sbyte)ServerManager.Instance.RandomNumber(1, 8);
-                                            }
-                                            if (cli.Character.Level >= instance.LevelMinimum)
-                                            {
-                                                cli.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
-                                            }
-                                        }
-                                        cli.Character.IncrementQuests(QuestType.WinRaid, instance.Id);
-                                    }
-
-                                    Observable.Timer(TimeSpan.FromSeconds(15)).Subscribe(s =>
-                                    {
-                                        evt.MapInstance.Sessions.ToList().ForEach(cli => 
-                                        ServerManager.Instance.ChangeMapInstance(cli.Character.CharacterId, instance.FirstMap.MapInstanceId, instance.StartX, instance.StartY));
-                                    });
+                                    return;
                                 }
-                                else // Raids
+
+                                Instance.RunEvent(new EventContainer(instance.FirstMap, EventActionType.REMOVEPORTAL, instance.FirstMap.Portals.FirstOrDefault(port => port.DestinationMapInstanceId == client.CurrentMapInstance.MapInstanceId)));
+                                Instance.ScheduleEvent(TimeSpan.FromSeconds(5), new EventContainer(evt.MapInstance, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TELEPORTED_IN"), 10), 0)));
+                                foreach (ClientSession cli in evt.MapInstance.Sessions)
                                 {
-                                    Group grp = client.Character?.Group;
-                                    if (grp == null)
+                                    if (evt.MapInstance.Sessions.Count(s => s.IpAddress.Equals(cli.IpAddress)) > 2 || instance.GiftItems == null)
                                     {
-                                        return;
+                                        continue;
                                     }
-                                    if (evt.MapInstance.InstanceBag.EndState == 1 && evt.MapInstance.Monsters.Any(s => s.IsBoss && !s.IsAlive))
+                                    foreach (Gift gift in instance.GiftItems)
                                     {
-                                        foreach (ClientSession sess in grp.Characters.Where(s => s.CurrentMapInstance.Monsters.Any(e => e.IsBoss)))
+                                        sbyte rare = (sbyte) (gift.IsRandomRare ? ServerManager.Instance.RandomNumber(1, 8) : 0);
+                                        if (cli.Character.Level >= instance.LevelMinimum)
                                         {
-                                            // TODO REMOTE THAT FOR PUBLIC RELEASE
-                                            if (grp.Characters.Count(s => s.IpAddress.Equals(sess.IpAddress)) > 2)
-                                            {
-                                                continue;
-                                            }
-                                            if (grp.Raid?.GiftItems == null)
-                                            {
-                                                continue;
-                                            }
-                                            if (grp.Raid.Reputation > 0 && sess.Character.Level > grp.Raid.LevelMinimum)
-                                            {
-                                                sess.Character.GetReput(grp.Raid.Reputation);
-                                            }
-                                            if (sess.Character.Dignity < 0)
-                                            {
-                                                sess.Character.Dignity += 100;
-                                            }
-                                            else
-                                            {
-                                                sess.Character.Dignity = 100;
-                                            }
-                                            if (sess.Character.Level > grp.Raid.LevelMaximum)
-                                            {
-                                                // RAID CERTIFICATE
-                                                sess.Character.GiftAdd(2320, 1);
-                                            }
-                                            else
-                                            {
-                                                foreach (Gift gift in grp.Raid?.GiftItems)
-                                                {
-                                                    sbyte rare = 0;
-                                                    if (gift.IsRandomRare)
-                                                    {
-                                                        rare = (sbyte)ServerManager.Instance.RandomNumber(-2, 8);
-                                                    }
-                                                    //TODO add random rarity for some object
-                                                    if (sess.Character.Level >= grp.Raid.LevelMinimum)
-                                                    {
-                                                        sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
-                                                    }
-                                                }
-                                            }
+                                            cli.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                         }
-                                        // Remove monster when raid is over
-                                        foreach (MapMonster mapMonster in evt.MapInstance.Monsters.Where(s => !s.IsBoss))
-                                        {
-                                            evt.MapInstance.DespawnMonster(mapMonster);
-                                        }
-                                        evt.MapInstance.WaveEvents.Clear();
-
-                                        ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
-                                            string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
                                     }
-                                    Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(obj =>
-                                    {
-                                        ClientSession[] grpmembers = new ClientSession[40];
-                                        grp.Characters.ToList().CopyTo(grpmembers);
-                                        foreach (ClientSession targetSession in grpmembers)
-                                        {
-                                            if (targetSession == null)
-                                            {
-                                                continue;
-                                            }
-                                            if (targetSession.Character.Hp <= 0)
-                                            {
-                                                targetSession.Character.Hp = 1;
-                                                targetSession.Character.Mp = 1;
-                                            }
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
-                                            targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
-                                            grp.LeaveGroup(targetSession);
-                                        }
-                                        ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
-                                        ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
-                                        grp.Raid.Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
-                                    });
+                                    cli.Character.IncrementQuests(QuestType.WinRaid, instance.Id);
                                 }
+
+                                Observable.Timer(TimeSpan.FromSeconds(15)).Subscribe(s =>
+                                {
+                                    evt.MapInstance.Sessions.ToList().ForEach(cli =>
+                                    ServerManager.Instance.ChangeMapInstance(cli.Character.CharacterId, instance.FirstMap.MapInstanceId, instance.StartX, instance.StartY));
+                                });
+                                break;
                             }
+
+                            // Raids
+                            Group grp = client.Character?.Group;
+                            if (grp == null)
+                            {
+                                return;
+                            }
+                            if (evt.MapInstance.InstanceBag.EndState == 1 && evt.MapInstance.Monsters.Any(s => s.IsBoss && !s.IsAlive))
+                            {
+                                foreach (ClientSession sess in grp.Characters.Where(s => s.CurrentMapInstance.Monsters.Any(e => e.IsBoss)))
+                                {
+                                    // TODO REMOTE THAT FOR PUBLIC RELEASE
+                                    if (grp.Characters.Count(s => s.IpAddress.Equals(sess.IpAddress)) > 2 || grp.Raid?.GiftItems == null)
+                                    {
+                                        continue;
+                                    }
+                                    if (grp.Raid.Reputation > 0 && sess.Character.Level > grp.Raid.LevelMinimum)
+                                    {
+                                        sess.Character.GetReput(grp.Raid.Reputation);
+                                    }
+                                    sess.Character.Dignity = sess.Character.Dignity < 0 ? sess.Character.Dignity + 100 : sess.Character.Dignity = 100;
+
+                                    if (sess.Character.Level > grp.Raid.LevelMaximum)
+                                    {
+                                        sess.Character.GiftAdd(2320, 1); // RAID CERTIFICATE
+                                        continue;
+                                    }
+                                    foreach (Gift gift in grp.Raid?.GiftItems)
+                                    {
+                                        sbyte rare = (sbyte)(gift.IsRandomRare ? ServerManager.Instance.RandomNumber(-2, 8) : 0);
+
+                                        if (sess.Character.Level >= grp.Raid.LevelMinimum)
+                                        {
+                                            sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
+                                        }
+                                    }
+                                }
+                                // Remove monster when raid is over
+                                evt.MapInstance.Monsters.Where(s => !s.IsBoss).ToList().ForEach(m => evt.MapInstance.DespawnMonster(m));
+                                evt.MapInstance.WaveEvents.Clear();
+
+                                ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(
+                                    string.Format(Language.Instance.GetMessageFromKey("RAID_SUCCEED"), grp.Raid?.Label, grp.Characters.ElementAt(0).Character.Name), 0));
+                            }
+                            Observable.Timer(TimeSpan.FromSeconds(evt.MapInstance.InstanceBag.EndState == 1 ? 30 : 0)).Subscribe(obj =>
+                            {
+                                ClientSession[] grpmembers = new ClientSession[40];
+                                grp.Characters.ToList().CopyTo(grpmembers);
+                                foreach (ClientSession targetSession in grpmembers)
+                                {
+                                    if (targetSession == null)
+                                    {
+                                        continue;
+                                    }
+                                    if (targetSession.Character.Hp <= 0)
+                                    {
+                                        targetSession.Character.Hp = 1;
+                                        targetSession.Character.Mp = 1;
+                                    }
+                                    targetSession.SendPacket(targetSession.Character.GenerateRaidBf(evt.MapInstance.InstanceBag.EndState));
+                                    targetSession.SendPacket(targetSession.Character.GenerateRaid(1, true));
+                                    targetSession.SendPacket(targetSession.Character.GenerateRaid(2, true));
+                                    grp.LeaveGroup(targetSession);
+                                }
+                                ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
+                                ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
+                                grp.Raid.Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
+                            });
                             break;
                     }
                     break;
@@ -624,20 +593,13 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.REMOVEPORTAL:
-                    Portal portalToRemove;
-                    if (evt.Parameter is Portal p)
+                    Portal portalToRemove = evt.Parameter is Portal p ? evt.MapInstance.Portals.FirstOrDefault(s => s == p) : evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == (int)evt.Parameter);
+                    if (portalToRemove == null)
                     {
-                        portalToRemove = evt.MapInstance.Portals.FirstOrDefault(s => s == p);
+                        return;
                     }
-                    else
-                    {
-                        portalToRemove = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == (int)evt.Parameter);
-                    }
-                    if (portalToRemove != null)
-                    {
-                        evt.MapInstance.Portals.Remove(portalToRemove);
-                        evt.MapInstance.MapClear();
-                    }
+                    evt.MapInstance.Portals.Remove(portalToRemove);
+                    evt.MapInstance.MapClear();
                     break;
 
                 case EventActionType.ACT4RAIDEND:
