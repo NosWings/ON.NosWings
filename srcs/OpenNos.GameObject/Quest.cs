@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
                             break;
 
                         case QuestRewardType.SecondJobExp: // % JobExperience
-                            character.GetJobExp((long)((character.Class == (byte)ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXpData[character.Level] : CharacterHelper.Instance.SecondJobXpData[character.Level]) * reward.Amount / 100D));
+                            character.GetJobExp((long)((character.Class == (byte)ClassType.Adventurer ? CharacterHelper.Instance.FirstJobXpData[character.JobLevel] : CharacterHelper.Instance.SecondJobXpData[character.JobLevel]) * reward.Amount / 100D));
                             str += $"{reward.RewardType} 0 0 ";
                             break;
 
