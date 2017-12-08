@@ -124,7 +124,7 @@ namespace OpenNos.Handler
                     Session.Account.BankMoney -= amount;
                     target.Account.BankMoney += amount;
 
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_TRANSFER_TO"), packet.Target, amount), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_TRANSFER_TO"), amount, packet.Target), 11));
                     target.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_TRANSFER_FROM"), Session.Character.Name, amount), 11));
                     break;
 
