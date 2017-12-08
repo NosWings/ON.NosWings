@@ -167,6 +167,7 @@
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\MateHelper.cs" />
     <Compile Include="Helpers\PassiveSkillHelper.cs" />
+    <Compile Include="Helpers\QuestHelper.cs" />
     <Compile Include="Helpers\RewardsHelper.cs" />
     <Compile Include="Helpers\ShellGeneratorHelper.cs" />
     <Compile Include="Helpers\VipHelper.cs" />
