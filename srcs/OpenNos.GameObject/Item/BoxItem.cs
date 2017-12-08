@@ -129,19 +129,21 @@ namespace OpenNos.GameObject.Item
                                     if (int.TryParse(packetsplit[0], out int petId))
                                     {
                                         Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == petId);
-                                        if (mate != null)
+                                        if (mate == null || mate.MateType != MateType.Pet)
                                         {
-                                            box.HoldingVNum = mate.NpcMonsterVNum;
-                                            box.SpLevel = mate.Level;
-                                            box.SpDamage = mate.Attack;
-                                            box.SpDefence = mate.Defence;
-                                            session.Character.Mates.Remove(mate);
-                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_STORED")));
-                                            session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
-                                            session.SendPackets(session.Character.GenerateScP());
-                                            session.SendPackets(session.Character.GenerateScN());
-                                            session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
+                                            return;
                                         }
+                                        box.HoldingVNum = mate.NpcMonsterVNum;
+                                        box.SpLevel = mate.Level;
+                                        box.SpDamage = mate.Attack;
+                                        box.SpDefence = mate.Defence;
+                                        session.Character.Mates.Remove(mate);
+                                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_STORED")));
+                                        session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                                        session.SendPackets(session.Character.GenerateScP());
+                                        session.SendPackets(session.Character.GenerateScN());
+                                        session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
+
                                     }
                                 }
                             }
