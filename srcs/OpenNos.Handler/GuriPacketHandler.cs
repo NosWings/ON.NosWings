@@ -249,6 +249,15 @@ namespace OpenNos.Handler
                         }
                         break;
 
+                    case 710: // Maps Teleporters 
+                        MapNpc tp = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(guriPacket.Data));
+                        if (tp == null)
+                        {
+                            return;
+                        }
+                        Session.Character.TeleportOnMap(tp.MapX, tp.MapY);
+                        break;
+
                     case 4999: //RollGeneratedItem for SpecialItem
                         if (guriPacket.Argument == 8023)
                         {

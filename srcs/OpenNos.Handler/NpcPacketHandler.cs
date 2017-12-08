@@ -878,6 +878,13 @@ namespace OpenNos.Handler
                     return;
                 }
 
+                TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(t => t.Type == TeleporterType.TeleporterOnMap);
+                if (tp != null)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 1, $"#guri^710^{tp.MapY}^{tp.MapX}^{npc.MapNpcId}"));
+                    return;
+                }
+
                 #region Quest
 
                 Session.Character.IncrementQuests(QuestType.Dialog1, npc.NpcVNum);
