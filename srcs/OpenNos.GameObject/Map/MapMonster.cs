@@ -378,10 +378,6 @@ namespace OpenNos.GameObject.Map
         /// </summary>
         internal void RemoveTarget()
         {
-            if (Target == null)
-            {
-                return;
-            }
             Path.Clear();
             Target = null;
             //return to origin
