@@ -334,29 +334,26 @@ namespace OpenNos.GameObject.Helpers
                             evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
                             Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
                             MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
-                            ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
-                            byte penalty = 0;
-                            if (si != null && penalty > (client.Character.Level - si.LevelMinimum) * 2)
+                            ScriptedInstance si = map?.ScriptedInstances?.FirstOrDefault(s => s.PositionX == client.Character.MapX && s.PositionY == client.Character.MapY);
+                            if (si == null)
                             {
-                                penalty = penalty > 100 ? (byte)100 : penalty;
+                                return;
+                            }
+
+                            byte penalty = (byte)(client.Character.Level - si.LevelMinimum > 50 ? 100 : (client.Character.Level - si.LevelMinimum) * 2);
+                            if (penalty > 0)
+                            {
                                 client.SendPacket(client.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("TS_PENALTY"), penalty), 10));
                             }
                             int point = evt.MapInstance.InstanceBag.Point * (100 - penalty) / 100;
-                            string perfection = string.Empty;
-                            perfection += si != null && evt.MapInstance.InstanceBag.MonstersKilled >= si.MonsterAmount ? 1 : 0;
-                            perfection += evt.MapInstance.InstanceBag.NpcsKilled == 0 ? 1 : 0;
-                            perfection += si != null && evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0;
-
-                            if (si != null)
-                            {
-                                evt.MapInstance.Broadcast(
-                                    $"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count} {evt.MapInstance.InstanceBag.MonstersKilled} {si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
-                            }
+                            string perfection = $"{(evt.MapInstance.InstanceBag.MonstersKilled >= si.MonsterAmount ? 1 : 0)}{(evt.MapInstance.InstanceBag.NpcsKilled == 0 ? 1 : 0)}{(evt.MapInstance.InstanceBag.RoomsVisited >= si.RoomAmount ? 1 : 0)}";
+                            evt.MapInstance.Broadcast(
+                                $"score  {evt.MapInstance.InstanceBag.EndState} {point} 27 47 18 {si.DrawItems.Count} {evt.MapInstance.InstanceBag.MonstersKilled} {si.NpcAmount - evt.MapInstance.InstanceBag.NpcsKilled} {evt.MapInstance.InstanceBag.RoomsVisited} {perfection} 1 1");
                             break;
 
                         case MapInstanceType.RaidInstance:
                             evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
-                            
+
                             if (client.Character?.Family?.Act4Raid?.Maps?.FirstOrDefault(m => m != client.Character?.Family?.Act4Raid?.FirstMap) == evt.MapInstance) // Act 4 raids
                             {
                                 ScriptedInstance instance = client.Character?.Family?.Act4Raid;
@@ -375,7 +372,7 @@ namespace OpenNos.GameObject.Helpers
                                     }
                                     foreach (Gift gift in instance.GiftItems)
                                     {
-                                        sbyte rare = (sbyte) (gift.IsRandomRare ? ServerManager.Instance.RandomNumber(1, 8) : 0);
+                                        sbyte rare = (sbyte)(gift.IsRandomRare ? ServerManager.Instance.RandomNumber(1, 8) : 0);
                                         if (cli.Character.Level >= instance.LevelMinimum)
                                         {
                                             cli.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
@@ -411,7 +408,7 @@ namespace OpenNos.GameObject.Helpers
                                     {
                                         sess.Character.GetReput(grp.Raid.Reputation);
                                     }
-                                    sess.Character.Dignity = sess.Character.Dignity < 0 ? sess.Character.Dignity + 100 : sess.Character.Dignity = 100;
+                                    sess.Character.Dignity = sess.Character.Dignity < 0 ? sess.Character.Dignity + 100 : 100;
 
                                     if (sess.Character.Level > grp.Raid.LevelMaximum)
                                     {
