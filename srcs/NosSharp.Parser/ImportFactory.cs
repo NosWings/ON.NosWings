@@ -561,7 +561,8 @@ namespace NosSharp.Parser
                 NpcVNum = 860,
                 Position = 2,
                 IsMoving = false,
-                EffectDelay = 4750
+                EffectDelay = 4750,
+                Dialog = 999 // unused dialog
             });
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
