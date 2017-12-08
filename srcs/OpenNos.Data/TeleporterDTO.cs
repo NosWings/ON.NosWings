@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
+using NosSharp.Enums;
 using OpenNos.Data.Base;
 
 namespace OpenNos.Data
@@ -21,6 +21,8 @@ namespace OpenNos.Data
         #region Properties
 
         public short Index { get; set; }
+
+        public TeleporterType Type { get; set; }
 
         public short MapId { get; set; }
 

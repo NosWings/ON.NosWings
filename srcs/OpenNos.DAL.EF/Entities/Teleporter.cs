@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+using NosSharp.Enums;
 
 namespace OpenNos.DAL.EF.Entities
 {
@@ -19,6 +20,8 @@ namespace OpenNos.DAL.EF.Entities
         #region Properties
 
         public short Index { get; set; }
+
+        public TeleporterType Type { get; set; }
 
         public virtual Map Map { get; set; }
 
