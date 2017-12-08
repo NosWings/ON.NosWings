@@ -93,7 +93,7 @@ namespace OpenNos.GameObject.Item
                                     {
                                         continue;
                                     }
-                                    if (createdItem.ItemType == ItemType.Sell)
+                                    if (createdItem.ItemType == ItemType.Shell)
                                     {
                                         rollitem.ItemGeneratedUpgrade = (byte) ServerManager.Instance.RandomNumber();
                                         if (rollitem.ItemGeneratedUpgrade >= 95)
