@@ -118,6 +118,8 @@ namespace OpenNos.GameObject.Networking
 
         public int DropRate { get; set; }
 
+        public int QuestDropRate { get; set; }
+
         public bool EventInWaiting { get; set; }
 
         public int FairyXpRate { get; set; }
@@ -1030,6 +1032,7 @@ namespace OpenNos.GameObject.Networking
             FairyXpRate = int.Parse(ConfigurationManager.AppSettings["RateXpFairy"]);
             ReputRate = int.Parse(ConfigurationManager.AppSettings["RateReput"]);
             DropRate = int.Parse(ConfigurationManager.AppSettings["RateDrop"]);
+            QuestDropRate = int.Parse(ConfigurationManager.AppSettings["RateQuestDrop"]);
             MaxGold = long.Parse(ConfigurationManager.AppSettings["MaxGold"]);
             GoldDropRate = int.Parse(ConfigurationManager.AppSettings["GoldRateDrop"]);
             GoldRate = int.Parse(ConfigurationManager.AppSettings["RateGold"]);
