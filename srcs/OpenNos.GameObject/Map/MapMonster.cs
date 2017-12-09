@@ -583,21 +583,21 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            Skill skill = npcMonsterSkill?.Skill ?? ServerManager.Instance.GetSkill(Monster.BasicSkill);
 
-            if (skill == null || CurrentMp < skill.MpCost)
-            {
-                FollowTarget();
-                return;
-            }
+            LastSkill = DateTime.Now;
             if (npcMonsterSkill != null)
             {
+                if (CurrentMp < npcMonsterSkill.Skill.MpCost)
+                {
+                    FollowTarget();
+                    return;
+                }
                 npcMonsterSkill.LastSkillUse = DateTime.Now;
                 CurrentMp -= npcMonsterSkill.Skill.MpCost;
+                MapInstance.Broadcast($"ct 3 {MapMonsterId} {(byte)Target.GetSessionType()} {Target.GetId()} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
             }
-            MapInstance.Broadcast($"ct 3 {MapMonsterId} {(byte)Target.GetSessionType()} {Target.GetId()} {skill.CastAnimation} {skill.CastEffect} {skill.SkillVNum}");
             LastMove = DateTime.Now;
-            GetInformations().TargetHit(Target, TargetHitType.SingleTargetHit, skill);
+            GetInformations().TargetHit(Target, TargetHitType.SingleTargetHit, npcMonsterSkill?.Skill, skillEffect: Monster.BasicSkill);
         }
 
         /// <summary>

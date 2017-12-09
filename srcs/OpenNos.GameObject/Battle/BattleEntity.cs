@@ -802,13 +802,12 @@ namespace OpenNos.GameObject.Battle
                 return;
             }
 
-            Console.WriteLine(hitType);
             target.GetDamage(damage);
             string str = string.Empty;
             switch (hitType)
             {
                 case TargetHitType.SingleTargetHit:
-                    str = $"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0} {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetHp()[0] > 0 ? 1 : 0)} {target.GetHp()[0] / target.GetHp()[1] * 100} {damage} {hitmode} {skill.SkillType - 1}";
+                    str = $"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0} {skill?.AttackAnimation ?? 11} {skill?.Effect ?? skillEffect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetHp()[0] > 0 ? 1 : 0)} {target.GetHp()[0] / target.GetHp()[1] * 100} {damage} {hitmode} {skill?.SkillType - 1 ?? 0}";
                     break;
 
                 case TargetHitType.SingleTargetHitCombo:
@@ -866,18 +865,17 @@ namespace OpenNos.GameObject.Battle
             Entity.GetMapInstance().Broadcast(str);
 
             bool isBoss = false;
-            if (target.GetSession() is Character character)
+            if (Entity.GetSession() is Character character)
             {
                 character.LastSkillUse = DateTime.Now;
                 character.RemoveBuff(85); // Hideout
             }
-            else if (target.GetSession() is Mate mate)
+            else if (Entity.GetSession() is Mate mate)
             {
                 mate.LastSkillUse = DateTime.Now;
             }
-            else if (target.GetSession() is MapMonster monster)
+            if (target.GetSession() is MapMonster monster)
             {
-                monster.LastSkill = DateTime.Now;
                 monster.Target = Entity;
                 isBoss = monster.IsBoss;
                 if (isBoss)
