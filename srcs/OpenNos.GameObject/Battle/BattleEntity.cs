@@ -795,6 +795,10 @@ namespace OpenNos.GameObject.Battle
         {
             if (!target.isTargetable(Entity.GetSessionType(), isPvp))
             {
+                if (Session is Character cha)
+                {
+                    cha.Session.SendPacket($"cancel 2 {target.GetId()}");
+                }
                 return;
             }
 
