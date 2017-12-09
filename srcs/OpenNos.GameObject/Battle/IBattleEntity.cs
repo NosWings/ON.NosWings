@@ -17,7 +17,7 @@ namespace OpenNos.GameObject.Battle
 
         object GetSession();
 
-        bool isTargetable();
+        bool isTargetable(SessionType type, bool isPvP = false);
 
         Node[,] GetBrushFire();
 
@@ -25,10 +25,14 @@ namespace OpenNos.GameObject.Battle
 
         long GetId();
 
-        void GetDamage(int damage);
+        void GetDamage(int damage, bool canKill = true);
 
         EffectPacket GenerateEff(int effectid);
 
-        void GenerateDeath();
+        void GenerateDeath(IBattleEntity killer = null);
+
+        void GenerateRewards(IBattleEntity target);
+
+        int[] GetHp();
     }
 }
