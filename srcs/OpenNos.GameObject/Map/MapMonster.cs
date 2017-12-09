@@ -620,8 +620,8 @@ namespace OpenNos.GameObject.Map
                 - GetBuff(BCardType.CardType.Critical,(byte) AdditionalTypes.Critical.DamageIncreasedInflictingReduced)[0];
 
             // Critical damage deacreased by x %
-            //mainCritHit = (int) (mainCritHit / 100D * (100 + targetCharacter.GetBuff(BCardType.CardType.Critical, (byte) AdditionalTypes.Critical.DamageFromCriticalIncreased)[0]
-              //  - targetCharacter.GetBuff(BCardType.CardType.Critical,(byte) AdditionalTypes.Critical.DamageFromCriticalDecreased)[0]));
+            mainCritHit = (int) (mainCritHit / 100D * (1 + targetCharacter.GetBuff(BCardType.CardType.Critical, (byte) AdditionalTypes.Critical.DamageFromCriticalIncreased)[0]
+                - targetCharacter.GetBuff(BCardType.CardType.Critical,(byte) AdditionalTypes.Critical.DamageFromCriticalDecreased)[0]));
 
             mainUpgrade -= playerDefenseUpgrade;
 
