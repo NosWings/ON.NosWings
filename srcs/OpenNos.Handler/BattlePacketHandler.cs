@@ -592,7 +592,7 @@ namespace OpenNos.Handler
                                         }
                                         if (Session.CurrentMapInstance.Map.MapId != 130 && Session.CurrentMapInstance.Map.MapId != 131)
                                         {
-                                            Session.Character.GetInformations().TargetHit(character.Character, TargetHitType.SingleAOETargetHit, ski.Skill);
+                                            Session.Character.GetInformations().TargetHit(character.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp:true);
                                         }
                                     }
                                     else if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.IceBreakerInstance)
@@ -624,7 +624,7 @@ namespace OpenNos.Handler
                                             || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                             (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId)))
                                         {
-                                            Session.Character.GetInformations().TargetHit(character.Character, TargetHitType.AOETargetHit, ski.Skill);
+                                            Session.Character.GetInformations().TargetHit(character.Character, TargetHitType.AOETargetHit, ski.Skill, isPvp: true);
                                         }
                                         else
                                         {
@@ -838,7 +838,7 @@ namespace OpenNos.Handler
                                                 }
                                                 count++;
 
-                                                Session.Character.GetInformations().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHitCombo, ski.Skill, skillCombo: skillCombo);
+                                                Session.Character.GetInformations().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHitCombo, ski.Skill, skillCombo: skillCombo, isPvp: true);
                                             }
                                             if (playerToAttack.Character.Hp <= 0 || count == 0)
                                             {
@@ -866,7 +866,7 @@ namespace OpenNos.Handler
                                                     || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                                     (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                 {
-                                                    Session.Character.GetInformations().TargetHit(playerToAttack.Character, TargetHitType.SingleAOETargetHit, ski.Skill);
+                                                    Session.Character.GetInformations().TargetHit(playerToAttack.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp: true);
                                                 }
                                                 else
                                                 {
@@ -894,7 +894,7 @@ namespace OpenNos.Handler
                                                     || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                                     (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId)))
                                                 {
-                                                    Session.Character.GetInformations().TargetHit(character.Character, TargetHitType.SingleAOETargetHit, ski.Skill);
+                                                    Session.Character.GetInformations().TargetHit(character.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp: true);
                                                 }
                                             }
                                             if (playerToAttack.Character.Hp <= 0)
@@ -926,7 +926,7 @@ namespace OpenNos.Handler
                                                         || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                                         (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                     {
-                                                        Session.Character.GetInformations().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill);
+                                                        Session.Character.GetInformations().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill, isPvp: true);
                                                     }
                                                     else
                                                     {
@@ -945,7 +945,7 @@ namespace OpenNos.Handler
                                                         || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                                         (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                     {
-                                                        Session.Character.GetInformations().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill);
+                                                        Session.Character.GetInformations().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill, isPvp: true);
                                                     }
                                                     else
                                                     {
@@ -972,7 +972,7 @@ namespace OpenNos.Handler
                                                     || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                                     (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                 {
-                                                    Session.Character.GetInformations().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill);
+                                                    Session.Character.GetInformations().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill, isPvp: true);
                                                 }
                                                 else
                                                 {
@@ -1197,7 +1197,7 @@ namespace OpenNos.Handler
                             }
                             if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
                             {
-                                Session.Character.GetInformations().TargetHit(character.Character, TargetHitType.ZoneHit, characterSkill.Skill, mapX: x, mapY: y);
+                                Session.Character.GetInformations().TargetHit(character.Character, TargetHitType.ZoneHit, characterSkill.Skill, mapX: x, mapY: y, isPvp: true);
                             }
                         }
                     });

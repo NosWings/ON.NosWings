@@ -728,7 +728,7 @@ namespace OpenNos.GameObject.Battle
                    StaticBcards.Any(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype));
         }
 
-        public void TargetHit(IBattleEntity target, TargetHitType hitType, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false)
+        public void TargetHit(IBattleEntity target, TargetHitType hitType, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false)
         {
             MapInstance mapInstance = target.GetMapInstance();
             int hitmode = 0;
@@ -787,13 +787,13 @@ namespace OpenNos.GameObject.Battle
                 Entity.GetMapInstance().Broadcast(Entity.GenerateEff(skill.CastEffect), Entity.GetPos().X, Entity.GetPos().Y);
                 castTime = skill.CastTime * 100;
             }
-            Observable.Timer(TimeSpan.FromMilliseconds(castTime)).Subscribe(o => TargetHit2(target, hitType, skill, damage, hitmode, skillEffect, mapX, mapY, skillCombo, showTargetAnimation));
+            Observable.Timer(TimeSpan.FromMilliseconds(castTime)).Subscribe(o => TargetHit2(target, hitType, skill, damage, hitmode, skillEffect, mapX, mapY, skillCombo, showTargetAnimation, isPvp));
 
         }
 
-        private void TargetHit2(IBattleEntity target, TargetHitType hitType, Skill skill, int damage, int hitmode, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isRange = false)
+        private void TargetHit2(IBattleEntity target, TargetHitType hitType, Skill skill, int damage, int hitmode, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false, bool isRange = false)
         {
-            if (!target.isTargetable(Entity.GetSessionType()))
+            if (!target.isTargetable(Entity.GetSessionType(), isPvp))
             {
                 return;
             }
