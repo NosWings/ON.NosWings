@@ -152,7 +152,7 @@ namespace OpenNos.GameObject.Item
                                 NpcMonster heldMonster = ServerManager.Instance.GetNpc(box.HoldingVNum);
                                 if (heldMonster != null)
                                 {
-                                    Mate mate = new Mate(session.Character, heldMonster, 1, MateType.Pet)
+                                    Mate mate = new Mate(session.Character, heldMonster, (byte)(box.SpLevel == 0 ? 1 : box.SpLevel), MateType.Pet)
                                     {
                                         Attack = box.SpDamage,
                                         Defence = box.SpDefence
