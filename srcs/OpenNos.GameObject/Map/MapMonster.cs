@@ -2187,9 +2187,9 @@ namespace OpenNos.GameObject.Map
             return (AttackType)Monster.AttackClass;
         }
 
-        public bool isTargetable()
+        public bool isTargetable(SessionType type, bool isPvP = false)
         {
-            return IsAlive && CurrentHp > 0;
+            return type != SessionType.Monster && IsAlive && CurrentHp > 0;
         }
 
         public Node[,] GetBrushFire()
@@ -2212,13 +2212,27 @@ namespace OpenNos.GameObject.Map
             return MapInstance;
         }
 
-        public void GetDamage(int damage)
+        public int[] GetHp()
         {
-
+            return new[] { CurrentHp, Monster.MaxHP };
         }
 
-        public void GenerateDeath()
+        public void GetDamage(int damage, bool canKill = true)
         {
+            CurrentHp -= damage;
+            if (CurrentHp <= 0)
+            {
+                CurrentHp = 0;
+            }
+            if (!canKill && CurrentHp == 0)
+            {
+                CurrentHp = 1;
+            }
+        }
+
+        public void GenerateDeath(IBattleEntity killer = null)
+        {
+            killer?.GenerateRewards(this);
             if (MonsterVNum != 679 && MonsterVNum != 680) // Act4 Guardians
             {
                 IsAlive = false;
@@ -2231,6 +2245,11 @@ namespace OpenNos.GameObject.Map
                 return;
             }
             CurrentHp = 1;
+        }
+
+        public void GenerateRewards(IBattleEntity target)
+        {
+            RemoveTarget();
         }
 
         #endregion
