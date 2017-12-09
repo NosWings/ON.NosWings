@@ -1046,6 +1046,22 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
+        public AttackType GetClassAttackType(ClassType type)
+        {
+            switch (type)
+            {
+                case ClassType.Adventurer:
+                case ClassType.Swordman:
+                    return AttackType.Close;
+
+                case ClassType.Archer:
+                    return AttackType.Ranged;
+
+                case ClassType.Magician:
+                    return AttackType.Magical;
+            }
+            return AttackType.Close;
+        }
         #endregion
 
 

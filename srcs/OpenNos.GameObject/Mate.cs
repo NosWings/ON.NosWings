@@ -29,12 +29,12 @@ using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ServerPackets;
-using OpenNos.PathFinder;
 using OpenNos.PathFinder.PathFinder;
+using OpenNos.GameObject.Battle;
 
 namespace OpenNos.GameObject
 {
-    public class Mate : MateDTO
+    public class Mate : MateDTO, IBattleEntity
     {
         #region Members
 
@@ -1200,6 +1200,27 @@ namespace OpenNos.GameObject
                 return 0;
             }
         }
+
+        public MapCell GetPos()
+        {
+            return new MapCell { X = PositionX, Y = PositionY };
+        }
+
+        public BattleEntity GetInformations()
+        {
+            return new BattleEntity(this);
+        }
+
+        public object GetSession()
+        {
+            return this;
+        }
+
+        public AttackType GetAttackType(Skill skill = null)
+        {
+            return (AttackType)Monster.AttackClass;
+        }
+
         #endregion
     }
 }

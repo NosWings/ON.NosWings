@@ -38,10 +38,11 @@ using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.PathFinder.PathFinder;
 using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Battle;
 
 namespace OpenNos.GameObject
 {
-    public class Character : CharacterDTO
+    public class Character : CharacterDTO, IBattleEntity
     {
         #region Members
 
@@ -1504,6 +1505,37 @@ namespace OpenNos.GameObject
         public string GenerateCond()
         {
             return $"cond 1 {CharacterId} {(NoAttack ? 1 : 0)} {(NoMove ? 1 : 0)} {Speed}";
+        }
+
+        public MapCell GetPos()
+        {
+            return new MapCell { X = PositionX, Y = PositionY };
+        }
+
+        public BattleEntity GetInformations()
+        {
+            return new BattleEntity(this);
+        }
+
+        public object GetSession()
+        {
+            return this;
+        }
+
+        public AttackType GetAttackType(Skill skill = null)
+        {
+            switch (skill?.Type)
+            {
+                case 0:
+                case 1:
+                case 2:
+                    return (AttackType)skill.Type;
+
+                case 3:
+                case 5:
+                    return (AttackType)(Class - 1 < 0 ? 0 : Class - 1);
+            }
+            return AttackType.Close;
         }
 
         public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode, ref bool onyxEffect)

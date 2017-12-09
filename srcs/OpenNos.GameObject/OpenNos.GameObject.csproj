@@ -153,6 +153,8 @@
     <Compile Include="Act6Stats.cs" />
     <Compile Include="ArenaTeamMember.cs" />
     <Compile Include="ArenaMember.cs" />
+    <Compile Include="Battle\BattleEntity.cs" />
+    <Compile Include="Battle\IBattleEntity.cs" />
     <Compile Include="Buff\Buff.cs" />
     <Compile Include="Buff\BCard.cs" />
     <Compile Include="Buff\Card.cs" />

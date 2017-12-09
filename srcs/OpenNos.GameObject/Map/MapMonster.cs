@@ -29,10 +29,11 @@ using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.PathFinder.PathFinder;
+using OpenNos.GameObject.Battle;
 
 namespace OpenNos.GameObject.Map
 {
-    public class MapMonster : MapMonsterDTO
+    public class MapMonster : MapMonsterDTO, IBattleEntity
     {
         #region Members
 
@@ -2273,6 +2274,26 @@ namespace OpenNos.GameObject.Map
         {
             return Buff.Any(buff =>
                 buff.Card.BCards.Any(b => b.Type == (byte) type && b.SubType == subtype && (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)));
+        }
+
+        public MapCell GetPos()
+        {
+            return new MapCell { X = MapX, Y = MapY };
+        }
+
+        public BattleEntity GetInformations()
+        {
+            return new BattleEntity(this);
+        }
+
+        public object GetSession()
+        {
+            return this;
+        }
+
+        public AttackType GetAttackType(Skill skill = null)
+        {
+            return (AttackType)Monster.AttackClass;
         }
 
         #endregion
