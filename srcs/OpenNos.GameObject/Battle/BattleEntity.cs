@@ -19,6 +19,7 @@ namespace OpenNos.GameObject.Battle
 
         public BattleEntity(IBattleEntity entity)
         {
+            Entity = entity;
             Session = entity.GetSession();
             Buffs = new ConcurrentBag<Buff.Buff>();
             StaticBcards = new ConcurrentBag<BCard>();
