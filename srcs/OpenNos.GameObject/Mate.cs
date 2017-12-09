@@ -805,13 +805,13 @@ namespace OpenNos.GameObject
 
             #endregion
 
-            if (targetMonster.MatesDamageList.ContainsKey(MateTransportId))
+            if (targetMonster.DamageList.ContainsKey(this))
             {
-                targetMonster.MatesDamageList[MateTransportId] += totalDamage;
+                targetMonster.DamageList[this] += totalDamage;
             }
             else
             {
-                targetMonster.MatesDamageList.Add(MateTransportId, totalDamage);
+                targetMonster.DamageList.Add(this, totalDamage);
             }
             if (targetMonster.Target == null)
             {
@@ -1220,6 +1220,32 @@ namespace OpenNos.GameObject
         {
             return (AttackType)Monster.AttackClass;
         }
+
+        public bool isTargetable()
+        {
+            return IsAlive && Hp > 0;
+        }
+
+        public Node[,] GetBrushFire()
+        {
+            return BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, Owner.MapInstance.Map.Grid);
+        }
+
+        public SessionType GetSessionType()
+        {
+            return SessionType.Mate;
+        }
+
+        public long GetId()
+        {
+            return MateTransportId;
+        }
+
+        public MapInstance GetMapInstance()
+        {
+            return Owner.MapInstance;
+        }
+
 
         #endregion
     }

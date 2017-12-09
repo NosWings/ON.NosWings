@@ -68,6 +68,16 @@ namespace OpenNos.GameObject.Networking
             }
         }
 
+        public IEnumerable<Character> Characters
+        {
+            get
+            {
+                ConcurrentBag<Character> characters = new ConcurrentBag<Character>();
+                Sessions.ToList().ForEach(s => characters.Add(s.Character));
+                return characters;
+            }
+        }
+
         protected DateTime LastUnregister { get; private set; }
 
         #endregion

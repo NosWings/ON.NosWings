@@ -1538,6 +1538,40 @@ namespace OpenNos.GameObject
             return AttackType.Close;
         }
 
+        public MapInstance GetMapInstance()
+        {
+            return MapInstance;
+        }
+
+        public bool isTargetable()
+        {
+            return Hp > 0 && !InvisibleGm && !Invisible;
+        }
+
+        public Node[,] GetBrushFire()
+        {
+            return BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, MapInstance.Map.Grid);
+        }
+
+        public SessionType GetSessionType()
+        {
+            return SessionType.Character;
+        }
+
+        public long GetId()
+        {
+            return CharacterId;
+        }
+
+        public void GenerateDeath()
+        {
+            if (Hp > 0)
+            {
+                return;
+            }
+            Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(CharacterId); });
+        }
+
         public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
 
@@ -2210,13 +2244,13 @@ namespace OpenNos.GameObject
 
             #endregion
 
-            if (monsterToAttack.DamageList.ContainsKey(CharacterId))
+            if (monsterToAttack.DamageList.ContainsKey(this))
             {
-                monsterToAttack.DamageList[CharacterId] += totalDamage;
+                monsterToAttack.DamageList[this] += totalDamage;
             }
             else
             {
-                monsterToAttack.DamageList.Add(CharacterId, totalDamage);
+                monsterToAttack.DamageList.Add(this, totalDamage);
             }
             if (monsterToAttack.CurrentHp <= totalDamage)
             {
@@ -2240,9 +2274,13 @@ namespace OpenNos.GameObject
             ushort damage = Convert.ToUInt16(totalDamage);
 
             int nearestDistance = 100;
-            foreach (KeyValuePair<long, long> kvp in monsterToAttack.DamageList)
+            foreach (KeyValuePair<IBattleEntity, long> kvp in monsterToAttack.DamageList)
             {
-                ClientSession session = monsterToAttack.MapInstance.GetSessionByCharacterId(kvp.Key);
+                ClientSession session = null;
+                if (kvp.Key.GetSession() is Character character)
+                {
+                    session = character.Session;
+                }
                 if (session == null)
                 {
                     continue;
@@ -2683,7 +2721,7 @@ namespace OpenNos.GameObject
                 Random random = new Random(DateTime.Now.Millisecond & monsterToAttack.MapMonsterId);
 
                 // owner set
-                long? dropOwner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?) null;
+                long? dropOwner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key.GetId() : (long?) null;
                 Group group = null;
                 if (dropOwner != null)
                 {
@@ -2733,7 +2771,7 @@ namespace OpenNos.GameObject
                 {
                     foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
                     {
-                        if (grp.IsMemberOfGroup(monsterToAttack.DamageList?.FirstOrDefault().Key ?? -1))
+                        if (grp.IsMemberOfGroup(monsterToAttack.DamageList?.FirstOrDefault().Key.GetId() ?? -1))
                         {
                             targetSession.Character.GenerateXp(monsterToAttack, true);
                         }
@@ -2746,7 +2784,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    if (monsterToAttack.DamageList?.FirstOrDefault().Key == CharacterId || Mates.Any(m => m.IsTeamMember && m.MateTransportId == monsterToAttack.MatesDamageList?.FirstOrDefault().Key))
+                    if (monsterToAttack.DamageList?.FirstOrDefault().Key == this || monsterToAttack.DamageList?.FirstOrDefault().Key == Mates.FirstOrDefault(m => m.IsTeamMember))
                     {
                         GenerateXp(monsterToAttack, true);
                     }
@@ -2833,8 +2871,9 @@ namespace OpenNos.GameObject
                         Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act42) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                     {
                         List<long> alreadyGifted = new List<long>();
-                        foreach (long charId in monsterToAttack.DamageList.Keys)
+                        foreach (IBattleEntity entity in monsterToAttack.DamageList.Keys)
                         {
+                            long charId = entity.GetId();
                             if (alreadyGifted.Contains(charId))
                             {
                                 continue;
@@ -2906,8 +2945,9 @@ namespace OpenNos.GameObject
                     Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short) MapTypeEnum.Act42) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                 {
                     List<long> alreadyGifted = new List<long>();
-                    foreach (long charId in monsterToAttack.DamageList.Keys)
+                    foreach (IBattleEntity entity in monsterToAttack.DamageList.Keys)
                     {
+                        long charId = entity.GetId();
                         if (alreadyGifted.Contains(charId))
                         {
                             continue;

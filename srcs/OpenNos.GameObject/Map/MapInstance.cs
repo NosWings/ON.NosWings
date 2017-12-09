@@ -29,6 +29,8 @@ using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.PathFinder.PathFinder;
+using OpenNos.GameObject.Battle;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject.Map
 {
@@ -167,6 +169,8 @@ namespace OpenNos.GameObject.Map
             get { return _npcs.Select(s => s.Value).ToList(); }
         }
 
+        public List<IBattleEntity> BattleEntities { get { return GetBattleEntities(); } }
+
         public ConcurrentBag<Tuple<EventContainer, List<long>>> OnCharacterDiscoveringMapEvents { get; }
 
         public ConcurrentBag<EventContainer> OnMapClean { get; }
@@ -194,6 +198,15 @@ namespace OpenNos.GameObject.Map
         #endregion
 
         #region Methods
+
+        public List<IBattleEntity> GetBattleEntities()
+        {
+            List<IBattleEntity> entities = new List<IBattleEntity>();
+            entities.AddRange(Monsters);
+            entities.AddRange(Mates);
+            entities.AddRange(Characters);
+            return entities;
+        }
 
         public void AddMonster(MapMonster monster)
         {
@@ -536,6 +549,11 @@ namespace OpenNos.GameObject.Map
                 }
             }
             return mates;
+        }
+
+        internal IEnumerable<IBattleEntity> GetBattleEntitiesInRange(MapCell pos, byte distance)
+        {
+            return BattleEntities.Where(b => Map.GetDistance(b.GetPos(), pos) <= distance);
         }
 
         internal void RemoveMonstersTarget(object target)
