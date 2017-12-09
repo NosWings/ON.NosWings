@@ -985,14 +985,21 @@ namespace OpenNos.GameObject
             Owner.Session.SendPacket(GenerateScPacket());
         }
 
-        public void GetDamage(int damage)
+        public void GetDamage(int damage, bool canKill = true)
         {
+            if (Hp <= 0)
+            {
+                return;
+            }
             LastDefence = DateTime.Now;
-
             Hp -= damage;
             if (Hp < 0)
             {
                 Hp = 0;
+            }
+            if (!canKill && Hp == 0)
+            {
+                Hp = 1;
             }
         }
 
@@ -1221,9 +1228,9 @@ namespace OpenNos.GameObject
             return (AttackType)Monster.AttackClass;
         }
 
-        public bool isTargetable()
+        public bool isTargetable(SessionType type, bool isPvP = false)
         {
-            return IsAlive && Hp > 0;
+            return type == SessionType.Monster && IsAlive && Hp > 0;
         }
 
         public Node[,] GetBrushFire()
@@ -1246,6 +1253,26 @@ namespace OpenNos.GameObject
             return Owner.MapInstance;
         }
 
+        public void GenerateDeath(IBattleEntity killer)
+        {
+            if (Hp > 0)
+            {
+                return;
+            }
+        }
+
+        public void GenerateRewards(IBattleEntity target)
+        {
+            if (target is MapMonster monster)
+            {
+                Owner.GenerateKillBonus(monster);
+            }
+        }
+
+        public int[] GetHp()
+        {
+            return new[] { Hp, HpLoad() };
+        }
 
         #endregion
     }
