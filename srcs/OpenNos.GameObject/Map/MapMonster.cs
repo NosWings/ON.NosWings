@@ -395,8 +395,7 @@ namespace OpenNos.GameObject.Map
                 X = FirstX,
                 Y = FirstY
             }, MapInstance.Map.Grid);
-
-            Console.WriteLine("Should go back to original pos");
+            
             Path.Clear();
             Target = null;
             //return to origin
@@ -414,7 +413,7 @@ namespace OpenNos.GameObject.Map
                 double waitingtime =
                     Map.GetDistance(new MapCell { X = FirstX, Y = FirstY }, new MapCell { X = MapX, Y = MapY }) /
                     (double)Monster.Speed;
-                MapInstance.Broadcast($"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}");
+                MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All));
                 LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
 
