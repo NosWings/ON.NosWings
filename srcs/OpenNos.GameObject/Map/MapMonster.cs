@@ -590,8 +590,11 @@ namespace OpenNos.GameObject.Map
                 FollowTarget();
                 return;
             }
-            npcMonsterSkill.LastSkillUse = DateTime.Now;
-            CurrentMp -= npcMonsterSkill.Skill.MpCost;
+            if (npcMonsterSkill != null)
+            {
+                npcMonsterSkill.LastSkillUse = DateTime.Now;
+                CurrentMp -= npcMonsterSkill.Skill.MpCost;
+            }
             MapInstance.Broadcast($"ct 3 {MapMonsterId} {(byte)Target.GetSessionType()} {Target.GetId()} {skill.CastAnimation} {skill.CastEffect} {skill.SkillVNum}");
             LastMove = DateTime.Now;
             GetInformations().TargetHit(Target, TargetHitType.SingleTargetHit, skill);

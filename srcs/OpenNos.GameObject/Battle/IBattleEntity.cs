@@ -7,32 +7,32 @@ namespace OpenNos.GameObject.Battle
 {
     public interface IBattleEntity
     {
+        Node[,] GetBrushFire();
+
         MapCell GetPos();
 
         MapInstance GetMapInstance();
 
         BattleEntity GetInformations();
 
+        EffectPacket GenerateEff(int effectid);
+
         AttackType GetAttackType(Skill skill = null);
-
-        object GetSession();
-
-        bool isTargetable(SessionType type, bool isPvP = false);
-
-        Node[,] GetBrushFire();
 
         SessionType GetSessionType();
 
-        long GetId();
-
         void GetDamage(int damage, bool canKill = true);
-
-        EffectPacket GenerateEff(int effectid);
 
         void GenerateDeath(IBattleEntity killer = null);
 
         void GenerateRewards(IBattleEntity target);
 
+        bool isTargetable(SessionType type, bool isPvP = false);
+
         int[] GetHp();
+
+        long GetId();
+
+        object GetSession();
     }
 }
