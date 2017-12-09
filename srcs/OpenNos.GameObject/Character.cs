@@ -1543,9 +1543,9 @@ namespace OpenNos.GameObject
             return MapInstance;
         }
 
-        public bool isTargetable()
+        public bool isTargetable(SessionType type, bool isPvP = false)
         {
-            return Hp > 0 && !InvisibleGm && !Invisible;
+            return type != SessionType.Mate && (type != SessionType.Character || isPvP) && Hp > 0 && !InvisibleGm && !Invisible;
         }
 
         public Node[,] GetBrushFire()
@@ -1563,13 +1563,26 @@ namespace OpenNos.GameObject
             return CharacterId;
         }
 
-        public void GenerateDeath()
+        public void GenerateDeath(IBattleEntity killer)
         {
             if (Hp > 0)
             {
                 return;
             }
             Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(CharacterId); });
+        }
+
+        public void GenerateRewards(IBattleEntity target)
+        {
+            if (target is MapMonster monster)
+            {
+                GenerateKillBonus(monster);
+            }
+        }
+
+        public int[] GetHp()
+        {
+            return new[] { Hp , (int)HpLoad() };
         }
 
         public ushort GenerateDamage(MapMonster monsterToAttack, Skill skill, ref int hitmode, ref bool onyxEffect)
@@ -4575,8 +4588,12 @@ namespace OpenNos.GameObject
             return cpmax - cpused;
         }
 
-        public void GetDamage(int damage)
+        public void GetDamage(int damage, bool canKill = true)
         {
+            if (Hp <= 0)
+            {
+                return;
+            }
             LastDefence = DateTime.Now;
             CloseShop();
             CloseExchangeOrTrade();
@@ -4600,6 +4617,10 @@ namespace OpenNos.GameObject
             if (Hp < 0)
             {
                 Hp = 0;
+            }
+            if (!canKill && Hp == 0)
+            {
+                Hp = 1;
             }
         }
 
