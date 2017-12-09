@@ -16,6 +16,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Reactive.Linq;
 using NosSharp.Enums;
 using OpenNos.Core;
@@ -101,6 +102,8 @@ namespace OpenNos.GameObject.Map
         public bool IsHostile { get; set; }
 
         public bool IsTarget { get; set; }
+
+        public Node[,] BrushFire { get; set; }
 
         public DateTime LastEffect { get; set; }
 
@@ -373,16 +376,53 @@ namespace OpenNos.GameObject.Map
             OnNoticeEvents.RemoveAll(s => s != null);
         }
 
+        public void UpdateBrushFire()
+        {
+            BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
+            {
+                X = MapX,
+                Y = MapY
+            }, MapInstance.Map.Grid);
+        }
+
         /// <summary>
         /// Remove the current Target from Monster.
         /// </summary>
         internal void RemoveTarget()
         {
+            Node[,] brushFire = BestFirstSearch.LoadBrushFire(new GridPos()
+            {
+                X = FirstX,
+                Y = FirstY
+            }, MapInstance.Map.Grid);
+
+            Console.WriteLine("Should go back to original pos");
             Path.Clear();
             Target = null;
             //return to origin
-            Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY },
+
+            List<Node> list = BestFirstSearch.TracePath(new Node { X = MapX, Y = MapY }, brushFire,
                 MapInstance.Map.Grid);
+
+            Path = list;
+            UpdateBrushFire();
+            if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
+            {
+                int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
+                short smapX = Path[maxindex - 1].X;
+                short smapY = Path[maxindex - 1].Y;
+                double waitingtime =
+                    Map.GetDistance(new MapCell { X = FirstX, Y = FirstY }, new MapCell { X = MapX, Y = MapY }) /
+                    (double)Monster.Speed;
+                MapInstance.Broadcast($"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}");
+                LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
+
+
+                Thread.Sleep((int)((waitingtime > 1 ? 1 : waitingtime) * 1000));
+                MapX = smapX;
+                MapY = smapY;
+                Path.RemoveRange(0, maxindex);
+            }
         }
 
         /// <summary>
@@ -456,6 +496,7 @@ namespace OpenNos.GameObject.Map
                 MapInstance.Broadcast(new BroadcastPacket(null, $"mv 3 {MapMonsterId} {smapX} {smapY} {Monster.Speed}",
                     ReceiverType.All, xCoordinate: smapX, yCoordinate: smapY));
                 LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
+
 
                 Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000)))
                     .Subscribe(x =>
@@ -1808,6 +1849,11 @@ namespace OpenNos.GameObject.Map
                 posX = targetMate.PositionX;
                 posY = targetMate.PositionY;
             }
+            else
+            {
+                RemoveTarget();
+                return;
+            }
 
             lock(Target)
             {
@@ -1857,7 +1903,6 @@ namespace OpenNos.GameObject.Map
                     FollowTarget();
                 }
             }
-            //HostilityTarget();
         }
 
 
