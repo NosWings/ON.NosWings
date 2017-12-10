@@ -865,6 +865,7 @@ namespace OpenNos.GameObject.Battle
             Entity.GetMapInstance().Broadcast(str);
 
             bool isBoss = false;
+
             if (Entity.GetSession() is Character character)
             {
                 character.LastSkillUse = DateTime.Now;

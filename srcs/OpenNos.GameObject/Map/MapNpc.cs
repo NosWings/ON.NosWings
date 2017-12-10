@@ -305,7 +305,7 @@ namespace OpenNos.GameObject.Map
                     LastEffect = DateTime.Now;
                     if (monster.CurrentHp < 1)
                     {
-                        monster.KillMonster();
+                        monster.GenerateDeath();
                     }
                 }
                 else

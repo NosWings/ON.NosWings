@@ -496,14 +496,14 @@ namespace OpenNos.GameObject.Map
         {
             Parallel.ForEach(_monsters.Select(s => s.Value).Where(s => s.MonsterVNum == monsterVnum), monster =>
             {
-                monster.KillMonster();
+                monster.GenerateDeath();
                 Broadcast(monster.GenerateOut());
             });
         }
 
         public void DespawnMonster(MapMonster monster)
         {
-            monster.KillMonster();
+            monster.GenerateDeath();
             Broadcast(monster.GenerateOut());
         }
 
