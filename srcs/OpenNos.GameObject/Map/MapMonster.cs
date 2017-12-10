@@ -214,18 +214,8 @@ namespace OpenNos.GameObject.Map
         /// </summary>
         public void RunDeathEvent()
         {
-            if (IsBonus)
-            {
-                MapInstance.InstanceBag.Combo++;
-                MapInstance.InstanceBag.Point +=
-                    EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + 1);
-            }
-            else
-            {
-                MapInstance.InstanceBag.Combo = 0;
-                MapInstance.InstanceBag.Point +=
-                    EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo);
-            }
+            MapInstance.InstanceBag.Combo += IsBonus ? 1 : 0;
+            MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + (IsBonus ? 1 : 0));
             MapInstance.InstanceBag.MonstersKilled++;
             OnDeathEvents.ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
         }
@@ -330,7 +320,7 @@ namespace OpenNos.GameObject.Map
             {
                 Path = BestFirstSearch.TracePath(new Node() { X = MapX, Y = MapY }, Target.GetBrushFire(), MapInstance.Map.Grid);
             }
-            Move();
+            Move(); // follow the target
         }
 
         /// <summary>
