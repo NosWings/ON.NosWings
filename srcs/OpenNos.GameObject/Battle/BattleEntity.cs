@@ -983,7 +983,7 @@ namespace OpenNos.GameObject.Battle
 
             if (!isBoss)
             {
-                skill?.BCards.ToList().ForEach(s => s.ApplyBCards(target.GetSession()));
+                skill?.BCards.ToList().ForEach(s => s.ApplyBCards(target.GetSession(), Session));
             }
 
             if (target.GetCurrentHp() <= 0)
