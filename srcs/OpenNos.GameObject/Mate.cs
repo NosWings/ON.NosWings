@@ -42,6 +42,8 @@ namespace OpenNos.GameObject
 
         private Character _owner;
 
+        public BattleEntity _battleEntity;
+
         #endregion
 
         #region Instantiation
@@ -608,7 +610,7 @@ namespace OpenNos.GameObject
 
         public BattleEntity GetBattleEntity()
         {
-            return new BattleEntity(this);
+            return _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
         }
 
         public object GetSession()

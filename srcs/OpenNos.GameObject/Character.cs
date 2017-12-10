@@ -48,6 +48,7 @@ namespace OpenNos.GameObject
 
         private byte _speed;
         private readonly object _syncObj = new object();
+        public BattleEntity _battleEntity;
 
         #endregion
 
@@ -88,20 +89,6 @@ namespace OpenNos.GameObject
         public bool HasBuff(CardType type, byte subtype) => GetBattleEntity().HasBuff(type, subtype);
 
         public ConcurrentBag<Buff.Buff> Buff => GetBattleEntity().Buffs;
-
-        public ConcurrentBag<BCard> PassiveSkillBcards => GetBattleEntity().StaticBcards;
-
-        public ConcurrentBag<BCard> EquipmentBCards
-        {
-            get
-            {
-                return GetBattleEntity().StaticBcards;
-            }
-            set
-            {
-                GetBattleEntity().StaticBcards = value;
-            }
-        }
 
         #endregion
 
@@ -1463,7 +1450,7 @@ namespace OpenNos.GameObject
                     continue;
                 }
                 Inventory.DeleteById(item.Id);
-                Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != item.ItemVNum);
+                GetBattleEntity().StaticBcards = GetBattleEntity().StaticBcards.Where(o => o.ItemVNum != item.ItemVNum);
                 Session.SendPacket(item.Type == InventoryType.Wear ? GenerateEquipment() : UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
             }
@@ -1534,7 +1521,7 @@ namespace OpenNos.GameObject
 
         public BattleEntity GetBattleEntity()
         {
-            return new BattleEntity(this);
+            return _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
         }
 
         public object GetSession()
@@ -2687,26 +2674,26 @@ namespace OpenNos.GameObject
                                 {
                                     case (byte)EquipmentType.MainWeapon:
                                         Inventory.PrimaryWeapon = wearableinstance;
-                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => GetBattleEntity().StaticBcards.Add(s));
                                         break;
 
                                     case (byte)EquipmentType.SecondaryWeapon:
                                         Inventory.SecondaryWeapon = wearableinstance;
-                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => GetBattleEntity().StaticBcards.Add(s));
                                         break;
 
                                     case (byte)EquipmentType.Armor:
                                         Inventory.Armor = wearableinstance;
-                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => GetBattleEntity().StaticBcards.Add(s));
                                         break;
 
                                     case (byte)EquipmentType.Bracelet:
                                     case (byte)EquipmentType.Necklace:
                                     case (byte)EquipmentType.Ring:
-                                        EquipmentOptionHelper.Instance.CellonToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => EquipmentBCards.Add(s));
+                                        EquipmentOptionHelper.Instance.CellonToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => GetBattleEntity().StaticBcards.Add(s));
                                         break;
                                 }
-                                inv.Item.BCards.ForEach(s => EquipmentBCards.Add(s));
+                                inv.Item.BCards.ForEach(s => GetBattleEntity().StaticBcards.Add(s));
                             }
                             break;
                         case InventoryType.Equipment:
@@ -3725,7 +3712,7 @@ namespace OpenNos.GameObject
         {
             // TODO IMPROVE PERFORMANCES
             // ACCESSING A DICTIONARY LIKE THIS IS CPU CYCLE KILLER
-            PassiveSkillHelper.Instance.PassiveSkillToBcards(Skills.Values.Where(s => s.Skill.SkillType == 0).ToList()).ForEach(s => PassiveSkillBcards.Add(s));
+            PassiveSkillHelper.Instance.PassiveSkillToBcards(Skills.Values.Where(s => s.Skill.SkillType == 0).ToList()).ForEach(s => GetBattleEntity().StaticBcards.Add(s));
         }
 
 
@@ -4979,7 +4966,7 @@ namespace OpenNos.GameObject
         /// <returns></returns>
         public int GetMostValueEquipmentBuff(CardType type, byte subtype)
         {
-            return EquipmentBCards.Where(s => s.Type == (byte)type && s.SubType.Equals(subtype)).OrderByDescending(s => s.FirstData).FirstOrDefault()?.FirstData ?? 0;
+            return GetBattleEntity().StaticBcards.Where(s => s.Type == (byte)type && s.SubType.Equals(subtype)).OrderByDescending(s => s.FirstData).FirstOrDefault()?.FirstData ?? 0;
         }
 
         /// <summary>
@@ -4995,7 +4982,7 @@ namespace OpenNos.GameObject
         {
             int value1 = 0;
             int value2 = 0;
-            foreach (BCard entry in EquipmentBCards.Where(
+            foreach (BCard entry in GetBattleEntity().StaticBcards.Where(
                 s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10))))
             {
                 if (entry.IsLevelScaled)

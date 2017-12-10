@@ -39,6 +39,7 @@ namespace OpenNos.GameObject.Map
         private int _movetime;
         private Random _random;
         private const int _maxDistance = 25;
+        public BattleEntity _battleEntity;
 
         #endregion
 
@@ -523,7 +524,7 @@ namespace OpenNos.GameObject.Map
 
         public BattleEntity GetBattleEntity()
         {
-            return new BattleEntity(this);
+            return _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
         }
 
         public object GetSession()

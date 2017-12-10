@@ -31,7 +31,6 @@ namespace OpenNos.GameObject.Battle
             if (Session is Character character)
             {
                 Level = character.Level;
-                DefenceUpgrade = character.Inventory?.Armor?.Upgrade ?? 0;
             }
             else if (Session is Mate mate)
             {
@@ -824,7 +823,7 @@ namespace OpenNos.GameObject.Battle
             bool onyxWings = false;
             ushort damage = GenerateDamage(target, skill, ref hitmode, ref onyxWings);
 
-            if (Entity.GetSession() is Character charact && onyxWings && mapInstance != null)
+            if (Session is Character charact && onyxWings && mapInstance != null)
             {
                 short onyxX = (short)(charact.PositionX + 2);
                 short onyxY = (short)(charact.PositionY + 2);
