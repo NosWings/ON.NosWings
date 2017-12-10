@@ -1158,6 +1158,7 @@ namespace OpenNos.Handler
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeLevelPacket, Session.IpAddress);
                     Session.Character.Level = changeLevelPacket.Level;
+                    Session.Character.GetBattleEntity().Level = changeLevelPacket.Level;
                     Session.Character.LevelXp = 0;
                     Session.Character.Hp = (int) Session.Character.HpLoad();
                     Session.Character.Mp = (int) Session.Character.MpLoad();
