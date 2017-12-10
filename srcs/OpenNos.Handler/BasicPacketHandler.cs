@@ -655,10 +655,16 @@ namespace OpenNos.Handler
                         return;
                     case (sbyte)PortalType.BlueRaid:
                     case (sbyte)PortalType.DarkRaid:
-                        if ((byte)Session.Character.Faction == (portal.Type - 9) && Session.Character.Family?.Act4Raid != null)
+                        ScriptedInstance raid = Session.Character.Family?.Act4Raid;
+                        if ((byte)Session.Character.Faction == (portal.Type - 9) && raid?.FirstMap != null)
                         {
+                            if (raid.LevelMinimum > Session.Character.Level)
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOW_RAID_LEVEL"), raid.LevelMinimum), 10));
+                                return;
+                            }
                             Session.Character.LastPortal = currentRunningSeconds;
-                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.Act4Raid.MapInstanceId, portal.DestinationX, portal.DestinationY);
+                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, raid.FirstMap.MapInstanceId, raid.StartX, raid.StartY);
                         }
                         else
                         {
@@ -680,15 +686,17 @@ namespace OpenNos.Handler
                         return;
                     case MapInstanceType.RaidInstance:
                         ClientSession leader = Session?.Character?.Group?.Characters?.OrderBy(s => s.Character.LastGroupJoin).ElementAt(0);
-                        if (leader != null)
+                        if (leader != null && Session.Character.CharacterId != leader.Character.CharacterId 
+                                           && leader.CurrentMapInstance.MapInstanceId != portal.DestinationMapInstanceId
+                                           && ServerManager.Instance.GetMapInstance(portal.DestinationMapInstanceId).Monsters.Any(m => m.IsBoss))
                         {
-                            if (Session.Character.CharacterId != leader.Character.CharacterId)
-                            {
-                                if (leader.CurrentMapInstance.MapInstanceId != portal.DestinationMapInstanceId)
-                                {
-                                    ServerManager.Instance.ChangeMapInstance(leader.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
-                                }
-                            }
+                            ServerManager.Instance.ChangeMapInstance(leader.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
+                        }
+                        else if (Session.Character?.Family?.Act4Raid?.FirstMap == Session.CurrentMapInstance && Session.Character?.Family?.Act4Raid?.StartX == portal.SourceX 
+                                && Session?.Character?.Family?.Act4Raid?.StartY == portal.SourceY)
+                        {
+                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 134).MapInstanceId, portal.DestinationX, portal.DestinationY);
+                            return;
                         }
                         break;
                     case MapInstanceType.ArenaInstance:

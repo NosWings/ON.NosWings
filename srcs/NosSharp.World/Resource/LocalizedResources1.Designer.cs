@@ -88,6 +88,16 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The raid {0} is open !.
+        /// </summary>
+        internal static string ACT4_RAID_OPEN {
+            get {
+                return ResourceManager.GetString("ACT4_RAID_OPEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Do you want to add an option on this stuff ? If yes, this item will be link to you only..
         ///   Looks up a localized string similar to Do you want to add an option on this stuff ? If yes, this item will be link to you only..
         /// </summary>
         internal static string ADD_OPTION_ON_STUFF {
@@ -2366,6 +2376,24 @@ namespace NosSharp.World.Resource {
         
         /// <summary>
         ///   Looks up a localized string similar to Your reputation is too low!.
+        /// </summary>
+        internal static string LOW_LVL {
+            get {
+                return ResourceManager.GetString("LOW_LVL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You must be level {0} to join the raid..
+        /// </summary>
+        internal static string LOW_RAID_LEVEL {
+            get {
+                return ResourceManager.GetString("LOW_RAID_LEVEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Your reputation is too low!.
         /// </summary>
         internal static string LOW_REP {
             get {

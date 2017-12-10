@@ -49,6 +49,8 @@ namespace OpenNos.GameObject
 
         public List<Gift> GiftItems { get; set; }
 
+        public List<MapInstance> Maps { get; set; }
+
         public long Gold { get; set; }
 
         public string Label { get; set; }
@@ -142,6 +144,7 @@ namespace OpenNos.GameObject
             DrawItems = new List<Gift>();
             SpecialItems = new List<Gift>();
             GiftItems = new List<Gift>();
+            Maps = new List<MapInstance>();
 
             XmlDocument doc = new XmlDocument();
             if (Script != null)
@@ -228,6 +231,7 @@ namespace OpenNos.GameObject
                     }
                     _instancebag.Lives = Lives;
                     MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable?.Attributes?["VNum"].Value), mapinstancetype, _instancebag);
+                    Maps.Add(newmap);
                     byte.TryParse(variable?.Attributes["IndexX"]?.Value, out byte indexx);
                     newmap.MapIndexX = indexx;
 
@@ -253,6 +257,11 @@ namespace OpenNos.GameObject
             });
             _obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
             {
+                if (Type == ScriptedInstanceType.RaidAct4)
+                {
+                    _obs.Dispose();
+                    return;
+                }
                 if (_instancebag.Lives - _instancebag.DeadList.Count < 0)
                 {
                     Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 3)));
@@ -371,6 +380,11 @@ namespace OpenNos.GameObject
                     case "SetButtonLockers":
                         evts.Add(new EventContainer(mapinstance, EventActionType.SETBUTTONLOCKERS, byte.Parse(mapevent?.Attributes["Value"]?.Value)));
                         break;
+
+                    case "OnTimeElapsed":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.ONTIMEELAPSED, new Tuple<int, ConcurrentBag<EventContainer>>(int.Parse(mapevent?.Attributes["Value"]?.Value), GenerateEvent(mapevent, mapinstance))));
+                        break;
+
                     case "ControlMonsterInRange":
                         short.TryParse(mapevent?.Attributes["VNum"]?.Value, out short vnum);
                         evts.Add(new EventContainer(mapinstance, EventActionType.CONTROLEMONSTERINRANGE,
