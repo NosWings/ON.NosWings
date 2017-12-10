@@ -16,6 +16,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Reactive.Linq;
 using NosSharp.Enums;
 using OpenNos.Core;
@@ -85,6 +86,8 @@ namespace OpenNos.GameObject.Map
         public bool IsHostile { get; set; }
 
         public bool IsTarget { get; set; }
+
+        public Node[,] BrushFire { get; set; }
 
         public DateTime LastEffect { get; set; }
 
@@ -288,6 +291,15 @@ namespace OpenNos.GameObject.Map
             }
             OnNoticeEvents.ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
             OnNoticeEvents.RemoveAll(s => s != null);
+        }
+
+        public void UpdateBrushFire()
+        {
+            BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
+            {
+                X = MapX,
+                Y = MapY
+            }, MapInstance.Map.Grid);
         }
 
         /// <summary>

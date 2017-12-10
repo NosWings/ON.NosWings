@@ -55,6 +55,30 @@ namespace OpenNos.Handler
 
         #region Methods
 
+        public void Act4Percentage(Act4PercentagePacket packet)
+        {
+            if (packet?.Faction == null || packet?.Percent == null)
+            {
+                return;
+            }
+            if (packet?.Faction.Value < 0 || packet.Faction.Value > 1)
+            {
+                return;
+            }
+            switch (packet.Faction)
+            {
+                case 0:
+                    ServerManager.Instance.Act4AngelStat.Percentage += packet.Percent.Value * 100;
+                    ServerManager.Instance.Act4Process();
+                    break;
+                case 1:
+                    ServerManager.Instance.Act4DemonStat.Percentage += packet.Percent.Value * 100;
+                    ServerManager.Instance.Act4Process();
+                    break;
+            }
+
+        }
+
         public void ManageBankAccount(BankCommandPacket packet)
         {
             if (string.IsNullOrEmpty(packet?.Subcommand))
@@ -124,7 +148,7 @@ namespace OpenNos.Handler
                     Session.Account.BankMoney -= amount;
                     target.Account.BankMoney += amount;
 
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_TRANSFER_TO"), packet.Target, amount), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_TRANSFER_TO"), amount, packet.Target), 11));
                     target.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("BANK_TRANSFER_FROM"), Session.Character.Name, amount), 11));
                     break;
 

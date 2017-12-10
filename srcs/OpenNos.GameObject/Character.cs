@@ -282,6 +282,8 @@ namespace OpenNos.GameObject
 
         public int MaxDistance { get; set; }
 
+        public int BuffRandomTime { get; set; }
+
         public int MaxFood { get; set; }
 
         public int MaxHit { get; set; }
@@ -866,10 +868,14 @@ namespace OpenNos.GameObject
         }
         public void UpdateBushFire()
         {
-            Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
+            if (Session.Character == null || Session.CurrentMapInstance == null)
             {
-                X = Session.Character.PositionX,
-                Y = Session.Character.PositionY
+                return;
+            }
+            BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
+            {
+                X = PositionX,
+                Y = PositionY
             }, Session.CurrentMapInstance.Map.Grid);
         }
 
@@ -2017,7 +2023,7 @@ namespace OpenNos.GameObject
                                 ItemVNum = (short)d.Value[0],
                                 Amount = 1,
                                 MonsterVNum = monsterToAttack.MonsterVNum,
-                                DropChance = qst.Quest.SpecialData ?? 100 * ServerManager.Instance.DropRate
+                                DropChance = (qst.Quest.SpecialData ?? 100) * ServerManager.Instance.QuestDropRate
                             });
                         }
                     });
@@ -4918,7 +4924,6 @@ namespace OpenNos.GameObject
 
         public void AddBuff(Buff.Buff indicator, bool notify = true)
         {
-            int buffTime = 0;
             if (indicator?.Card == null)
             {
                 return;
@@ -4931,17 +4936,17 @@ namespace OpenNos.GameObject
             //TODO: Find a better way to do this
             if (indicator.Card.CardId == 85)
             {
-                buffTime = ServerManager.Instance.RandomNumber(50, 350);
+                BuffRandomTime = ServerManager.Instance.RandomNumber(50, 350);
             }
             else if (indicator.Card.CardId == 336)
             {
-                buffTime = ServerManager.Instance.RandomNumber(30, 70);
+                BuffRandomTime = ServerManager.Instance.RandomNumber(30, 70);
             }
             else if (indicator.Card.CardId == 0)
             {
-                buffTime = ChargeValue > 7000 ? 7000 : ChargeValue;
+                BuffRandomTime = ChargeValue > 7000 ? 7000 : ChargeValue;
             }
-            indicator.RemainingTime = indicator.Card.Duration == 0 ? buffTime : indicator.Card.Duration;
+            indicator.RemainingTime = indicator.Card.Duration == 0 ? BuffRandomTime : indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
 
@@ -4959,7 +4964,7 @@ namespace OpenNos.GameObject
                 value?.Dispose();
             }
 
-            ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds((indicator.Card.Duration == 0 ? buffTime : indicator.Card.Duration) * 100)).Subscribe(o =>
+            ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds((indicator.Card.Duration == 0 ? BuffRandomTime : indicator.Card.Duration) * 100)).Subscribe(o =>
             {
                 RemoveBuff(indicator.Card.CardId);
                 if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
@@ -4998,6 +5003,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
+            LoadSpeed();
             LastSpeedChange = DateTime.Now;
             Session.SendPacket(GenerateCond());
         }
