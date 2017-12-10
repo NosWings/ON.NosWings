@@ -508,7 +508,7 @@ namespace OpenNos.GameObject.Map
                 MapInstance.Broadcast($"ct 3 {MapMonsterId} {(byte)Target.GetSessionType()} {Target.GetId()} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
             }
             LastMove = DateTime.Now;
-            GetInformations().TargetHit(Target, TargetHitType.SingleTargetHit, npcMonsterSkill?.Skill, skillEffect: Monster.BasicSkill);
+            GetBattleEntity().TargetHit(Target, TargetHitType.SingleTargetHit, npcMonsterSkill?.Skill, skillEffect: Monster.BasicSkill);
         }
 
         /// <summary>
@@ -596,7 +596,7 @@ namespace OpenNos.GameObject.Map
             return new MapCell { X = MapX, Y = MapY };
         }
 
-        public BattleEntity GetInformations()
+        public BattleEntity GetBattleEntity()
         {
             return new BattleEntity(this);
         }

@@ -163,7 +163,7 @@ namespace OpenNos.GameObject.Battle
 
         public int GenerateDamage(IBattleEntity targetEntity, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
-            BattleEntity target = targetEntity?.GetInformations();
+            BattleEntity target = targetEntity?.GetBattleEntity();
             if (target == null)
             {
                 return 0;

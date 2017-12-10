@@ -657,7 +657,7 @@ namespace OpenNos.GameObject
             return new MapCell { X = PositionX, Y = PositionY };
         }
 
-        public BattleEntity GetInformations()
+        public BattleEntity GetBattleEntity()
         {
             return new BattleEntity(this);
         }

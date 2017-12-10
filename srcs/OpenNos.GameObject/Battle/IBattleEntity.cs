@@ -13,7 +13,7 @@ namespace OpenNos.GameObject.Battle
 
         MapInstance GetMapInstance();
 
-        BattleEntity GetInformations();
+        BattleEntity GetBattleEntity();
 
         EffectPacket GenerateEff(int effectid);
 
