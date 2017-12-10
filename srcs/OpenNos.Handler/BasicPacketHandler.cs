@@ -618,7 +618,7 @@ namespace OpenNos.Handler
         {
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance)
+            if (!(timeSpanSinceLastPortal >= 4) && Session.CurrentMapInstance?.MapInstanceType != MapInstanceType.RaidInstance || !Session.HasCurrentMapInstance)
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
