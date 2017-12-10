@@ -1552,7 +1552,7 @@ namespace OpenNos.GameObject
 
         public bool isTargetable(SessionType type, bool isPvP = false)
         {
-            return type != SessionType.Mate && (type != SessionType.Character || isPvP) && Hp > 0 && !InvisibleGm && !Invisible;
+            return type != SessionType.MateAndNpc && (type != SessionType.Character || isPvP) && Hp > 0 && !InvisibleGm && !Invisible;
         }
 
         public Node[,] GetBrushFire()

@@ -635,7 +635,7 @@ namespace OpenNos.GameObject
 
         public SessionType GetSessionType()
         {
-            return SessionType.Mate;
+            return SessionType.MateAndNpc;
         }
 
         public long GetId()

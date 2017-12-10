@@ -298,7 +298,6 @@ namespace OpenNos.GameObject.Map
                 return;
             }
             Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY }, MapInstance.Map.Grid); // Path To origins
-            
         }
 
         /// <summary>
@@ -565,14 +564,7 @@ namespace OpenNos.GameObject.Map
         public void GetDamage(int damage, bool canKill = true)
         {
             CurrentHp -= damage;
-            if (CurrentHp <= 0)
-            {
-                CurrentHp = 0;
-            }
-            if (!canKill && CurrentHp == 0)
-            {
-                CurrentHp = 1;
-            }
+            CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : 0;
         }
 
         public void GenerateDeath(IBattleEntity killer = null)

@@ -13,6 +13,7 @@ using OpenNos.GameObject.Networking;
 using OpenNos.Data;
 using OpenNos.Core;
 using System.Collections.Generic;
+using OpenNos.GameObject.Npc;
 
 namespace OpenNos.GameObject.Battle
 {
@@ -28,6 +29,7 @@ namespace OpenNos.GameObject.Battle
             StaticBcards = new ConcurrentBag<BCard>();
             SkillBcards = new ConcurrentBag<BCard>();
             ObservableBag = new Dictionary<short, IDisposable>();
+
             if (Session is Character character)
             {
                 Level = character.Level;
@@ -50,30 +52,27 @@ namespace OpenNos.GameObject.Battle
                 CriticalRate = mate.Monster.CriticalChance;
                 Critical = mate.Monster.CriticalRate - 30;
             }
-            else if (Session is MapMonster monster)
+            else if (Session is MapMonster || Session is MapNpc)
             {
-                Level = monster.Monster.Level;
-                Element = monster.Monster.Element;
-                ElementRate = monster.Monster.ElementRate;
-                FireResistance = monster.Monster.FireResistance;
-                WaterResistance = monster.Monster.WaterResistance;
-                LightResistance = monster.Monster.LightResistance;
-                DarkResistance = monster.Monster.DarkResistance;
-                DefenceRate = monster.Monster.DefenceDodge;
-                DistanceDefenceRate = monster.Monster.DistanceDefenceDodge;
-                CloseDefence = monster.Monster.CloseDefence;
-                RangedDefence = monster.Monster.DistanceDefence;
-                MagicDefence = monster.Monster.MagicDefence;
-                AttackUpgrade = monster.Monster.AttackUpgrade;
-                CriticalRate = monster.Monster.CriticalChance;
-                Critical = monster.Monster.CriticalRate - 30;
-                MinDamage = monster.Monster.DamageMinimum;
-                MaxDamage = monster.Monster.DamageMaximum;
-                HitRate = monster.Monster.Concentrate;
-            }
-            else if (Session is MapNpc npc)
-            {
-                // To Do
+                NpcMonster npcMonster = Session.GetType() == typeof(MapMonster) ? (Session as MapMonster).Monster : (Session as MapNpc).Npc;
+                Level = npcMonster.Level;
+                Element = npcMonster.Element;
+                ElementRate = npcMonster.ElementRate;
+                FireResistance = npcMonster.FireResistance;
+                WaterResistance = npcMonster.WaterResistance;
+                LightResistance = npcMonster.LightResistance;
+                DarkResistance = npcMonster.DarkResistance;
+                DefenceRate = npcMonster.DefenceDodge;
+                DistanceDefenceRate = npcMonster.DistanceDefenceDodge;
+                CloseDefence = npcMonster.CloseDefence;
+                RangedDefence = npcMonster.DistanceDefence;
+                MagicDefence = npcMonster.MagicDefence;
+                AttackUpgrade = npcMonster.AttackUpgrade;
+                CriticalRate = npcMonster.CriticalChance;
+                Critical = npcMonster.CriticalRate - 30;
+                MinDamage = npcMonster.DamageMinimum;
+                MaxDamage = npcMonster.DamageMaximum;
+                HitRate = npcMonster.Concentrate;
             }
         }
 
