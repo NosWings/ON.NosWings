@@ -521,7 +521,7 @@ namespace OpenNos.GameObject.Map
         public void GetDamage(int damage, bool canKill = true)
         {
             CurrentHp -= damage;
-            CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : 0;
+            CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : CurrentHp;
         }
 
         #endregion
