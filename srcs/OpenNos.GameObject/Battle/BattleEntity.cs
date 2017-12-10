@@ -900,7 +900,7 @@ namespace OpenNos.GameObject.Battle
 
             if (target.GetCurrentHp() <= 0)
             {
-                target.GenerateDeath();
+                target.GenerateDeath(Entity);
             }
 
             if (skill == null || (skill.Range <= 0 && skill.TargetRange <= 0) || isRange || !(Entity.GetSession() is MapMonster))
