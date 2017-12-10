@@ -100,9 +100,9 @@ namespace OpenNos.GameObject
 
         public int Concentrate { get { return GetBattleEntity().HitRate; } set { GetBattleEntity().HitRate = value; } }
 
-        public int DamageMaximum { get { return GetBattleEntity().MinDamage; } set { GetBattleEntity().MinDamage = value; } }
+        public int DamageMaximum { get { return GetBattleEntity().MaxDamage; } set { GetBattleEntity().MaxDamage = value; } }
 
-        public int DamageMinimum { get { return GetBattleEntity().MaxDamage; } set { GetBattleEntity().MaxDamage = value; } }
+        public int DamageMinimum { get { return GetBattleEntity().MinDamage; } set { GetBattleEntity().MinDamage = value; } }
 
         public ItemInstance GlovesInstance { get; set; }
 
