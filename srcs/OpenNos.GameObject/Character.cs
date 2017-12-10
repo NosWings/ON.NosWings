@@ -1471,7 +1471,7 @@ namespace OpenNos.GameObject
             GroupSentRequestCharacterIds.Clear();
             FamilyInviteCharacters.Clear();
             FriendRequestCharacters.Clear();
-            Session.Character.Life.Dispose();
+            Session.Character?.Life?.Dispose();
         }
 
         public string GenerateAct()

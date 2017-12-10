@@ -618,7 +618,7 @@ namespace OpenNos.Handler
         {
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance)
+            if (!(timeSpanSinceLastPortal >= 4) && Session.CurrentMapInstance?.MapInstanceType != MapInstanceType.RaidInstance || !Session.HasCurrentMapInstance)
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
@@ -759,6 +759,11 @@ namespace OpenNos.Handler
                     if (portal.DestinationX == -1 && portal.DestinationY == -1)
                     {
                         ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, portal.DestinationMapInstanceId);
+                        return;
+                    }
+                    if (portal.DestinationMapInstanceId == Session.CurrentMapInstance.MapInstanceId)
+                    {
+                        Session.Character.TeleportOnMap(portal.DestinationX, portal.DestinationY);
                         return;
                     }
                     ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
