@@ -577,7 +577,6 @@ namespace OpenNos.GameObject.Map
 
         public void GenerateDeath(IBattleEntity killer = null)
         {
-            killer?.GenerateRewards(this);
             if (MonsterVNum != 679 && MonsterVNum != 680) // Act4 Guardians
             {
                 IsAlive = false;
@@ -587,6 +586,7 @@ namespace OpenNos.GameObject.Map
                 LastMove = DateTime.Now.AddMilliseconds(500);
                 GetBattleEntity().Buffs.Clear();
                 Target = null;
+                killer?.GenerateRewards(this);
                 return;
             }
             CurrentHp = 1;
