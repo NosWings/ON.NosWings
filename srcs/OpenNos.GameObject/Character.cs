@@ -5154,19 +5154,7 @@ namespace OpenNos.GameObject
             int value1 = 0;
             int value2 = 0;
             
-            foreach (BCard entry in EquipmentBCards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
-            {
-                value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? Level / entry.FirstData : entry.FirstData * Level) : entry.FirstData;
-                value2 += entry.SecondData;
-            }
-
-            foreach (BCard entry in PassiveSkillBcards.Where(s => s != null && s.Type.Equals((byte) type) && s.SubType.Equals(subtype)))
-            {
-                value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? Level / entry.FirstData : entry.FirstData * Level) : entry.FirstData;
-                value2 += entry.SecondData;
-            }
-
-            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in EquipmentBCards.Concat(SkillBcards).Concat(PassiveSkillBcards).Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? Level / entry.FirstData : entry.FirstData * Level) : entry.FirstData;
                 value2 += entry.SecondData;
@@ -5178,7 +5166,7 @@ namespace OpenNos.GameObject
                     s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
                     (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
                 {
-                    value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? Level / entry.FirstData : entry.FirstData * Level) : entry.FirstData;
+                    value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? buff.Level / entry.FirstData : entry.FirstData * buff.Level) : entry.FirstData;
                     value2 += entry.SecondData;
                 }
             }
