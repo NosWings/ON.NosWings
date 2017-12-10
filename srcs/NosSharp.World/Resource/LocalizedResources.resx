@@ -1639,6 +1639,12 @@
   <data name="MATE_WILL_BE_BACK" xml:space="preserve">
     <value>Mate died !  he will be back in 3 min</value>
   </data>
+  <data name="LOW_RAID_LEVEL" xml:space="preserve">
+    <value>You must be level {0} to join the raid.</value>
+  </data>
+  <data name="ACT4_RAID_OPEN" xml:space="preserve">
+    <value>The raid {0} is open !</value>
+  </data>
   <data name="NEW_MISSION" xml:space="preserve">
     <value>New mission goal.</value>
   </data>
@@ -1689,5 +1695,8 @@
   </data>
   <data name="NO_BALANCE" xml:space="preserve">
     <value>KFCBANK : Your account has no sufficient funds</value>
+  </data>
+  <data name="TELEPORTED_IN" xml:space="preserve">
+    <value>You will be teleported in {0} seconds.</value>
   </data>
 </root>

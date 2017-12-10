@@ -52,11 +52,11 @@ namespace NosSharp.Enums
         MOVE,
         ONTARGET,
         CONTROLEMONSTERINRANGE,
-        MAPGIVE,
         REMOVEPORTAL,
         ACT4RAIDEND,
         CLEARMAPMONSTERS,
         INSTANTBATLLEREWARDS,
-        STARTACT4RAID
+        STARTACT4RAID,
+        ONTIMEELAPSED
     }
 }

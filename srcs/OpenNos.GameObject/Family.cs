@@ -43,11 +43,7 @@ namespace OpenNos.GameObject
 
         public MapInstance LandOfDeath { get; set; }
 
-        public Act4RaidType Act4RaidType { get; set; }
-
-        public MapInstance Act4Raid { get; set; }
-
-        public MapInstance Act4RaidBossMap { get; set; }
+        public ScriptedInstance Act4Raid { get; set; }
 
         public Inventory Warehouse { get; set; }
 

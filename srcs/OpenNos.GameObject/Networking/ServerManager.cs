@@ -106,6 +106,8 @@ namespace OpenNos.GameObject.Networking
             get { return _instance ?? (_instance = new ServerManager()); }
         }
 
+        public List<ScriptedInstance> Act4Raids { get; set; }
+
         public MapInstance ArenaInstance { get; private set; }
 
         public List<BazaarItemLink> BazaarList { get; set; }
@@ -447,7 +449,7 @@ namespace OpenNos.GameObject.Networking
                     break;
 
                 case MapInstanceType.RaidInstance:
-                    if (session.Character.MapInstance == session.Character.Family?.Act4Raid || session.Character.MapInstance == session.Character.Family?.Act4RaidBossMap)
+                    if (session.Character.Family?.Act4Raid?.Maps?.Any(m => m == session.CurrentMapInstance) ?? false)
                     {
                         session.Character.LoseReput(session.Character.Level * 2);
                         Task.Factory.StartNew(async () =>
@@ -670,11 +672,14 @@ namespace OpenNos.GameObject.Networking
                 }
                 else if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
                 {
-                    session.SendPacket(session.Character?.Group?.GeneraterRaidmbf(session.CurrentMapInstance));
-                }
-                if (mapInstanceId == session.Character.Family?.Act4Raid?.MapInstanceId || mapInstanceId == session.Character.Family?.Act4RaidBossMap?.MapInstanceId)
-                {
-                    session.SendPacket(session.Character.GenerateDg());
+                    if (session.Character.Family?.Act4Raid?.Maps?.Any(m => m.MapInstanceId == mapInstanceId) ?? false)
+                    {
+                        session.SendPacket(session.Character.GenerateDg());
+                    }
+                    else
+                    {
+                        session.SendPacket(session.Character?.Group?.GeneraterRaidmbf(session.CurrentMapInstance));
+                    }
                 }
                 session.SendPacket(session.CurrentMapInstance.GenerateMapDesignObjects());
                 session.SendPackets(session.CurrentMapInstance.GetMapDesignObjectEffects());
@@ -1881,7 +1886,7 @@ namespace OpenNos.GameObject.Networking
                     ShouldRespawn = false
                 };
                 monster.Initialize(instance);
-                monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<Act4RaidType, FactionType>((Act4RaidType)RandomNumber(0, 4), (FactionType)faction)));
+                monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<byte, byte>((byte)RandomNumber(0, 4), faction)));
                 instance.AddMonster(monster);
                 instance.Broadcast(monster.GenerateIn());
                 Observable.Timer(TimeSpan.FromSeconds(300)).Subscribe(o =>
@@ -2044,6 +2049,7 @@ namespace OpenNos.GameObject.Networking
         {
             Raids = new List<ScriptedInstance>();
             TimeSpaces = new List<ScriptedInstance>();
+            Act4Raids = new List<ScriptedInstance>();
             Parallel.ForEach(Mapinstances, map =>
             {
                 foreach (ScriptedInstanceDTO scriptedInstanceDto in DaoFactory.ScriptedInstanceDao.LoadByMap(map.Value.Map.MapId).ToList())
@@ -2070,7 +2076,7 @@ namespace OpenNos.GameObject.Networking
                             break;
                         case ScriptedInstanceType.RaidAct4:
                             si.LoadGlobals();
-                            Raids.Add(si);
+                            Act4Raids.Add(si);
                             break;
                     }
                 }
