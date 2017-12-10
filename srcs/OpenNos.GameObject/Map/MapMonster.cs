@@ -439,28 +439,29 @@ namespace OpenNos.GameObject.Map
             if (Target == null)
             {
                 RemoveTarget();
+                return;
             }
 
             Node[,] brushFire = null;
             int mapId = 0;
             short mapX = 0;
             short mapY = 0;
-            if (Target is Character character)
+            switch (Target)
             {
-                character.UpdateBushFire();
-                brushFire = character.BrushFire;
-                mapId = character.MapInstance.Map.MapId;
-                mapX = character.PositionX;
-                mapY = character.PositionY;
-            }
-
-            if (Target is Mate mate)
-            {
-                mate.UpdateBushFire();
-                brushFire = mate.BrushFire;
-                mapId = mate.Owner.MapInstance.Map.MapId;
-                mapX = mate.PositionX;
-                mapY = mate.PositionY;
+                case Character character:
+                    character.UpdateBushFire();
+                    brushFire = character.BrushFire;
+                    mapId = character.MapInstance.Map.MapId;
+                    mapX = character.PositionX;
+                    mapY = character.PositionY;
+                    break;
+                case Mate mate:
+                    mate.UpdateBushFire();
+                    brushFire = mate.BrushFire;
+                    mapId = mate.Owner.MapInstance.Map.MapId;
+                    mapX = mate.PositionX;
+                    mapY = mate.PositionY;
+                    break;
             }
 
             if (MapId != mapId)

@@ -865,10 +865,14 @@ namespace OpenNos.GameObject
         }
         public void UpdateBushFire()
         {
-            Session.Character.BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
+            if (Session.Character == null || Session.CurrentMapInstance == null)
             {
-                X = Session.Character.PositionX,
-                Y = Session.Character.PositionY
+                return;
+            }
+            BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
+            {
+                X = PositionX,
+                Y = PositionY
             }, Session.CurrentMapInstance.Map.Grid);
         }
 
