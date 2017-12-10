@@ -52,8 +52,6 @@ namespace OpenNos.GameObject
 
         public Mate(Character owner, NpcMonster npcMonster, byte level, MateType matetype)
         {
-            Buffs = new ConcurrentBag<Buff.Buff>();
-            SkillBcards = new ConcurrentBag<BCard>();
             NpcMonsterVNum = npcMonster.NpcMonsterVNum;
             Monster = npcMonster;
             Level = level;
@@ -76,21 +74,33 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        #region BattleEntityProperties
+
+        public void AddBuff(Buff.Buff indicator) => GetBattleEntity().AddBuff(indicator);
+
+        public void RemoveBuff(short cardId) => GetBattleEntity().RemoveBuff(cardId);
+
+        public int[] GetBuff(CardType type, byte subtype) => GetBattleEntity().GetBuff(type, subtype);
+
+        public bool HasBuff(CardType type, byte subtype) => GetBattleEntity().HasBuff(type, subtype);
+
+        public ConcurrentBag<Buff.Buff> Buffs => GetBattleEntity().Buffs;
+
+        #endregion
+
         public ItemInstance ArmorInstance { get; set; }
 
         public ItemInstance BootsInstance { get; set; }
 
         public Node[,] BrushFire { get; set; }
 
-        public ConcurrentBag<Buff.Buff> Buffs { get; internal set; }
-
         public short CloseDefence { get; set; }
 
-        public short Concentrate { get; set; }
+        public int Concentrate { get { return GetBattleEntity().HitRate; } set { GetBattleEntity().HitRate = value; } }
 
-        public short DamageMaximum { get; set; }
+        public int DamageMaximum { get { return GetBattleEntity().MinDamage; } set { GetBattleEntity().MinDamage = value; } }
 
-        public short DamageMinimum { get; set; }
+        public int DamageMinimum { get { return GetBattleEntity().MaxDamage; } set { GetBattleEntity().MaxDamage = value; } }
 
         public ItemInstance GlovesInstance { get; set; }
 
@@ -172,47 +182,6 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-
-        public void AddBuff(Buff.Buff indicator)
-        {
-            if (indicator?.Card == null)
-            {
-                return;
-            }
-            Buffs = Buffs.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
-            indicator.RemainingTime = indicator.Card.Duration;
-            indicator.Start = DateTime.Now;
-            Buffs.Add(indicator);
-            indicator.Card.BCards.ForEach(c => c.ApplyBCards(this));
-            if (indicator.Card.EffectId > 0)
-            {
-                GenerateEff(indicator.Card.EffectId);
-            }
-            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o => { RemoveBuff(indicator.Card.CardId); });
-        }
-        public int[] GetBuff(CardType type, byte subtype)
-        {
-            int value1 = 0;
-            int value2 = 0;
-
-            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
-            {
-                value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? Level / entry.FirstData : entry.FirstData * Level) : entry.FirstData;
-                value2 += entry.SecondData;
-            }
-
-            foreach (Buff.Buff buff in Buffs.Where(s => s?.Card?.BCards != null))
-            {
-                foreach (BCard entry in buff.Card.BCards.Where(s =>
-                    s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
-                    (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
-                {
-                    value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? Level / entry.FirstData : entry.FirstData * Level) : entry.FirstData;
-                    value2 += entry.SecondData;
-                }
-            }
-            return new[] { value1, value2 };
-        }
 
         public void UpdateBushFire()
         {
@@ -357,6 +326,7 @@ namespace OpenNos.GameObject
                     Level = ServerManager.Instance.MaxMateLevel;
                     Experience = 0;
                 }
+                GetBattleEntity().Level = Level;
                 RefreshStats();
                 Hp = MaxHp;
                 Mp = MaxMp;
@@ -447,12 +417,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool HasBuff(CardType type, byte subtype)
-        {
-            return Buffs.Any(buff => buff.Card.BCards.Any(b => b.Type == (byte)type && b.SubType == subtype &&
-            (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)));
-        }
-
         private int HealthHpLoad()
         {
             int regen = GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.HPRecoveryIncreased)[0];
@@ -493,8 +457,6 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-            Buffs = new ConcurrentBag<Buff.Buff>();
-            SkillBcards = new ConcurrentBag<BCard>();
             byte type = (byte)(Monster.AttackClass == 2 ? 1 : 0);
             Concentrate = (short)(MateHelper.Instance.Concentrate[type, Level] + (Monster.Concentrate - MateHelper.Instance.Concentrate[type, Monster.Level]));
             DamageMinimum = (short)(MateHelper.Instance.MinDamageData[type, Level] + (Monster.DamageMinimum - MateHelper.Instance.MinDamageData[type, Monster.Level]));
@@ -625,19 +587,6 @@ namespace OpenNos.GameObject
             Concentrate = (short)(MateHelper.Instance.Concentrate[type, Level] + (Monster.Concentrate - MateHelper.Instance.Concentrate[type, Monster.Level]));
             DamageMinimum = (short)(MateHelper.Instance.MinDamageData[type, Level] + (Monster.DamageMinimum - MateHelper.Instance.MinDamageData[type, Monster.Level]));
             DamageMaximum = (short)(MateHelper.Instance.MaxDamageData[type, Level] + (Monster.DamageMaximum - MateHelper.Instance.MaxDamageData[type, Monster.Level]));
-        }
-
-        private void RemoveBuff(int id)
-        {
-            Buff.Buff indicator = Buffs.FirstOrDefault(s => s.Card.CardId == id);
-            if (indicator == null)
-            {
-                return;
-            }
-            if (Buffs.Contains(indicator))
-            {
-                Buffs = Buffs.Where(s => s.Card.CardId != id);
-            }
         }
 
         private double XpLoad()

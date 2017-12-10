@@ -325,7 +325,6 @@ namespace OpenNos.GameObject.Item
                             List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad };
                             session.Character.DisableBuffs(bufftodisable, 4);
                             break;
-
                     }
                     Observable.Timer(TimeSpan.FromSeconds(session.Character.BuffRandomTime)).Subscribe(o =>
                     {

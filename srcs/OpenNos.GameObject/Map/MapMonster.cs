@@ -21,7 +21,6 @@ using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
-using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
@@ -29,6 +28,7 @@ using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.PathFinder.PathFinder;
 using OpenNos.GameObject.Battle;
+using static NosSharp.Enums.BCardType;
 
 namespace OpenNos.GameObject.Map
 {
@@ -46,7 +46,6 @@ namespace OpenNos.GameObject.Map
 
         public MapMonster()
         {
-            HitQueue = new ConcurrentQueue<HitRequest>();
             OnDeathEvents = new List<EventContainer>();
             OnNoticeEvents = new List<EventContainer>();
         }
@@ -55,9 +54,19 @@ namespace OpenNos.GameObject.Map
 
         #region Properties
 
-        public ConcurrentBag<Buff.Buff> Buff { get; internal set; }
+        #region BattleEntityProperties
 
-        public ConcurrentBag<BCard> SkillBcards { get; set; }
+        public void AddBuff(Buff.Buff indicator) => GetBattleEntity().AddBuff(indicator);
+
+        public void RemoveBuff(short cardId) => GetBattleEntity().RemoveBuff(cardId);
+
+        public int[] GetBuff(CardType type, byte subtype) => GetBattleEntity().GetBuff(type, subtype);
+
+        public bool HasBuff(CardType type, byte subtype) => GetBattleEntity().HasBuff(type, subtype);
+
+        public ConcurrentBag<Buff.Buff> Buffs => GetBattleEntity().Buffs;
+
+        #endregion
 
         public int CurrentHp { get; set; }
 
@@ -66,8 +75,6 @@ namespace OpenNos.GameObject.Map
         public IDictionary<IBattleEntity, long> DamageList { get; private set; }
 
         public DateTime Death { get; set; }
-
-        public ConcurrentQueue<HitRequest> HitQueue { get; }
 
         public bool IsAlive { get; set; }
 
@@ -184,8 +191,6 @@ namespace OpenNos.GameObject.Map
             DamageList = new Dictionary<IBattleEntity, long>();
             _random = new Random(MapMonsterId);
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
-            Buff = new ConcurrentBag<Buff.Buff>();
-            SkillBcards = new ConcurrentBag<BCard>();
             IsPercentage = Monster.IsPercent;
             TakesDamage = Monster.TakeDamages;
             GiveDamagePercent = Monster.GiveDamagePercentage;
@@ -311,7 +316,7 @@ namespace OpenNos.GameObject.Map
         /// <param name="targetSession">The TargetSession to follow</param>
         private void FollowTarget()
         {
-            if (Monster == null || !IsAlive || HasBuff(BCardType.CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible) || !IsMoving)
+            if (Monster == null || !IsAlive || HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible) || !IsMoving)
             {
                 return;
             }
@@ -420,7 +425,7 @@ namespace OpenNos.GameObject.Map
 
         private void Move()
         {
-            if (Monster == null || !IsAlive || HasBuff(BCardType.CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
+            if (Monster == null || !IsAlive || HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
             {
                 return;
             }
@@ -490,7 +495,7 @@ namespace OpenNos.GameObject.Map
 
         public void TargetHit(NpcMonsterSkill npcMonsterSkill)
         {
-            if (Monster == null || (!((DateTime.Now - LastSkill).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 250) && npcMonsterSkill == null) || HasBuff(BCardType.CardType.SpecialAttack, (byte)AdditionalTypes.SpecialAttack.NoAttack))
+            if (Monster == null || (!((DateTime.Now - LastSkill).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 250) && npcMonsterSkill == null) || HasBuff(CardType.SpecialAttack, (byte)AdditionalTypes.SpecialAttack.NoAttack))
             {
                 return;
             }
@@ -509,86 +514,6 @@ namespace OpenNos.GameObject.Map
             }
             LastMove = DateTime.Now;
             GetBattleEntity().TargetHit(Target, TargetHitType.SingleTargetHit, npcMonsterSkill?.Skill, skillEffect: Monster.BasicSkill);
-        }
-
-        /// <summary>
-        /// Add the buff
-        /// </summary>
-        /// <param name="indicator">Buff to add</param>
-        public void AddBuff(Buff.Buff indicator)
-        {
-            if (indicator?.Card == null)
-            {
-                return;
-            }
-            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
-            indicator.RemainingTime = indicator.Card.Duration;
-            indicator.Start = DateTime.Now;
-            Buff.Add(indicator);
-            indicator.Card.BCards.ForEach(c => c.ApplyBCards(this));
-            if (indicator.Card.EffectId > 0)
-            {
-                GenerateEff(indicator.Card.EffectId);
-            }
-            Observable.Timer(TimeSpan.FromMilliseconds(indicator.Card.Duration * 100)).Subscribe(o => { RemoveBuff(indicator.Card.CardId); });
-        }
-
-        /// <summary>
-        /// Remove buff from Buff Container
-        /// </summary>
-        /// <param name="id">Card Id to remove</param>
-        private void RemoveBuff(int id)
-        {
-            Buff.Buff indicator = Buff.FirstOrDefault(s => s.Card.CardId == id);
-            if (indicator == null || !Buff.Contains(indicator))
-            {
-                return;
-            }
-            Buff = Buff.Where(s => s.Card.CardId != id);
-        }
-
-        /// <summary>
-        /// Get Buffs
-        /// </summary>
-        /// <param name="type">CardType</param>
-        /// <param name="subtype"></param>
-        /// <param name="affectingOpposite"></param>
-        /// <returns>Param1 = FirstData | Param2 = SecondData</returns>
-        public int[] GetBuff(BCardType.CardType type, byte subtype, bool affectingOpposite = false)
-        {
-            int value1 = 0;
-            int value2 = 0;
-
-            foreach (BCard entry in SkillBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
-            {
-                value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? Monster.Level / entry.FirstData : entry.FirstData * Monster.Level) : entry.FirstData;
-                value2 += entry.SecondData;
-            }
-
-            foreach (Buff.Buff buff in Buff)
-            {
-                foreach (BCard entry in buff.Card.BCards.Where(s =>
-                    s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
-                    (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
-                {
-                    value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? buff.Level / entry.FirstData : entry.FirstData * buff.Level) : entry.FirstData;
-                    value2 += entry.SecondData;
-                }
-            }
-
-            return new[] { value1, value2 };
-        }
-
-        /// <summary>
-        /// Check if the Entity has the MapMonster
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="subtype"></param>
-        /// <returns>true if has buff</returns>
-        public bool HasBuff(BCardType.CardType type, byte subtype)
-        {
-            return Buff.Any(buff =>
-                buff.Card.BCards.Any(b => b.Type == (byte)type && b.SubType == subtype && (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)));
         }
 
         public MapCell GetPos()
@@ -669,7 +594,7 @@ namespace OpenNos.GameObject.Map
                 CurrentMp = 0;
                 Death = DateTime.Now;
                 LastMove = DateTime.Now.AddMilliseconds(500);
-                Buff.Clear();
+                GetBattleEntity().Buffs.Clear();
                 Target = null;
                 return;
             }

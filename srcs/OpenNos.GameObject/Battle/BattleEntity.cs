@@ -11,6 +11,8 @@ using OpenNos.Core.Extensions;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;
 using OpenNos.Data;
+using OpenNos.Core;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject.Battle
 {
@@ -25,28 +27,15 @@ namespace OpenNos.GameObject.Battle
             Buffs = new ConcurrentBag<Buff.Buff>();
             StaticBcards = new ConcurrentBag<BCard>();
             SkillBcards = new ConcurrentBag<BCard>();
+            ObservableBag = new Dictionary<short, IDisposable>();
             if (Session is Character character)
             {
                 Level = character.Level;
-                Buffs = character.Buff;
-                StaticBcards = new ConcurrentBag<BCard>(character.EquipmentBCards.Concat(character.PassiveSkillBcards));
-                Element = character.Element;
-                ElementRate = character.ElementRate + character.ElementRateSp;
-                FireResistance = character.FireResistance;
-                WaterResistance = character.WaterResistance;
-                LightResistance = character.LightResistance;
-                DarkResistance = character.DarkResistance;
-                DefenceRate = character.DefenceRate;
-                DistanceDefenceRate = character.DistanceDefenceRate;
-                CloseDefence = character.Defence;
-                RangedDefence = character.DistanceDefence;
-                MagicDefence = character.MagicalDefence;
                 DefenceUpgrade = character.Inventory?.Armor?.Upgrade ?? 0;
             }
             else if (Session is Mate mate)
             {
                 Level = mate.Level;
-                Buffs = mate.Buffs;
                 Element = mate.Monster.Element;
                 ElementRate = mate.Monster.ElementRate;
                 FireResistance = mate.Monster.FireResistance;
@@ -61,14 +50,10 @@ namespace OpenNos.GameObject.Battle
                 AttackUpgrade = mate.Monster.AttackUpgrade;
                 CriticalRate = mate.Monster.CriticalChance;
                 Critical = mate.Monster.CriticalRate - 30;
-                MinDamage = mate.DamageMinimum;
-                MaxDamage = mate.DamageMaximum;
-                HitRate = mate.Concentrate;
             }
             else if (Session is MapMonster monster)
             {
                 Level = monster.Monster.Level;
-                Buffs = monster.Buff;
                 Element = monster.Monster.Element;
                 ElementRate = monster.Monster.ElementRate;
                 FireResistance = monster.Monster.FireResistance;
@@ -103,6 +88,8 @@ namespace OpenNos.GameObject.Battle
 
         public ConcurrentBag<BCard> SkillBcards { get; set; }
 
+        public Dictionary<short, IDisposable> ObservableBag { get; set; }
+
         public object Session { get; set; }
 
         public IBattleEntity Entity { get; set; }
@@ -114,6 +101,8 @@ namespace OpenNos.GameObject.Battle
         public byte Element { get; set; }
 
         public int ElementRate { get; set; }
+
+        public int ElementRateSp { get; set; }
 
         public int FireResistance { get; set; }
 
@@ -161,7 +150,62 @@ namespace OpenNos.GameObject.Battle
 
         #region Methods
 
-        public int GenerateDamage(IBattleEntity targetEntity, Skill skill, ref int hitmode, ref bool onyxEffect)
+        public void AddBuff(Buff.Buff indicator, bool notify = true)
+        {
+            if (indicator?.Card == null)
+            {
+                return;
+            }
+            if (!notify && Buffs.Any(s => s.Card.CardId == indicator.Card.CardId))
+            {
+                return;
+            }
+            Buffs = Buffs.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            //TODO: Find a better way to do this
+            int randomTime = 0;
+            if (Session is Character character)
+            {
+                if (indicator.Card.CardId == 85)
+                {
+                    randomTime = character.BuffRandomTime = ServerManager.Instance.RandomNumber(50, 350);
+                }
+                else if (indicator.Card.CardId == 336)
+                {
+                    randomTime = character.BuffRandomTime = ServerManager.Instance.RandomNumber(30, 70);
+                }
+                else if (indicator.Card.CardId == 0)
+                {
+                    character.BuffRandomTime = character.ChargeValue > 7000 ? 7000 : character.ChargeValue;
+                }
+                character.Session.SendPacket($"bf 1 {character.CharacterId} {(character.ChargeValue > 7000 ? 7000 : character.ChargeValue)}.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+                character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
+            }
+            indicator.RemainingTime = indicator.Card.Duration == 0 ? randomTime : indicator.Card.Duration;
+            indicator.Start = DateTime.Now;
+            Buffs.Add(indicator);
+
+            indicator.Card.BCards.ForEach(c => c.ApplyBCards(Entity));
+
+            if (indicator.Card.EffectId > 0)
+            {
+                Entity.GenerateEff(indicator.Card.EffectId);
+            }
+            if (ObservableBag.TryGetValue(indicator.Card.CardId, out IDisposable value))
+            {
+                value?.Dispose();
+            }
+
+            ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds((indicator.Card.Duration == 0 ? randomTime : indicator.Card.Duration) * 100)).Subscribe(o =>
+            {
+                RemoveBuff(indicator.Card.CardId);
+                if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
+                {
+                    AddBuff(new Buff.Buff(indicator.Card.TimeoutBuff, Level));
+                }
+            });
+        }
+
+        public ushort GenerateDamage(IBattleEntity targetEntity, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
             BattleEntity target = targetEntity?.GetBattleEntity();
             if (target == null)
@@ -213,6 +257,7 @@ namespace OpenNos.GameObject.Battle
                 {
                     upgrade += 1;
                 }
+                DefenceUpgrade = character.Inventory?.Armor?.Upgrade ?? 0;
 
                 if (CharacterHelper.Instance.GetClassAttackType(character.Class) == attackType)
                 {
@@ -570,7 +615,7 @@ namespace OpenNos.GameObject.Battle
                 elementalBoost = 0;
             }
 
-            elementalDamage = (int)(elementalDamage + (baseDamage + 100) * (ElementRate / 100D));
+            elementalDamage = (int)(elementalDamage + (baseDamage + 100) * (ElementRate + ElementRateSp / 100D));
             elementalDamage = (int)(elementalDamage / 100D * (100 - targetResistance) * elementalBoost);
 
             #endregion
@@ -695,7 +740,7 @@ namespace OpenNos.GameObject.Battle
 
             SkillBcards.Clear();
 
-            return totalDamage;
+            return (ushort)(totalDamage > ushort.MaxValue ? ushort.MaxValue : totalDamage);
         }
 
         public int[] GetBuff(CardType type, byte subtype)
@@ -703,7 +748,7 @@ namespace OpenNos.GameObject.Battle
             int value1 = 0;
             int value2 = 0;
 
-            foreach (BCard entry in StaticBcards.Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
+            foreach (BCard entry in StaticBcards.Concat(SkillBcards).Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
                 value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? Level / entry.FirstData : entry.FirstData * Level) : entry.FirstData;
                 value2 += entry.SecondData;
@@ -728,12 +773,56 @@ namespace OpenNos.GameObject.Battle
                    StaticBcards.Any(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype));
         }
 
+        public void RemoveBuff(int id)
+        {
+            Buff.Buff indicator = Buffs.FirstOrDefault(s => s.Card.CardId == id);
+            if (indicator == null)
+            {
+                return;
+            }
+            if (indicator.RemainingTime == -1 && indicator.Start.AddSeconds(indicator.RemainingTime / 10) > DateTime.Now.AddSeconds(-2))
+            {
+                return;
+            }
+            if (Buffs.Contains(indicator))
+            {
+                Buffs = Buffs.Where(s => s.Card.CardId != id);
+            }
+            if (Session is Character character)
+            {
+                if (indicator.StaticBuff)
+                {
+                    character.Session.SendPacket($"vb {indicator.Card.CardId} 0 {indicator.Card.Duration}");
+                    character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 11));
+                }
+                else
+                {
+                    character.Session.SendPacket($"bf 1 {character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
+                    character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 20));
+                }
+
+                if (indicator.Card.BCards.All(s => s.Type == (byte)CardType.Move))
+                {
+                    character.LoadSpeed();
+                    character.LastSpeedChange = DateTime.Now;
+                    character.Session.SendPacket(character.GenerateCond());
+                }
+                if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.SpecialActions && s.SubType.Equals((byte)AdditionalTypes.SpecialActions.Hide)))
+                {
+                    character.Invisible = false;
+                    character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => character.MapInstance?.Broadcast(m.GenerateIn()));
+                    character.MapInstance?.Broadcast(character.GenerateInvisible());
+                }
+                
+            }
+        }
+
         public void TargetHit(IBattleEntity target, TargetHitType hitType, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false)
         {
             MapInstance mapInstance = target.GetMapInstance();
             int hitmode = 0;
             bool onyxWings = false;
-            int damage = GenerateDamage(target, skill, ref hitmode, ref onyxWings);
+            ushort damage = GenerateDamage(target, skill, ref hitmode, ref onyxWings);
 
             if (Entity.GetSession() is Character charact && onyxWings && mapInstance != null)
             {
@@ -765,7 +854,7 @@ namespace OpenNos.GameObject.Battle
 
             if (target.GetSession() is Character character)
             {
-                damage = character.HasGodMode ? 0 : damage;
+                damage = (ushort)(character.HasGodMode ? 0 : damage);
                 if (character.IsSitting)
                 {
                     character.IsSitting = false;
