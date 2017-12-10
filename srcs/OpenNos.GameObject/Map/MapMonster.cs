@@ -404,24 +404,6 @@ namespace OpenNos.GameObject.Map
                 MapInstance.Map.Grid);
 
             Path = list;
-            UpdateBrushFire();
-            if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
-            {
-                int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                short smapX = Path[maxindex - 1].X;
-                short smapY = Path[maxindex - 1].Y;
-                double waitingtime =
-                    Map.GetDistance(new MapCell { X = FirstX, Y = FirstY }, new MapCell { X = MapX, Y = MapY }) /
-                    (double)Monster.Speed;
-                MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All));
-                LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
-
-
-                Thread.Sleep((int)((waitingtime > 1 ? 1 : waitingtime) * 1000));
-                MapX = smapX;
-                MapY = smapY;
-                Path.RemoveRange(0, maxindex);
-            }
         }
 
         /// <summary>
@@ -1848,11 +1830,6 @@ namespace OpenNos.GameObject.Map
                 }
                 posX = targetMate.PositionX;
                 posY = targetMate.PositionY;
-            }
-            else
-            {
-                RemoveTarget();
-                return;
             }
 
             lock(Target)
