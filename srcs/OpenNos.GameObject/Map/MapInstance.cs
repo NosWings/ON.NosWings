@@ -30,7 +30,6 @@ using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.PathFinder.PathFinder;
 using OpenNos.GameObject.Battle;
-using System.Collections.Generic;
 
 namespace OpenNos.GameObject.Map
 {
@@ -169,8 +168,6 @@ namespace OpenNos.GameObject.Map
             get { return _npcs.Select(s => s.Value).ToList(); }
         }
 
-        public List<IBattleEntity> BattleEntities { get { return GetBattleEntities(); } }
-
         public ConcurrentBag<Tuple<EventContainer, List<long>>> OnCharacterDiscoveringMapEvents { get; }
 
         public ConcurrentBag<EventContainer> OnMapClean { get; }
@@ -199,13 +196,12 @@ namespace OpenNos.GameObject.Map
 
         #region Methods
 
-        public List<IBattleEntity> GetBattleEntities()
+        public IEnumerable<IBattleEntity> BattleEntities
         {
-            List<IBattleEntity> entities = new List<IBattleEntity>();
-            entities.AddRange(Monsters);
-            entities.AddRange(Mates);
-            entities.AddRange(Characters);
-            return entities;
+            get
+            {
+                return _battleEntities.Select(e => e.Value).Concat(Npcs).Concat(Monsters);
+            }
         }
 
         public void AddMonster(MapMonster monster)
@@ -536,19 +532,6 @@ namespace OpenNos.GameObject.Map
                 }
             }
             return characters;
-        }
-
-        internal IEnumerable<Mate> GetMatesInRange(short mapX, short mapY, byte distance)
-        {
-            List<Mate> mates = new List<Mate>();
-            foreach (Mate mate in Mates)
-            {
-                if (Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = mate.PositionX, Y = mate.PositionY }) <= distance + 1)
-                {
-                    mates.Add(mate);
-                }
-            }
-            return mates;
         }
 
         internal IEnumerable<IBattleEntity> GetBattleEntitiesInRange(MapCell pos, byte distance)

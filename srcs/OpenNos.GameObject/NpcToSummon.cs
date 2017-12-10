@@ -15,6 +15,7 @@
 using System.Collections.Concurrent;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Battle;
 
 namespace OpenNos.GameObject
 {
@@ -22,7 +23,7 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public NpcToSummon(short vnum, MapCell spawnCell, long target, ConcurrentBag<EventContainer> deathEvents, bool isProtected = false, bool isMate = false)
+        public NpcToSummon(short vnum, MapCell spawnCell, IBattleEntity target, ConcurrentBag<EventContainer> deathEvents, bool isProtected = false, bool isMate = false)
         {
             VNum = vnum;
             SpawnCell = spawnCell;
@@ -44,7 +45,7 @@ namespace OpenNos.GameObject
 
         public MapCell SpawnCell { get; }
 
-        public long Target { get; }
+        public IBattleEntity Target { get; }
 
         public short VNum { get; }
 

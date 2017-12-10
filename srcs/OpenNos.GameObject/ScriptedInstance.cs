@@ -485,7 +485,7 @@ namespace OpenNos.GameObject
                         NpcAmount++;
                         List<NpcToSummon> lstn = new List<NpcToSummon>
                         {
-                            new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() {X = positionX, Y = positionY}, -1, GenerateEvent(mapevent, mapinstance), isMate,
+                            new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() {X = positionX, Y = positionY}, null, GenerateEvent(mapevent, mapinstance), isMate,
                                 isProtected)
                         };
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, lstn.AsEnumerable()));
