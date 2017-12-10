@@ -1586,9 +1586,14 @@ namespace OpenNos.GameObject
             }
         }
 
-        public int[] GetHp()
+        public int GetCurrentHp()
         {
-            return new[] { Hp , (int)HpLoad() };
+            return Hp;
+        }
+
+        public int GetMaxHp()
+        {
+            return (int)HpLoad();
         }
 
         public void GenerateDignity(NpcMonster monsterinfo)

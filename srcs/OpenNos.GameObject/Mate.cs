@@ -713,9 +713,14 @@ namespace OpenNos.GameObject
             }
         }
 
-        public int[] GetHp()
+        public int GetCurrentHp()
         {
-            return new[] { Hp, HpLoad() };
+            return Hp;
+        }
+
+        public int GetMaxHp()
+        {
+            return MaxHp;
         }
 
         #endregion

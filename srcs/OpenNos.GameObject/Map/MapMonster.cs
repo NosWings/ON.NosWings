@@ -636,9 +636,14 @@ namespace OpenNos.GameObject.Map
             return MapInstance;
         }
 
-        public int[] GetHp()
+        public int GetCurrentHp()
         {
-            return new[] { CurrentHp, Monster.MaxHP };
+            return CurrentHp;
+        }
+
+        public int GetMaxHp()
+        {
+            return Monster.MaxHP;
         }
 
         public void GetDamage(int damage, bool canKill = true)

@@ -29,7 +29,9 @@ namespace OpenNos.GameObject.Battle
 
         bool isTargetable(SessionType type, bool isPvP = false);
 
-        int[] GetHp();
+        int GetCurrentHp();
+
+        int GetMaxHp();
 
         long GetId();
 
