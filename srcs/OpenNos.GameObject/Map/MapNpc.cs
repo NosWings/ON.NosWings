@@ -440,50 +440,23 @@ namespace OpenNos.GameObject.Map
             GetBattleEntity().TargetHit(Target, TargetHitType.SingleTargetHit, npcMonsterSkill?.Skill, skillEffect: Npc.BasicSkill);
         }
 
-        public MapCell GetPos()
-        {
-            return new MapCell { X = MapX, Y = MapY };
-        }
+        public MapCell GetPos() => new MapCell { X = MapX, Y = MapY };
 
-        public BattleEntity GetBattleEntity()
-        {
-            return _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
-        }
+        public BattleEntity GetBattleEntity() => _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
 
-        public object GetSession()
-        {
-            return this;
-        }
+        public object GetSession() => this;
 
-        public AttackType GetAttackType(Skill skill = null)
-        {
-            return (AttackType)Npc.AttackClass;
-        }
+        public AttackType GetAttackType(Skill skill = null) => (AttackType)Npc.AttackClass;
 
-        public bool isTargetable(SessionType type, bool isPvP = false)
-        {
-            return type == SessionType.Monster && IsHostile && IsAlive && CurrentHp > 0;
-        }
+        public bool isTargetable(SessionType type, bool isPvP = false) => type == SessionType.Monster && IsHostile && IsAlive && CurrentHp > 0;
 
-        public Node[,] GetBrushFire()
-        {
-            return BestFirstSearch.LoadBrushFire(new GridPos() { X = MapX, Y = MapY }, MapInstance.Map.Grid);
-        }
+        public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = MapX, Y = MapY }, MapInstance.Map.Grid);
 
-        public SessionType GetSessionType()
-        {
-            return SessionType.MateAndNpc;
-        }
+        public SessionType GetSessionType() => SessionType.MateAndNpc;
 
-        public long GetId()
-        {
-            return MapNpcId;
-        }
+        public long GetId() => MapNpcId;
 
-        public MapInstance GetMapInstance()
-        {
-            return MapInstance;
-        }
+        public MapInstance GetMapInstance() => MapInstance;
 
         public void GenerateDeath(IBattleEntity killer)
         {
@@ -506,15 +479,9 @@ namespace OpenNos.GameObject.Map
 
         }
 
-        public int GetCurrentHp()
-        {
-            return CurrentHp;
-        }
+        public int GetCurrentHp() => CurrentHp;
 
-        public int GetMaxHp()
-        {
-            return Npc.MaxHP;
-        }
+        public int GetMaxHp() => Npc.MaxHP;
 
         public void GetDamage(int damage, bool canKill = true)
         {

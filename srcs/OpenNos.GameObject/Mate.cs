@@ -549,50 +549,23 @@ namespace OpenNos.GameObject
             }
         }
 
-        public MapCell GetPos()
-        {
-            return new MapCell { X = PositionX, Y = PositionY };
-        }
+        public MapCell GetPos() => new MapCell { X = PositionX, Y = PositionY };
 
-        public BattleEntity GetBattleEntity()
-        {
-            return _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
-        }
+        public BattleEntity GetBattleEntity() => _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
 
-        public object GetSession()
-        {
-            return this;
-        }
+        public object GetSession() => this;
 
-        public AttackType GetAttackType(Skill skill = null)
-        {
-            return (AttackType)Monster.AttackClass;
-        }
+        public AttackType GetAttackType(Skill skill = null) => (AttackType)Monster.AttackClass;
 
-        public bool isTargetable(SessionType type, bool isPvP = false)
-        {
-            return type == SessionType.Monster && IsAlive && Hp > 0;
-        }
+        public bool isTargetable(SessionType type, bool isPvP = false) => type == SessionType.Monster && IsAlive && Hp > 0;
 
-        public Node[,] GetBrushFire()
-        {
-            return BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, Owner.MapInstance.Map.Grid);
-        }
+        public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, Owner.MapInstance.Map.Grid);
 
-        public SessionType GetSessionType()
-        {
-            return SessionType.MateAndNpc;
-        }
+        public SessionType GetSessionType() => SessionType.MateAndNpc;
 
-        public long GetId()
-        {
-            return MateTransportId;
-        }
+        public long GetId() => MateTransportId;
 
-        public MapInstance GetMapInstance()
-        {
-            return Owner.MapInstance;
-        }
+        public MapInstance GetMapInstance() => Owner.MapInstance;
 
         public void GenerateDeath(IBattleEntity killer)
         {
@@ -641,15 +614,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public int GetCurrentHp()
-        {
-            return Hp;
-        }
+        public int GetCurrentHp() => Hp;
 
-        public int GetMaxHp()
-        {
-            return MaxHp;
-        }
+        public int GetMaxHp() => MaxHp;
 
         #endregion
     }

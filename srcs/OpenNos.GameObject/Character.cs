@@ -1512,20 +1512,11 @@ namespace OpenNos.GameObject
             return $"cond 1 {CharacterId} {(NoAttack ? 1 : 0)} {(NoMove ? 1 : 0)} {Speed}";
         }
 
-        public MapCell GetPos()
-        {
-            return new MapCell { X = PositionX, Y = PositionY };
-        }
+        public MapCell GetPos() => new MapCell { X = PositionX, Y = PositionY };
 
-        public BattleEntity GetBattleEntity()
-        {
-            return _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
-        }
+        public BattleEntity GetBattleEntity() => _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
 
-        public object GetSession()
-        {
-            return this;
-        }
+        public object GetSession() => this;
 
         public AttackType GetAttackType(Skill skill = null)
         {
@@ -1543,30 +1534,15 @@ namespace OpenNos.GameObject
             return AttackType.Close;
         }
 
-        public MapInstance GetMapInstance()
-        {
-            return MapInstance;
-        }
+        public MapInstance GetMapInstance() => MapInstance;
 
-        public bool isTargetable(SessionType type, bool isPvP = false)
-        {
-            return type != SessionType.MateAndNpc && (type != SessionType.Character || isPvP) && Hp > 0 && !InvisibleGm && !Invisible;
-        }
+        public bool isTargetable(SessionType type, bool isPvP = false) => type != SessionType.MateAndNpc && (type != SessionType.Character || isPvP) && Hp > 0 && !InvisibleGm && !Invisible;
 
-        public Node[,] GetBrushFire()
-        {
-            return BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, MapInstance.Map.Grid);
-        }
+        public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, MapInstance.Map.Grid);
 
-        public SessionType GetSessionType()
-        {
-            return SessionType.Character;
-        }
+        public SessionType GetSessionType() => SessionType.Character;
 
-        public long GetId()
-        {
-            return CharacterId;
-        }
+        public long GetId() => CharacterId;
 
         public void GenerateDeath(IBattleEntity killer)
         {
@@ -1585,15 +1561,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public int GetCurrentHp()
-        {
-            return Hp;
-        }
+        public int GetCurrentHp() => Hp;
 
-        public int GetMaxHp()
-        {
-            return (int)HpLoad();
-        }
+        public int GetMaxHp() => (int)HpLoad();
 
         public void GenerateDignity(NpcMonster monsterinfo)
         {
