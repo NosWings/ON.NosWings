@@ -1013,8 +1013,6 @@ namespace OpenNos.GameObject
                         Session.Character.RemoveBuff(339);
                     }
                 }
-                // Add pet buffs
-                MateHelper.Instance.AddPetBuff(Session);
                 if (UseSp)
                 {
                     switch (SpInstance?.Design)

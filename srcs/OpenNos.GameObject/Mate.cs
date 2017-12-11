@@ -50,22 +50,22 @@ namespace OpenNos.GameObject
 
         public Mate(Character owner, NpcMonster npcMonster, byte level, MateType matetype)
         {
+            Owner = owner;
             NpcMonsterVNum = npcMonster.NpcMonsterVNum;
             Monster = npcMonster;
             Level = level;
-            Hp = MaxHp;
-            Mp = MaxMp;
             Name = npcMonster.Name;
             MateType = matetype;
             Loyalty = 1000;
             PositionY = (short)(owner.PositionY + 1);
             PositionX = (short)(owner.PositionX + 1);
-            MapX = ServerManager.Instance.MinilandRandomPos().X;
-            MapY = ServerManager.Instance.MinilandRandomPos().Y;
+            MapX = (short)(owner.PositionX + 1);
+            MapY = (short)(owner.PositionY + 1);
             Direction = 2;
             CharacterId = owner.CharacterId;
-            Owner = owner;
+            AddTeamMember();
             GenerateMateTransportId();
+            StartLife();
         }
 
         #endregion
@@ -427,16 +427,40 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
+            Monster = ServerManager.Instance.GetNpc(NpcMonsterVNum);
+            Owner = ServerManager.Instance.GetSessionByCharacterId(CharacterId)?.Character;
+            if (Monster == null || Owner == null)
+            {
+                return;
+            }
+            Life = null;
             byte type = (byte)(Monster.AttackClass == 2 ? 1 : 0);
             Concentrate = (short)(MateHelper.Instance.Concentrate[type, Level] + (Monster.Concentrate - MateHelper.Instance.Concentrate[type, Monster.Level]));
             DamageMinimum = (short)(MateHelper.Instance.MinDamageData[type, Level] + (Monster.DamageMinimum - MateHelper.Instance.MinDamageData[type, Monster.Level]));
             DamageMaximum = (short)(MateHelper.Instance.MaxDamageData[type, Level] + (Monster.DamageMaximum - MateHelper.Instance.MaxDamageData[type, Monster.Level]));
             IsAlive = true;
             Hp = MaxHp;
-            Life = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(s =>
+            if (IsTeamMember)
             {
-                MateLife();
-            });
+                AddTeamMember();
+            }
+        }
+
+        public void StartLife()
+        {
+            if (IsTeamMember && Life == null)
+            {
+                Life = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+                {
+                    MateLife();
+                });
+            }
+        }
+
+        public void StopLife()
+        {
+            Life?.Dispose();
+            Life = null;
         }
 
         /// <summary>
@@ -480,17 +504,18 @@ namespace OpenNos.GameObject
 
         private void MateLife()
         {
-            if (!IsTeamMember)
+            Owner?.Session?.SendPacket(GeneratePst());
+            if (!IsAlive)
             {
+                if (LastDeath.AddMinutes(3) < DateTime.Now)
+                {
+                    GenerateRevive();
+                }
                 return;
             }
+            MateHelper.Instance.AddPetBuff(Owner.Session); // Add pet buffs
 
-            if (!IsAlive && LastDeath.AddMinutes(3) < DateTime.Now)
-            {
-                GenerateRevive();
-            }
-
-            if ((LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now) && IsAlive)
+            if (LastHealth.AddSeconds(IsSitting ? 1.5 : 2) <= DateTime.Now)
             {
                 LastHealth = DateTime.Now;
                 if (LastDefence.AddSeconds(4) <= DateTime.Now && LastSkillUse.AddSeconds(2) <= DateTime.Now && Hp > 0)
@@ -499,7 +524,6 @@ namespace OpenNos.GameObject
                     Mp += Mp + HealthMpLoad() < MpLoad() ? HealthMpLoad() : MpLoad() - Mp;
                 }
             }
-            Owner?.Session?.SendPacket(GeneratePst());
         }
 
         public void BackToMiniland()
@@ -508,14 +532,9 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            IsTeamMember = false;
-            IsAlive = true;
-            Hp = MaxHp;
-            Mp = MaxMp;
+            RemoveTeamMember();
             Owner.Session.SendPacket(Owner.GeneratePinit());
             Owner.MapInstance.Broadcast(GenerateOut());
-            MapX = ServerManager.Instance.MinilandRandomPos().X;
-            MapY = ServerManager.Instance.MinilandRandomPos().Y;
         }
 
         public void GenerateRevive()
@@ -541,6 +560,31 @@ namespace OpenNos.GameObject
             Concentrate = (short)(MateHelper.Instance.Concentrate[type, Level] + (Monster.Concentrate - MateHelper.Instance.Concentrate[type, Monster.Level]));
             DamageMinimum = (short)(MateHelper.Instance.MinDamageData[type, Level] + (Monster.DamageMinimum - MateHelper.Instance.MinDamageData[type, Monster.Level]));
             DamageMaximum = (short)(MateHelper.Instance.MaxDamageData[type, Level] + (Monster.DamageMaximum - MateHelper.Instance.MaxDamageData[type, Monster.Level]));
+        }
+
+        public void AddTeamMember()
+        {
+            if (Owner.Mates.Where(m => m.IsTeamMember && m.MateType == MateType).Count() >= 1)
+            {
+                return;
+            }
+            IsTeamMember = true;
+            StartLife();
+            IsAlive = true;
+            Hp = MaxHp;
+            Mp = MaxMp;
+        }
+
+        public void RemoveTeamMember()
+        {
+            IsTeamMember = false;
+            StopLife();
+            MapX = ServerManager.Instance.MinilandRandomPos().X;
+            MapY = ServerManager.Instance.MinilandRandomPos().Y;
+            MateHelper.Instance.RemovePetBuffs(Owner.Session);
+            IsAlive = true;
+            Hp = MaxHp;
+            Mp = MaxMp;
         }
 
         private double XpLoad()

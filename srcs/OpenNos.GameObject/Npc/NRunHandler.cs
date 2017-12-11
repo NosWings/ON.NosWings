@@ -106,14 +106,9 @@ namespace OpenNos.GameObject.Npc
                                     Mate teammate = session.Character.Mates.Where(s => s.IsTeamMember).FirstOrDefault(s => s.MateType == mate.MateType);
                                     if (teammate != null)
                                     {
-                                        // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
-                                        MateHelper.Instance.RemovePetBuffs(session);
-                                        MateHelper.Instance.AddPetBuff(session);
-                                        teammate.IsTeamMember = false;
-                                        teammate.MapX = teammate.PositionX;
-                                        teammate.MapY = teammate.PositionY;
+                                        teammate.RemoveTeamMember();
                                     }
-                                    mate.IsTeamMember = true;
+                                    mate.AddTeamMember();
                                 }
                                 else
                                 {
@@ -125,11 +120,7 @@ namespace OpenNos.GameObject.Npc
                         case 3:
                             if (mate != null && session.Character.Miniland == session.Character.MapInstance)
                             {
-                                // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
-                                MateHelper.Instance.RemovePetBuffs(session);
-                                mate.IsTeamMember = false;
-                                mate.MapX = mate.PositionX;
-                                mate.MapY = mate.PositionY;
+                                mate.RemoveTeamMember();
                             }
                             break;
 
@@ -138,11 +129,7 @@ namespace OpenNos.GameObject.Npc
                             {
                                 if (session.Character.Miniland == session.Character.MapInstance)
                                 {
-                                    // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
-                                    MateHelper.Instance.RemovePetBuffs(session);
-                                    mate.IsTeamMember = false;
-                                    mate.MapX = mate.PositionX;
-                                    mate.MapY = mate.PositionY;
+                                    mate.RemoveTeamMember();
                                 }
                                 else
                                 {
@@ -164,9 +151,7 @@ namespace OpenNos.GameObject.Npc
                             {
                                 if (session.Character.Miniland != session.Character.MapInstance)
                                 {
-                                    // TODO NEED TO FIND A WAY TO APPLY BUFFS PROPERLY THROUGH MONSTER SKILLS
-                                    MateHelper.Instance.RemovePetBuffs(session);
-                                    mate.IsTeamMember = false;
+                                    mate.RemoveTeamMember();
                                     session.CurrentMapInstance.Broadcast(mate.GenerateOut());
                                     session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PET_KICKED"), mate.Name), 11));
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PET_KICKED"), mate.Name), 0));
@@ -198,7 +183,7 @@ namespace OpenNos.GameObject.Npc
                                     mate.PositionX = (short)(session.Character.PositionX + 1);
                                 }
                                 mate.PositionY = (short)(session.Character.PositionY + 1);
-                                mate.IsTeamMember = true;
+                                mate.AddTeamMember();
                                 session.CurrentMapInstance.Broadcast(mate.GenerateIn());
                             }
                             else

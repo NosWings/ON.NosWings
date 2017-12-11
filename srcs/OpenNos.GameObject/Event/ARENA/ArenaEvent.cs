@@ -145,7 +145,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                     o.Session.SendPacket("ta_close");
                                     Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(time2 =>
                                     {
-                                        o.Session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => m.IsTeamMember = false);
+                                        o.Session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => m.RemoveTeamMember());
                                         o.Session.Character.GeneralLogs.Add(new GeneralLogDTO
                                         {
                                             AccountId = o.Session.Account.AccountId,

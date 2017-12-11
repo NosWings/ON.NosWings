@@ -233,26 +233,21 @@ namespace OpenNos.GameObject.Buff
                                                 return;
                                             }
                                             hunter.IncrementQuests(QuestType.Capture2, monsterToCapture.MonsterVNum);
-
                                             int level = monsterToCapture.Monster.Level - 15 < 1 ? 1 : monsterToCapture.Monster.Level - 15;
+
                                             Mate currentmate = hunter.Mates?.FirstOrDefault(m => m.IsTeamMember && m.MateType == MateType.Pet);
+                                            if (currentmate != null)
+                                            {
+                                                currentmate.RemoveTeamMember(); // remove current pet
+                                                hunter.MapInstance.Broadcast(currentmate.GenerateOut());
+                                            }
                                             monsterToCapture.MapInstance.DespawnMonster(monsterToCapture);
                                             NpcMonster mateNpc = ServerManager.Instance.GetNpc(monsterToCapture.MonsterVNum);
                                             Mate mate = new Mate(hunter, mateNpc, (byte)level, MateType.Pet);
                                             hunter.Mates.Add(mate);
                                             mate.RefreshStats();
-                                            if (currentmate == null)
-                                            {
-                                                mate.IsTeamMember = true;
-                                                hunter.Session.SendPacket($"ctl 2 {mate.PetId} 3");
-                                                hunter.MapInstance.Broadcast(mate.GenerateIn());
-                                            }
-                                            else
-                                            {
-                                                MapCell pos = hunter.Miniland.Map.GetRandomPosition();
-                                                mate.PositionX = pos.X;
-                                                mate.PositionY = pos.Y;
-                                            }
+                                            hunter.Session.SendPacket($"ctl 2 {mate.PetId} 3");
+                                            hunter.MapInstance.Broadcast(mate.GenerateIn());
                                             hunter.Session.SendPacket(hunter.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 0));
                                             hunter.Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                                             hunter.Session.SendPackets(hunter.GenerateScP());
