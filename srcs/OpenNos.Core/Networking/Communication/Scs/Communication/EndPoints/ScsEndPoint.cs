@@ -37,7 +37,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints
             // Check if end point address is null
             if (string.IsNullOrEmpty(endPointAddress))
             {
-                throw new ArgumentNullException("endPointAddress");
+                throw new ArgumentNullException(nameof(endPointAddress));
             }
 
             // If not protocol specified, assume TCP.

@@ -44,11 +44,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
         /// Creates a new RemoteInvokeProxy object.
         /// </summary>
         /// <param name="clientMessenger">Messenger object that is used to send/receive messages</param>
-        public RemoteInvokeProxy(RequestReplyMessenger<TMessenger> clientMessenger)
-            : base(typeof(TProxy))
-        {
-            _clientMessenger = clientMessenger;
-        }
+        public RemoteInvokeProxy(RequestReplyMessenger<TMessenger> clientMessenger) : base(typeof(TProxy)) => _clientMessenger = clientMessenger;
 
         #endregion
 

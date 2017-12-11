@@ -27,10 +27,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// Creates a new ServerClientEventArgs object.
         /// </summary>
         /// <param name="client">Client that is associated with this event</param>
-        public ServerClientEventArgs(IScsServerClient client)
-        {
-            Client = client;
-        }
+        public ServerClientEventArgs(IScsServerClient client) => Client = client;
 
         #endregion
 
@@ -39,7 +36,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// <summary>
         /// Client that is associated with this event.
         /// </summary>
-        public IScsServerClient Client { get; private set; }
+        public IScsServerClient Client { get; }
 
         #endregion
     }

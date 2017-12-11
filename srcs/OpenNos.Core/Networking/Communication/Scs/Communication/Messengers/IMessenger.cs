@@ -66,6 +66,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// Sends a message to the remote application.
         /// </summary>
         /// <param name="message">Message to be sent</param>
+        /// <param name="priority">Message priority to send</param>
         void SendMessage(IScsMessage message, byte priority);
 
         #endregion

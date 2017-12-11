@@ -31,10 +31,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
         /// Creates a new ScsTcpEndPoint object with specified port number.
         /// </summary>
         /// <param name="tcpPort">Listening TCP Port for incoming connection requests on server</param>
-        public ScsTcpEndPoint(int tcpPort)
-        {
-            TcpPort = tcpPort;
-        }
+        public ScsTcpEndPoint(int tcpPort) => TcpPort = tcpPort;
 
         public ScsTcpEndPoint()
         {
@@ -86,39 +83,23 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
         /// Creates a Scs Client that uses this end point to connect to server.
         /// </summary>
         /// <returns>Scs Client</returns>
-        public override IScsClient CreateClient()
-        {
-            return new ScsTcpClient(this);
-        }
+        public override IScsClient CreateClient() => new ScsTcpClient(this);
 
         /// <summary>
         /// Creates a Scs Server that uses this end point to listen incoming connections.
         /// </summary>
         /// <returns>Scs Server</returns>
-        public override IScsServer CreateServer()
-        {
-            return new ScsTcpServer(this);
-        }
+        public override IScsServer CreateServer() => new ScsTcpServer(this);
 
-        public override bool Equals(object obj)
-        {
-            return ((ScsTcpEndPoint)obj).IpAddress == IpAddress
-                && ((ScsTcpEndPoint)obj).TcpPort == TcpPort;
-        }
+        public override bool Equals(object obj) => ((ScsTcpEndPoint)obj).IpAddress == IpAddress && ((ScsTcpEndPoint)obj).TcpPort == TcpPort;
 
-        public override int GetHashCode()
-        {
-            return IpAddress.GetHashCode() + TcpPort.GetHashCode();
-        }
+        public override int GetHashCode() => IpAddress.GetHashCode() + TcpPort.GetHashCode();
 
         /// <summary>
         /// Generates a string representation of this end point object.
         /// </summary>
         /// <returns>String representation of this end point object</returns>
-        public override string ToString()
-        {
-            return string.IsNullOrEmpty(IpAddress) ? "tcp://" + TcpPort : "tcp://" + IpAddress + ":" + TcpPort;
-        }
+        public override string ToString() => string.IsNullOrEmpty(IpAddress) ? $"tcp://{TcpPort}" : $"tcp://{IpAddress}:{TcpPort}";
 
         #endregion
     }

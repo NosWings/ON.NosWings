@@ -102,9 +102,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// Throws ArgumentNullException if service argument is null
         /// </exception>
         /// <exception cref="Exception">Throws Exception if service is already added before</exception>
-        public void AddService<TServiceInterface, TServiceClass>(TServiceClass service)
-            where TServiceClass : ScsService, TServiceInterface
-            where TServiceInterface : class
+        public void AddService<TServiceInterface, TServiceClass>(TServiceClass service) where TServiceInterface : class where TServiceClass : ScsService, TServiceInterface
         {
             if (service == null)
             {
@@ -122,42 +120,39 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         public void Dispose()
         {
-            if (_disposed)
+            if (!_disposed)
             {
-                return;
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
             }
-            GC.SuppressFinalize(this);
-            _disposed = true;
         }
 
-        /// <inheritdoc />
         /// <summary>
         /// Removes a previously added service object from this service application. It removes
         /// object according to interface type.
         /// </summary>
         /// <typeparam name="TServiceInterface">Service interface type</typeparam>
         /// <returns>True: removed. False: no service object with this interface</returns>
-        public bool RemoveService<TServiceInterface>()
-            where TServiceInterface : class
-        {
-            return _serviceObjects.TryRemove(typeof(TServiceInterface).Name, out ServiceObject value);
-        }
+        public bool RemoveService<TServiceInterface>() where TServiceInterface : class => _serviceObjects.TryRemove(typeof(TServiceInterface).Name, out ServiceObject value);
 
-        /// <inheritdoc />
         /// <summary>
         /// Starts service application.
         /// </summary>
-        public void Start()
-        {
-            _scsServer.Start();
-        }
+        public void Start() => _scsServer.Start();
 
         /// <summary>
         /// Stops service application.
         /// </summary>
-        public void Stop()
+        public void Stop() => _scsServer.Stop();
+
+        protected virtual void Dispose(bool disposing)
         {
-            _scsServer.Stop();
+            if (disposing)
+            {
+                _serviceClients.Clear();
+                _serviceObjects.Clear();
+            }
         }
 
         /// <summary>
@@ -171,16 +166,16 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         {
             try
             {
-                client.SendMessage(
-                    new ScsRemoteInvokeReturnMessage
-                    {
-                        RepliedMessageId = requestMessage.MessageId,
-                        ReturnValue = returnValue,
-                        RemoteException = exception
-                    }, 10);
+                client.SendMessage(new ScsRemoteInvokeReturnMessage
+                {
+                    RepliedMessageId = requestMessage.MessageId,
+                    ReturnValue = returnValue,
+                    RemoteException = exception
+                }, 10);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Log.Error("Invoke response send failed", ex);
             }
         }
 
@@ -363,12 +358,12 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             /// <summary>
             /// The service object that is used to invoke methods on.
             /// </summary>
-            public ScsService Service { get; private set; }
+            public ScsService Service { get; }
 
             /// <summary>
             /// ScsService attribute of Service object's class.
             /// </summary>
-            public ScsServiceAttribute ServiceAttribute { get; private set; }
+            public ScsServiceAttribute ServiceAttribute { get; }
 
             #endregion
 

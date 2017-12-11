@@ -28,10 +28,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// </summary>
         /// <param name="endPoint">Endpoint that represents address of the server</param>
         /// <returns>Created TCP server</returns>
-        public static IScsServer CreateServer(ScsEndPoint endPoint)
-        {
-            return endPoint.CreateServer();
-        }
+        public static IScsServer CreateServer(ScsEndPoint endPoint) => endPoint.CreateServer();
 
         #endregion
     }

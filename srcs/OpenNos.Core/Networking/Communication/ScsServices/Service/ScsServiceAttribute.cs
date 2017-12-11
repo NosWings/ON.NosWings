@@ -20,17 +20,14 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// Any SCS Service interface class must has this attribute.
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-    public class ScsServiceAttribute : Attribute
+    public sealed class ScsServiceAttribute : Attribute
     {
         #region Instantiation
 
         /// <summary>
         /// Creates a new ScsServiceAttribute object.
         /// </summary>
-        public ScsServiceAttribute()
-        {
-            Version = "NO_VERSION";
-        }
+        public ScsServiceAttribute() => Version = "NO_VERSION";
 
         #endregion
 

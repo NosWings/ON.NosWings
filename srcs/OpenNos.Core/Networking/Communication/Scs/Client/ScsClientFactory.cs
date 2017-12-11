@@ -28,20 +28,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         /// <param name="endpoint">End point of the server to connect it</param>
         /// <returns>Created TCP client</returns>
-        public static IScsClient CreateClient(ScsEndPoint endpoint)
-        {
-            return endpoint.CreateClient();
-        }
+        public static IScsClient CreateClient(ScsEndPoint endpoint) => endpoint.CreateClient();
 
         /// <summary>
         /// Creates a new client to connect to a server using an end point.
         /// </summary>
         /// <param name="endpointAddress">End point address of the server to connect it</param>
         /// <returns>Created TCP client</returns>
-        public static IScsClient CreateClient(string endpointAddress)
-        {
-            return CreateClient(ScsEndPoint.CreateEndPoint(endpointAddress));
-        }
+        public static IScsClient CreateClient(string endpointAddress) => CreateClient(ScsEndPoint.CreateEndPoint(endpointAddress));
 
         #endregion
     }

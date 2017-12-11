@@ -36,10 +36,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// Gets an unique number to be used as idenfitier of a client.
         /// </summary>
         /// <returns></returns>
-        public static long GetClientId()
-        {
-            return Interlocked.Increment(ref _lastClientId);
-        }
+        public static long GetClientId() => Interlocked.Increment(ref _lastClientId);
 
         #endregion
     }

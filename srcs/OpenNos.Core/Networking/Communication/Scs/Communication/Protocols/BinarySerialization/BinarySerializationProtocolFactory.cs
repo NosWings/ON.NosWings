@@ -25,10 +25,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// Creates a new Wire Protocol object.
         /// </summary>
         /// <returns>Newly created wire protocol object</returns>
-        public IScsWireProtocol CreateWireProtocol()
-        {
-            return new BinarySerializationProtocol();
-        }
+        public IScsWireProtocol CreateWireProtocol() => new BinarySerializationProtocol();
 
         #endregion
     }

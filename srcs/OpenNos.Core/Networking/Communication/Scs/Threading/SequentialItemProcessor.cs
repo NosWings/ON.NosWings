@@ -1,8 +1,22 @@
-﻿using System;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OpenNos.Core.Networking.Communication.Scs.Threading
+namespace OpenNos.Core.Threading
 {
     /// <summary>
     /// This class is used to process items sequentially in a multithreaded manner.
@@ -10,7 +24,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
     /// <typeparam name="TItem">Type of item to process</typeparam>
     public class SequentialItemProcessor<TItem>
     {
-        #region Private fields
+        #region Members
 
         /// <summary>
         /// The method delegate that is called to actually process items.
@@ -23,8 +37,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
         private readonly Queue<TItem> _queue;
 
         /// <summary>
-        /// A reference to the current Task that is processing an item in
-        /// ProcessItem method.
+        /// An object to synchronize threads.
+        /// </summary>
+        private readonly object _syncObj = new object();
+
+        /// <summary>
+        /// A reference to the current Task that is processing an item in ProcessItem method.
         /// </summary>
         private Task _currentProcessTask;
 
@@ -38,19 +56,16 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
         /// </summary>
         private bool _isRunning;
 
-        /// <summary>
-        /// An object to synchronize threads.
-        /// </summary>
-        private readonly object _syncObj = new object();
-
         #endregion
 
-        #region Constructor
+        #region Instantiation
 
         /// <summary>
         /// Creates a new SequentialItemProcessor object.
         /// </summary>
-        /// <param name="processMethod">The method delegate that is called to actually process items</param>
+        /// <param name="processMethod">
+        /// The method delegate that is called to actually process items
+        /// </param>
         public SequentialItemProcessor(Action<TItem> processMethod)
         {
             _processMethod = processMethod;
@@ -59,7 +74,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
 
         #endregion
 
-        #region Public methods
+        #region Methods
+
+        public void ClearQueue() => _queue.Clear();
 
         /// <summary>
         /// Adds an item to queue to process the item.
@@ -67,7 +84,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
         /// <param name="item">Item to add to the queue</param>
         public void EnqueueMessage(TItem item)
         {
-            //Add the item to the queue and start a new Task if needed
+            // Add the item to the queue and start a new Task if needed
             lock (_syncObj)
             {
                 if (!_isRunning)
@@ -79,7 +96,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
 
                 if (!_isProcessing)
                 {
-                    _currentProcessTask = Task.Factory.StartNew(ProcessItem);
+                    _currentProcessTask = Task.Factory.StartNew(processItem);
                 }
             }
         }
@@ -87,10 +104,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
         /// <summary>
         /// Starts processing of items.
         /// </summary>
-        public void Start()
-        {
-            _isRunning = true;
-        }
+        public void Start() => _isRunning = true;
 
         /// <summary>
         /// Stops processing of items and waits stopping of current item.
@@ -99,40 +113,34 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
         {
             _isRunning = false;
 
-            //Clear all incoming messages
+            // Clear all incoming messages
             lock (_syncObj)
             {
                 _queue.Clear();
             }
 
-            //Check if is there a message that is being processed now
+            // Check if is there a message that is being processed now
             if (!_isProcessing)
             {
                 return;
             }
 
-            //Wait current processing task to finish
+            // Wait current processing task to finish
             try
             {
                 _currentProcessTask.Wait();
             }
             catch
             {
-
             }
         }
 
-        #endregion
-
-        #region Private methods
-
         /// <summary>
-        /// This method runs on a new seperated Task (thread) to process
-        /// items on the queue.
+        /// This method runs on a new seperated Task (thread) to process items on the queue.
         /// </summary>
-        private void ProcessItem()
+        private void processItem()
         {
-            //Try to get an item from queue to process it.
+            // Try to get an item from queue to process it.
             TItem itemToProcess;
             lock (_syncObj)
             {
@@ -150,10 +158,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
                 itemToProcess = _queue.Dequeue();
             }
 
-            //Process the item (by calling the _processMethod delegate)
+            // Process the item (by calling the _processMethod delegate)
             _processMethod(itemToProcess);
 
-            //Process next item if available
+            // Process next item if available
             lock (_syncObj)
             {
                 _isProcessing = false;
@@ -162,8 +170,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
                     return;
                 }
 
-                //Start a new task
-                _currentProcessTask = Task.Factory.StartNew(ProcessItem);
+                // Start a new task
+                _currentProcessTask = Task.Factory.StartNew(processItem);
             }
         }
 

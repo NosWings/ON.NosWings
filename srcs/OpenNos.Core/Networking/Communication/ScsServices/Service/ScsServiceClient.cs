@@ -76,29 +76,17 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// <summary>
         /// Unique identifier for this client.
         /// </summary>
-        public long ClientId
-        {
-            get { return _serverClient.ClientId; }
-        }
+        public long ClientId => _serverClient.ClientId;
 
         /// <summary>
         /// Gets the communication state of the Client.
         /// </summary>
-        public CommunicationStates CommunicationState
-        {
-            get
-            {
-                return _serverClient.CommunicationState;
-            }
-        }
+        public CommunicationStates CommunicationState => _serverClient.CommunicationState;
 
         /// <summary>
         /// Gets endpoint of remote application.
         /// </summary>
-        public ScsEndPoint RemoteEndPoint
-        {
-            get { return _serverClient.RemoteEndPoint; }
-        }
+        public ScsEndPoint RemoteEndPoint => _serverClient.RemoteEndPoint;
 
         #endregion
 
@@ -107,10 +95,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// <summary>
         /// Closes client connection.
         /// </summary>
-        public void Disconnect()
-        {
-            _serverClient.Disconnect();
-        }
+        public void Disconnect() => _serverClient.Disconnect();
 
         /// <summary>
         /// Gets the client proxy interface that provides calling client methods remotely.
@@ -137,10 +122,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// <summary>
         /// Raises Disconnected event.
         /// </summary>
-        private void OnDisconnected()
-        {
-            Disconnected?.Invoke(this, EventArgs.Empty);
-        }
+        private void OnDisconnected() => Disconnected?.Invoke(this, EventArgs.Empty);
 
         #endregion
     }

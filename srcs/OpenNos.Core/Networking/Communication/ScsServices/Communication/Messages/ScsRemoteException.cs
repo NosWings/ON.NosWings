@@ -36,8 +36,9 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
         /// <summary>
         /// Contstructor.
         /// </summary>
-        public ScsRemoteException(SerializationInfo serializationInfo, StreamingContext context)
-            : base(serializationInfo, context)
+        /// <param name="serializationInfo"></param>
+        /// <param name="context"></param>
+        protected ScsRemoteException(SerializationInfo serializationInfo, StreamingContext context) : base(serializationInfo, context)
         {
         }
 
@@ -45,8 +46,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
         /// Contstructor.
         /// </summary>
         /// <param name="message">Exception message</param>
-        public ScsRemoteException(string message)
-            : base(message)
+        public ScsRemoteException(string message) : base(message)
         {
         }
 
@@ -55,8 +55,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
         /// </summary>
         /// <param name="message">Exception message</param>
         /// <param name="innerException">Inner exception</param>
-        public ScsRemoteException(string message, Exception innerException)
-            : base(message, innerException)
+        public ScsRemoteException(string message, Exception innerException) : base(message, innerException)
         {
         }
 

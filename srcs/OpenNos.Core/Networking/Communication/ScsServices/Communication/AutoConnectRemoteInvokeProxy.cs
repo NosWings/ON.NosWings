@@ -45,11 +45,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
         /// </summary>
         /// <param name="clientMessenger">Messenger object that is used to send/receive messages</param>
         /// <param name="client">Reference to the client object that is used to connect/disconnect</param>
-        public AutoConnectRemoteInvokeProxy(RequestReplyMessenger<TMessenger> clientMessenger, IConnectableClient client)
-            : base(clientMessenger)
-        {
-            _client = client;
-        }
+        public AutoConnectRemoteInvokeProxy(RequestReplyMessenger<TMessenger> clientMessenger, IConnectableClient client) : base(clientMessenger) => _client = client;
 
         #endregion
 

@@ -35,8 +35,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication
         /// <summary>
         /// Contstructor for serializing.
         /// </summary>
-        public CommunicationStateException(SerializationInfo serializationInfo, StreamingContext context)
-            : base(serializationInfo, context)
+        /// <param name="serializationInfo"></param>
+        /// <param name="context"></param>
+        protected CommunicationStateException(SerializationInfo serializationInfo, StreamingContext context) : base(serializationInfo, context)
         {
         }
 
@@ -44,8 +45,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication
         /// Contstructor.
         /// </summary>
         /// <param name="message">Exception message</param>
-        public CommunicationStateException(string message)
-            : base(message)
+        public CommunicationStateException(string message) : base(message)
         {
         }
 
@@ -54,8 +54,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication
         /// </summary>
         /// <param name="message">Exception message</param>
         /// <param name="innerException">Inner exception</param>
-        public CommunicationStateException(string message, Exception innerException)
-            : base(message, innerException)
+        public CommunicationStateException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
