@@ -32,10 +32,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// RequestReplyMessenger object to send/receive messages over serverClient
         /// </param>
         /// <returns></returns>
-        public static IScsServiceClient CreateServiceClient(IScsServerClient serverClient, RequestReplyMessenger<IScsServerClient> requestReplyMessenger)
-        {
-            return new ScsServiceClient(serverClient, requestReplyMessenger);
-        }
+        public static IScsServiceClient CreateServiceClient(IScsServerClient serverClient, RequestReplyMessenger<IScsServerClient> requestReplyMessenger) => new ScsServiceClient(serverClient, requestReplyMessenger);
 
         #endregion
     }

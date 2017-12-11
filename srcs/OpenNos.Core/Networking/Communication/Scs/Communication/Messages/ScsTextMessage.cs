@@ -35,21 +35,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         /// Creates a new ScsTextMessage object with Text property.
         /// </summary>
         /// <param name="text">Message text that is being transmitted</param>
-        public ScsTextMessage(string text)
-        {
-            Text = text;
-        }
+        public ScsTextMessage(string text) => Text = text;
 
         /// <summary>
         /// Creates a new reply ScsTextMessage object with Text property.
         /// </summary>
         /// <param name="text">Message text that is being transmitted</param>
         /// <param name="repliedMessageId">Replied message id if this is a reply for a message.</param>
-        public ScsTextMessage(string text, string repliedMessageId)
-            : this(text)
-        {
-            RepliedMessageId = repliedMessageId;
-        }
+        public ScsTextMessage(string text, string repliedMessageId) : this(text) => RepliedMessageId = repliedMessageId;
 
         #endregion
 

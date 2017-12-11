@@ -35,21 +35,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         /// Creates a new ScsRawDataMessage object with MessageData property.
         /// </summary>
         /// <param name="messageData">Message data that is being transmitted</param>
-        public ScsRawDataMessage(byte[] messageData)
-        {
-            MessageData = messageData;
-        }
+        public ScsRawDataMessage(byte[] messageData) => MessageData = messageData;
 
         /// <summary>
         /// Creates a new reply ScsRawDataMessage object with MessageData property.
         /// </summary>
         /// <param name="messageData">Message data that is being transmitted</param>
         /// <param name="repliedMessageId">Replied message id if this is a reply for a message.</param>
-        public ScsRawDataMessage(byte[] messageData, string repliedMessageId)
-            : this(messageData)
-        {
-            RepliedMessageId = repliedMessageId;
-        }
+        public ScsRawDataMessage(byte[] messageData, string repliedMessageId) : this(messageData) => RepliedMessageId = repliedMessageId;
 
         #endregion
 
@@ -66,15 +59,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 
         #region Methods
 
-        public int CompareTo(object obj)
-        {
-            return CompareTo((ScsRawDataMessage)obj);
-        }
+        public int CompareTo(object obj) => CompareTo((ScsRawDataMessage)obj);
 
-        public int CompareTo(ScsRawDataMessage other)
-        {
-            return Priority.CompareTo(other.Priority);
-        }
+        public int CompareTo(ScsRawDataMessage other) => Priority.CompareTo(other.Priority);
 
         /// <summary>
         /// Creates a string to represents this object.
@@ -82,11 +69,48 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         /// <returns>A string to represents this object</returns>
         public override string ToString()
         {
-            int messageLength = MessageData == null ? 0 : MessageData.Length;
+            int messageLength = MessageData?.Length ?? 0;
             return string.IsNullOrEmpty(RepliedMessageId)
                        ? $"ScsRawDataMessage [{MessageId}]: {messageLength} bytes"
                        : $"ScsRawDataMessage [{MessageId}] Replied To [{RepliedMessageId}]: {messageLength} bytes";
         }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(obj, null))
+            {
+                return false;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public override int GetHashCode() => throw new NotImplementedException();
+
+        public static bool operator ==(ScsRawDataMessage left, ScsRawDataMessage right)
+        {
+            if (ReferenceEquals(left, null))
+            {
+                return ReferenceEquals(right, null);
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ScsRawDataMessage left, ScsRawDataMessage right) => !(left == right);
+
+        public static bool operator <(ScsRawDataMessage left, ScsRawDataMessage right) => ReferenceEquals(left, null) ? !ReferenceEquals(right, null) : left.CompareTo(right) < 0;
+
+        public static bool operator <=(ScsRawDataMessage left, ScsRawDataMessage right) => ReferenceEquals(left, null) || left.CompareTo(right) <= 0;
+
+        public static bool operator >(ScsRawDataMessage left, ScsRawDataMessage right) => !ReferenceEquals(left, null) && left.CompareTo(right) > 0;
+
+        public static bool operator >=(ScsRawDataMessage left, ScsRawDataMessage right) => ReferenceEquals(left, null) ? ReferenceEquals(right, null) : left.CompareTo(right) >= 0;
 
         #endregion
     }

@@ -27,6 +27,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         /// Creates a new MessageEventArgs object.
         /// </summary>
         /// <param name="message">Message object that is associated with this event</param>
+        /// <param name="receivedTimestamp">Message reception timestamp</param>
         public MessageEventArgs(IScsMessage message, DateTime receivedTimestamp)
         {
             Message = message;
@@ -40,7 +41,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         /// <summary>
         /// Message object that is associated with this event.
         /// </summary>
-        public IScsMessage Message { get; private set; }
+        public IScsMessage Message { get; }
 
         public DateTime ReceivedTimestamp { get; set; }
 

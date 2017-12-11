@@ -28,20 +28,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         /// <summary>
         /// Creates a new ScsMessage.
         /// </summary>
-        public ScsMessage()
-        {
-            MessageId = Guid.NewGuid().ToString();
-        }
+        public ScsMessage() => MessageId = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Creates a new reply ScsMessage.
         /// </summary>
         /// <param name="repliedMessageId">Replied message id if this is a reply for a message.</param>
-        public ScsMessage(string repliedMessageId)
-            : this()
-        {
-            RepliedMessageId = repliedMessageId;
-        }
+        public ScsMessage(string repliedMessageId) : this() => RepliedMessageId = repliedMessageId;
 
         #endregion
 

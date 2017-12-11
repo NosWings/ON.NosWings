@@ -38,10 +38,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server.Tcp
         /// Creates a new ScsTcpServer object.
         /// </summary>
         /// <param name="endPoint">The endpoint address of the server to listen incoming connections</param>
-        public ScsTcpServer(ScsTcpEndPoint endPoint)
-        {
-            _endPoint = endPoint;
-        }
+        public ScsTcpServer(ScsTcpEndPoint endPoint) => _endPoint = endPoint;
 
         #endregion
 
@@ -51,10 +48,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server.Tcp
         /// Creates a TCP connection listener.
         /// </summary>
         /// <returns>Created listener object</returns>
-        protected override IConnectionListener CreateConnectionListener()
-        {
-            return new TcpConnectionListener(_endPoint);
-        }
+        protected override IConnectionListener CreateConnectionListener() => new TcpConnectionListener(_endPoint);
 
         #endregion
     }

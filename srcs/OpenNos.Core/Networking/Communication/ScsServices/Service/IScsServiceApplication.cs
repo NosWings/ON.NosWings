@@ -46,9 +46,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// Service class type. Must be delivered from ScsService and must implement TServiceInterface.
         /// </typeparam>
         /// <param name="service">An instance of TServiceClass.</param>
-        void AddService<TServiceInterface, TServiceClass>(TServiceClass service)
-            where TServiceClass : ScsService, TServiceInterface
-            where TServiceInterface : class;
+        void AddService<TServiceInterface, TServiceClass>(TServiceClass service) where TServiceInterface : class where TServiceClass : ScsService, TServiceInterface;
 
         /// <summary>
         /// Removes a previously added service object from this service application. It removes

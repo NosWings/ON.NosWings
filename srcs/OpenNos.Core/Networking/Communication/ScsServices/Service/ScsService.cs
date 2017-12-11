@@ -43,15 +43,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// </remarks>
         public IScsServiceClient CurrentClient
         {
-            get
-            {
-                return GetCurrentClient();
-            }
-
-            set
-            {
-                _currentClient = value;
-            }
+            get => GetCurrentClient();
+            set => _currentClient = value;
         }
 
         #endregion

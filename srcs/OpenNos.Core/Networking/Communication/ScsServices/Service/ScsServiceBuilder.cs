@@ -29,11 +29,9 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// </summary>
         /// <param name="endPoint">EndPoint that represents address of the service</param>
         /// <returns>Created SCS service application</returns>
-        public static IScsServiceApplication CreateService(ScsEndPoint endPoint)
-        {
-            return new ScsServiceApplication(ScsServerFactory.CreateServer(endPoint));
-        }
+        public static IScsServiceApplication CreateService(ScsEndPoint endPoint) => new ScsServiceApplication(ScsServerFactory.CreateServer(endPoint));
 
         #endregion
     }
 }
+    

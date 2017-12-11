@@ -45,10 +45,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
         /// Represents this object as string.
         /// </summary>
         /// <returns>String representation of this object</returns>
-        public override string ToString()
-        {
-            return $"ScsRemoteInvokeReturnMessage: Returns {ReturnValue}, Exception = {RemoteException}";
-        }
+        public override string ToString() => $"ScsRemoteInvokeReturnMessage: Returns {ReturnValue}, Exception = {RemoteException}";
 
         #endregion
     }

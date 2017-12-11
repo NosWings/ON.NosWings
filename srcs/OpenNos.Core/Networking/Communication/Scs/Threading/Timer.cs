@@ -1,7 +1,21 @@
-﻿using System;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using System;
 using System.Threading;
 
-namespace OpenNos.Core.Networking.Communication.Scs.Threading
+namespace OpenNos.Core.Threading
 {
     /// <summary>
     /// This class is a timer that performs some tasks periodically.
@@ -9,6 +23,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
     public class Timer : IDisposable
     {
         #region Members
+
+        private readonly object _lock = new object();
 
         /// <summary>
         /// This timer is used to perfom the task at spesified intervals.
@@ -27,8 +43,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
         /// Indicates that whether timer is running or stopped.
         /// </summary>
         private volatile bool _running;
-
-        private object lockObject = new object();
 
         #endregion
 
@@ -53,7 +67,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
         {
             Period = period;
             RunOnStart = runOnStart;
-            _taskTimer = new System.Threading.Timer(TimerCallBack, null, Timeout.Infinite, Timeout.Infinite);
+            _taskTimer = new System.Threading.Timer(timerCallBack, null, Timeout.Infinite, Timeout.Infinite);
         }
 
         #endregion
@@ -108,7 +122,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
         /// </summary>
         public void Stop()
         {
-            lock (lockObject)
+            lock (_lock)
             {
                 _running = false;
                 _taskTimer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -120,7 +134,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
         /// </summary>
         public void WaitToStop()
         {
-            lock (lockObject)
+            lock (_lock)
             {
                 while (_performingTasks)
                 {
@@ -142,9 +156,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
         /// This method is called by _taskTimer.
         /// </summary>
         /// <param name="state">Not used argument</param>
-        private void TimerCallBack(object state)
+        private void timerCallBack(object state)
         {
-            lock (lockObject)
+            lock (_lock)
             {
                 if (!_running || _performingTasks)
                 {
@@ -157,14 +171,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Threading
 
             try
             {
-                Elapsed?.Invoke(this, new EventArgs());
-            }
-            catch
-            {
+                Elapsed?.Invoke(this, EventArgs.Empty);
             }
             finally
             {
-                lock (lockObject)
+                lock (_lock)
                 {
                     _performingTasks = false;
                     if (_running)

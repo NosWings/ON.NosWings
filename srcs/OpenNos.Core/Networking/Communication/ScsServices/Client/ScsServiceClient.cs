@@ -102,33 +102,21 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// <summary>
         /// Gets the current communication state.
         /// </summary>
-        public CommunicationStates CommunicationState
-        {
-            get
-            {
-                return _client.CommunicationState;
-            }
-        }
+        public CommunicationStates CommunicationState => _client.CommunicationState;
 
         /// <summary>
         /// Timeout for connecting to a server (as milliseconds). Default value: 15 seconds (15000 ms).
         /// </summary>
         public int ConnectTimeout
         {
-            get
-            {
-                return _client.ConnectTimeout;
-            }
-            set
-            {
-                _client.ConnectTimeout = value;
-            }
+            get => _client.ConnectTimeout;
+            set => _client.ConnectTimeout = value;
         }
 
         /// <summary>
         /// Reference to the service proxy to invoke remote service methods.
         /// </summary>
-        public T ServiceProxy { get; private set; }
+        public T ServiceProxy { get; }
 
         /// <summary>
         /// Timeout value when invoking a service method. If timeout occurs before end of remote
@@ -137,14 +125,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// </summary>
         public int Timeout
         {
-            get
-            {
-                return _requestReplyMessenger.Timeout;
-            }
-            set
-            {
-                _requestReplyMessenger.Timeout = value;
-            }
+            get => _requestReplyMessenger.Timeout;
+            set => _requestReplyMessenger.Timeout = value;
         }
 
         #endregion
@@ -154,18 +136,12 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// <summary>
         /// Connects to server.
         /// </summary>
-        public void Connect()
-        {
-            _client.Connect();
-        }
+        public void Connect() => _client.Connect();
 
         /// <summary>
         /// Disconnects from server. Does nothing if already disconnected.
         /// </summary>
-        public void Disconnect()
-        {
-            _client.Disconnect();
-        }
+        public void Disconnect() => _client.Disconnect();
 
         /// <summary>
         /// Calls Disconnect method.
@@ -254,6 +230,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
             object returnValue;
             try
             {
+                // reflection?
                 Type type = _clientObject.GetType();
                 MethodInfo method = type.GetMethod(invokeMessage.MethodName);
                 returnValue = method.Invoke(_clientObject, invokeMessage.Parameters);
@@ -287,16 +264,16 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         {
             try
             {
-                _requestReplyMessenger.SendMessage(
-                    new ScsRemoteInvokeReturnMessage
-                    {
-                        RepliedMessageId = requestMessage.MessageId,
-                        ReturnValue = returnValue,
-                        RemoteException = exception
-                    }, 10);
+                _requestReplyMessenger.SendMessage(new ScsRemoteInvokeReturnMessage
+                {
+                    RepliedMessageId = requestMessage.MessageId,
+                    ReturnValue = returnValue,
+                    RemoteException = exception
+                }, 10);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Log.Error("Invoke response failed to send", ex);
             }
         }
 

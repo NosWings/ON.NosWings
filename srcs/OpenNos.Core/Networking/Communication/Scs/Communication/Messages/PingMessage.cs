@@ -37,10 +37,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         /// </summary>
         /// <param name="repliedMessageId">Replied message id if this is a reply for a message.</param>
         public ScsPingMessage(string repliedMessageId)
-            : this()
-        {
-            RepliedMessageId = repliedMessageId;
-        }
+            : this() => RepliedMessageId = repliedMessageId;
 
         #endregion
 
@@ -53,8 +50,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         public override string ToString()
         {
             return string.IsNullOrEmpty(RepliedMessageId)
-                       ? $"ScsPingMessage [{MessageId}]"
-                       : $"ScsPingMessage [{MessageId}] Replied To [{RepliedMessageId}]";
+                ? $"ScsPingMessage [{MessageId}]"
+                : $"ScsPingMessage [{MessageId}] Replied To [{RepliedMessageId}]";
         }
 
         #endregion

@@ -14,7 +14,7 @@
 
 using OpenNos.Core.Networking.Communication.Scs.Communication;
 using System;
-using OpenNos.Core.Networking.Communication.Scs.Threading;
+using OpenNos.Core.Threading;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Client
 {
@@ -55,7 +55,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </exception>
         public ClientReConnecter(IConnectableClient client)
         {
-            _client = client ?? throw new ArgumentNullException("client");
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _client.Disconnected += Client_Disconnected;
             _reconnectTimer = new Timer(20000);
             _reconnectTimer.Elapsed += ReconnectTimer_Elapsed;
@@ -72,8 +72,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         public int ReConnectCheckPeriod
         {
-            get { return _reconnectTimer.Period; }
-            set { _reconnectTimer.Period = value; }
+            get => _reconnectTimer.Period;
+            set => _reconnectTimer.Period = value;
         }
 
         #endregion
@@ -109,10 +109,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         /// <param name="sender">Source of the event</param>
         /// <param name="e">Event arguments</param>
-        private void Client_Disconnected(object sender, EventArgs e)
-        {
-            _reconnectTimer.Start();
-        }
+        private void Client_Disconnected(object sender, EventArgs e) => _reconnectTimer.Start();
 
         /// <summary>
         /// Hadles Elapsed event of _reconnectTimer.

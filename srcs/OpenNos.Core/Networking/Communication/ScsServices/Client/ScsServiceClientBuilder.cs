@@ -19,7 +19,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
     /// <summary>
     /// This class is used to build service clients to remotely invoke methods of a SCS service.
     /// </summary>
-    public class ScsServiceClientBuilder
+    public static class ScsServiceClientBuilder
     {
         #region Methods
 
@@ -33,10 +33,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// client has no methods to be invoked by server
         /// </param>
         /// <returns>Created client object to connect to the server</returns>
-        public static IScsServiceClient<T> CreateClient<T>(ScsEndPoint endpoint, object clientObject = null) where T : class
-        {
-            return new ScsServiceClient<T>(endpoint.CreateClient(), clientObject);
-        }
+        public static IScsServiceClient<T> CreateClient<T>(ScsEndPoint endpoint, object clientObject = null) where T : class => new ScsServiceClient<T>(endpoint.CreateClient(), clientObject);
 
         /// <summary>
         /// Creates a client to connect to a SCS service.
@@ -48,10 +45,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// client has no methods to be invoked by server
         /// </param>
         /// <returns>Created client object to connect to the server</returns>
-        public static IScsServiceClient<T> CreateClient<T>(string endpointAddress, object clientObject = null) where T : class
-        {
-            return CreateClient<T>(ScsEndPoint.CreateEndPoint(endpointAddress), clientObject);
-        }
+        public static IScsServiceClient<T> CreateClient<T>(string endpointAddress, object clientObject = null) where T : class => CreateClient<T>(ScsEndPoint.CreateEndPoint(endpointAddress), clientObject);
 
         #endregion
     }

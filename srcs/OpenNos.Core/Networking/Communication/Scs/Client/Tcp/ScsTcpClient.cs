@@ -39,10 +39,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
         /// Creates a new ScsTcpClient object.
         /// </summary>
         /// <param name="serverEndPoint">The endpoint address to connect to the server</param>
-        public ScsTcpClient(ScsTcpEndPoint serverEndPoint)
-        {
-            _serverEndPoint = serverEndPoint;
-        }
+        public ScsTcpClient(ScsTcpEndPoint serverEndPoint) => _serverEndPoint = serverEndPoint;
 
         #endregion
 
@@ -52,10 +49,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
         /// Creates a communication channel using ServerIpAddress and ServerPort.
         /// </summary>
         /// <returns>Ready communication channel to communicate</returns>
-        protected override ICommunicationChannel CreateCommunicationChannel()
-        {
-            return new TcpCommunicationChannel(TcpHelper.ConnectToServer(new IPEndPoint(IPAddress.Parse(_serverEndPoint.IpAddress), _serverEndPoint.TcpPort), ConnectTimeout));
-        }
+        protected override ICommunicationChannel CreateCommunicationChannel() => new TcpCommunicationChannel(TcpHelper.ConnectToServer(new IPEndPoint(IPAddress.Parse(_serverEndPoint.IpAddress), _serverEndPoint.TcpPort), ConnectTimeout));
 
         #endregion
     }

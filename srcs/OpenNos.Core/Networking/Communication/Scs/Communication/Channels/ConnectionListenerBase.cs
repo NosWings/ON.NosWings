@@ -46,10 +46,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         /// Raises CommunicationChannelConnected event.
         /// </summary>
         /// <param name="client"></param>
-        protected virtual void OnCommunicationChannelConnected(ICommunicationChannel client)
-        {
-            CommunicationChannelConnected?.Invoke(this, new CommunicationChannelEventArgs(client));
-        }
+        protected virtual void OnCommunicationChannelConnected(ICommunicationChannel client) => CommunicationChannelConnected?.Invoke(this, new CommunicationChannelEventArgs(client));
 
         #endregion
     }
