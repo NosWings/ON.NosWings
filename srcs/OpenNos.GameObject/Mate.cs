@@ -513,7 +513,7 @@ namespace OpenNos.GameObject
                 }
                 return;
             }
-            MateHelper.Instance.AddPetBuff(Owner.Session); // Add pet buffs
+            MateHelper.Instance.AddPetBuff(Owner.Session, this); // Add pet buffs
 
             if (LastHealth.AddSeconds(IsSitting ? 1.5 : 2) <= DateTime.Now)
             {
