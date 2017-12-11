@@ -86,8 +86,6 @@ namespace OpenNos.GameObject.Map
 
         public MapInstance MapInstance { get; set; }
 
-        public ConcurrentBag<EventContainer> OnDeathEvents { get; set; }
-
         public List<Node> Path { get; set; }
 
         public List<Recipe> Recipes { get; set; }
@@ -216,7 +214,7 @@ namespace OpenNos.GameObject.Map
         public void RunDeathEvent()
         {
             MapInstance.InstanceBag.NpcsKilled++;
-            OnDeathEvents.ToList().ForEach(e =>
+            GetBattleEntity().OnDeathEvents.ToList().ForEach(e =>
             {
                 if (e.EventActionType == EventActionType.THROWITEMS)
                 {
@@ -225,7 +223,7 @@ namespace OpenNos.GameObject.Map
                 }
                 EventHelper.Instance.RunEvent(e);
             });
-            OnDeathEvents.Clear();
+            GetBattleEntity().OnDeathEvents.Clear();
         }
 
         public void StartLife()
@@ -522,6 +520,7 @@ namespace OpenNos.GameObject.Map
         {
             CurrentHp -= damage;
             CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : CurrentHp;
+
         }
 
         #endregion

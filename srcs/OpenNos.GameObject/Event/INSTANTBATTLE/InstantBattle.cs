@@ -381,9 +381,9 @@ namespace OpenNos.GameObject.Event.INSTANTBATTLE
             return dropParameters;
         }
 
-        private static ConcurrentBag<MonsterToSummon> GetInstantBattleMonster(Map.Map map, short instantbattletype, int wave)
+        private static ConcurrentBag<ToSummon> GetInstantBattleMonster(Map.Map map, short instantbattletype, int wave)
         {
-            ConcurrentBag<MonsterToSummon> summonParameters = new ConcurrentBag<MonsterToSummon>();
+            ConcurrentBag<ToSummon> summonParameters = new ConcurrentBag<ToSummon>();
 
             switch (instantbattletype)
             {
@@ -391,46 +391,46 @@ namespace OpenNos.GameObject.Event.INSTANTBATTLE
                     switch (wave)
                     {
                         case 0:
-                            map.GenerateMonsters(1, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(58, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(105, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(107, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(108, 8, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(111, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(136, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(58, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(105, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(107, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(108, 8, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(111, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(136, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 1:
-                            map.GenerateMonsters(194, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(114, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(99, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(39, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(2, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(194, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(114, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(99, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(39, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(2, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 2:
-                            map.GenerateMonsters(140, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(100, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(81, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(12, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(4, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(140, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(100, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(81, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(12, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(4, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 3:
-                            map.GenerateMonsters(115, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(112, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(110, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(14, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(5, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(115, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(112, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(110, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(14, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(5, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 4:
-                            map.GenerateMonsters(979, 1, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(167, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(137, 10, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(22, 15, false, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(17, 8, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(16, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(979, 1, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(167, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(137, 10, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(22, 15, false, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(17, 8, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(16, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
                     }
                     break;
@@ -439,43 +439,43 @@ namespace OpenNos.GameObject.Event.INSTANTBATTLE
                     switch (wave)
                     {
                         case 0:
-                            map.GenerateMonsters(120, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(151, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(149, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(139, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(73, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(120, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(151, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(149, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(139, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(73, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 1:
-                            map.GenerateMonsters(152, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(147, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(104, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(62, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(8, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(152, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(147, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(104, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(62, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(8, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 2:
-                            map.GenerateMonsters(153, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(132, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(86, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(76, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(68, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(153, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(132, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(86, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(76, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(68, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 3:
-                            map.GenerateMonsters(134, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(91, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(133, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(70, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(89, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(134, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(91, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(133, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(70, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(89, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 4:
-                            map.GenerateMonsters(154, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(200, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(77, 8, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(217, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(724, 1, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(154, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(200, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(77, 8, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(217, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(724, 1, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
                     }
                     break;
@@ -484,44 +484,44 @@ namespace OpenNos.GameObject.Event.INSTANTBATTLE
                     switch (wave)
                     {
                         case 0:
-                            map.GenerateMonsters(134, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(91, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(89, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(77, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(71, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(134, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(91, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(89, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(77, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(71, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 1:
-                            map.GenerateMonsters(217, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(200, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(154, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(92, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(79, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(217, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(200, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(154, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(92, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(79, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 2:
-                            map.GenerateMonsters(235, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(226, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(214, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(204, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(201, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(235, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(226, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(214, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(204, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(201, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 3:
-                            map.GenerateMonsters(249, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(236, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(227, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(218, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(202, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(249, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(236, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(227, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(218, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(202, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 4:
-                            map.GenerateMonsters(583, 1, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(400, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(255, 8, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(253, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(251, 10, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(205, 14, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(583, 1, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(400, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(255, 8, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(253, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(251, 10, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(205, 14, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
                     }
                     break;
@@ -530,44 +530,44 @@ namespace OpenNos.GameObject.Event.INSTANTBATTLE
                     switch (wave)
                     {
                         case 0:
-                            map.GenerateMonsters(242, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(234, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(215, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(207, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(202, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(242, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(234, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(215, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(207, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(202, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 1:
-                            map.GenerateMonsters(402, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(253, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(237, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(216, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(205, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(402, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(253, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(237, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(216, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(205, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 2:
-                            map.GenerateMonsters(402, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(243, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(228, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(255, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(205, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(402, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(243, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(228, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(255, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(205, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 3:
-                            map.GenerateMonsters(268, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(255, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(254, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(174, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(172, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(268, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(255, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(254, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(174, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(172, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 4:
-                            map.GenerateMonsters(725, 1, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(407, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(272, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(261, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(256, 12, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(275, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(725, 1, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(407, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(272, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(261, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(256, 12, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(275, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
                     }
                     break;
@@ -576,45 +576,45 @@ namespace OpenNos.GameObject.Event.INSTANTBATTLE
                     switch (wave)
                     {
                         case 0:
-                            map.GenerateMonsters(402, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(253, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(237, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(216, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(205, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(402, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(253, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(237, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(216, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(205, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 1:
-                            map.GenerateMonsters(402, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(243, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(228, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(225, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(205, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(402, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(243, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(228, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(225, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(205, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 2:
-                            map.GenerateMonsters(255, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(254, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(251, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(174, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(172, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(255, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(254, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(251, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(174, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(172, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 3:
-                            map.GenerateMonsters(407, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(272, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(261, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(257, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(256, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(407, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(272, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(261, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(257, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(256, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 4:
-                            map.GenerateMonsters(748, 1, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(444, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(439, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(275, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(274, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(273, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(163, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(748, 1, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(444, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(439, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(275, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(274, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(273, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(163, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
                     }
                     break;
@@ -623,46 +623,46 @@ namespace OpenNos.GameObject.Event.INSTANTBATTLE
                     switch (wave)
                     {
                         case 0:
-                            map.GenerateMonsters(1007, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1003, 15, false, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1002, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1001, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1000, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1007, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1003, 15, false, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1002, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1001, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1000, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 1:
-                            map.GenerateMonsters(1199, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1198, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1197, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1196, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1123, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1199, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1198, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1197, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1196, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1123, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 2:
-                            map.GenerateMonsters(1305, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1304, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1303, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1302, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1194, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1305, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1304, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1303, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1302, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1194, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 3:
-                            map.GenerateMonsters(1902, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1901, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1900, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1045, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1043, 15, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1042, 16, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1902, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1901, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1900, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1045, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1043, 15, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1042, 16, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
 
                         case 4:
-                            map.GenerateMonsters(637, 1, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1903, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1053, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1051, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1049, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1048, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
-                            map.GenerateMonsters(1047, 13, true, new List<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(637, 1, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1903, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1053, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1051, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1049, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1048, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
+                            map.GenerateSummons(1047, 13, true, new ConcurrentBag<EventContainer>()).ToList().ForEach(s => summonParameters.Add(s));
                             break;
                     }
                     break;

@@ -615,13 +615,13 @@ namespace OpenNos.GameObject.Map
             });
         }
 
-        internal void SummonMonsters(IEnumerable<MonsterToSummon> summonParameters)
+        internal void SummonMonsters(IEnumerable<ToSummon> summonParameters)
         {
             // TODO: Parallelize, if possible.
-            foreach (MonsterToSummon mon in summonParameters)
+            foreach (ToSummon mon in summonParameters)
             {
                 NpcMonster npcmonster = ServerManager.Instance.GetNpc(mon.VNum);
-                if (npcmonster == null)
+                if (npcmonster == null || ServerManager.Instance.RandomNumber() > mon.SummonChance)
                 {
                     continue;
                 }
@@ -635,27 +635,26 @@ namespace OpenNos.GameObject.Map
                     MapMonsterId = GetNextMonsterId(),
                     ShouldRespawn = false,
                     Target = mon.Target,
-                    OnDeathEvents = mon.DeathEvents,
-                    OnNoticeEvents = mon.NoticingEvents,
                     IsTarget = mon.IsTarget,
-                    IsBonus = mon.IsBonus,
-                    IsBoss = mon.IsBoss,
-                    NoticeRange = mon.NoticeRange
+                    OnNoticeEvents = mon.NoticingEvents,
+                    IsBonus = mon.IsBonusOrProtected,
+                    IsBoss = mon.IsBonusOrProtected
                 };
                 monster.Initialize(this);
                 monster.IsHostile = mon.IsHostile;
+                monster.GetBattleEntity().OnDeathEvents = mon.DeathEvents;
                 AddMonster(monster);
                 Broadcast(monster.GenerateIn());
             }
         }
 
-        internal void SummonNpcs(IEnumerable<NpcToSummon> summonParameters)
+        internal void SummonNpcs(IEnumerable<ToSummon> summonParameters)
         {
             // TODO: Parallelize, if possible.
-            foreach (NpcToSummon mon in summonParameters)
+            foreach (ToSummon mon in summonParameters)
             {
                 NpcMonster npcmonster = ServerManager.Instance.GetNpc(mon.VNum);
-                if (npcmonster == null)
+                if (npcmonster == null || ServerManager.Instance.RandomNumber() > mon.SummonChance)
                 {
                     continue;
                 }
@@ -669,11 +668,11 @@ namespace OpenNos.GameObject.Map
                     IsMoving = true,
                     MapNpcId = GetNextNpcId(),
                     Target = mon.Target,
-                    OnDeathEvents = mon.DeathEvents,
-                    IsMate = mon.IsMate,
-                    IsProtected = mon.IsProtected
+                    IsMate = mon.IsBossOrMate,
+                    IsProtected = mon.IsBonusOrProtected
                 };
                 npc.Initialize(this);
+                npc.GetBattleEntity().OnDeathEvents = mon.DeathEvents;
                 AddNpc(npc);
                 Broadcast(npc.GenerateIn());
             }

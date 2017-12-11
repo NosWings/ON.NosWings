@@ -550,7 +550,7 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.SPAWNMONSTERS:
-                    evt.MapInstance.SummonMonsters(((ConcurrentBag<MonsterToSummon>)evt.Parameter).ToList());
+                    evt.MapInstance.SummonMonsters(((ConcurrentBag<ToSummon>)evt.Parameter).ToList());
                     break;
                 case EventActionType.REFRESHRAIDGOAL:
                     ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();
@@ -561,7 +561,7 @@ namespace OpenNos.GameObject.Helpers
                     }
                     break;
                 case EventActionType.SPAWNNPCS:
-                    evt.MapInstance.SummonNpcs((List<NpcToSummon>)evt.Parameter);
+                    evt.MapInstance.SummonNpcs((List<ToSummon>)evt.Parameter);
                     break;
 
                 case EventActionType.DROPITEMS:
@@ -579,13 +579,13 @@ namespace OpenNos.GameObject.Helpers
 
                 case EventActionType.SPAWNONLASTENTRY:
                     Character lastincharacter = evt.MapInstance.Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
-                    List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
+                    List<ToSummon> summonParameters = new List<ToSummon>();
                     MapCell hornSpawn = new MapCell
                     {
                         X = lastincharacter?.PositionX ?? 154,
                         Y = lastincharacter?.PositionY ?? 140
                     };
-                    summonParameters.Add(new MonsterToSummon(Convert.ToInt16(evt.Parameter), hornSpawn, lastincharacter, true));
+                    summonParameters.Add(new ToSummon(Convert.ToInt16(evt.Parameter), hornSpawn, lastincharacter, true));
                     evt.MapInstance.SummonMonsters(summonParameters);
                     break;
 

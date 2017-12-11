@@ -14,6 +14,7 @@ using OpenNos.Data;
 using OpenNos.Core;
 using System.Collections.Generic;
 using OpenNos.GameObject.Npc;
+using OpenNos.GameObject.Event;
 
 namespace OpenNos.GameObject.Battle
 {
@@ -28,6 +29,8 @@ namespace OpenNos.GameObject.Battle
             Buffs = new ConcurrentBag<Buff.Buff>();
             StaticBcards = new ConcurrentBag<BCard>();
             SkillBcards = new ConcurrentBag<BCard>();
+            OnDeathEvents = new ConcurrentBag<EventContainer>();
+            OnHitEvents = new ConcurrentBag<EventContainer>();
             ObservableBag = new Dictionary<short, IDisposable>();
 
             if (Session is Character character)
@@ -85,6 +88,10 @@ namespace OpenNos.GameObject.Battle
         public ConcurrentBag<BCard> StaticBcards { get; set; }
 
         public ConcurrentBag<BCard> SkillBcards { get; set; }
+
+        public ConcurrentBag<EventContainer> OnDeathEvents { get; set; }
+
+        public ConcurrentBag<EventContainer> OnHitEvents { get; set; }
 
         public Dictionary<short, IDisposable> ObservableBag { get; set; }
 
@@ -982,7 +989,7 @@ namespace OpenNos.GameObject.Battle
 
             if (!isBoss)
             {
-                skill?.BCards.ToList().ForEach(s => s.ApplyBCards(target.GetSession(), Session));
+                skill?.BCards.ToList().ForEach(s => s.ApplyBCards(target, Entity));
             }
 
             if (target.GetCurrentHp() <= 0)

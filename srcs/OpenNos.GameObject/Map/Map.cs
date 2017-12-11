@@ -113,24 +113,13 @@ namespace OpenNos.GameObject.Map
             return (int)Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
-        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true, bool isBoss = false)
+        public IEnumerable<ToSummon> GenerateSummons(short vnum, short amount, bool move, ConcurrentBag<EventContainer> deathEvents, bool isBonusOrProtected = false, bool isHostile = true, bool isBossOrMate = false)
         {
-            List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
+            List<ToSummon> summonParameters = new List<ToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                summonParameters.Add(new MonsterToSummon(vnum, cell, null, move, isBonus: isBonus, isHostile: isHostile, isBoss: isBoss) { DeathEvents = deathEvents });
-            }
-            return summonParameters;
-        }
-
-        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, ConcurrentBag<EventContainer> deathEvents, bool isMate, bool isProtected)
-        {
-            List<NpcToSummon> summonParameters = new List<NpcToSummon>();
-            for (int i = 0; i < amount; i++)
-            {
-                MapCell cell = GetRandomPosition();
-                summonParameters.Add(new NpcToSummon(vnum, cell, null, deathEvents, isMate: isMate, isProtected: isProtected));
+                summonParameters.Add(new ToSummon(vnum, cell, null, move, isBonusOrProtected: isBonusOrProtected, isHostile: isHostile, isBossOrMate: isBossOrMate) { DeathEvents = deathEvents });
             }
             return summonParameters;
         }

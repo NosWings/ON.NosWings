@@ -407,7 +407,7 @@ namespace OpenNos.GameObject
                     case "SummonMonsters":
                         MonsterAmount += short.Parse(mapevent?.Attributes["Amount"].Value);
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS,
-                            mapinstance.Map.GenerateMonsters(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), move, new List<EventContainer>(),
+                            mapinstance.Map.GenerateSummons(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), move, new ConcurrentBag<EventContainer>(),
                                 isBonus, isHostile, isBoss)));
                         break;
 
@@ -422,26 +422,26 @@ namespace OpenNos.GameObject
                             }
                         }
                         MonsterAmount++;
-                        List<EventContainer> notice = new List<EventContainer>();
-                        List<EventContainer> death = new List<EventContainer>();
+                        ConcurrentBag<EventContainer> notice = new ConcurrentBag<EventContainer>();
+                        ConcurrentBag<EventContainer> death = new ConcurrentBag<EventContainer>();
                         byte noticerange = 0;
                         foreach (XmlNode var in mapevent.ChildNodes)
                         {
                             switch (var.Name)
                             {
                                 case "OnDeath":
-                                    death.AddRange(GenerateEvent(var, mapinstance));
+                                    death = GenerateEvent(var, mapinstance);
                                     break;
 
                                 case "OnNoticing":
                                     byte.TryParse(var?.Attributes["Range"]?.Value, out noticerange);
-                                    notice.AddRange(GenerateEvent(var, mapinstance));
+                                    notice = GenerateEvent(var, mapinstance);
                                     break;
                             }
                         }
-                        ConcurrentBag<MonsterToSummon> lst = new ConcurrentBag<MonsterToSummon>
+                        ConcurrentBag<ToSummon> lst = new ConcurrentBag<ToSummon>
                         {
-                            new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell {X = positionX, Y = positionY}, null, move, isTarget, isBonus, isHostile, isBoss)
+                            new ToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell {X = positionX, Y = positionY}, null, move, 100, isTarget, isBonus, isHostile, isBoss)
                             {
                                 DeathEvents = death,
                                 NoticingEvents = notice,
@@ -455,8 +455,8 @@ namespace OpenNos.GameObject
                         NpcAmount += short.Parse(mapevent?.Attributes["Amount"].Value);
                         ;
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS,
-                            mapinstance.Map.GenerateNpcs(short.Parse(mapevent?.Attributes["VNum"].Value),
-                                short.Parse(mapevent?.Attributes["Amount"].Value), new ConcurrentBag<EventContainer>(), isMate, isProtected)));
+                            mapinstance.Map.GenerateSummons(short.Parse(mapevent?.Attributes["VNum"].Value),
+                                short.Parse(mapevent?.Attributes["Amount"].Value), true, new ConcurrentBag<EventContainer>(), isMate, isProtected)));
                         break;
 
                     case "RefreshRaidGoals":
@@ -483,10 +483,12 @@ namespace OpenNos.GameObject
                             }
                         }
                         NpcAmount++;
-                        List<NpcToSummon> lstn = new List<NpcToSummon>
+                        List<ToSummon> lstn = new List<ToSummon>
                         {
-                            new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() {X = positionX, Y = positionY}, null, GenerateEvent(mapevent, mapinstance), isMate,
-                                isProtected)
+                            new ToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() {X = positionX, Y = positionY}, null, true, 100, isMate, isProtected)
+                            {
+                                 DeathEvents = GenerateEvent(mapevent, mapinstance)
+                            }
                         };
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, lstn.AsEnumerable()));
                         break;

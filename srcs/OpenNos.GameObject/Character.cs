@@ -860,10 +860,10 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            ConcurrentBag<MonsterToSummon> monsters = new ConcurrentBag<MonsterToSummon>();
+            ConcurrentBag<ToSummon> monsters = new ConcurrentBag<ToSummon>();
             for (int a = 0; a < quest.Quest.FirstObjective / 2 + 1; a++)
             {
-                monsters.Add(new MonsterToSummon((short)quest.Quest.FirstData, new MapCell { X = (short) (PositionX + ServerManager.Instance.RandomNumber(-2,3)), Y = (short)(PositionY + ServerManager.Instance.RandomNumber(-2, 3)) }, this, true));
+                monsters.Add(new ToSummon((short)quest.Quest.FirstData, new MapCell { X = (short) (PositionX + ServerManager.Instance.RandomNumber(-2,3)), Y = (short)(PositionY + ServerManager.Instance.RandomNumber(-2, 3)) }, this, true));
             }
             EventHelper.Instance.RunEvent(new EventContainer(MapInstance, EventActionType.SPAWNMONSTERS, monsters.AsEnumerable()));
         }
@@ -1581,7 +1581,7 @@ namespace OpenNos.GameObject
 
         public void GenerateRewards(IBattleEntity target)
         {
-            if (target is MapMonster monster)
+            if (target.GetSession() is MapMonster monster)
             {
                 GenerateKillBonus(monster);
             }
@@ -1996,7 +1996,6 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                monsterToAttack.RunDeathEvent();
                 Random random = new Random(DateTime.Now.Millisecond & monsterToAttack.MapMonsterId);
 
                 // owner set

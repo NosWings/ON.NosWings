@@ -47,8 +47,7 @@ namespace OpenNos.GameObject.Map
 
         public MapMonster()
         {
-            OnDeathEvents = new List<EventContainer>();
-            OnNoticeEvents = new List<EventContainer>();
+            OnNoticeEvents = new ConcurrentBag<EventContainer>();
         }
 
         #endregion
@@ -106,9 +105,7 @@ namespace OpenNos.GameObject.Map
 
         public NpcMonster Monster { get; private set; }
 
-        public List<EventContainer> OnDeathEvents { get; set; }
-
-        public List<EventContainer> OnNoticeEvents { get; set; }
+        public ConcurrentBag<EventContainer> OnNoticeEvents { get; set; }
 
         public ZoneEvent MoveEvent { get; set; }
 
@@ -210,17 +207,6 @@ namespace OpenNos.GameObject.Map
         }
 
         /// <summary>
-        /// Run the Death Event
-        /// </summary>
-        public void RunDeathEvent()
-        {
-            MapInstance.InstanceBag.Combo += IsBonus ? 1 : 0;
-            MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + (IsBonus ? 1 : 0));
-            MapInstance.InstanceBag.MonstersKilled++;
-            OnDeathEvents.ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
-        }
-
-        /// <summary>
         /// Start life
         /// </summary>
         public void StartLife()
@@ -282,8 +268,8 @@ namespace OpenNos.GameObject.Map
                     character?.Session.SendPacket(GenerateEff(5000));
                 }
             }
-            OnNoticeEvents.ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
-            OnNoticeEvents.RemoveAll(s => s != null);
+            OnNoticeEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
+            OnNoticeEvents.Clear();
         }
 
         /// <summary>
@@ -480,7 +466,7 @@ namespace OpenNos.GameObject.Map
             MapY = FirstY;
             Path = new List<Node>();
             MapInstance.Broadcast(GenerateIn());
-            Monster.BCards.ForEach(s => s.ApplyBCards(this));
+            Monster.BCards.ForEach(s => s.ApplyBCards(this, this));
         }
 
         public void TargetHit(NpcMonsterSkill npcMonsterSkill)
@@ -565,23 +551,28 @@ namespace OpenNos.GameObject.Map
         {
             CurrentHp -= damage;
             CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : CurrentHp;
+            GetBattleEntity().OnHitEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
         }
 
         public void GenerateDeath(IBattleEntity killer = null)
         {
-            if (MonsterVNum != 679 && MonsterVNum != 680) // Act4 Guardians
+            if (MonsterVNum == 679 || MonsterVNum == 680) // Act4 Guardians
             {
-                IsAlive = false;
-                CurrentHp = 0;
-                CurrentMp = 0;
-                Death = DateTime.Now;
-                LastMove = DateTime.Now.AddMilliseconds(500);
-                GetBattleEntity().Buffs.Clear();
-                Target = null;
-                killer?.GenerateRewards(this);
+                CurrentHp = 1;
                 return;
             }
-            CurrentHp = 1;
+            IsAlive = false;
+            CurrentHp = 0;
+            CurrentMp = 0;
+            Death = DateTime.Now;
+            LastMove = DateTime.Now.AddMilliseconds(500);
+            GetBattleEntity().Buffs.Clear();
+            Target = null;
+            killer?.GenerateRewards(this);
+            MapInstance.InstanceBag.Combo += IsBonus ? 1 : 0;
+            MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + (IsBonus ? 1 : 0));
+            MapInstance.InstanceBag.MonstersKilled++;
+            GetBattleEntity().OnDeathEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
         }
 
         public void GenerateRewards(IBattleEntity target)
