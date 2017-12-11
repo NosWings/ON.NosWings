@@ -616,14 +616,18 @@ namespace OpenNos.GameObject
                     if (MateType == MateType.Pet)
                     {
                         Owner.IsPetAutoRelive = false;
-                        return;
                     }
-                    Owner.IsPartnerAutoRelive = false;
+                    else
+                    {
+                        Owner.IsPartnerAutoRelive = false;
+                    }
+                }
+                else
+                {
+                    Owner.Inventory.RemoveItemAmount(1012, 5);
+                    Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WILL_BE_BACK"), MateType), 0));
                     return;
                 }
-                Owner.Inventory.RemoveItemAmount(1012, 5);
-                Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WILL_BE_BACK"), MateType), 0));
-                return;
             }
             Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BACK_TO_MINILAND"), 0));
             BackToMiniland();
