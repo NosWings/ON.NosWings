@@ -327,7 +327,7 @@ namespace OpenNos.GameObject.Item
                             break;
 
                     }
-                    Observable.Timer(TimeSpan.FromSeconds(session.Character.BuffRandomTime)).Subscribe(o =>
+                    Observable.Timer(TimeSpan.FromMilliseconds(session.Character.BuffRandomTime)).Subscribe(o =>
                     {
                         session.Character.Speed -= 5;
                         switch (session.Character.Morph)
