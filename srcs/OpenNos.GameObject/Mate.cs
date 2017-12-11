@@ -229,56 +229,6 @@ namespace OpenNos.GameObject
             return $"e_info 10 {NpcMonsterVNum} {Level} {Monster.Element} {Monster.AttackClass} {Monster.ElementRate} {Monster.AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Monster.MaxHP} {Monster.MaxMP} -1 {Name.Replace(' ', '^')}";
         }
 
-        public void GenerateDeath()
-        {
-            LastDeath = DateTime.Now;
-            IsAlive = false;
-            Hp = 1;
-            Owner.Session.SendPacket(GenerateScPacket());
-            Loyalty -= (short) (Owner.Authority >= AuthorityType.VipPlus ? 0 : 50);
-            Owner.Session.SendPacket(GenerateScPacket());
-            if (MateType == MateType.Pet)
-            {
-                if (Owner.IsPetAutoRelive)
-                {
-                    if (Owner.Inventory.CountItem(1012) < 5)
-                    {
-                        Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(1012).Name), 0));
-                        Owner.IsPetAutoRelive = false;
-                        BackToMiniland();
-                        return;
-                    }
-                    Owner.Inventory.RemoveItemAmount(1012, 5);
-                    Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PET_WILL_BE_BACK"), 0));
-                }
-                else
-                {
-                    Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BACK_TO_MINILAND"), 0));
-                    BackToMiniland();
-                }
-            }
-            else if (MateType == MateType.Partner)
-            {
-                if (Owner.IsPartnerAutoRelive)
-                {
-                    if (Owner.Inventory.CountItem(1012) < 5)
-                    {
-                        Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(1012).Name), 0));
-                        Owner.IsPartnerAutoRelive = false;
-                        BackToMiniland();
-                        return;
-                    }
-                    Owner.Inventory.RemoveItemAmount(1012, 5);
-                    Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MATE_WILL_BE_BACK"), 0));
-                }
-                else
-                {
-                    Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BACK_TO_MINILAND"), 0));
-                    BackToMiniland();
-                }
-            }
-        }
-
         public string GenerateIn(bool foe = false, bool isAct4 = false)
         {
             if (Owner.Invisible || Owner.InvisibleGm || !IsAlive)
@@ -650,6 +600,33 @@ namespace OpenNos.GameObject
             {
                 return;
             }
+            LastDeath = DateTime.Now;
+            IsAlive = false;
+            Hp = 1;
+            Owner.Session.SendPacket(GenerateScPacket());
+            Loyalty -= (short)(Owner.Authority >= AuthorityType.VipPlus ? 0 : 50);
+            Owner.Session.SendPacket(GenerateScPacket());
+
+            if (MateType == MateType.Pet ? Owner.IsPetAutoRelive : Owner.IsPartnerAutoRelive)
+            {
+                if (Owner.Inventory.CountItem(1012) < 5)
+                {
+                    Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(1012).Name), 0));
+                    BackToMiniland();
+                    if (MateType == MateType.Pet)
+                    {
+                        Owner.IsPetAutoRelive = false;
+                        return;
+                    }
+                    Owner.IsPartnerAutoRelive = false;
+                    return;
+                }
+                Owner.Inventory.RemoveItemAmount(1012, 5);
+                Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WILL_BE_BACK"), MateType), 0));
+                return;
+            }
+            Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BACK_TO_MINILAND"), 0));
+            BackToMiniland();
         }
 
         public void GenerateRewards(IBattleEntity target)
