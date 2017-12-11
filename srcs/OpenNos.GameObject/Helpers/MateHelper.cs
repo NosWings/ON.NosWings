@@ -47,7 +47,7 @@ namespace OpenNos.GameObject.Helpers
         public double[] XpData { get; private set; }
 
         // Vnum - CardId
-        public Dictionary<int, int?> MateBuffs { get; set; }
+        public Dictionary<int, int> MateBuffs { get; set; }
 
         public List<int> PetSkills { get; set; }
 
@@ -59,9 +59,10 @@ namespace OpenNos.GameObject.Helpers
 
         public void AddPetBuff(ClientSession session, Mate mate)
         {
-            if (MateBuffs[mate.NpcMonsterVNum] != null && session.Character.Buff.All(b => b.Card.CardId != MateBuffs[mate.NpcMonsterVNum]))
+            int cardId = -1;
+            if (MateBuffs.TryGetValue(mate.NpcMonsterVNum, out cardId) && session.Character.Buff.All(b => b.Card.CardId != cardId))
             {
-                session.Character.AddBuff(new Buff.Buff(MateBuffs[mate.NpcMonsterVNum] ?? -1), false);
+                session.Character.AddBuff(new Buff.Buff(cardId), false);
             }
             mate.Monster.Skills.Where(sk => PetSkills.Contains(sk.SkillVNum)).ToList().ForEach(s => session.SendPacket(session.Character.GeneratePetskill(s.SkillVNum)));
         }
@@ -203,7 +204,7 @@ namespace OpenNos.GameObject.Helpers
 
         private void LoadMateBuffs()
         {
-            MateBuffs = new Dictionary<int, int?>();
+            MateBuffs = new Dictionary<int, int>();
             MateBuffs[178] = 108; // LUCKY PIG
             MateBuffs[670] = 374; // FIBI
             MateBuffs[830] = 377; // RUDY LOUBARD
