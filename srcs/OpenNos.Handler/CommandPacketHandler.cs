@@ -55,6 +55,10 @@ namespace OpenNos.Handler
 
         #region Methods
 
+        /// <summary>
+        /// $Act4Percent
+        /// </summary>
+        /// <param name="packet"></param>
         public void Act4Percentage(Act4PercentagePacket packet)
         {
             if (packet?.Faction == null || packet?.Percent == null)
@@ -79,6 +83,10 @@ namespace OpenNos.Handler
 
         }
 
+        /// <summary>
+        /// $Bank
+        /// </summary>
+        /// <param name="packet"></param>
         public void ManageBankAccount(BankCommandPacket packet)
         {
             if (string.IsNullOrEmpty(packet?.Subcommand))
@@ -209,6 +217,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// $AddQuest
+        /// </summary>
+        /// <param name="addQuestPacket"></param>
         public void AddQuest(AddQuestPacket addQuestPacket)
         {
             if (ServerManager.Instance.Quests.Any(q => q.QuestId == addQuestPacket.QuestId))
@@ -219,46 +231,7 @@ namespace OpenNos.Handler
 
             Session.SendPacket(Session.Character.GenerateSay("This Quest doesn't exist", 10));
         }
-
-        /// <summary>
-        /// $CreateRaid
-        /// </summary>
-        /// <param name="createRaidPacket"></param>
-        public void CreateRaid(CreateRaidPacket createRaidPacket)
-        {
-            if (createRaidPacket == null)
-            {
-                return;
-            }
-
-            if (!int.TryParse(createRaidPacket.FactionType, out int faction))
-            {
-                return;
-            }
-
-            if (!int.TryParse(createRaidPacket.RaidType, out int raidType))
-            {
-                return;
-            }
-
-            switch (faction)
-            {
-                case 1:
-                    ServerManager.Instance.Act4AngelStat.Percentage = 10001;
-                    ServerManager.Instance.Act4AngelStat.Mode = 1;
-                    break;
-                case 2:
-                    ServerManager.Instance.Act4DemonStat.Percentage = 10001;
-                    ServerManager.Instance.Act4DemonStat.Mode = 1;
-                    break;
-            }
-
-            if (createRaidPacket.RaidType != null)
-            {
-                ServerManager.Instance.RaidType = raidType;
-            }
-        }
-
+        
         /// <summary>
         /// $StuffPack
         /// </summary>
