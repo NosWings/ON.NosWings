@@ -155,13 +155,9 @@ namespace OpenNos.GameObject.Battle
 
         #region Methods
 
-        public void AddBuff(Buff.Buff indicator, bool notify = true)
+        public void AddBuff(Buff.Buff indicator)
         {
             if (indicator?.Card == null)
-            {
-                return;
-            }
-            if (!notify && Buffs.Any(s => s.Card.CardId == indicator.Card.CardId))
             {
                 return;
             }
@@ -182,8 +178,11 @@ namespace OpenNos.GameObject.Battle
                 {
                     character.BuffRandomTime = character.ChargeValue > 7000 ? 7000 : character.ChargeValue;
                 }
-                character.Session.SendPacket($"bf 1 {character.CharacterId} {(character.ChargeValue > 7000 ? 7000 : character.ChargeValue)}.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
-                character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
+                if (!indicator.StaticBuff)
+                {
+                    character.Session.SendPacket($"bf 1 {character.CharacterId} {(character.ChargeValue > 7000 ? 7000 : character.ChargeValue)}.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+                    character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
+                }
             }
             indicator.RemainingTime = indicator.Card.Duration == 0 ? randomTime : indicator.Card.Duration;
             indicator.Start = DateTime.Now;
@@ -728,7 +727,7 @@ namespace OpenNos.GameObject.Battle
             if (targetEntity.GetSession() is Character chara && target.HasBuff(CardType.NoDefeatAndNoDamage, (byte)AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
             {
                 chara.ChargeValue = totalDamage;
-                chara.AddBuff(new Buff.Buff(0), false);
+                chara.AddBuff(new Buff.Buff(0));
                 totalDamage = 0;
                 hitmode = 1;
             }
@@ -778,21 +777,19 @@ namespace OpenNos.GameObject.Battle
                    StaticBcards.Any(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype));
         }
 
-        public void RemoveBuff(int id)
+        public void RemoveBuff(int id, bool removePermaBuff = false)
         {
             Buff.Buff indicator = Buffs.FirstOrDefault(s => s.Card.CardId == id);
-            if (indicator == null)
+            if (indicator == null || !removePermaBuff && indicator.IsPermaBuff && indicator.RemainingTime <= 0)
             {
                 return;
             }
-            if (indicator.RemainingTime == -1 && indicator.Start.AddSeconds(indicator.RemainingTime / 10) > DateTime.Now.AddSeconds(-2))
+            if (indicator.IsPermaBuff && !removePermaBuff)
             {
+                AddBuff(indicator);
                 return;
             }
-            if (Buffs.Contains(indicator))
-            {
-                Buffs = Buffs.Where(s => s.Card.CardId != id);
-            }
+            Buffs = Buffs.Where(s => s.Card.CardId != id);
             if (Session is Character character)
             {
                 if (indicator.StaticBuff)
@@ -818,7 +815,6 @@ namespace OpenNos.GameObject.Battle
                     character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => character.MapInstance?.Broadcast(m.GenerateIn()));
                     character.MapInstance?.Broadcast(character.GenerateInvisible());
                 }
-                
             }
         }
 

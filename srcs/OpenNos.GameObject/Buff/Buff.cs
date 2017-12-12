@@ -20,25 +20,30 @@ namespace OpenNos.GameObject.Buff
 {
     public class Buff
     {
-        #region Members
-        
-        public int Level;
-        public Card Card { get; set; }
-        public bool StaticBuff { get; set; }
-        public int RemainingTime { get; set; }
-        public DateTime Start { get; set; }
+        #region Instantiation
 
-        public Buff(int id)
-        {
-            Card = ServerManager.Instance.Cards.FirstOrDefault(s => s.CardId == id);
-        }
-
-        public Buff(int id, byte level)
+        public Buff(int id, byte level = 0, bool isPermaBuff = false)
         {
             Card = ServerManager.Instance.Cards.FirstOrDefault(s => s.CardId == id);
             Level = level;
+            IsPermaBuff = isPermaBuff;
         }
-        
+
+        #endregion
+
+        #region Properties
+
+        public int Level;
+
+        public Card Card { get; set; }
+
+        public bool StaticBuff { get; set; }
+
+        public int RemainingTime { get; set; }
+
+        public DateTime Start { get; set; }
+
+        public bool IsPermaBuff { get; set; }
 
         #endregion
 

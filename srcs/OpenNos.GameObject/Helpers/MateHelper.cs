@@ -62,14 +62,14 @@ namespace OpenNos.GameObject.Helpers
             int cardId = -1;
             if (MateBuffs.TryGetValue(mate.NpcMonsterVNum, out cardId) && session.Character.Buff.All(b => b.Card.CardId != cardId))
             {
-                session.Character.AddBuff(new Buff.Buff(cardId), false);
+                session.Character.AddBuff(new Buff.Buff(cardId, isPermaBuff: true));
             }
             mate.Monster.Skills.Where(sk => PetSkills.Contains(sk.SkillVNum)).ToList().ForEach(s => session.SendPacket(session.Character.GeneratePetskill(s.SkillVNum)));
         }
 
         public void RemovePetBuffs(ClientSession session)
         {
-            session.Character.GetBattleEntity().Buffs.Where(b => MateBuffs.Values.Any(v => v == b.Card.CardId)).ToList().ForEach(b => session.Character.RemoveBuff(b.Card.CardId));
+            session.Character.GetBattleEntity().Buffs.Where(b => MateBuffs.Values.Any(v => v == b.Card.CardId)).ToList().ForEach(b => session.Character.RemoveBuff(b.Card.CardId, true));
             session.SendPacket(session.Character.GeneratePetskill());
         }
 

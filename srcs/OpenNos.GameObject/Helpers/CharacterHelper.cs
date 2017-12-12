@@ -15,6 +15,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using NosSharp.Enums;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -95,6 +96,58 @@ namespace OpenNos.GameObject.Helpers
         #endregion
 
         #region Methods
+
+        public void AddSpecialistBuff(ClientSession session)
+        {
+            if (!session.Character.UseSp || session.Character.SpInstance == null)
+            {
+                return;
+            }
+            switch (session.Character.SpInstance.Design)
+            {
+                case 6:
+                    session.Character.AddBuff(new Buff.Buff(387, isPermaBuff: true));
+                    break;
+                case 7:
+                    session.Character.AddBuff(new Buff.Buff(395, isPermaBuff: true));
+                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
+                    break;
+                case 8:
+                    session.Character.AddBuff(new Buff.Buff(396, isPermaBuff: true));
+                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
+                    break;
+                case 9:
+                    session.Character.AddBuff(new Buff.Buff(397, isPermaBuff: true));
+                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
+                    break;
+                case 10:
+                    session.Character.AddBuff(new Buff.Buff(398, isPermaBuff: true));
+                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
+                    break;
+                case 11:
+                    session.Character.AddBuff(new Buff.Buff(410, isPermaBuff: true));
+                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
+                    break;
+                case 12:
+                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
+                    break;
+                case 13:
+                    session.Character.AddBuff(new Buff.Buff(444, isPermaBuff: true));
+                    break;
+            }
+        }
+
+        public void RemoveSpecialistBuff(ClientSession session)
+        {
+            session.Character.RemoveBuff(387, true);
+            session.Character.RemoveBuff(395, true);
+            session.Character.RemoveBuff(396, true);
+            session.Character.RemoveBuff(397, true);
+            session.Character.RemoveBuff(398, true);
+            session.Character.RemoveBuff(410, true);
+            session.Character.RemoveBuff(411, true);
+            session.Character.RemoveBuff(444, true);
+        }
 
         public static float ExperiencePenalty(byte playerLevel, byte monsterLevel)
         {

@@ -66,6 +66,7 @@ namespace OpenNos.GameObject
             AddTeamMember();
             GenerateMateTransportId();
             StartLife();
+            MateHelper.Instance.AddPetBuff(Owner.Session, this); // Add pet buffs
         }
 
         #endregion
@@ -463,7 +464,6 @@ namespace OpenNos.GameObject
                 }
                 return;
             }
-            MateHelper.Instance.AddPetBuff(Owner.Session, this); // Add pet buffs
 
             if (LastHealth.AddSeconds(IsSitting ? 1.5 : 2) <= DateTime.Now)
             {
@@ -519,10 +519,11 @@ namespace OpenNos.GameObject
                 return;
             }
             IsTeamMember = true;
-            StartLife();
             IsAlive = true;
+            StartLife();
             Hp = MaxHp;
             Mp = MaxMp;
+            MateHelper.Instance.AddPetBuff(Owner.Session, this); // Add pet buffs
         }
 
         public void RemoveTeamMember()
@@ -585,7 +586,6 @@ namespace OpenNos.GameObject
                 if (Owner.Inventory.CountItem(1012) < 5)
                 {
                     Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(1012).Name), 0));
-                    BackToMiniland();
                     if (MateType == MateType.Pet)
                     {
                         Owner.IsPetAutoRelive = false;

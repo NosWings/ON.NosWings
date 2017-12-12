@@ -80,9 +80,9 @@ namespace OpenNos.GameObject
 
         #region BattleEntityProperties
 
-        public void AddBuff(Buff.Buff indicator, bool notify = true) => GetBattleEntity().AddBuff(indicator, notify);
+        public void AddBuff(Buff.Buff indicator) => GetBattleEntity().AddBuff(indicator);
 
-        public void RemoveBuff(short cardId) => GetBattleEntity().RemoveBuff(cardId);
+        public void RemoveBuff(short cardId, bool removePermaBuff = false) => GetBattleEntity().RemoveBuff(cardId, removePermaBuff);
 
         public int[] GetBuff(CardType type, byte subtype) => GetBattleEntity().GetBuff(type, subtype);
 
@@ -918,15 +918,15 @@ namespace OpenNos.GameObject
                 if (heal != 0)
                 {
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
-                    Hp = Hp + heal < HpLoad() ? Hp + heal : (int)HpLoad();
                     change = Hp != (int)HpLoad() ? true : change;
+                    Hp = Hp + heal < HpLoad() ? Hp + heal : (int)HpLoad();
                 }
 
                 int debuff = (int)(GetBuff(CardType.RecoveryAndDamagePercent, (byte)AdditionalTypes.RecoveryAndDamagePercent.HPReduced)[0] * (HpLoad() / 100)); // DEBUFF HP LOSS
                 if (debuff != 0)
                 {
-                    Hp = Hp - debuff > 1 ? Hp - debuff : 1;
                     change = Hp != 1 ? true : change;
+                    Hp = Hp - debuff > 1 ? Hp - debuff : 1;
                 }
             }
 
@@ -993,27 +993,6 @@ namespace OpenNos.GameObject
                 LastEffect = DateTime.Now;
             }
 
-            // PERMA BUFFS (Maps)
-            if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) == true)
-            {
-                if (Buff.All(s => s.Card.CardId != 340 && s.Card.CardId != 339))
-                {
-                    Session.Character.AddStaticBuff(new StaticBuffDTO
-                    {
-                        CardId = 339,
-                        CharacterId = CharacterId,
-                        RemainingTime = -1
-                    });
-                }
-            }
-            else
-            {
-                if (Buff.Any(s => s.Card.CardId == 339))
-                {
-                    Session.Character.RemoveBuff(339);
-                }
-            }
-
             if (MeditationDictionary.Count != 0)
             {
                 for (int a = 532; a < 535; a++)
@@ -1034,39 +1013,6 @@ namespace OpenNos.GameObject
             if (!UseSp || LastSkillUse.AddSeconds(15) < DateTime.Now || LastSpGaugeRemove.AddSeconds(1) > DateTime.Now || SpInstance == null)
             {
                 return;
-            }
-
-            switch (SpInstance.Design)
-            {
-                case 6:
-                    AddBuff(new Buff.Buff(387), false);
-                    break;
-                case 7:
-                    AddBuff(new Buff.Buff(395), false);
-                    AddBuff(new Buff.Buff(411), false);
-                    break;
-                case 8:
-                    AddBuff(new Buff.Buff(396), false);
-                    AddBuff(new Buff.Buff(411), false);
-                    break;
-                case 9:
-                    AddBuff(new Buff.Buff(397), false);
-                    AddBuff(new Buff.Buff(411), false);
-                    break;
-                case 10:
-                    AddBuff(new Buff.Buff(398), false);
-                    AddBuff(new Buff.Buff(411), false);
-                    break;
-                case 11:
-                    AddBuff(new Buff.Buff(410), false);
-                    AddBuff(new Buff.Buff(411), false);
-                    break;
-                case 12:
-                    AddBuff(new Buff.Buff(411), false);
-                    break;
-                case 13:
-                    AddBuff(new Buff.Buff(444), false);
-                    break;
             }
 
             byte spType = (byte)(SpInstance.Item.Morph > 1 && SpInstance.Item.Morph < 8 || SpInstance.Item.Morph > 9 && SpInstance.Item.Morph < 16 ? 3
@@ -1108,6 +1054,7 @@ namespace OpenNos.GameObject
                                 }
                                 UseSp = false;
                                 SpInstance = null;
+                                CharacterHelper.Instance.RemoveSpecialistBuff(Session);
                                 LoadSpeed();
                                 Session.SendPacket(GenerateCond());
                                 Session.SendPacket(GenerateLev());
@@ -4676,45 +4623,38 @@ namespace OpenNos.GameObject
             return result;
         }
 
-        public void AddStaticBuff(StaticBuffDTO staticBuff)
+        public void AddStaticBuff(StaticBuffDTO staticBuff, bool isPermaBuff = false)
         {
-            Buff.Buff bf = new Buff.Buff(staticBuff.CardId, Session.Character.Level)
+            Buff.Buff bf = new Buff.Buff(staticBuff.CardId, Session.Character.Level, isPermaBuff)
             {
                 Start = DateTime.Now,
-                StaticBuff = true
+                StaticBuff = true,
             };
             Buff.Buff oldbuff = Buff.FirstOrDefault(s => s.Card.CardId == staticBuff.CardId);
-
-            if (staticBuff.RemainingTime < -1)
+            if (oldbuff?.IsPermaBuff == true)
             {
-                RemoveBuff(bf.Card.CardId);
                 return;
             }
-            if (staticBuff.RemainingTime == -1)
+
+            if (staticBuff.RemainingTime <= 0)
             {
-                bf.RemainingTime = staticBuff.RemainingTime;
-                AddBuff(bf);
-            }
-            else if (staticBuff.RemainingTime > 0 && staticBuff.CardId == 340)
-            {
-                TotalTime += staticBuff.RemainingTime;
-                bf.RemainingTime = TotalTime;
+                bf.RemainingTime = (int)(bf.Card.Duration * 0.6 <= 0 ? 3600 : bf.Card.Duration * 0.6);
                 AddBuff(bf);
             }
             else if (staticBuff.RemainingTime > 0)
             {
-                bf.RemainingTime = staticBuff.RemainingTime;
+                bf.RemainingTime = staticBuff.CardId == 340 ? TotalTime += staticBuff.RemainingTime : staticBuff.RemainingTime;
                 AddBuff(bf);
             }
             else if (oldbuff != null)
             {
                 RemoveBuff(bf.Card.CardId);
-                bf.RemainingTime = bf.Card.Duration * 6 / 10 + oldbuff.RemainingTime;
+                bf.RemainingTime = (int)(bf.Card.Duration * 0.6) + oldbuff.RemainingTime;
                 AddBuff(bf);
             }
             else
             {
-                bf.RemainingTime = bf.Card.Duration * 6 / 10;
+                bf.RemainingTime = (int)(bf.Card.Duration * 0.6);
                 AddBuff(bf);
             }
             Session.SendPacket(bf.RemainingTime == -1 ? $"vb {bf.Card.CardId} 1 -1" : $"vb {bf.Card.CardId} 1 {bf.RemainingTime * 10}");
