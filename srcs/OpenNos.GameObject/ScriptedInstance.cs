@@ -255,27 +255,25 @@ namespace OpenNos.GameObject
                 Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
                 Dispose();
             });
-            _obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
+            if (Type != ScriptedInstanceType.RaidAct4)
             {
-                if (Type == ScriptedInstanceType.RaidAct4)
+                _obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
                 {
-                    _obs.Dispose();
-                    return;
-                }
-                if (_instancebag.Lives - _instancebag.DeadList.Count < 0)
-                {
-                    Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 3)));
+                    if (_instancebag.Lives - _instancebag.DeadList.Count < 0)
+                    {
+                        Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)3)));
+                        Dispose();
+                        _obs.Dispose();
+                    }
+                    if (_instancebag.Clock.DeciSecondRemaining > 0)
+                    {
+                        return;
+                    }
+                    Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
                     Dispose();
                     _obs.Dispose();
-                }
-                if (_instancebag.Clock.DeciSecondRemaining > 0)
-                {
-                    return;
-                }
-                Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
-                Dispose();
-                _obs.Dispose();
-            });
+                });
+            }
             GenerateEvent(instanceEvents, FirstMap);
         }
 

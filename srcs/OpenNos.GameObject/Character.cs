@@ -1901,20 +1901,20 @@ namespace OpenNos.GameObject
                 if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232 && !ServerManager.Instance.Act6Zenas.IsRaidActive)
                 {
                     ServerManager.Instance.Act6Zenas.KilledMonsters++;
+                    if (ServerManager.Instance.Act6Zenas.KilledMonsters > 0 && ServerManager.Instance.Act6Zenas.KilledMonsters % 10 == 0)
+                    {
+                        ServerManager.Instance.Act6Zenas.Percentage++;
+                        ServerManager.Instance.Act6Process();
+                    }
                 }
                 if (monsterToAttack.MapInstance.Map.MapId >= 233 && monsterToAttack.MapInstance.Map.MapId <= 236 && !ServerManager.Instance.Act6Erenia.IsRaidActive)
                 {
                     ServerManager.Instance.Act6Erenia.KilledMonsters++;
-                }
-                if (ServerManager.Instance.Act6Zenas.KilledMonsters > 0 && ServerManager.Instance.Act6Zenas.KilledMonsters % 10 == 0)
-                {
-                    ServerManager.Instance.Act6Zenas.Percentage++;
-                    ServerManager.Instance.Act6Process();
-                }
-                if (ServerManager.Instance.Act6Erenia.KilledMonsters > 0 && ServerManager.Instance.Act6Erenia.KilledMonsters % 10 == 0)
-                {
-                    ServerManager.Instance.Act6Erenia.Percentage++;
-                    ServerManager.Instance.Act6Process();
+                    if (ServerManager.Instance.Act6Erenia.KilledMonsters > 0 && ServerManager.Instance.Act6Erenia.KilledMonsters % 10 == 0)
+                    {
+                        ServerManager.Instance.Act6Erenia.Percentage++;
+                        ServerManager.Instance.Act6Process();
+                    }
                 }
                 #endregion Act6Stats
 
