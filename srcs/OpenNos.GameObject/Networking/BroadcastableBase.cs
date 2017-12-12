@@ -34,7 +34,7 @@ namespace OpenNos.GameObject.Networking
         /// </summary>
         private readonly ConcurrentDictionary<long, ClientSession> _sessions;
 
-        internal readonly ConcurrentDictionary<long[,], IBattleEntity> _battleEntities;
+        internal readonly ConcurrentDictionary<Tuple<SessionType,long>, IBattleEntity> _battleEntities;
 
         private bool _disposed;
 
@@ -46,7 +46,7 @@ namespace OpenNos.GameObject.Networking
         {
             LastUnregister = DateTime.Now.AddMinutes(-1);
             _sessions = new ConcurrentDictionary<long, ClientSession>();
-            _battleEntities = new ConcurrentDictionary<long[,], IBattleEntity>();
+            _battleEntities = new ConcurrentDictionary<Tuple<SessionType, long>, IBattleEntity>();
         }
 
         #endregion
@@ -166,8 +166,8 @@ namespace OpenNos.GameObject.Networking
 
             // Create a ChatClient and store it in a collection
             _sessions[session.Character.CharacterId] = session;
-            _battleEntities[new long[(long)session.Character.GetSessionType(), session.Character.GetId()]] = session.Character;
-            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities[new long[(long)m.GetSessionType(), m.GetId()]] = m);
+            _battleEntities[new Tuple<SessionType, long>(SessionType.Character, session.Character.CharacterId)] = session.Character;
+            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities[new Tuple<SessionType, long>(m.GetSessionType(), m.GetId())] = m);
 
             if (session.HasCurrentMapInstance)
             {
@@ -187,8 +187,9 @@ namespace OpenNos.GameObject.Networking
             {
                 session.CurrentMapInstance.IsSleeping = true;
             }
-            _battleEntities.TryRemove(new long[(long)SessionType.Character, characterId], out IBattleEntity character);
-            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities.TryRemove(new long[(long)m.GetSessionType(), m.GetId()], out IBattleEntity mate));
+            _battleEntities.TryRemove(new Tuple<SessionType, long>(SessionType.Character, session.Character.CharacterId), out IBattleEntity character);
+            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities.TryRemove(new Tuple<SessionType, long>(m.GetSessionType(), m.GetId()), out IBattleEntity mate));
+
             Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             LastUnregister = DateTime.Now;
         }
