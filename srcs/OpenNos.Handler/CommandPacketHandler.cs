@@ -1425,9 +1425,9 @@ namespace OpenNos.Handler
         {
             if (createItemPacket != null)
             {
+                List<short> boxes = new List<short> {882, 942, 185, 999};
                 short vnum = createItemPacket.VNum;
                 sbyte rare = 0;
-                const short boxEffect = 999;
                 byte amount = 1, design = 0;
                 short upgrade = 0;
                 if (vnum == 1046)
@@ -1439,14 +1439,15 @@ namespace OpenNos.Handler
                 if (iteminfo != null)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, createItemPacket, Session.IpAddress);
-                    if (iteminfo.IsColored || iteminfo.Effect == boxEffect)
+                    if (iteminfo.IsColored || iteminfo.VNum == 302)
                     {
-                        if (createItemPacket.Design.HasValue)
-                        {
-                            design = createItemPacket.Design.Value;
-                        }
-
-                        rare = createItemPacket.Upgrade.HasValue && iteminfo.Effect == boxEffect ? (sbyte) createItemPacket.Upgrade.Value : rare;
+                        design = createItemPacket.Design ?? design;
+                        rare = createItemPacket.Upgrade.HasValue ? (sbyte) createItemPacket.Upgrade.Value : rare;
+                    }
+                    else if (boxes.Contains(iteminfo.VNum))
+                    {
+                        design = 50; // hardcoded because design always has to be the same for A4 boxes
+                        rare = createItemPacket.Upgrade.HasValue ? (sbyte)createItemPacket.Upgrade.Value : rare;
                     }
                     else if (iteminfo.Type == 0)
                     {
