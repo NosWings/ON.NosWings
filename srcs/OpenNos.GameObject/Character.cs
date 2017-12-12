@@ -476,7 +476,7 @@ namespace OpenNos.GameObject
         public void AddQuest(long questId, bool isMain = false)
         {
             CharacterQuest characterQuest = new CharacterQuest(questId, CharacterId);
-            if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || (isMain & Quests.Any(q => q.IsMainQuest)) || (Quests.Where(q => q.Quest.QuestType != (byte) QuestType.WinRaid).ToList().Count >= 5 && characterQuest.Quest.QuestType != (byte) QuestType.WinRaid && !isMain))
+            if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || (isMain && Quests.Any(q => q.IsMainQuest)) || (Quests.Where(q => q.Quest.QuestType != (byte) QuestType.WinRaid).ToList().Count >= 5 && characterQuest.Quest.QuestType != (byte) QuestType.WinRaid && !isMain))
             {
                 return;
             }
@@ -903,357 +903,253 @@ namespace OpenNos.GameObject
 
         public void CharacterLife()
         {
-            bool change = false;
             if (Hp == 0 && LastHealth.AddSeconds(2) <= DateTime.Now)
             {
                 Mp = 0;
                 Session.SendPacket(GenerateStat());
                 LastHealth = DateTime.Now;
+                return;
+            }
+
+            bool change = false;
+            if (LastHealth.AddSeconds(2) <= DateTime.Now)
+            {
+                int heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreHP)[0]; // HEAL
+                if (heal != 0)
+                {
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
+                    Hp = Hp + heal < HpLoad() ? Hp + heal : (int)HpLoad();
+                    change = Hp != (int)HpLoad() ? true : change;
+                }
+
+                int debuff = (int)(GetBuff(CardType.RecoveryAndDamagePercent, (byte)AdditionalTypes.RecoveryAndDamagePercent.HPReduced)[0] * (HpLoad() / 100)); // DEBUFF HP LOSS
+                if (debuff != 0)
+                {
+                    Hp = Hp - debuff > 1 ? Hp - debuff : 1;
+                    change = Hp != 1 ? true : change;
+                }
+            }
+
+            if (LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
+            {
+                LastHealth = DateTime.Now;
+                if (Session.HealthStop)
+                {
+                    Session.HealthStop = false;
+                    return;
+                }
+                if (LastDefence.AddSeconds(4) <= DateTime.Now && LastSkillUse.AddSeconds(2) <= DateTime.Now && Hp > 0)
+                {
+                    change = Hp != (int)HpLoad() ? true : change;
+                    Hp += Hp + HealthHpLoad() < HpLoad() ? HealthHpLoad() : (int)HpLoad() - Hp;
+
+                    change = Mp != (int)MpLoad() ? true : change;
+                    Mp += Mp + HealthMpLoad() < MpLoad() ? HealthMpLoad() : (int)MpLoad() - Mp;
+                }
+            }
+
+            if (change)
+            {
+                Session.SendPacket(GenerateStat());
+            }
+
+            if (Session.Character.LastQuestSummon.AddSeconds(7) < DateTime.Now) // Quest in which you make monster spawn
+            {
+                Session.Character.CheckHuntQuest();
+                Session.Character.LastQuestSummon = DateTime.Now;
+            }
+
+            if (CurrentMinigame != 0 && LastEffect.AddSeconds(3) <= DateTime.Now)
+            {
+                Session.CurrentMapInstance?.Broadcast(GenerateEff(CurrentMinigame));
+                LastEffect = DateTime.Now;
+            }
+
+            if (LastEffect.AddSeconds(5) <= DateTime.Now)
+            {
+                if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+                {
+                    Session.SendPacket(Session.Character.GenerateRaid(3, false));
+                }
+
+                WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
+                if (amulet != null)
+                {
+                    if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
+                    {
+                        Session.CurrentMapInstance?.Broadcast(GenerateEff(amulet.Item.EffectValue + (Class == ClassType.Adventurer ? 0 : (byte)Class - 1)), PositionX, PositionY);
+                    }
+                    else
+                    {
+                        Session.CurrentMapInstance?.Broadcast(GenerateEff(amulet.Item.EffectValue), PositionX, PositionY);
+                    }
+                }
+                if (Group != null && (Group.GroupType == GroupType.Team || Group.GroupType == GroupType.BigTeam || Group.GroupType == GroupType.GiantTeam))
+                {
+                    Session.CurrentMapInstance?.Broadcast(Session, GenerateEff(828 + (Group.IsLeader(Session) ? 1 : 0)), ReceiverType.AllExceptGroup);
+                    Session.CurrentMapInstance?.Broadcast(Session, GenerateEff(830 + (Group.IsLeader(Session) ? 1 : 0)), ReceiverType.Group);
+                }
+                Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
+                LastEffect = DateTime.Now;
+            }
+
+            // PERMA BUFFS (Maps)
+            if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) == true)
+            {
+                if (Buff.All(s => s.Card.CardId != 340 && s.Card.CardId != 339))
+                {
+                    Session.Character.AddStaticBuff(new StaticBuffDTO
+                    {
+                        CardId = 339,
+                        CharacterId = CharacterId,
+                        RemainingTime = -1
+                    });
+                }
             }
             else
             {
-                // HEAL
-                if (LastHealth.AddSeconds(2) <= DateTime.Now)
+                if (Buff.Any(s => s.Card.CardId == 339))
                 {
-                    int heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreHP)[0];
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
-                    if (Hp + heal < HpLoad())
+                    Session.Character.RemoveBuff(339);
+                }
+            }
+
+            if (MeditationDictionary.Count != 0)
+            {
+                for (int a = 532; a < 535; a++)
+                {
+                    if (MeditationDictionary.TryGetValue((short)a, out DateTime time) && time < DateTime.Now)
                     {
-                        Hp += heal;
-                        change = true;
-                    }
-                    else
-                    {
-                        if (Hp != (int)HpLoad())
-                        {
-                            change = true;
-                        }
-                        Hp = (int)HpLoad();
-                    }
-                    if (change)
-                    {
-                        Session.SendPacket(GenerateStat());
+                        Session.SendPacket(GenerateEff(4344));
+                        AddBuff(new Buff.Buff(a, Level));
+                        RemoveBuff((short)(a == 532 ? 533 : a == 533 ? 532 : 534));
+                        RemoveBuff((short)(a == 532 ? 534 : a == 533 ? 534 : 532));
+                        MeditationDictionary.Remove((short)a);
+                        break;
                     }
                 }
+            }
 
-                // DEBUFF HP LOSS
-                if (LastHealth.AddSeconds(2) <= DateTime.Now)
+            LastSpGaugeRemove = LastSpGaugeRemove == null ? DateTime.Now : LastSpGaugeRemove;
+            if (!UseSp || LastSkillUse.AddSeconds(15) < DateTime.Now || LastSpGaugeRemove.AddSeconds(1) > DateTime.Now || SpInstance == null)
+            {
+                return;
+            }
+
+            switch (SpInstance.Design)
+            {
+                case 6:
+                    AddBuff(new Buff.Buff(387), false);
+                    break;
+                case 7:
+                    AddBuff(new Buff.Buff(395), false);
+                    AddBuff(new Buff.Buff(411), false);
+                    break;
+                case 8:
+                    AddBuff(new Buff.Buff(396), false);
+                    AddBuff(new Buff.Buff(411), false);
+                    break;
+                case 9:
+                    AddBuff(new Buff.Buff(397), false);
+                    AddBuff(new Buff.Buff(411), false);
+                    break;
+                case 10:
+                    AddBuff(new Buff.Buff(398), false);
+                    AddBuff(new Buff.Buff(411), false);
+                    break;
+                case 11:
+                    AddBuff(new Buff.Buff(410), false);
+                    AddBuff(new Buff.Buff(411), false);
+                    break;
+                case 12:
+                    AddBuff(new Buff.Buff(411), false);
+                    break;
+                case 13:
+                    AddBuff(new Buff.Buff(444), false);
+                    break;
+            }
+
+            byte spType = (byte)(SpInstance.Item.Morph > 1 && SpInstance.Item.Morph < 8 || SpInstance.Item.Morph > 9 && SpInstance.Item.Morph < 16 ? 3
+                : SpInstance.Item.Morph > 16 && SpInstance.Item.Morph < 29 ? 2
+                : SpInstance.Item.Morph == 9 ? 1 : 0);
+
+            if (Authority == AuthorityType.User)
+            {
+                if (SpPoint >= spType)
                 {
-                    int debuff = (int)(GetBuff(CardType.RecoveryAndDamagePercent, (byte)AdditionalTypes.RecoveryAndDamagePercent.HPReduced)[0] * (HpLoad() / 100));
-                    if (Hp - debuff > 1)
-                    {
-                        Hp -= debuff;
-                        change = true;
-                    }
-                    else
-                    {
-                        if (Hp != 1)
-                        {
-                            change = true;
-                        }
-                        Hp = 1;
-                    }
-                    if (change)
-                    {
-                        Session.SendPacket(GenerateStat());
-                    }
+                    SpPoint -= spType;
                 }
-
-                if (CurrentMinigame != 0 && LastEffect.AddSeconds(3) <= DateTime.Now)
+                else if (SpPoint < spType && SpPoint != 0)
                 {
-                    Session.CurrentMapInstance?.Broadcast(GenerateEff(CurrentMinigame));
-                    LastEffect = DateTime.Now;
-                }
-
-                if (LastEffect.AddSeconds(5) <= DateTime.Now)
-                {
-                    if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
-                    {
-                        Session.SendPacket(Session.Character.GenerateRaid(3, false));
-                    }
-
-                    WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
-                    if (amulet != null)
-                    {
-                        if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
-                        {
-                            Session.CurrentMapInstance?.Broadcast(GenerateEff(amulet.Item.EffectValue + (Class == ClassType.Adventurer ? 0 : (byte)Class - 1)), PositionX, PositionY);
-                        }
-                        else
-                        {
-                            Session.CurrentMapInstance?.Broadcast(GenerateEff(amulet.Item.EffectValue), PositionX, PositionY);
-                        }
-                    }
-                    if (Group != null && (Group.GroupType == GroupType.Team || Group.GroupType == GroupType.BigTeam || Group.GroupType == GroupType.GiantTeam))
-                    {
-                        Session.CurrentMapInstance?.Broadcast(Session, GenerateEff(828 + (Group.IsLeader(Session) ? 1 : 0)), ReceiverType.AllExceptGroup);
-                        Session.CurrentMapInstance?.Broadcast(Session, GenerateEff(830 + (Group.IsLeader(Session) ? 1 : 0)), ReceiverType.Group);
-                    }
-                    Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
-                    LastEffect = DateTime.Now;
-                }
-
-                // PERMA BUFFS (Mates, Maps..)
-                if (Session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) == true)
-                {
-                    if (Buff.All(s => s.Card.CardId != 340 && s.Card.CardId != 339))
-                    {
-                        Session.Character.AddStaticBuff(new StaticBuffDTO
-                        {
-                            CardId = 339,
-                            CharacterId = CharacterId,
-                            RemainingTime = -1
-                        });
-                    }
+                    spType -= (byte)SpPoint;
+                    SpPoint = 0;
+                    SpAdditionPoint -= spType;
                 }
                 else
                 {
-                    if (Buff.Any(s => s.Card.CardId == 339))
+                    switch (SpPoint)
                     {
-                        Session.Character.RemoveBuff(339);
-                    }
-                }
-                if (UseSp)
-                {
-                    switch (SpInstance?.Design)
-                    {
-                        case 6:
-                            AddBuff(new Buff.Buff(387), false);
+                        case 0 when SpAdditionPoint >= spType:
+                            SpAdditionPoint -= spType;
                             break;
-                        case 7:
-                            AddBuff(new Buff.Buff(395), false);
-                            AddBuff(new Buff.Buff(411), false);
-                            break;
-                        case 8:
-                            AddBuff(new Buff.Buff(396), false);
-                            AddBuff(new Buff.Buff(411), false);
-                            break;
-                        case 9:
-                            AddBuff(new Buff.Buff(397), false);
-                            AddBuff(new Buff.Buff(411), false);
-                            break;
-                        case 10:
-                            AddBuff(new Buff.Buff(398), false);
-                            AddBuff(new Buff.Buff(411), false);
-                            break;
-                        case 11:
-                            AddBuff(new Buff.Buff(410), false);
-                            AddBuff(new Buff.Buff(411), false);
-                            break;
-                        case 12:
-                            AddBuff(new Buff.Buff(411), false);
-                            break;
-                        case 13:
-                            AddBuff(new Buff.Buff(444), false);
-                            break;
-                    }
-                }
+                        case 0 when SpAdditionPoint < spType:
+                            SpAdditionPoint = 0;
 
-                if (LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
-                {
-                    LastHealth = DateTime.Now;
-                    if (Session.HealthStop)
-                    {
-                        Session.HealthStop = false;
-                        return;
-                    }
+                            double currentRunningSeconds =
+                                (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
 
-                    if (LastDefence.AddSeconds(4) <= DateTime.Now && LastSkillUse.AddSeconds(2) <= DateTime.Now && Hp > 0)
-                    {
-                        int x = 1;
-                        if (x == 0)
-                        {
-                            x = 1;
-                        }
-                        if (Hp + HealthHpLoad() < HpLoad())
-                        {
-                            change = true;
-                            Hp += HealthHpLoad();
-                        }
-                        else
-                        {
-                            if (Hp != (int)HpLoad())
+                            LoadPassive();
+                            LastSp = currentRunningSeconds;
+                            if (Session != null && Session.HasSession)
                             {
-                                change = true;
-                            }
-                            Hp = (int)HpLoad();
-                        }
-                        if (x == 1)
-                        {
-                            if (Mp + HealthMpLoad() < MpLoad())
-                            {
-                                Mp += HealthMpLoad();
-                                change = true;
-                            }
-                            else
-                            {
-                                if (Mp != (int)MpLoad())
+                                if (IsVehicled)
                                 {
-                                    change = true;
+                                    return;
                                 }
-                                Mp = (int)MpLoad();
-                            }
-                        }
-                        if (change)
-                        {
-                            // TODO FIX THIS
-                            /*
-                            if (Session.Character.Group != null)
-                            {
-                                Session.Character.Group.Characters.ToList()
-                                    .ForEach(s => ServerManager.Instance.GetSessionByCharacterId(s.Character.CharacterId)?.SendPacket(s.Character.GenerateStat()));
-                            }
-                            */
-                            Session.SendPacket(GenerateStat());
-                        }
-
-                        if (Session.Character.LastQuestSummon.AddSeconds(7) < DateTime.Now)
-                        {
-                            Session.Character.CheckHuntQuest();
-                            Session.Character.LastQuestSummon = DateTime.Now;
-                        }
-                    }
-                }
-
-                if (MeditationDictionary.Count != 0)
-                {
-                    if (MeditationDictionary.ContainsKey(534) && MeditationDictionary[534] < DateTime.Now)
-                    {
-                        Session.SendPacket(GenerateEff(4344));
-                        AddBuff(new Buff.Buff(534, Level));
-                        RemoveBuff(533);
-                        RemoveBuff(532);
-                        MeditationDictionary.Remove(534);
-                    }
-                    else if (MeditationDictionary.ContainsKey(533) && MeditationDictionary[533] < DateTime.Now)
-                    {
-                        Session.SendPacket(GenerateEff(4343));
-                        AddBuff(new Buff.Buff(533, Level));
-                        RemoveBuff(532);
-                        RemoveBuff(534);
-                        MeditationDictionary.Remove(533);
-                    }
-                    else if (MeditationDictionary.ContainsKey(532) && MeditationDictionary[532] < DateTime.Now)
-                    {
-                        Session.SendPacket(GenerateEff(4343));
-                        AddBuff(new Buff.Buff(532, Level));
-                        RemoveBuff(534);
-                        RemoveBuff(533);
-                        MeditationDictionary.Remove(532);
-                    }
-                }
-
-                if (!UseSp)
-                {
-                    return;
-                }
-                if (LastSpGaugeRemove <= new DateTime(0001, 01, 01, 00, 00, 00))
-                {
-                    LastSpGaugeRemove = DateTime.Now;
-                }
-                if (LastSkillUse.AddSeconds(15) < DateTime.Now || LastSpGaugeRemove.AddSeconds(1) > DateTime.Now)
-                {
-                    return;
-                }
-                if (SpInstance == null)
-                {
-                    return;
-                }
-                byte spType = 0;
-
-                if (SpInstance.Item.Morph > 1 && SpInstance.Item.Morph < 8 || SpInstance.Item.Morph > 9 && SpInstance.Item.Morph < 16)
-                {
-                    spType = 3;
-                }
-                else if (SpInstance.Item.Morph > 16 && SpInstance.Item.Morph < 29)
-                {
-                    spType = 2;
-                }
-                else if (SpInstance.Item.Morph == 9)
-                {
-                    spType = 1;
-                }
-                if (Authority == AuthorityType.User)
-                {
-                    if (SpPoint >= spType)
-                    {
-                        SpPoint -= spType;
-                    }
-                    else if (SpPoint < spType && SpPoint != 0)
-                    {
-                        spType -= (byte) SpPoint;
-                        SpPoint = 0;
-                        SpAdditionPoint -= spType;
-                    }
-                    else
-                    {
-                        switch (SpPoint)
-                        {
-                            case 0 when SpAdditionPoint >= spType:
-                                SpAdditionPoint -= spType;
-                                break;
-                            case 0 when SpAdditionPoint < spType:
-                                SpAdditionPoint = 0;
-
-                                double currentRunningSeconds =
-                                    (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-
-                                if (UseSp)
+                                UseSp = false;
+                                SpInstance = null;
+                                LoadSpeed();
+                                Session.SendPacket(GenerateCond());
+                                Session.SendPacket(GenerateLev());
+                                SpCooldown = 30;
+                                if (SkillsSp != null)
                                 {
-                                    LoadPassive();
-                                    LastSp = currentRunningSeconds;
-                                    if (Session != null && Session.HasSession)
+                                    foreach (CharacterSkill ski in SkillsSp.Where(s => !s.Value.CanBeUsed())
+                                        .Select(s => s.Value))
                                     {
-                                        if (IsVehicled)
-                                        {
-                                            return;
-                                        }
-                                        UseSp = false;
-                                        SpInstance = null;
-                                        LoadSpeed();
-                                        Session.SendPacket(GenerateCond());
-                                        Session.SendPacket(GenerateLev());
-                                        SpCooldown = 30;
-                                        if (SkillsSp != null)
-                                        {
-                                            foreach (CharacterSkill ski in SkillsSp.Where(s => !s.Value.CanBeUsed())
-                                                .Select(s => s.Value))
-                                            {
-                                                short time = ski.Skill.Cooldown;
-                                                double temp =
-                                                    (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
-                                                temp /= 1000;
-                                                SpCooldown = temp > SpCooldown ? (int) temp : SpCooldown;
-                                            }
-                                        }
-                                        Session.SendPacket(GenerateSay(
-                                            string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), SpCooldown),
-                                            11));
-                                        Session.SendPacket($"sd {SpCooldown}");
-                                        Session.CurrentMapInstance?.Broadcast(GenerateCMode());
-                                        Session.CurrentMapInstance?.Broadcast(
-                                            UserInterfaceHelper.Instance.GenerateGuri(6, 1, CharacterId), PositionX,
-                                            PositionY);
-
-                                        // ms_c
-                                        Session.SendPacket(GenerateSki());
-                                        Session.SendPackets(GenerateQuicklist());
-                                        Session.SendPacket(GenerateStat());
-                                        Session.SendPacket(GenerateStatChar());
-                                        Observable.Timer(TimeSpan.FromMilliseconds(SpCooldown * 1000)).Subscribe(o =>
-                                        {
-                                            Session.SendPacket(GenerateSay(
-                                                Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                                            Session.SendPacket("sd 0");
-                                        });
+                                        short time = ski.Skill.Cooldown;
+                                        double temp =
+                                            (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
+                                        temp /= 1000;
+                                        SpCooldown = temp > SpCooldown ? (int)temp : SpCooldown;
                                     }
                                 }
-                                break;
-                        }
+                                Session.SendPacket(GenerateSay(
+                                    string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), SpCooldown),
+                                    11));
+                                Session.SendPacket($"sd {SpCooldown}");
+                                Session.CurrentMapInstance?.Broadcast(GenerateCMode());
+                                Session.CurrentMapInstance?.Broadcast(
+                                    UserInterfaceHelper.Instance.GenerateGuri(6, 1, CharacterId), PositionX,
+                                    PositionY);
+
+                                // ms_c
+                                Session.SendPacket(GenerateSki());
+                                Session.SendPackets(GenerateQuicklist());
+                                Session.SendPacket(GenerateStat());
+                                Session.SendPacket(GenerateStatChar());
+                                Observable.Timer(TimeSpan.FromMilliseconds(SpCooldown * 1000)).Subscribe(o =>
+                                {
+                                    Session.SendPacket(GenerateSay(
+                                        Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                                    Session.SendPacket("sd 0");
+                                });
+                            }
+                            break;
                     }
-                    Session?.SendPacket(GenerateSpPoint());
-                    LastSpGaugeRemove = DateTime.Now;
                 }
+                Session?.SendPacket(GenerateSpPoint());
+                LastSpGaugeRemove = DateTime.Now;
             }
         }
 
