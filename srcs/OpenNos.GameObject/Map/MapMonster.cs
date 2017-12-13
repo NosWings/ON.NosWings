@@ -412,36 +412,6 @@ namespace OpenNos.GameObject.Map
             {
                 if (!Path.Any() && (DateTime.Now - LastMove).TotalMilliseconds > _movetime && Target == null) // Basic Move
                 {
-                    Path = new List<Node>();
-                }
-                if (Path.Count > 0) // move back to initial position after following target
-                {
-                    int timetowalk = 2000 / Monster.Speed;
-                    if (time > timetowalk)
-                    {
-                        int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                        if (Path[maxindex - 1] == null)
-                        {
-                            return;
-                        }
-                        short mapX = Path[maxindex - 1].X;
-                        short mapY = Path[maxindex - 1].Y;
-                        double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Monster.Speed;
-                        LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
-
-                        Observable.Timer(TimeSpan.FromMilliseconds(timetowalk)).Subscribe(x =>
-                        {
-                            MapX = mapX;
-                            MapY = mapY;
-                            MoveEvent?.Events.ToList().ForEach(e => EventHelper.Instance.RunEvent(e, monster: this));
-                        });
-                        Path.RemoveRange(0, maxindex > Path.Count ? Path.Count : maxindex);
-                        MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
-                        return;
-                    }
-                }
-                else if (time > _movetime)
-                {
                     short mapX = FirstX, mapY = FirstY;
                     if (MapInstance.Map?.GetFreePosition(ref mapX, ref mapY, (byte)ServerManager.Instance.RandomNumber(0, 2), (byte)_random.Next(0, 2)) ?? false)
                     {
@@ -453,7 +423,7 @@ namespace OpenNos.GameObject.Map
                                     MapY = mapY;
                                 });
                         LastMove = DateTime.Now.AddMilliseconds(value);
-                        MapInstance.Broadcast(new BroadcastPacket(null, (GenerateMv3()), ReceiverType.All));
+                        MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All));
                     }
                 }
                 else if (DateTime.Now > LastMove && Path.Any()) // Follow target || move back to original pos
