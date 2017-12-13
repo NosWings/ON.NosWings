@@ -16,7 +16,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Reactive.Linq;
 using NosSharp.Enums;
 using OpenNos.Core;
@@ -390,20 +389,11 @@ namespace OpenNos.GameObject.Map
         /// </summary>
         internal void RemoveTarget()
         {
-            Node[,] brushFire = BestFirstSearch.LoadBrushFire(new GridPos()
-            {
-                X = FirstX,
-                Y = FirstY
-            }, MapInstance.Map.Grid);
-            
-            Path.Clear();
-            Target = null;
-            //return to origin
+                (Path ?? (Path = new List<Node>())).Clear();
+                Target = null;
 
-            List<Node> list = BestFirstSearch.TracePath(new Node { X = MapX, Y = MapY }, brushFire,
-                MapInstance.Map.Grid);
-
-            Path = list;
+                //return to origin
+                Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY }, MapInstance.Map.Grid);
         }
 
         /// <summary>
@@ -488,7 +478,20 @@ namespace OpenNos.GameObject.Map
                     });
                 distance = (int)Path[0].F;
                 Path.RemoveRange(0, maxindex);
-                if (distance > (maxDistance) + 3)
+                short targetMap = 0;
+                int targetLife = 0;
+                switch (Target)
+                {
+                    case Character character:
+                        targetMap = character.MapInstance.Map.MapId;
+                        targetLife = character.Hp;
+                        break;
+                    case Mate mate:
+                        targetMap = mate.Owner.MapInstance.Map.MapId;
+                        targetLife = mate.Hp;
+                        break;
+                }
+                if (Target == null || MapId != targetMap || distance > (maxDistance) + 3 || targetLife <= 0)
                 {
                     RemoveTarget();
                 }
@@ -1747,6 +1750,22 @@ namespace OpenNos.GameObject.Map
                         case UserType.Npc:
                             Mate mate = hitRequest.Session?.Character?.Mates.FirstOrDefault(x =>
                                 x.MateTransportId == hitRequest.CasterId);
+                            mate.Monster.BCards.ToList().ForEach(s =>
+                            {
+                                Buff.Buff b = new Buff.Buff(s.SecondData);
+
+                                switch (b.Card?.BuffType)
+                                {
+                                    case BuffType.Bad:
+                                        s.ApplyBCards(this);
+                                        break;
+
+                                    case BuffType.Good:
+                                    case BuffType.Neutral:
+                                        s.ApplyBCards(mate);
+                                        break;
+                                }
+                            });
                             int mateDmg = mate.GenerateDamage(this, hitRequest.Skill, ref hitmode);
                             CurrentHp -= mateDmg;
                             MapInstance?.Broadcast(
@@ -1915,7 +1934,7 @@ namespace OpenNos.GameObject.Map
         private void Move()
         {
             // Normal Move Mode
-            if (Monster == null || !IsAlive || HasBuff(BCardType.CardType.Move, (byte) AdditionalTypes.Move.MovementImpossible))
+            if (Monster == null || !IsAlive || HasBuff(BCardType.CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
             {
                 return;
             }
@@ -1923,10 +1942,40 @@ namespace OpenNos.GameObject.Map
             if (IsMoving && Monster.Speed > 0)
             {
                 double time = (DateTime.Now - LastMove).TotalMilliseconds;
-                if (!Path.Any() && time > _movetime && Target == null)
+                if (Path == null)
+                {
+                    Path = new List<Node>();
+                }
+                if (Path.Count > 0) // move back to initial position after following target
+                {
+                    int timetowalk = 2000 / Monster.Speed;
+                    if (time > timetowalk)
+                    {
+                        int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
+                        if (Path[maxindex - 1] == null)
+                        {
+                            return;
+                        }
+                        short mapX = Path[maxindex - 1].X;
+                        short mapY = Path[maxindex - 1].Y;
+                        double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Monster.Speed;
+                        LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
+
+                        Observable.Timer(TimeSpan.FromMilliseconds(timetowalk)).Subscribe(x =>
+                        {
+                            MapX = mapX;
+                            MapY = mapY;
+                            MoveEvent?.Events.ToList().ForEach(e => EventHelper.Instance.RunEvent(e, monster: this));
+                        });
+                        Path.RemoveRange(0, maxindex > Path.Count ? Path.Count : maxindex);
+                        MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
+                        return;
+                    }
+                }
+                else if (time > _movetime)
                 {
                     short mapX = FirstX, mapY = FirstY;
-                    if (MapInstance.Map?.GetFreePosition(ref mapX, ref mapY, (byte) ServerManager.Instance.RandomNumber(0, 2), (byte) _random.Next(0, 2)) ?? false)
+                    if (MapInstance.Map?.GetFreePosition(ref mapX, ref mapY, (byte)ServerManager.Instance.RandomNumber(0, 2), (byte)_random.Next(0, 2)) ?? false)
                     {
                         int distance = Map.GetDistance(new MapCell
                         {
@@ -1939,16 +1988,14 @@ namespace OpenNos.GameObject.Map
                         });
 
                         double value = 1000d * distance / (2 * Monster.Speed);
-                        Observable.Timer(TimeSpan.FromMilliseconds(value))
-                            .Subscribe(
-                                x =>
-                                {
-                                    MapX = mapX;
-                                    MapY = mapY;
-                                });
+                        Observable.Timer(TimeSpan.FromMilliseconds(value)).Subscribe(x =>
+                        {
+                            MapX = mapX;
+                            MapY = mapY;
+                        });
 
                         LastMove = DateTime.Now.AddMilliseconds(value);
-                        MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All));
+                        MapInstance.Broadcast(new BroadcastPacket(null, (GenerateMv3()), ReceiverType.All));
                     }
                 }
             }
@@ -2084,7 +2131,7 @@ namespace OpenNos.GameObject.Map
                                         s.ApplyBCards(this);
                                         break;
                                     default:
-                                        if (b.Card?.CardId != 124)
+                                        if (b.Card?.CardId != 124) // 7 seconds debuff from 4.2 monsters
                                         {
                                             s.ApplyBCards(character);
                                         }
