@@ -1141,7 +1141,6 @@ namespace OpenNos.Handler
                 if (castingId < 11 && Session.Character.LastSkillUse.AddSeconds(1) < DateTime.Now && !noComboReset)
                 {
                     Session.SendPackets(Session.Character.GenerateQuicklist());
-                    Session.SendPacket("mslot 0 -1");
                 }
                 Session.Character.LastSkillUse = DateTime.Now;
             }
