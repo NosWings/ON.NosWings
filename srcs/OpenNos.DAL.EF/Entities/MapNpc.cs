@@ -40,8 +40,6 @@ namespace OpenNos.DAL.EF.Entities
 
         public bool IsDisabled { get; set; }
 
-        public bool IsHostile { get; set; }
-
         public bool IsMoving { get; set; }
 
         public bool IsSitting { get; set; }
