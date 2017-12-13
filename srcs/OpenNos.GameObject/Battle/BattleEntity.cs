@@ -892,16 +892,16 @@ namespace OpenNos.GameObject.Battle
                 return;
             }
 
-            target.GetDamage(damage);
-            string str = string.Empty;
+            target.GetDamage(damage, !(Session is MapMonster mon && mon.IsInvicible));
+            string str = $"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0}";
             switch (hitType)
             {
                 case TargetHitType.SingleTargetHit:
-                    str = $"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0} {skill?.AttackAnimation ?? 11} {skill?.Effect ?? skillEffect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill?.SkillType - 1 ?? 0}";
+                    str += $" {skill?.AttackAnimation ?? 11} {skill?.Effect ?? skillEffect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill?.SkillType - 1 ?? 0}";
                     break;
 
                 case TargetHitType.SingleTargetHitCombo:
-                    str = $"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0} {skillCombo?.Animation ?? 0} {skillCombo?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill.SkillType - 1}";
+                    str += $" {skillCombo?.Animation ?? 0} {skillCombo?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill.SkillType - 1}";
                     break;
 
                 case TargetHitType.SingleAOETargetHit:
@@ -921,9 +921,9 @@ namespace OpenNos.GameObject.Battle
                     }
                     if (showTargetAnimation)
                     {
-                        Entity.GetMapInstance().Broadcast($"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0} {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} 0 0 {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} 0 0 {skill.SkillType - 1}");
+                        Entity.GetMapInstance().Broadcast($" {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} 0 0 {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} 0 0 {skill.SkillType - 1}");
                     }
-                    str = $"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0} {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill.SkillType - 1}";
+                    str += $" {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill.SkillType - 1}";
                     break;
 
                 case TargetHitType.AOETargetHit:
@@ -941,15 +941,15 @@ namespace OpenNos.GameObject.Battle
                             hitmode = 5;
                             break;
                     }
-                    str = $"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0} {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill.SkillType - 1}";
+                    str += $" {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill.SkillType - 1}";
                     break;
 
                 case TargetHitType.ZoneHit:
-                    str = $"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0} {skill?.AttackAnimation ?? 0} {skillEffect ?? 0} {mapX ?? Entity.GetPos().X} {mapY ?? Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} 5 {skill.SkillType - 1}";
+                    str += $" {skill?.AttackAnimation ?? 0} {skillEffect ?? 0} {mapX ?? Entity.GetPos().X} {mapY ?? Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} 5 {skill.SkillType - 1}";
                     break;
 
                 case TargetHitType.SpecialZoneHit:
-                    str = $"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0} {skill?.AttackAnimation ?? 0} {skillEffect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} 0 {skill.SkillType - 1}";
+                    str += $" {skill?.AttackAnimation ?? 0} {skillEffect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} 0 {skill.SkillType - 1}";
                     break;
             }
             Entity.GetMapInstance().Broadcast(str);

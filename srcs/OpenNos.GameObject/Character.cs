@@ -2914,24 +2914,10 @@ namespace OpenNos.GameObject
                     break;
 
                 default:
-                    if (MapInstance.IsPvp)
-                    {
-                        Hp -= damage / 2;
-                    }
-                    else
-                    {
-                        Hp -= damage;
-                    }
+                    Hp -= MapInstance.IsPvp ? damage / 2 : damage;
                     break;
             }
-            if (Hp < 0)
-            {
-                Hp = 0;
-            }
-            if (!canKill && Hp == 0)
-            {
-                Hp = 1;
-            }
+            Hp = Hp <= 0 ? !canKill ? 1 : 0 : Hp;
         }
 
         public int GetDignityIco()

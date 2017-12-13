@@ -83,6 +83,8 @@ namespace OpenNos.GameObject.Map
             return MonsterVNum == 679 & faction == FactionType.Angel | MonsterVNum == 680 & faction == FactionType.Demon ? false : true;
         }
 
+        public bool IsInvicible => MonsterVNum == 679 || MonsterVNum == 680;
+
         public bool IsBonus { get; set; }
 
         public bool IsBoss { get; set; }
@@ -516,6 +518,7 @@ namespace OpenNos.GameObject.Map
 
         public void GetDamage(int damage, bool canKill = true)
         {
+            canKill = IsInvicible ? false : canKill; // Act4 Guardians
             CurrentHp -= damage;
             CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : CurrentHp;
             GetBattleEntity().OnHitEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
@@ -523,7 +526,7 @@ namespace OpenNos.GameObject.Map
 
         public void GenerateDeath(IBattleEntity killer = null)
         {
-            if (MonsterVNum == 679 || MonsterVNum == 680) // Act4 Guardians
+            if (IsInvicible) // Act4 Guardians
             {
                 CurrentHp = 1;
                 return;
