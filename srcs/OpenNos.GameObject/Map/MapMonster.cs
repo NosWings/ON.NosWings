@@ -428,7 +428,8 @@ namespace OpenNos.GameObject.Map
                 }
                 else if (DateTime.Now > LastMove && Path.Any()) // Follow target || move back to original pos
                 {
-                    int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
+                    byte speedIndex = (byte)(Monster.Speed / 2 < 1 ? 1 : Monster.Speed / 2);
+                    int maxindex = Path.Count > speedIndex ? speedIndex : Path.Count;
                     short smapX = Path[maxindex - 1].X;
                     short smapY = Path[maxindex - 1].Y;
                     double waitingtime = Map.GetDistance(new MapCell { X = smapX, Y = smapY }, GetPos()) / (double)Monster.Speed;

@@ -878,7 +878,6 @@ namespace OpenNos.GameObject.Battle
                 castTime = skill.CastTime * 100;
             }
             Observable.Timer(TimeSpan.FromMilliseconds(castTime)).Subscribe(o => TargetHit2(target, hitType, skill, damage, hitmode, skillEffect, mapX, mapY, skillCombo, showTargetAnimation, isPvp));
-
         }
 
         private void TargetHit2(IBattleEntity target, TargetHitType hitType, Skill skill, int damage, int hitmode, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false, bool isRange = false)

@@ -329,7 +329,7 @@ namespace OpenNos.GameObject.Map
 
         private void Move()
         {
-            if (Npc == null || !IsAlive || HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible) || !IsMoving || Npc.Speed <= 0)
+            if (Npc == null || !IsAlive || !IsMoving || Npc.Speed <= 0 || HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
             {
                 return;
             }
@@ -352,7 +352,8 @@ namespace OpenNos.GameObject.Map
             }
             else if (DateTime.Now > LastMove && Path.Any()) // Follow target || move back to original pos
             {
-                int maxindex = Path.Count > Npc.Speed / 2 ? Npc.Speed / 2 : Path.Count;
+                byte speedIndex = (byte)(Npc.Speed / 2 < 1 ? 1 : Npc.Speed / 2);
+                int maxindex = Path.Count > speedIndex ? speedIndex : Path.Count;
                 short smapX = Path[maxindex - 1].X;
                 short smapY = Path[maxindex - 1].Y;
                 double waitingtime = Map.GetDistance(new MapCell { X = smapX, Y = smapY }, GetPos()) / (double)Npc.Speed;
