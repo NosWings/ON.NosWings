@@ -41,15 +41,18 @@ namespace OpenNos.GameObject.Event.ACT4
                     s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), ((Act4RaidType)type).ToString()), 0)));
             }
 
-            foreach (Family family in ServerManager.Instance.FamilyList.Where(f => f != null))
+            lock (ServerManager.Instance.FamilyList)
             {
-                family.Act4Raid = ServerManager.Instance.Act4Raids.FirstOrDefault(r => r.Id == type)?.GetClone();
-                family.Act4Raid?.LoadScript(MapInstanceType.RaidInstance);
-                if (family.Act4Raid?.FirstMap == null)
+                foreach (Family family in ServerManager.Instance.FamilyList.Where(f => f != null))
                 {
-                    continue;
+                    family.Act4Raid = ServerManager.Instance.Act4Raids.FirstOrDefault(r => r.Id == type)?.GetClone();
+                    family.Act4Raid?.LoadScript(MapInstanceType.RaidInstance);
+                    if (family.Act4Raid?.FirstMap == null)
+                    {
+                        continue;
+                    }
+                    family.Act4Raid.FirstMap.InstanceBag.Lock = true;
                 }
-                family.Act4Raid.FirstMap.InstanceBag.Lock = true;
             }
 
             await Task.Delay(60 * 60 * 1000);

@@ -286,11 +286,11 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
                 }
-                if (Session.Character.Group.Raid.Id == 24 && Session.Character.MapId != 236 || Session.Character.Group.Raid.Id == 23 && Session.Character.MapId != 232)
+                if (Session.Character.Group.Raid.Id == 24 && !ServerManager.Instance.Act6Erenia.IsRaidActive || Session.Character.Group.Raid.Id == 23 && !ServerManager.Instance.Act6Zenas.IsRaidActive)
                 {
                     Session.Character.Group.Characters.ToList().ForEach(s =>
                     {
-                        s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_MAP"), 0));
+                        s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PERCENT_NOT_OVER"), 0));
                     });
                     return;
                 }

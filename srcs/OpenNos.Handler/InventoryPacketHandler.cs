@@ -212,6 +212,11 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
+            if (!long.TryParse(packetsplit[3], out long bankGold))
+            {
+                return;
+            }
             byte[] type = new byte[10], qty = new byte[10];
             short[] slot = new short[10];
             string packetList = string.Empty;
@@ -272,7 +277,8 @@ namespace OpenNos.Handler
                 }
             }
             Session.Character.ExchangeInfo.Gold = gold;
-            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
+            Session.Character.ExchangeInfo.BankGold = bankGold;
+            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {bankGold} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
             Session.Character.ExchangeInfo.Validate = true;
         }
 
@@ -2035,8 +2041,10 @@ namespace OpenNos.Handler
 
             // handle gold
             sourceSession.Character.Gold -= sourceSession.Character.ExchangeInfo.Gold;
+            sourceSession.Account.BankMoney -= sourceSession.Character.ExchangeInfo.BankGold * 1000;
             sourceSession.SendPacket(sourceSession.Character.GenerateGold());
             targetSession.Character.Gold += sourceSession.Character.ExchangeInfo.Gold;
+            targetSession.Account.BankMoney += sourceSession.Character.ExchangeInfo.BankGold * 1000;
             targetSession.SendPacket(targetSession.Character.GenerateGold());
 
             // all items and gold from sourceSession have been transferred, clean exchange info

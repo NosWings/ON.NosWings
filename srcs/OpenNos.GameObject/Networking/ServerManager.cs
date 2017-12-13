@@ -2033,12 +2033,16 @@ namespace OpenNos.GameObject.Networking
                         SourceX = si.PositionX,
                         SourceY = si.PositionY
                     };
-                    if (Act6Erenia.Percentage >= 100 && portal.SourceMapId == 236)
+                    /*if (Act6Erenia.Percentage >= 100 && portal.SourceMapId == 236)
                     {
                         map.Value.Portals.Add(portal);
                         map.Value.Broadcast(portal.GenerateGp());
                         Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o =>
                         {
+                            if (map.Value.Portals.Count <= 0)
+                            {
+                                return;
+                            }
                             map.Value.Portals.Remove(portal);
                             map.Value.MapClear();
                         });
@@ -2051,9 +2055,13 @@ namespace OpenNos.GameObject.Networking
                     map.Value.Broadcast(portal.GenerateGp());
                     Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o =>
                     {
+                        if (map.Value.Portals.Count <= 0)
+                        {
+                            return;
+                        }
                         map.Value.Portals.Remove(portal);
                         map.Value.MapClear();
-                    });
+                    });*/
                 }
             });
         }
