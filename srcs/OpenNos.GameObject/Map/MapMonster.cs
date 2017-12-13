@@ -255,21 +255,22 @@ namespace OpenNos.GameObject.Map
             }
             IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.isTargetable(GetSessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange));
 
-            if (target == null)
+            if (target == null || MoveEvent != null)
             {
                 return;
             }
-
-            if (!OnNoticeEvents.Any() && MoveEvent == null)
+            if (OnNoticeEvents.Any())
             {
-                Target = target;
-                if (!Monster.NoAggresiveIcon && LastEffect.AddSeconds(5) < DateTime.Now && target.GetSession() is Character character)
-                {
-                    character?.Session.SendPacket(GenerateEff(5000));
-                }
+                OnNoticeEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
+                OnNoticeEvents.Clear();
+                return;
             }
-            OnNoticeEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
-            OnNoticeEvents.Clear();
+
+            Target = target;
+            if (!Monster.NoAggresiveIcon && LastEffect.AddSeconds(5) < DateTime.Now && target.GetSession() is Character character)
+            {
+                character?.Session.SendPacket(GenerateEff(5000));
+            }
         }
 
         /// <summary>
@@ -344,7 +345,6 @@ namespace OpenNos.GameObject.Map
                 Move();
                 return;
             }
-            HostilityTarget(); // Get Target if isHostile
 
             lock (Target)
             {

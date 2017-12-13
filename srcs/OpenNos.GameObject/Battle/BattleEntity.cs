@@ -226,7 +226,7 @@ namespace OpenNos.GameObject.Battle
                     monster.CurrentHp -= monster.TakesDamage;
                     if (monster.CurrentHp <= 0)
                     {
-                        monster.IsAlive = false;
+                        monster.GenerateDeath();
                     }
                     return (ushort)monster.TakesDamage;
                 }

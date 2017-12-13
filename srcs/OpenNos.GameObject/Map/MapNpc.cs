@@ -195,6 +195,7 @@ namespace OpenNos.GameObject.Map
             FirstX = MapX;
             EffectActivated = true;
             ShouldRespawn = true;
+            IsAlive = true;
             FirstY = MapY;
             EffectDelay = 4000;
             _movetime = ServerManager.Instance.RandomNumber(500, 3000);
@@ -301,7 +302,6 @@ namespace OpenNos.GameObject.Map
                 Move();
                 return;
             }
-            HostilityTarget(); // Get Target if isHostile
 
             lock (Target)
             {
@@ -380,12 +380,7 @@ namespace OpenNos.GameObject.Map
                 return;
             }
             IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.isTargetable(GetSessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < Npc.NoticeRange);
-
-            if (target == null)
-            {
-                return;
-            }
-            Target = target;
+            Target = target == null ? Target : target;
         }
 
         /// <summary>
