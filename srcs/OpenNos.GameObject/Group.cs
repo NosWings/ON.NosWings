@@ -150,7 +150,7 @@ namespace OpenNos.GameObject
         public void LeaveGroup(ClientSession session)
         {
             session.Character.Group = null;
-            if (IsLeader(session) && GroupType != GroupType.Group && Characters.Any())
+            if (IsLeader(session) && GroupType != GroupType.Group && Characters.Count > 1)
             {
                 Characters.ToList().ForEach(s=> s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TEAM_LEADER_CHANGE"), Characters.OrderBy(m => m?.Character.LastGroupJoin).FirstOrDefault()?.Character?.Name), 0)));
             }
