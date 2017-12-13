@@ -567,61 +567,64 @@ namespace OpenNos.GameObject.Networking
             {
                 return;
             }
+
             if (!IsDisposing)
             {
-                HandlerMethodReference methodReference = HandlerMethods.ContainsKey(packetHeader) ? HandlerMethods[packetHeader] : null;
-                if (methodReference != null)
+                if (!HandlerMethods.TryGetValue(packetHeader, out HandlerMethodReference methodReference))
                 {
-                    if (methodReference.HandlerMethodAttribute != null && !force && methodReference.HandlerMethodAttribute.Amount > 1 && !_waitForPacketsAmount.HasValue)
+                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
+                    return;
+                }
+
+                if (methodReference.HandlerMethodAttribute != null && !force && methodReference.HandlerMethodAttribute.Amount > 1 && !_waitForPacketsAmount.HasValue)
+                {
+                    // we need to wait for more
+                    _waitForPacketsAmount = methodReference.HandlerMethodAttribute.Amount;
+                    _waitForPacketList.Add(packet != string.Empty ? packet : $"1 {packetHeader} ");
+                    return;
+                }
+
+                try
+                {
+                    if (!HasSelectedCharacter && methodReference.ParentHandler.GetType().Name != "CharacterScreenPacketHandler" &&
+                        methodReference.ParentHandler.GetType().Name != "LoginPacketHandler")
                     {
-                        // we need to wait for more
-                        _waitForPacketsAmount = methodReference.HandlerMethodAttribute.Amount;
-                        _waitForPacketList.Add(packet != string.Empty ? packet : $"1 {packetHeader} ");
                         return;
                     }
-                    try
+
+                    // call actual handler method
+                    if (methodReference.PacketDefinitionParameterType != null)
                     {
-                        if (!HasSelectedCharacter && methodReference.ParentHandler.GetType().Name != "CharacterScreenPacketHandler" &&
-                            methodReference.ParentHandler.GetType().Name != "LoginPacketHandler")
+                        //check for the correct authority
+                        if (IsAuthenticated && (byte) methodReference.Authority > (byte) Account.Authority)
                         {
                             return;
                         }
-                        // call actual handler method
-                        if (methodReference.PacketDefinitionParameterType != null)
-                        {
-                            //check for the correct authority
-                            if (IsAuthenticated && (byte) methodReference.Authority > (byte) Account.Authority)
-                            {
-                                return;
-                            }
-                            object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, IsAuthenticated);
 
-                            if (deserializedPacket != null || methodReference.PassNonParseablePacket)
-                            {
-                                methodReference.HandlerMethod(methodReference.ParentHandler, deserializedPacket);
-                            }
-                            else
-                            {
-                                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
-                            }
+                        object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, IsAuthenticated);
+
+                        if (deserializedPacket != null || methodReference.PassNonParseablePacket)
+                        {
+                            methodReference.HandlerMethod(methodReference.ParentHandler, deserializedPacket);
                         }
                         else
                         {
-                            methodReference.HandlerMethod(methodReference.ParentHandler, packet);
+                            Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
                         }
                     }
-                    catch (DivideByZeroException ex)
+                    else
                     {
-                        // disconnect if something unexpected happens
-                        Logger.Log.Error("Handler Error SessionId: " + SessionId, ex);
-                        Disconnect();
+                        methodReference.HandlerMethod(methodReference.ParentHandler, packet);
                     }
                 }
-                else
+                catch (DivideByZeroException ex)
                 {
-                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
+                    // disconnect if something unexpected happens
+                    Logger.Log.Error("Handler Error SessionId: " + SessionId, ex);
+                    Disconnect();
                 }
             }
+
             else
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CLIENTSESSION_DISPOSING"), packetHeader);

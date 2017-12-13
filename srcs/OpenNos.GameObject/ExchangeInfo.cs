@@ -40,6 +40,8 @@ namespace OpenNos.GameObject
 
         public long Gold { get; set; }
 
+        public long BankGold { get; set; }
+
         public long TargetCharacterId { get; set; }
 
         public bool Validate { get; set; }
