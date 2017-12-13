@@ -31,6 +31,7 @@ using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.CommandPackets;
+using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 
@@ -54,6 +55,36 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// $Act6Raid 
+        /// </summary>
+        /// <param name="packet"></param>
+        public void Act6Raid(Act6RaidPacket packet)
+        {
+            if (string.IsNullOrEmpty(packet?.Name))
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$Act6Raid Name [Percent]", 11));
+                Session.SendPacket(Session.Character.GenerateSay("(Percent is optionnal)", 11));
+                return;
+            }
+            switch (packet.Name)
+            {
+                case "Erenia":
+                case "erenia":
+                    ServerManager.Instance.Act6Erenia.Percentage = packet.Percent ?? 100;
+                    ServerManager.Instance.Act6Process();
+                    Session.SendPacket(Session.Character.GenerateSay("Done !", 11));
+                    break;
+                case "Zenas":
+                case "zenas":
+                    ServerManager.Instance.Act6Zenas.Percentage = packet.Percent ?? 100;
+                    ServerManager.Instance.Act6Process();
+                    Session.SendPacket(Session.Character.GenerateSay("Done !", 11));
+                    break;
+            }
+
+        }
 
         /// <summary>
         /// $Act4Percent
