@@ -28,7 +28,7 @@ namespace OpenNos.GameObject.Helpers
         public void LoadSkipQuests()
         {
             SkipQuests = new List<int>();
-            SkipQuests.AddRange(new List<int>{1676, 1677});
+            SkipQuests.AddRange(new List<int>{1676, 1677, 1698});
         }
 
         #endregion
