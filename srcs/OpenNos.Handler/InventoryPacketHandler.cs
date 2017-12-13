@@ -213,10 +213,10 @@ namespace OpenNos.Handler
                 return;
             }
 
-            if (!long.TryParse(packetsplit[3], out long bankGold))
+            /*if (!long.TryParse(packetsplit[3], out long bankGold))
             {
                 return;
-            }
+            }*/
             byte[] type = new byte[10], qty = new byte[10];
             short[] slot = new short[10];
             string packetList = string.Empty;
