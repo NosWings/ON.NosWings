@@ -196,6 +196,8 @@ namespace OpenNos.GameObject.Map
             EffectActivated = true;
             ShouldRespawn = true;
             IsAlive = true;
+            CurrentHp = Npc.MaxHP;
+            CurrentMp = Npc.MaxMP;
             FirstY = MapY;
             EffectDelay = 4000;
             _movetime = ServerManager.Instance.RandomNumber(500, 3000);
@@ -381,7 +383,7 @@ namespace OpenNos.GameObject.Map
                 return;
             }
             IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.isTargetable(GetSessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < Npc.NoticeRange);
-            Target = target == null ? Target : target;
+            Target = target ?? Target;
         }
 
         /// <summary>
@@ -472,7 +474,7 @@ namespace OpenNos.GameObject.Map
 
         public void GenerateRewards(IBattleEntity target)
         {
-
+            RemoveTarget();
         }
 
         public int GetCurrentHp() => CurrentHp;
