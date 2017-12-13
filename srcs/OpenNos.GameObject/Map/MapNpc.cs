@@ -48,8 +48,6 @@ namespace OpenNos.GameObject.Map
 
         public short FirstY { get; set; }
 
-        public bool IsHostile { get; set; }
-
         public bool IsMate { get; set; }
 
         public bool IsProtected { get; set; }
