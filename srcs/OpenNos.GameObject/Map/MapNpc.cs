@@ -157,7 +157,7 @@ namespace OpenNos.GameObject.Map
                 return string.Empty;
             }
             IsOut = false;
-            return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
+            return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} {(int)(CurrentHp / (float)Npc.MaxHP * 100)} {(int)(CurrentMp / (float)Npc.MaxMP * 100)} {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
         }
 
         public string GenerateOut()
