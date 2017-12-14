@@ -279,7 +279,7 @@ namespace OpenNos.Handler
             Session.Character.ExchangeInfo.Gold = gold;
             //Session.Character.ExchangeInfo.BankGold = bankGold;
             byte bankGold = 0; // Temporaire
-            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {bankGold} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
+            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
             Session.Character.ExchangeInfo.Validate = true;
         }
 
