@@ -79,11 +79,38 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Only those who have a protection power can join the Frozen Crown..
+        /// </summary>
+        internal static string ACT4_NEED_FACTION {
+            get {
+                return ResourceManager.GetString("ACT4_NEED_FACTION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The power of {1} Has been stolen by a guardian of {0}..
+        /// </summary>
+        internal static string ACT4_PVP_DEATH {
+            get {
+                return ResourceManager.GetString("ACT4_PVP_DEATH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You were killed by an enemy! Due to the curse of the Frozen Crown, you can&apos;t be revived for 30 seconds!.
         /// </summary>
         internal static string ACT4_PVP_DIE {
             get {
                 return ResourceManager.GetString("ACT4_PVP_DIE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {1} Killed a guardian of {0}..
+        /// </summary>
+        internal static string ACT4_PVP_KILL {
+            get {
+                return ResourceManager.GetString("ACT4_PVP_KILL", resourceCulture);
             }
         }
         
@@ -1159,7 +1186,7 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Dignity changed!.
+        ///   Recherche une chaîne localisée semblable à Your Dignity has been restored !.
         /// </summary>
         internal static string DIGNITY_RESTORED {
             get {
@@ -2032,7 +2059,7 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à You will be teleported in 5 seconds..
         /// </summary>
         internal static string INSTANTBATTLE_NOT_ENOUGH_PLAYERS {
             get {
@@ -2460,6 +2487,15 @@ namespace NosSharp.World.Resource {
         internal static string MAPS_LOADED {
             get {
                 return ResourceManager.GetString("MAPS_LOADED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mate died !  he will be back in 3 min.
+        /// </summary>
+        internal static string MATE_WILL_BE_BACK {
+            get {
+                return ResourceManager.GetString("MATE_WILL_BE_BACK", resourceCulture);
             }
         }
         
@@ -3414,6 +3450,15 @@ namespace NosSharp.World.Resource {
         internal static string PET_SUMMONABLE {
             get {
                 return ResourceManager.GetString("PET_SUMMONABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Nosmate dead !  It will be revived in 3 min.
+        /// </summary>
+        internal static string PET_WILL_BE_BACK {
+            get {
+                return ResourceManager.GetString("PET_WILL_BE_BACK", resourceCulture);
             }
         }
         
@@ -4642,7 +4687,7 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à {0} dead !  It will be revived in 3 min.
+        ///   Recherche une chaîne localisée semblable à Money: +{0}.
         /// </summary>
         internal static string WILL_BE_BACK {
             get {

@@ -189,6 +189,7 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.GroupList.Remove(Session.Character.Group);
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateRl(2));
+                        Session.Character.LastUnregister = DateTime.Now;
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("RAID_UNREGISTERED"));
                     }
                     break;

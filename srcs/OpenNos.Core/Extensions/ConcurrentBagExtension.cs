@@ -10,15 +10,20 @@ namespace OpenNos.Core.Extensions
 
         public static void Clear<T>(this ConcurrentBag<T> queue)
         {
-            while (queue.TryTake(out T _))
+            while (!queue.IsEmpty)
             {
-                // NOTHING
+                queue.TryTake(out T _);
             }
         }
 
-        public static ConcurrentBag<T> Where<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate)
+        public static void RemoveWhere<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate, out ConcurrentBag<T> queueReturned)
         {
-            return new ConcurrentBag<T>(queue.ToList().Where(predicate));
+            queueReturned = new ConcurrentBag<T>(queue.Where(predicate));
+        }
+
+        private static Func<T, bool> Not<T>(this Func<T, bool> predicate)
+        {
+            return value => !predicate(value);
         }
 
         #endregion

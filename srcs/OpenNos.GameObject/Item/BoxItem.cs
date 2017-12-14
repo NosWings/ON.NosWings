@@ -129,10 +129,11 @@ namespace OpenNos.GameObject.Item
                                     if (int.TryParse(packetsplit[0], out int petId))
                                     {
                                         Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == petId);
-                                        if (mate == null || mate.MateType != MateType.Pet)
+                                        if (mate == null)
                                         {
                                             return;
                                         }
+                                        box.MateType = mate.MateType;
                                         box.HoldingVNum = mate.NpcMonsterVNum;
                                         box.SpLevel = mate.Level;
                                         box.SpDamage = mate.Attack;
@@ -150,9 +151,10 @@ namespace OpenNos.GameObject.Item
                             else
                             {
                                 NpcMonster heldMonster = ServerManager.Instance.GetNpc(box.HoldingVNum);
+
                                 if (heldMonster != null)
                                 {
-                                    Mate mate = new Mate(session.Character, heldMonster, (byte)(box.SpLevel == 0 ? 1 : box.SpLevel), MateType.Pet)
+                                    Mate mate = new Mate(session.Character, heldMonster, (byte)(box.SpLevel == 0 ? 1 : box.SpLevel), box.MateType)
                                     {
                                         Attack = box.SpDamage,
                                         Defence = box.SpDefence

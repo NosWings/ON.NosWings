@@ -1544,10 +1544,10 @@
     <value>{0} as kill {1}.</value>
   </data>
   <data name="INSTANTBATTLE_NOT_ENOUGH_PLAYERS" xml:space="preserve">
-    <value />
+    <value>You will be teleported in 5 seconds.</value>
   </data>
   <data name="DIGNITY_RESTORED" xml:space="preserve">
-    <value>Dignity changed!</value>
+    <value>Your Dignity has been restored !</value>
   </data>
   <data name="PARTNER_AUTO_RELIVE_DISABLED" xml:space="preserve">
     <value>Partner will return to Miniland after it dies</value>
@@ -1695,5 +1695,14 @@
   </data>
   <data name="TELEPORTED_IN" xml:space="preserve">
     <value>You will be teleported in {0} seconds.</value>
+  </data>
+  <data name="ACT4_NEED_FACTION" xml:space="preserve">
+    <value>Only those who have a protection power can join the Frozen Crown.</value>
+  </data>
+  <data name="ACT4_PVP_DEATH" xml:space="preserve">
+    <value>The power of {1} Has been stolen by a guardian of {0}.</value>
+  </data>
+  <data name="ACT4_PVP_KILL" xml:space="preserve">
+    <value>{1} Killed a guardian of {0}.</value>
   </data>
 </root>

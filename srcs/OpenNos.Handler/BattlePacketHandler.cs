@@ -358,7 +358,26 @@ namespace OpenNos.Handler
                         Session.CurrentMapInstance?.Broadcast(
                             $"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int) ((double) Session.Character.Hp / Session.Character.HpLoad() * 100)} 0 -1 {ski.Skill.SkillType - 1}");
                         ClientSession target = ServerManager.Instance.GetSessionByCharacterId(targetId) ?? Session;
-                        ski.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(target.Character));
+                        ski.Skill.BCards.ToList().ForEach(s =>
+                        {
+
+                            Buff b = new Buff(s.SecondData);
+
+                            switch (b.Card?.CardId)
+                            {
+                                case (short)BuffType.Good:
+                                case (short)BuffType.Neutral:
+                                    s.ApplyBCards(target.Character);
+                                    break;
+                                case (short)BuffType.Bad:
+                                    if (!target.Character.HasBuff(BCardType.CardType.NoDefeatAndNoDamage,
+                                        (byte)AdditionalTypes.NoDefeatAndNoDamage.TransferAttackPower))
+                                    {
+                                        s.ApplyBCards(target.Character);
+                                    }
+                                    break;
+                            }
+                        });
                     }
                     else if (ski.Skill.TargetType == 1 && ski.Skill.HitType != 1)
                     {

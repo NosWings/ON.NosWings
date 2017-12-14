@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using NosSharp.Enums;
@@ -426,7 +427,8 @@ namespace OpenNos.Handler
                 {
                     Session.Character.WareHouseSize = 0;
                 }
-                Session.Character.MapInstance.MapDesignObjects = Session.Character.MapInstance.MapDesignObjects.Where(s => s != minilandObject);
+                Session.Character.MapInstance.MapDesignObjects.RemoveWhere(s => s != minilandObject, out ConcurrentBag<MapDesignObject> mapDesignObjects);
+                Session.Character.MapInstance.MapDesignObjects = mapDesignObjects;
                 Session.SendPacket(minilandObject.GenerateEffect(true));
                 Session.SendPacket(Session.Character.GenerateMinilandPoint());
                 Session.SendPacket(minilandObject.GenerateMapDesignObject(true));

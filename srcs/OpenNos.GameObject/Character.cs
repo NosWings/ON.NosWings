@@ -85,6 +85,7 @@ namespace OpenNos.GameObject
         public void RemoveBuff(short cardId, bool removePermaBuff = false) => BattleEntity.RemoveBuff(cardId, removePermaBuff);
 
         public int[] GetBuff(CardType type, byte subtype) => BattleEntity.GetBuff(type, subtype);
+        public DateTime LastUnregister { get; set; }
 
         public bool HasBuff(CardType type, byte subtype) => BattleEntity.HasBuff(type, subtype);
 
@@ -596,7 +597,8 @@ namespace OpenNos.GameObject
             {
                 Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
             }
-            Quests = Quests.Where(q => q.QuestId != questId);
+            Quests.RemoveWhere(s => s.QuestId != questId, out ConcurrentBag<CharacterQuest> tmp);
+            Quests = tmp;
             Session.SendPacket(GenerateQuestsPacket());
             if (IsGivingUp)
             {
@@ -772,7 +774,7 @@ namespace OpenNos.GameObject
         public string GenerateAct6()
         {
             return
-                $"act6 1 0 {ServerManager.Instance.Act6Zenas.Percentage} {Convert.ToByte(ServerManager.Instance.Act6Zenas.IsRaidActive)} {ServerManager.Instance.Act6Zenas.CurrentTime} {ServerManager.Instance.Act6Zenas.TotalTime} {ServerManager.Instance.Act6Erenia.Percentage} {Convert.ToByte(ServerManager.Instance.Act6Erenia.IsRaidActive)} {ServerManager.Instance.Act6Erenia.CurrentTime} {ServerManager.Instance.Act6Erenia.TotalTime}";
+                $"act6 1 0 {ServerManager.Instance.Act6Zenas.Percentage * 0.1} {Convert.ToByte(ServerManager.Instance.Act6Zenas.IsRaidActive)} {ServerManager.Instance.Act6Zenas.CurrentTime} {ServerManager.Instance.Act6Zenas.TotalTime} {ServerManager.Instance.Act6Erenia.Percentage * 0.1} {Convert.ToByte(ServerManager.Instance.Act6Erenia.IsRaidActive)} {ServerManager.Instance.Act6Erenia.CurrentTime} {ServerManager.Instance.Act6Erenia.TotalTime}";
         }
 
         public string GenerateFc()
@@ -842,9 +844,9 @@ namespace OpenNos.GameObject
 
         }
 
-        public void ChangeClass(ClassType characterClass)
+        public void ChangeClass(ClassType characterClass, bool isCommand = false)
         {
-            JobLevel = 1;
+            JobLevel = (byte)(isCommand ? JobLevel : 1);
             JobLevelXp = 0;
             Session.SendPacket("npinfo 0");
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
@@ -1339,7 +1341,8 @@ namespace OpenNos.GameObject
                     continue;
                 }
                 Inventory.DeleteById(item.Id);
-                BattleEntity.StaticBcards = BattleEntity.StaticBcards.Where(o => o.ItemVNum != item.ItemVNum);
+                Session.Character.EquipmentBCards.RemoveWhere(o => o.ItemVNum != item.ItemVNum, out ConcurrentBag<BCard> tmp);
+                Session.Character.EquipmentBCards = tmp;
                 Session.SendPacket(item.Type == InventoryType.Wear ? GenerateEquipment() : UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
             }
@@ -1953,21 +1956,16 @@ namespace OpenNos.GameObject
                 #region Act6Stats
                 if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232 && !ServerManager.Instance.Act6Zenas.IsRaidActive)
                 {
-                    ServerManager.Instance.Act6Zenas.KilledMonsters++;
-                    if (ServerManager.Instance.Act6Zenas.KilledMonsters > 0 && ServerManager.Instance.Act6Zenas.KilledMonsters % 10 == 0)
-                    {
-                        ServerManager.Instance.Act6Zenas.Percentage++;
-                        ServerManager.Instance.Act6Process();
-                    }
+                    ServerManager.Instance.Act6Zenas.Percentage++;
+                    ServerManager.Instance.Act6Process();
                 }
-                if (monsterToAttack.MapInstance.Map.MapId >= 233 && monsterToAttack.MapInstance.Map.MapId <= 236 && !ServerManager.Instance.Act6Erenia.IsRaidActive)
+                if (monsterToAttack.MapInstance.Map.MapId >= 233 &&
+                    monsterToAttack.MapInstance.Map.MapId <= 236 ||
+                    monsterToAttack.MapInstance.Map.MapId == 2604 &&
+                    !ServerManager.Instance.Act6Erenia.IsRaidActive)
                 {
-                    ServerManager.Instance.Act6Erenia.KilledMonsters++;
-                    if (ServerManager.Instance.Act6Erenia.KilledMonsters > 0 && ServerManager.Instance.Act6Erenia.KilledMonsters % 10 == 0)
-                    {
-                        ServerManager.Instance.Act6Erenia.Percentage++;
-                        ServerManager.Instance.Act6Process();
-                    }
+                    ServerManager.Instance.Act6Erenia.Percentage++;
+                    ServerManager.Instance.Act6Process();
                 }
                 #endregion Act6Stats
 
@@ -4873,8 +4871,10 @@ namespace OpenNos.GameObject
             }
             atype = tmem.ArenaTeamType;
             IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
-            ConcurrentBag<ArenaTeamMember> oposit = tm.Where(s => tmem.ArenaTeamType != s.ArenaTeamType);
-            ConcurrentBag<ArenaTeamMember> own = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType);
+            tm.RemoveWhere(s => tmem.ArenaTeamType != s.ArenaTeamType, out ConcurrentBag<ArenaTeamMember> t);
+            ConcurrentBag<ArenaTeamMember> oposit = t;
+            tm.RemoveWhere(s => tmem.ArenaTeamType == s.ArenaTeamType, out ConcurrentBag<ArenaTeamMember> t2);
+            ConcurrentBag<ArenaTeamMember> own = t2;
             score1 = 3 - MapInstance.InstanceBag.DeadList.Count(s => ids.Contains(s));
             score2 = 3 - MapInstance.InstanceBag.DeadList.Count(s => !ids.Contains(s));
             life1 = 3 - own.Count(s => s.Dead);
@@ -4936,7 +4936,7 @@ namespace OpenNos.GameObject
             Session.Character.Hp = (int)Session.Character.HpLoad();
             Session.Character.Mp = (int)Session.Character.MpLoad();
             ServerManager.Instance.ArenaTeams.Remove(tm);
-            tm = tm.Where(s => s.Session != Session);
+            tm.RemoveWhere(s => s.Session != Session, out tm);
             if (tm.Any())
             {
                 ServerManager.Instance.ArenaTeams.Add(tm);

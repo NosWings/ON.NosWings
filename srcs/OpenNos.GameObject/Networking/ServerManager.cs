@@ -661,7 +661,8 @@ namespace OpenNos.GameObject.Networking
                     }
                 });
                 session.SendPacket(
-                    session.Character.MapInstance.Map.MapId >= 228 && session.Character.MapInstance.Map.MapId <= 238
+                    session.Character.MapInstance.Map.MapId >= 228 && session.Character.MapInstance.Map.MapId <= 238 ||
+                    session.Character.MapInstance.Map.MapId == 2604
                         ? session.Character.GenerateAct6()
                         : session.Character.GenerateAct());
                 session.SendPacket(session.Character.GeneratePinit());
@@ -1863,7 +1864,7 @@ namespace OpenNos.GameObject.Networking
         private void Act4FlowerProcess()
         {
             // FIND THE REAL VALUES
-            foreach (MapInstance map in Act4Maps.Where(s => s.Map.MapId != 131 && s.Map.MapId != 130 && s.Npcs.Count(o => o.NpcVNum == 2004 && o.IsOut) < 7))
+            foreach (MapInstance map in Act4Maps.Where(s => s.Npcs.Count(o => o.NpcVNum == 2004 && o.IsOut) < s.Npcs.Count(n => n.NpcVNum == 2004)))
             {
                 // TODO PROPERTY
                 foreach (MapNpc i in map.Npcs.Where(s => s.IsOut && s.NpcVNum == 2004))
@@ -1941,13 +1942,13 @@ namespace OpenNos.GameObject.Networking
 
         public void Act6Process()
         {
-            if (Act6Zenas.Percentage >= 100 && !Act6Zenas.IsRaidActive)
+            if (Act6Zenas.Percentage >= 1000 && !Act6Zenas.IsRaidActive)
             {
                 LoadAct6ScriptedInstance();
                 Act6Zenas.TotalTime = 3600;
                 Act6Zenas.IsRaidActive = true;
             }
-            else if (Act6Erenia.Percentage >= 100 && !Act6Erenia.IsRaidActive)
+            else if (Act6Erenia.Percentage >= 1000 && !Act6Erenia.IsRaidActive)
             {
                 LoadAct6ScriptedInstance();
                 Act6Erenia.TotalTime = 3600;
@@ -1965,7 +1966,7 @@ namespace OpenNos.GameObject.Networking
                 Act6Zenas.Percentage = 0;
                 Act6Zenas.IsRaidActive = false;
             }
-            Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.Map.MapId >= 228 && s.CurrentMapInstance?.Map.MapId < 238), sess => sess.SendPacket(sess.Character.GenerateAct6()));
+            Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.Map.MapId >= 228 && s.CurrentMapInstance?.Map.MapId < 238 || s?.CurrentMapInstance?.Map.MapId == 2604), sess => sess.SendPacket(sess.Character.GenerateAct6()));
         }
 
         private void LoadBazaar()

@@ -673,16 +673,16 @@ namespace OpenNos.GameObject.Item.Instance
             {
                 return;
             }
-            if (session.Character.Gold < goldprice[Upgrade])
+            if (session.Character.Gold < goldprice[Upgrade + itemToSum.Upgrade])
             {
                 return;
             }
-            if (session.Character.Inventory.CountItem(sandVnum) < sand[Upgrade])
+            if (session.Character.Inventory.CountItem(sandVnum) < sand[Upgrade + itemToSum.Upgrade])
             {
                 return;
             }
-            session.Character.Inventory.RemoveItemAmount(sandVnum, (byte) sand[Upgrade]);
-            session.Character.Gold -= goldprice[Upgrade];
+            session.Character.Inventory.RemoveItemAmount(sandVnum, (byte) sand[Upgrade + itemToSum.Upgrade]);
+            session.Character.Gold -= goldprice[Upgrade + itemToSum.Upgrade];
 
             int rnd = ServerManager.Instance.RandomNumber();
             if (rnd < upsuccess[Upgrade + itemToSum.Upgrade])

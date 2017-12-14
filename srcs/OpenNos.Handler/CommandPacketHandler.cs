@@ -57,14 +57,14 @@ namespace OpenNos.Handler
         #region Methods
 
         /// <summary>
-        /// $Act6Raid 
+        /// $Act6Percent
         /// </summary>
         /// <param name="packet"></param>
-        public void Act6Raid(Act6RaidPacket packet)
+        public void Act6Percent(Act6RaidPacket packet)
         {
             if (string.IsNullOrEmpty(packet?.Name))
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Act6Raid Name [Percent]", 11));
+                Session.SendPacket(Session.Character.GenerateSay("$Act6Percent Name [Percent]", 11));
                 Session.SendPacket(Session.Character.GenerateSay("(Percent is optionnal)", 11));
                 return;
             }
@@ -72,13 +72,13 @@ namespace OpenNos.Handler
             {
                 case "Erenia":
                 case "erenia":
-                    ServerManager.Instance.Act6Erenia.Percentage = packet.Percent ?? 100;
+                    ServerManager.Instance.Act6Erenia.Percentage = (short) (packet.Percent.HasValue ? packet.Percent * 10 : 1000);
                     ServerManager.Instance.Act6Process();
                     Session.SendPacket(Session.Character.GenerateSay("Done !", 11));
                     break;
                 case "Zenas":
                 case "zenas":
-                    ServerManager.Instance.Act6Zenas.Percentage = packet.Percent ?? 100;
+                    ServerManager.Instance.Act6Zenas.Percentage = (short) (packet.Percent.HasValue ? packet.Percent * 10 : 1000);
                     ServerManager.Instance.Act6Process();
                     Session.SendPacket(Session.Character.GenerateSay("Done !", 11));
                     break;
@@ -989,7 +989,7 @@ namespace OpenNos.Handler
             if (changeClassPacket != null)
             {
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeClassPacket, Session.IpAddress);
-                Session.Character.ChangeClass(changeClassPacket.ClassType);
+                Session.Character.ChangeClass(changeClassPacket.ClassType, true);
             }
             else
             {

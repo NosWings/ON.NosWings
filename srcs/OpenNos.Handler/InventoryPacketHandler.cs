@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
+using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
@@ -213,10 +214,10 @@ namespace OpenNos.Handler
                 return;
             }
 
-            if (!long.TryParse(packetsplit[3], out long bankGold))
+            /*if (!long.TryParse(packetsplit[3], out long bankGold))
             {
                 return;
-            }
+            }*/
             byte[] type = new byte[10], qty = new byte[10];
             short[] slot = new short[10];
             string packetList = string.Empty;
@@ -277,8 +278,9 @@ namespace OpenNos.Handler
                 }
             }
             Session.Character.ExchangeInfo.Gold = gold;
-            Session.Character.ExchangeInfo.BankGold = bankGold;
-            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {bankGold} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
+            //Session.Character.ExchangeInfo.BankGold = bankGold;
+            byte bankGold = 0; // Temporaire
+            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
             Session.Character.ExchangeInfo.Validate = true;
         }
 
@@ -894,7 +896,8 @@ namespace OpenNos.Handler
                         Session.Character.Inventory.SecondaryWeapon = null;
                         break;
                 }
-                Session.Character.BattleEntity.StaticBcards = Session.Character.BattleEntity.StaticBcards.Where(o => o.ItemVNum != inventory.ItemVNum);
+                Session.Character.EquipmentBCards.RemoveWhere(o => o.ItemVNum != inventory.ItemVNum, out ConcurrentBag<BCard> eqBcards);
+                Session.Character.EquipmentBCards = eqBcards;
             }
 
             ItemInstance inv = Session.Character.Inventory.MoveInInventory(removePacket.InventorySlot, equipment, InventoryType.Equipment);
@@ -2063,7 +2066,8 @@ namespace OpenNos.Handler
             }
             List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
             Session.Character.DisableBuffs(bufftodisable);
-            Session.Character.BattleEntity.StaticBcards = Session.Character.BattleEntity.StaticBcards.Where(s => !s.ItemVNum.Equals(vnum));
+            Session.Character.EquipmentBCards.RemoveWhere(s => !s.ItemVNum.Equals(vnum), out ConcurrentBag<BCard> eqBcards);
+            Session.Character.EquipmentBCards = eqBcards;
             Session.Character.UseSp = false;
             Session.Character.LoadSpeed();
             Session.SendPacket(Session.Character.GenerateCond());

@@ -24,7 +24,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public byte Percentage { get; set; }
+        public short Percentage { get; set; }
 
         public int KilledMonsters { get; set; }
 
