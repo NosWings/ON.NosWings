@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
+using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
@@ -895,7 +896,8 @@ namespace OpenNos.Handler
                         Session.Character.Inventory.SecondaryWeapon = null;
                         break;
                 }
-                Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != inventory.ItemVNum);
+                Session.Character.EquipmentBCards.RemoveWhere(o => o.ItemVNum != inventory.ItemVNum, out ConcurrentBag<BCard> eqBcards);
+                Session.Character.EquipmentBCards = eqBcards;
             }
 
             ItemInstance inv = Session.Character.Inventory.MoveInInventory(removePacket.InventorySlot, equipment, InventoryType.Equipment);
@@ -2067,7 +2069,8 @@ namespace OpenNos.Handler
             }
             List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
             Session.Character.DisableBuffs(bufftodisable);
-            Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(s => !s.ItemVNum.Equals(vnum));
+            Session.Character.EquipmentBCards.RemoveWhere(s => !s.ItemVNum.Equals(vnum), out ConcurrentBag<BCard> eqBcards);
+            Session.Character.EquipmentBCards = eqBcards;
             Session.Character.UseSp = false;
             Session.Character.LoadSpeed();
             Session.SendPacket(Session.Character.GenerateCond());

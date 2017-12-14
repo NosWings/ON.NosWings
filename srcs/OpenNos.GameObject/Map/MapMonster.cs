@@ -2247,7 +2247,8 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            Buff.RemoveWhere(s => !s.Card.CardId.Equals(indicator.Card.CardId), out ConcurrentBag<Buff.Buff> buff);
+            Buff = buff;
             indicator.RemainingTime = indicator.Card.Duration;
             indicator.Start = DateTime.Now;
             Buff.Add(indicator);
@@ -2272,7 +2273,8 @@ namespace OpenNos.GameObject.Map
             }
             if (Buff.Contains(indicator))
             {
-                Buff = Buff.Where(s => s.Card.CardId != id);
+                Buff.RemoveWhere(s => s.Card.CardId != id, out ConcurrentBag<Buff.Buff> buff);
+                Buff = buff;
             }
         }
 

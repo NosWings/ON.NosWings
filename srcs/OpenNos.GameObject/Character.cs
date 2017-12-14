@@ -6233,7 +6233,8 @@ namespace OpenNos.GameObject
             
             if (Buff.Contains(indicator))
             {
-                Buff = Buff.Where(s => s != indicator);
+                Buff.RemoveWhere(s => s != indicator, out ConcurrentBag<Buff.Buff> buff);
+                Buff = buff;
             }
             if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move && !s.SubType.Equals((byte)AdditionalTypes.Move.MovementImpossible)))
             {
@@ -6292,7 +6293,8 @@ namespace OpenNos.GameObject
             }
             else if (oldbuff != null)
             {
-                Buff = Buff.Where(s => !s.Card.CardId.Equals(bf.Card.CardId));
+                Buff.RemoveWhere(s => !s.Card.CardId.Equals(bf.Card.CardId), out ConcurrentBag<Buff.Buff> buff);
+                Buff = buff;
 
                 bf.RemainingTime = bf.Card.Duration * 6 / 10 + oldbuff.RemainingTime;
                 Buff.Add(bf);
@@ -6335,7 +6337,8 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            Buff = Buff.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            Buff.RemoveWhere(s => !s.Card.CardId.Equals(indicator.Card.CardId), out ConcurrentBag<Buff.Buff> buff);
+            Buff = buff;
             //TODO: Find a better way to do this
             if (indicator.Card.CardId == 85)
             {
@@ -6400,7 +6403,8 @@ namespace OpenNos.GameObject
             }
             if (Buff.Contains(indicator))
             {
-                Buff = Buff.Where(s => s.Card.CardId != id);
+                Buff.RemoveWhere(s => s.Card.CardId != id, out ConcurrentBag<Buff.Buff> buff);
+                Buff = buff;
             }
             if (indicator.Card.BCards.All(s => s.Type != (byte)CardType.Move))
             {
@@ -6693,8 +6697,10 @@ namespace OpenNos.GameObject
             }
             atype = tmem.ArenaTeamType;
             IEnumerable<long> ids = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType).Select(s => s.Session.Character.CharacterId);
-            ConcurrentBag<ArenaTeamMember> oposit = tm.Where(s => tmem.ArenaTeamType != s.ArenaTeamType);
-            ConcurrentBag<ArenaTeamMember> own = tm.Where(s => tmem.ArenaTeamType == s.ArenaTeamType);
+            tm.RemoveWhere(s => tmem.ArenaTeamType != s.ArenaTeamType, out ConcurrentBag<ArenaTeamMember> t);
+            ConcurrentBag<ArenaTeamMember> oposit = t;
+            tm.RemoveWhere(s => tmem.ArenaTeamType == s.ArenaTeamType, out ConcurrentBag<ArenaTeamMember> t2);
+            ConcurrentBag<ArenaTeamMember> own = t2;
             score1 = 3 - MapInstance.InstanceBag.DeadList.Count(s => ids.Contains(s));
             score2 = 3 - MapInstance.InstanceBag.DeadList.Count(s => !ids.Contains(s));
             life1 = 3 - own.Count(s => s.Dead);

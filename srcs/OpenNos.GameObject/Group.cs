@@ -158,7 +158,8 @@ namespace OpenNos.GameObject
             {
                 Characters.ToList().ForEach(s=> s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TEAM_LEADER_CHANGE"), Characters.OrderBy(m => m?.Character.LastGroupJoin).FirstOrDefault()?.Character?.Name), 0)));
             }
-            Characters = Characters.Where(s => s?.Character.CharacterId != session.Character.CharacterId);
+            Characters.RemoveWhere(s => s?.Character.CharacterId != session.Character.CharacterId, out ConcurrentBag<ClientSession> sessions);
+            Characters = sessions;
         }
 
         public bool IsLeader(ClientSession session)

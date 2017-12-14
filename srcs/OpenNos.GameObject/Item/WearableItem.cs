@@ -13,12 +13,14 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
+using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;
@@ -230,7 +232,8 @@ namespace OpenNos.GameObject.Item
                         // move from wear to equipment and back
                         session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
-                        session.Character.EquipmentBCards = session.Character.EquipmentBCards.Where(o => o.ItemVNum != currentlyEquippedItem.ItemVNum);
+                        session.Character.EquipmentBCards.RemoveWhere(o => o.ItemVNum != currentlyEquippedItem.ItemVNum, out ConcurrentBag<BCard> eqBcard);
+                        session.Character.EquipmentBCards = eqBcard;
                     }
                     inv.Item.BCards.ForEach(s => session.Character.EquipmentBCards.Add(s));
 

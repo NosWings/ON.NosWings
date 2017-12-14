@@ -16,14 +16,9 @@ namespace OpenNos.Core.Extensions
             }
         }
 
-        public static ConcurrentBag<T> Where<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate)
-        {
-            return new ConcurrentBag<T>(queue.ToList().Where(predicate));
-        }
-
         public static void RemoveWhere<T>(this ConcurrentBag<T> queue, Func<T, bool> predicate, out ConcurrentBag<T> queueReturned)
         {
-            queueReturned = new ConcurrentBag<T>(queue.Where(Not(predicate)));
+            queueReturned = new ConcurrentBag<T>(queue.Where(predicate));
         }
 
         private static Func<T, bool> Not<T>(this Func<T, bool> predicate)
