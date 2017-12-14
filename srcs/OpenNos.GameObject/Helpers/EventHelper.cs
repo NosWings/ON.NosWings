@@ -194,7 +194,10 @@ namespace OpenNos.GameObject.Helpers
                         }
                         if (evt.MapInstance.MonsterLocker.Current == 0 && evt.MapInstance.ButtonLocker.Current == 0)
                         {
-                            evt.MapInstance.UnlockEvents.ToList().ForEach(s => RunEvent(s));
+                            foreach (EventContainer s in evt.MapInstance.UnlockEvents)
+                            {
+                                RunEvent(s);
+                            }
                             evt.MapInstance.UnlockEvents.Clear();
                         }
                         evt.MapInstance.Broadcast(session?.Character?.Group?.GeneraterRaidmbf(evt.MapInstance));

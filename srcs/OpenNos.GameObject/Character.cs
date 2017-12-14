@@ -536,7 +536,8 @@ namespace OpenNos.GameObject
             {
                 Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
             }
-            Quests = Quests.Where(q => q.QuestId != questId);
+            Quests.RemoveWhere(s => s.QuestId != questId, out ConcurrentBag<CharacterQuest> tmp);
+            Quests = tmp;
             Session.SendPacket(GenerateQuestsPacket());
             if (IsGivingUp)
             {
@@ -1450,7 +1451,8 @@ namespace OpenNos.GameObject
                     continue;
                 }
                 Inventory.DeleteById(item.Id);
-                Session.Character.EquipmentBCards = Session.Character.EquipmentBCards.Where(o => o.ItemVNum != item.ItemVNum);
+                Session.Character.EquipmentBCards.RemoveWhere(o => o.ItemVNum != item.ItemVNum, out ConcurrentBag<BCard> tmp);
+                Session.Character.EquipmentBCards = tmp;
                 Session.SendPacket(item.Type == InventoryType.Wear ? GenerateEquipment() : UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
             }
@@ -1826,6 +1828,7 @@ namespace OpenNos.GameObject
                     if (ServerManager.Instance.RandomNumber() <= chance)
                     {
                         hitmode = 1;
+
                         SkillBcards.Clear();
                         return 0;
                     }
@@ -6753,7 +6756,7 @@ namespace OpenNos.GameObject
             Session.Character.Hp = (int)Session.Character.HpLoad();
             Session.Character.Mp = (int)Session.Character.MpLoad();
             ServerManager.Instance.ArenaTeams.Remove(tm);
-            tm = tm.Where(s => s.Session != Session);
+            tm.RemoveWhere(s => s.Session != Session, out tm);
             if (tm.Any())
             {
                 ServerManager.Instance.ArenaTeams.Add(tm);

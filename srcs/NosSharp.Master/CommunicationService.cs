@@ -13,6 +13,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -143,7 +144,8 @@ namespace NosSharp.Master
             {
                 return;
             }
-            MsManager.Instance.ConnectedAccounts = MsManager.Instance.ConnectedAccounts.Where(s => s.AccountId != accountId);
+            MsManager.Instance.ConnectedAccounts.RemoveWhere(s => s.AccountId != accountId, out ConcurrentBag<AccountSession> instanceConnectedAccounts);
+            MsManager.Instance.ConnectedAccounts = instanceConnectedAccounts;
         }
 
         public void DisconnectCharacter(Guid worldId, long characterId)
@@ -205,11 +207,13 @@ namespace NosSharp.Master
             }
             if (accountId.HasValue)
             {
-                MsManager.Instance.ConnectedAccounts = MsManager.Instance.ConnectedAccounts.Where(s => !s.AccountId.Equals(accountId.Value));
+                MsManager.Instance.ConnectedAccounts.RemoveWhere(s => !s.AccountId.Equals(accountId.Value), out ConcurrentBag<AccountSession> tmp);
+                MsManager.Instance.ConnectedAccounts = tmp;
             }
             else if (sessionId.HasValue)
             {
-                MsManager.Instance.ConnectedAccounts = MsManager.Instance.ConnectedAccounts.Where(s => !s.SessionId.Equals(sessionId.Value));
+                MsManager.Instance.ConnectedAccounts.RemoveWhere(s => !s.SessionId.Equals(sessionId.Value), out ConcurrentBag<AccountSession> tmp);
+                MsManager.Instance.ConnectedAccounts = tmp;
             }
         }
 
@@ -236,7 +240,8 @@ namespace NosSharp.Master
             {
                 return;
             }
-            MsManager.Instance.ConnectedAccounts = MsManager.Instance.ConnectedAccounts.Where(a => !a.AccountId.Equals(accountId));
+            MsManager.Instance.ConnectedAccounts.RemoveWhere(a => !a.AccountId.Equals(accountId), out ConcurrentBag<AccountSession> tmp);
+            MsManager.Instance.ConnectedAccounts = tmp;
             MsManager.Instance.ConnectedAccounts.Add(new AccountSession(accountId, sessionId, accountName));
         }
 
@@ -406,7 +411,8 @@ namespace NosSharp.Master
             {
                 return;
             }
-            MsManager.Instance.ConnectedAccounts = MsManager.Instance.ConnectedAccounts.Where(a => a == null || a.ConnectedWorld?.Id.Equals(worldId) != true);
+            MsManager.Instance.ConnectedAccounts.RemoveWhere(a => a == null || a.ConnectedWorld?.Id.Equals(worldId) != true, out ConcurrentBag<AccountSession> tmp);
+            MsManager.Instance.ConnectedAccounts = tmp;
             MsManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
         }
 
