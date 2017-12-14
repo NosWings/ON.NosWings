@@ -843,10 +843,15 @@ namespace OpenNos.GameObject
             {
                 if (Owner.IsPetAutoRelive)
                 {
+                    if (Owner.Inventory.CountItem(2089) >= 1)
+                    {
+                        Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PET_REVIVE_DOLL"), 11));
+                        GenerateRevive();
+                        return;
+                    }
                     if (Owner.Inventory.CountItem(1012) < 5)
                     {
                         Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(1012).Name), 0));
-                        Owner.IsPetAutoRelive = false;
                         BackToMiniland();
                         return;
                     }
@@ -863,10 +868,15 @@ namespace OpenNos.GameObject
             {
                 if (Owner.IsPartnerAutoRelive)
                 {
+                    if (Owner.Inventory.CountItem(2329) >= 1)
+                    {
+                        Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MATE_REVIVE_DOLL"), 11));
+                        GenerateRevive();
+                        return;
+                    }
                     if (Owner.Inventory.CountItem(1012) < 5)
                     {
                         Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(1012).Name), 0));
-                        Owner.IsPartnerAutoRelive = false;
                         BackToMiniland();
                         return;
                     }
