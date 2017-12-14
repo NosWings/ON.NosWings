@@ -88,6 +88,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastQuest { get; set; }
 
+        public DateTime LastUnregister { get; set; }
+
         public ConcurrentBag<BCard> EquipmentBCards { get; set; }
 
         public ConcurrentBag<BCard> PassiveSkillBcards { get; set; }

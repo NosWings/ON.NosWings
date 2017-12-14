@@ -142,6 +142,10 @@ namespace OpenNos.GameObject
 
         public void JoinGroup(ClientSession session)
         {
+            if (session.Character.LastUnregister.AddSeconds(1) > DateTime.Now)
+            {
+                return;
+            }
             session.Character.Group = this;
             session.Character.LastGroupJoin = DateTime.Now;
             Characters.Add(session);
