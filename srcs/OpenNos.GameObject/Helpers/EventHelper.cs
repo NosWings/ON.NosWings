@@ -372,7 +372,20 @@ namespace OpenNos.GameObject.Helpers
                                     }
                                     foreach (Gift gift in instance.GiftItems)
                                     {
-                                        sbyte rare = (sbyte)(gift.IsRandomRare ? ServerManager.Instance.RandomNumber(1, 8) : 0);
+
+                                        sbyte rare = (sbyte)(gift.IsRandomRare ? ServerManager.Instance.RandomNumber() : 0);
+                                        if (rare > 90)
+                                        {
+                                            rare = 7;
+                                        }
+                                        else if (rare > 80)
+                                        {
+                                            rare = 6;
+                                        }
+                                        else
+                                        {
+                                            rare = (sbyte)(gift.IsRandomRare ? ServerManager.Instance.RandomNumber(1, 6) : 0);
+                                        }
                                         if (cli.Character.Level >= instance.LevelMinimum)
                                         {
                                             cli.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
