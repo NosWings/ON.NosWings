@@ -338,7 +338,7 @@ namespace OpenNos.GameObject.Map
             Character character = MapInstance.Sessions.FirstOrDefault(s =>
                     s?.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible &&
                     s.Character.MapInstance == MapInstance &&
-                    IsFactionTargettable(s.Character.Faction) &&
+                    IsFactionTargettable(s.Character.Faction) && 
                     Map.GetDistance(new MapCell { X = MapX, Y = MapY },
                         new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) <
                     (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange))
@@ -346,6 +346,10 @@ namespace OpenNos.GameObject.Map
 
             Mate mate = MapInstance.Mates.FirstOrDefault(m =>
                 m.IsAlive && m.Hp > 0 &&
+                !m.Owner.Invisible &&
+                !m.Owner.InvisibleGm &&
+                !m.Owner.IsVehicled &&
+                IsFactionTargettable(m.Owner.Faction) && 
                 Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = m.PositionX, Y = m.PositionY }) <
                 (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange));
 
