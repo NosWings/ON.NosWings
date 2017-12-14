@@ -13,6 +13,7 @@
  */
 
 using System;
+using NosSharp.Enums;
 using OpenNos.Data.Interfaces;
 
 namespace OpenNos.GameObject.Item.Instance
@@ -43,6 +44,8 @@ namespace OpenNos.GameObject.Item.Instance
         #region Properties
 
         public short HoldingVNum { get; set; }
+
+        public MateType MateType { get; set; }
 
         #endregion
     }
