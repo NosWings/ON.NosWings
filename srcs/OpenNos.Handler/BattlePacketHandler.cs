@@ -271,10 +271,7 @@ namespace OpenNos.Handler
                     // AOE Target hit
                     if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1)
                     {
-                        if (!Session.Character.HasGodMode)
-                        {
-                            Session.Character.Mp -= ski.Skill.MpCost;
-                        }
+                        Session.Character.Mp -= Session.Character.HasGodMode ? 0 : ski.Skill.MpCost;
 
                         if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
                         {
@@ -303,56 +300,45 @@ namespace OpenNos.Handler
                                     s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId &&
                                     s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange)))
                                 {
-                                    if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance)
+                                    switch (Session.CurrentMapInstance?.MapInstanceType)
                                     {
-                                        if (Session.Character.Faction == character.Character.Faction)
-                                        {
-                                            continue;
-                                        }
-                                        if (Session.CurrentMapInstance.Map.MapId != 130 && Session.CurrentMapInstance.Map.MapId != 131)
-                                        {
-                                            Session.Character.GetBattleEntity().TargetHit(character.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp:true);
-                                        }
-                                    }
-                                    else if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.IceBreakerInstance)
-                                    {
-                                        if (IceBreaker.FrozenPlayers.Contains(character))
-                                        {
-                                            Session.SendPacket($"cancel 2 {targetId}");
-                                            Session.Character.LastDelay = DateTime.Now;
-                                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 3, $"#guri^502^0^{targetId}"));
-                                            Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
-                                            return;
-                                        }
-                                        else if (IceBreaker.SessionsHaveSameGroup(Session, character))
-                                        {
-                                            Session.SendPacket($"cancel 2 {targetId}");
-                                            return;
-                                        }
-                                        continue;
-                                    }
-                                    else if (Session.CurrentMapInstance?.IsPvp == true)
-                                    {
-                                        ConcurrentBag<ArenaTeamMember> team = null;
-                                        if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
-                                        {
-                                            team = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s.Any(o => o.Session == Session));
-                                        }
+                                        case MapInstanceType.Act4Instance:
+                                            if (Session.CurrentMapInstance.Map.MapId == 130 || Session.CurrentMapInstance.Map.MapId == 131 || Session.Character.Faction == character.Character.Faction)
+                                            {
+                                                break;
+                                            }
+                                            Session.Character.GetBattleEntity().TargetHit(character.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp: true);
+                                            break;
 
-                                        if (team != null && team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType != team.FirstOrDefault(s => s.Session == character)?.ArenaTeamType
-                                            || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
-                                            (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId)))
-                                        {
-                                            Session.Character.GetBattleEntity().TargetHit(character.Character, TargetHitType.AOETargetHit, ski.Skill, isPvp: true);
-                                        }
-                                        else
-                                        {
+                                        case MapInstanceType.IceBreakerInstance:
+                                            if (IceBreaker.FrozenPlayers.Contains(character))
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                                Session.Character.LastDelay = DateTime.Now;
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 3, $"#guri^502^0^{targetId}"));
+                                                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
+                                                return;
+                                            }
+                                            else if (IceBreaker.SessionsHaveSameGroup(Session, character))
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                                break;
+                                            }
+                                            break;
+
+                                        default:
+                                            if (Session.CurrentMapInstance?.IsPvp == true)
+                                            {
+                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                                {
+                                                    Session.Character.GetBattleEntity().TargetHit(character.Character, TargetHitType.AOETargetHit, ski.Skill, isPvp: true);
+                                                    break;
+                                                }
+                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                break;
+                                            }
                                             Session.SendPacket($"cancel 2 {targetId}");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Session.SendPacket($"cancel 2 {targetId}");
+                                            break;
                                     }
                                 }
                                 if (Session.CurrentMapInstance != null)
@@ -501,16 +487,7 @@ namespace OpenNos.Handler
                                         $"ct 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
                                     Session.Character.Skills.Select(s => s.Value).Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
 
-                                    // Generate scp
-                                    if ((DateTime.Now - ski.LastUse).TotalSeconds > 3)
-                                    {
-                                        ski.Hit = 0;
-                                    }
-                                    else
-                                    {
-                                        ski.Hit++;
-                                    }
-
+                                        ski.Hit = (short)((DateTime.Now - ski.LastUse).TotalSeconds > 3 ? 0 : ski.Hit + 1);
                                     ski.LastUse = DateTime.Now;
                                     if (ski.Skill.CastEffect != 0)
                                     {
@@ -533,11 +510,8 @@ namespace OpenNos.Handler
                                             int count = 0;
                                             foreach (ClientSession character in playersInAoeRange)
                                             {
-                                                if (Session.CurrentMapInstance == null || !Session.CurrentMapInstance.IsPvp)
-                                                {
-                                                    continue;
-                                                }
-                                                if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance && Session.Character.Faction == character.Character.Faction)
+                                                if (Session.CurrentMapInstance == null || !Session.CurrentMapInstance.IsPvp 
+                                                    || Session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance && Session.Character.Faction == character.Character.Faction)
                                                 {
                                                     continue;
                                                 }
