@@ -1705,6 +1705,12 @@ namespace NosSharp.Parser
                                 npc.GiveDamagePercentage = 20;
                                 break;
 
+                            case 2639: // Yertirand
+                                npc.IsPercent = true;
+                                npc.TakeDamages = 666;
+                                npc.GiveDamagePercentage = 0;
+                                break;
+
                             default:
                                 npc.HeroXp = 0;
                                 break;
