@@ -3,7 +3,7 @@ using OpenNos.Core.Serializing;
 
 namespace OpenNos.GameObject.Packets.CommandPackets
 {
-    [PacketHeader("$Act6Raid", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
+    [PacketHeader("$Act6Percent", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class Act6RaidPacket : PacketDefinition
     {
         #region Properties
@@ -16,7 +16,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
 
         public override string ToString()
         {
-            return "Act6Raid Name [Percent]";
+            return "Act6Percent Name [Percent]";
         }
 
         #endregion

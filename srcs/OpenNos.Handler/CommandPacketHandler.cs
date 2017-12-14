@@ -57,10 +57,10 @@ namespace OpenNos.Handler
         #region Methods
 
         /// <summary>
-        /// $Act6Raid 
+        /// $Act6Percent
         /// </summary>
         /// <param name="packet"></param>
-        public void Act6Raid(Act6RaidPacket packet)
+        public void Act6Percent(Act6RaidPacket packet)
         {
             if (string.IsNullOrEmpty(packet?.Name))
             {
