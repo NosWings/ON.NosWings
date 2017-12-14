@@ -966,6 +966,10 @@ namespace OpenNos.GameObject.Battle
             }
             if (target.GetSession() is MapMonster monster)
             {
+                if (monster.Target == null)
+                {
+                    monster.LastSkill = DateTime.Now;
+                }
                 monster.Target = Entity;
                 isBoss = monster.IsBoss;
                 if (isBoss)
