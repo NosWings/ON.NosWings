@@ -1928,13 +1928,13 @@ namespace OpenNos.GameObject.Networking
 
         public void Act6Process()
         {
-            if (Act6Zenas.Percentage >= 100 && !Act6Zenas.IsRaidActive)
+            if (Act6Zenas.Percentage >= 1000 && !Act6Zenas.IsRaidActive)
             {
                 LoadAct6ScriptedInstance();
                 Act6Zenas.TotalTime = 3600;
                 Act6Zenas.IsRaidActive = true;
             }
-            else if (Act6Erenia.Percentage >= 100 && !Act6Erenia.IsRaidActive)
+            else if (Act6Erenia.Percentage >= 1000 && !Act6Erenia.IsRaidActive)
             {
                 LoadAct6ScriptedInstance();
                 Act6Erenia.TotalTime = 3600;
