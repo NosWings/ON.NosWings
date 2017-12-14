@@ -2758,12 +2758,12 @@ namespace OpenNos.GameObject
                 #endregion
 
                 #region Act6Stats
-                if (monsterToAttack.MapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61A) && !ServerManager.Instance.Act6Zenas.IsRaidActive)
+                if (monsterToAttack.MapInstance.Map.MapTypes.Any(s => s?.MapTypeId == (short)MapTypeEnum.Act61A) && !ServerManager.Instance.Act6Zenas.IsRaidActive)
                 {
                     ServerManager.Instance.Act6Zenas.Percentage += 10;
                     ServerManager.Instance.Act6Process();
                 }
-                if (monsterToAttack.MapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61D) && !ServerManager.Instance.Act6Erenia.IsRaidActive)
+                if (monsterToAttack.MapInstance.Map.MapTypes.Any(s => s?.MapTypeId == (short)MapTypeEnum.Act61D) && !ServerManager.Instance.Act6Erenia.IsRaidActive)
                 {
                     ServerManager.Instance.Act6Erenia.Percentage += 10;
                     ServerManager.Instance.Act6Process();
