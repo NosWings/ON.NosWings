@@ -431,12 +431,9 @@ namespace OpenNos.GameObject.Battle
 
             baseDamage -= target.HasBuff(CardType.SpecialDefence, (byte)AdditionalTypes.SpecialDefence.AllDefenceNullified) ? 0 : targetDefence;
 
-            if (skill?.Type == 1)
+            if (skill?.Type == 1 && Map.Map.GetDistance(Entity.GetPos(), targetEntity.GetPos()) < 4)
             {
-                if (Map.Map.GetDistance(Entity.GetPos(), targetEntity.GetPos()) < 4)
-                {
-                    baseDamage = (int)(baseDamage * 0.85);
-                }
+                baseDamage = (int)(baseDamage * 0.85);
             }
 
             #endregion
@@ -577,29 +574,25 @@ namespace OpenNos.GameObject.Battle
 
             if (skill?.Element == 0)
             {
-                if (elementalBoost == 0.5)
+                switch (elementalBoost)
                 {
-                    elementalBoost = 0;
-                }
-                else if (elementalBoost == 1)
-                {
-                    elementalBoost = 0.05;
-                }
-                else if (elementalBoost == 1.3)
-                {
-                    elementalBoost = 0.15;
-                }
-                else if (elementalBoost == 1.5)
-                {
-                    elementalBoost = 0.15;
-                }
-                else if (elementalBoost == 2)
-                {
-                    elementalBoost = 0.2;
-                }
-                else if (elementalBoost == 3)
-                {
-                    elementalBoost = 0.2;
+                    case 0.5:
+                        elementalBoost = 0;
+                        break;
+
+                    case 1:
+                        elementalBoost = 0.05;
+                        break;
+
+                    case 1.3:
+                    case 1.5:
+                        elementalBoost = 0.15;
+                        break;
+
+                    case 2:
+                    case 3:
+                        elementalBoost = 0.2;
+                        break;
                 }
             }
             else if (skill?.Element != Element)
@@ -622,26 +615,10 @@ namespace OpenNos.GameObject.Battle
 
             if (ServerManager.Instance.RandomNumber() <= critChance)
             {
-                if (skill?.Type == 2)
-                {
-                }
-                else if (skill?.Type == 3 && attackType != AttackType.Magical)
+                if (skill?.Type != 2 && attackType != AttackType.Magical)
                 {
                     double multiplier = critHit / 100D;
-                    if (multiplier > 3)
-                    {
-                        multiplier = 3;
-                    }
-                    baseDamage += (int)(baseDamage * multiplier);
-                    hitmode = 3;
-                }
-                else
-                {
-                    double multiplier = critHit / 100D;
-                    if (multiplier > 3)
-                    {
-                        multiplier = 3;
-                    }
+                    multiplier = multiplier > 3 ? 3 : multiplier;
                     baseDamage += (int)(baseDamage * multiplier);
                     hitmode = 3;
                 }
@@ -667,10 +644,7 @@ namespace OpenNos.GameObject.Battle
                     charact.ChargeValue = 0;
                     charact.RemoveBuff(0);
                 }
-                if (charact.Class == ClassType.Adventurer)
-                {
-                    baseDamage += 20;
-                }
+                baseDamage += charact.Class == ClassType.Adventurer ? 20 : 0;
             }
 
             #region Total Damage
