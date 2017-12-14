@@ -330,6 +330,7 @@ namespace OpenNos.GameObject.Item
                     Observable.Timer(TimeSpan.FromSeconds(session.Character.BuffRandomTime * 0.1D)).Subscribe(o =>
                     {
                         session.Character.Speed -= 5;
+                        session.Character.LoadSpeed();
                         switch (session.Character.Morph)
                         {
                             case 2526: // White male unicorn
