@@ -39,7 +39,6 @@ namespace OpenNos.GameObject.Map
         private int _movetime;
         private Random _random;
         private const int _maxDistance = 25;
-        public BattleEntity _battleEntity;
 
         #endregion
 
@@ -56,15 +55,19 @@ namespace OpenNos.GameObject.Map
 
         #region BattleEntityProperties
 
-        public void AddBuff(Buff.Buff indicator) => GetBattleEntity().AddBuff(indicator);
+        public BattleEntity BattleEntity { get; set; }
 
-        public void RemoveBuff(short cardId) => GetBattleEntity().RemoveBuff(cardId);
+        public void AddBuff(Buff.Buff indicator) => BattleEntity.AddBuff(indicator);
 
-        public int[] GetBuff(CardType type, byte subtype) => GetBattleEntity().GetBuff(type, subtype);
+        public void RemoveBuff(short cardId) => BattleEntity.RemoveBuff(cardId);
 
-        public bool HasBuff(CardType type, byte subtype) => GetBattleEntity().HasBuff(type, subtype);
+        public int[] GetBuff(CardType type, byte subtype) => BattleEntity.GetBuff(type, subtype);
 
-        public ConcurrentBag<Buff.Buff> Buffs => GetBattleEntity().Buffs;
+        public bool HasBuff(CardType type, byte subtype) => BattleEntity.HasBuff(type, subtype);
+
+        public ConcurrentBag<Buff.Buff> Buffs => BattleEntity.Buffs;
+
+        public int MaxHp => Monster.MaxHP;
 
         #endregion
 
@@ -188,6 +191,7 @@ namespace OpenNos.GameObject.Map
             CurrentHp = Monster.MaxHP;
             CurrentMp = Monster.MaxMP;
             Monster.Skills.ForEach(s => Skills.Add(s));
+            BattleEntity = new BattleEntity(this);
             DamageList = new Dictionary<IBattleEntity, long>();
             _random = new Random(MapMonsterId);
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
@@ -243,7 +247,7 @@ namespace OpenNos.GameObject.Map
         /// </summary>
         internal void GetNearestOponent()
         {
-            Target = DamageList.Keys.ToList().OrderBy(e => Map.GetDistance(GetPos(), e.GetPos())).FirstOrDefault(e => e.isTargetable(GetSessionType()));
+            Target = DamageList.Keys.ToList().OrderBy(e => Map.GetDistance(GetPos(), e.GetPos())).FirstOrDefault(e => e.isTargetable(SessionType()));
         }
 
         /// <summary>
@@ -255,7 +259,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.isTargetable(GetSessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange));
+            IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.isTargetable(SessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange));
 
             if (target == null || MoveEvent != null)
             {
@@ -299,7 +303,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            if (!Target?.isTargetable(GetSessionType()) ?? true)
+            if (!Target?.isTargetable(SessionType()) ?? true)
             {
                 RemoveTarget();
                 return;
@@ -489,40 +493,32 @@ namespace OpenNos.GameObject.Map
                 }
                 npcMonsterSkill.LastSkillUse = DateTime.Now;
                 CurrentMp -= npcMonsterSkill.Skill.MpCost;
-                MapInstance.Broadcast($"ct 3 {MapMonsterId} {(byte)Target.GetSessionType()} {Target.GetId()} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
+                MapInstance.Broadcast($"ct 3 {MapMonsterId} {(byte)Target.SessionType()} {Target.GetId()} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
             }
             LastMove = DateTime.Now;
-            GetBattleEntity().TargetHit(Target, TargetHitType.SingleTargetHit, npcMonsterSkill?.Skill, skillEffect: Monster.BasicSkill);
+            BattleEntity.TargetHit(Target, TargetHitType.SingleTargetHit, npcMonsterSkill?.Skill, skillEffect: Monster.BasicSkill);
         }
 
         public MapCell GetPos() => new MapCell { X = MapX, Y = MapY };
-
-        public BattleEntity GetBattleEntity() => _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
 
         public object GetSession() => this;
 
         public AttackType GetAttackType(Skill skill = null) => (AttackType)Monster.AttackClass;
 
-        public bool isTargetable(SessionType type, bool isPvP = false) => type != SessionType.Monster && IsAlive && CurrentHp > 0;
+        public bool isTargetable(SessionType type, bool isPvP = false) => type != NosSharp.Enums.SessionType.Monster && IsAlive && CurrentHp > 0;
 
         public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = MapX, Y = MapY }, MapInstance.Map.Grid);
 
-        public SessionType GetSessionType() => SessionType.Monster;
+        public SessionType SessionType() => NosSharp.Enums.SessionType.Monster;
 
         public long GetId() => MapMonsterId;
-
-        public MapInstance GetMapInstance() => MapInstance;
-
-        public int GetCurrentHp() => CurrentHp;
-
-        public int GetMaxHp() => Monster.MaxHP;
 
         public void GetDamage(int damage, bool canKill = true)
         {
             canKill = IsInvicible ? false : canKill; // Act4 Guardians
             CurrentHp -= damage;
             CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : CurrentHp;
-            GetBattleEntity().OnHitEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
+            BattleEntity.OnHitEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
         }
 
         public void GenerateDeath(IBattleEntity killer = null)
@@ -537,13 +533,13 @@ namespace OpenNos.GameObject.Map
             CurrentMp = 0;
             Death = DateTime.Now;
             LastMove = DateTime.Now.AddMilliseconds(500);
-            GetBattleEntity().Buffs.Clear();
+            BattleEntity.Buffs.Clear();
             Target = null;
             killer?.GenerateRewards(this);
             MapInstance.InstanceBag.Combo += IsBonus ? 1 : 0;
             MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + (IsBonus ? 1 : 0));
             MapInstance.InstanceBag.MonstersKilled++;
-            GetBattleEntity().OnDeathEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
+            BattleEntity.OnDeathEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
         }
 
         public void GenerateRewards(IBattleEntity target)

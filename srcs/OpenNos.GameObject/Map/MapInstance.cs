@@ -642,7 +642,7 @@ namespace OpenNos.GameObject.Map
                 };
                 monster.Initialize(this);
                 monster.IsHostile = mon.IsHostile;
-                monster.GetBattleEntity().OnDeathEvents = mon.DeathEvents;
+                monster.BattleEntity.OnDeathEvents = mon.DeathEvents;
                 AddMonster(monster);
                 Broadcast(monster.GenerateIn());
             }
@@ -672,7 +672,7 @@ namespace OpenNos.GameObject.Map
                     IsProtected = mon.IsBonusOrProtected
                 };
                 npc.Initialize(this);
-                npc.GetBattleEntity().OnDeathEvents = mon.DeathEvents;
+                npc.BattleEntity.OnDeathEvents = mon.DeathEvents;
                 AddNpc(npc);
                 Broadcast(npc.GenerateIn());
             }

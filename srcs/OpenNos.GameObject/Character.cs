@@ -48,7 +48,6 @@ namespace OpenNos.GameObject
 
         private byte _speed;
         private readonly object _syncObj = new object();
-        public BattleEntity _battleEntity;
 
         #endregion
 
@@ -79,15 +78,17 @@ namespace OpenNos.GameObject
 
         #region BattleEntityProperties
 
-        public void AddBuff(Buff.Buff indicator) => GetBattleEntity().AddBuff(indicator);
+        public BattleEntity BattleEntity { get; set; }
 
-        public void RemoveBuff(short cardId, bool removePermaBuff = false) => GetBattleEntity().RemoveBuff(cardId, removePermaBuff);
+        public void AddBuff(Buff.Buff indicator) => BattleEntity.AddBuff(indicator);
 
-        public int[] GetBuff(CardType type, byte subtype) => GetBattleEntity().GetBuff(type, subtype);
+        public void RemoveBuff(short cardId, bool removePermaBuff = false) => BattleEntity.RemoveBuff(cardId, removePermaBuff);
 
-        public bool HasBuff(CardType type, byte subtype) => GetBattleEntity().HasBuff(type, subtype);
+        public int[] GetBuff(CardType type, byte subtype) => BattleEntity.GetBuff(type, subtype);
 
-        public ConcurrentBag<Buff.Buff> Buff => GetBattleEntity().Buffs;
+        public bool HasBuff(CardType type, byte subtype) => BattleEntity.HasBuff(type, subtype);
+
+        public ConcurrentBag<Buff.Buff> Buff => BattleEntity.Buffs;
 
         #endregion
 
@@ -117,13 +118,33 @@ namespace OpenNos.GameObject
             }
         }
 
+        public int CurrentHp
+        {
+            get { return Hp; }
+            set { Hp = value; }
+        }
+
+        public int MaxHp => (int)HpLoad();
+
         public short CurrentMinigame { get; set; }
 
-        public int DarkResistance { get { return GetBattleEntity().DarkResistance; } set { GetBattleEntity().DarkResistance = value; } }
+        public int DarkResistance
+        {
+            get { return BattleEntity.DarkResistance; }
+            set { BattleEntity.DarkResistance = value; }
+        }
 
-        public int Defence { get { return GetBattleEntity().CloseDefence; } set { GetBattleEntity().CloseDefence = value; } }
+        public int Defence
+        {
+            get { return BattleEntity.CloseDefence; }
+            set { BattleEntity.CloseDefence = value; }
+        }
 
-        public int DefenceRate { get { return GetBattleEntity().DefenceRate; } set { GetBattleEntity().DefenceRate = value; } }
+        public int DefenceRate
+        {
+            get { return BattleEntity.DefenceRate; }
+            set { BattleEntity.DefenceRate = value; }
+        }
 
         public int Direction { get; set; }
 
@@ -131,19 +152,39 @@ namespace OpenNos.GameObject
 
         public int DistanceCriticalRate { get; set; }
 
-        public int DistanceDefence { get { return GetBattleEntity().RangedDefence; } set { GetBattleEntity().RangedDefence = value; } }
+        public int DistanceDefence
+        {
+            get { return BattleEntity.RangedDefence; }
+            set { BattleEntity.RangedDefence = value; }
+        }
 
-        public int DistanceDefenceRate { get { return GetBattleEntity().DistanceDefenceRate; } set { GetBattleEntity().DistanceDefenceRate = value; } }
+        public int DistanceDefenceRate
+        {
+            get { return BattleEntity.DistanceDefenceRate; }
+            set { BattleEntity.DistanceDefenceRate = value; }
+        }
 
         public int DistanceRate { get; set; }
 
         public int ChargeValue { get; set; }
 
-        public byte Element { get { return GetBattleEntity().Element; } set { GetBattleEntity().Element = value; } }
+        public byte Element
+        {
+            get { return BattleEntity.Element; }
+            set { BattleEntity.Element = value; }
+        }
 
-        public int ElementRate { get { return GetBattleEntity().ElementRate; } set { GetBattleEntity().ElementRate = value; } }
+        public int ElementRate
+        {
+            get { return BattleEntity.ElementRate; }
+            set { BattleEntity.ElementRate = value; }
+        }
 
-        public int ElementRateSp { get { return GetBattleEntity().ElementRateSp; } set { GetBattleEntity().ElementRateSp = value; } }
+        public int ElementRateSp
+        {
+            get { return BattleEntity.ElementRateSp; }
+            set { BattleEntity.ElementRateSp = value; }
+        }
 
         public ExchangeInfo ExchangeInfo { get; set; }
 
@@ -159,7 +200,11 @@ namespace OpenNos.GameObject
 
         public List<long> FamilyInviteCharacters { get; set; }
 
-        public int FireResistance { get { return GetBattleEntity().FireResistance; } set { GetBattleEntity().FireResistance = value; } }
+        public int FireResistance
+        {
+            get { return BattleEntity.FireResistance; }
+            set { BattleEntity.FireResistance = value; }
+        }
 
         public int FoodAmount { get; set; }
 
@@ -185,7 +230,11 @@ namespace OpenNos.GameObject
 
         public int HitCriticalRate { get; set; }
 
-        public int HitRate { get; set; }
+        public int HitRate
+        {
+            get { return BattleEntity.HitRate; }
+            set { BattleEntity.HitRate = value; }
+        }
 
         public bool InExchangeOrTrade
         {
@@ -265,9 +314,17 @@ namespace OpenNos.GameObject
 
         public DateTime LastTransform { get; set; }
 
-        public int LightResistance { get { return GetBattleEntity().LightResistance; } set { GetBattleEntity().LightResistance = value; } }
+        public int LightResistance
+        {
+            get { return BattleEntity.LightResistance; }
+            set { BattleEntity.LightResistance = value; }
+        }
 
-        public int MagicalDefence { get { return GetBattleEntity().MagicDefence; } set { GetBattleEntity().MagicDefence = value; } }
+        public int MagicalDefence
+        {
+            get { return BattleEntity.MagicDefence; }
+            set { BattleEntity.MagicDefence = value; }
+        }
 
         public IDictionary<int, MailDTO> MailList { get; set; }
 
@@ -458,7 +515,11 @@ namespace OpenNos.GameObject
 
         public int WareHouseSize { get; set; }
 
-        public int WaterResistance { get { return GetBattleEntity().WaterResistance; } set { GetBattleEntity().WaterResistance = value; } }
+        public int WaterResistance
+        {
+            get { return BattleEntity.WaterResistance; }
+            set { BattleEntity.WaterResistance = value; }
+        }
 
         public IDisposable Life { get; set; }
 
@@ -1278,7 +1339,7 @@ namespace OpenNos.GameObject
                     continue;
                 }
                 Inventory.DeleteById(item.Id);
-                GetBattleEntity().StaticBcards = GetBattleEntity().StaticBcards.Where(o => o.ItemVNum != item.ItemVNum);
+                BattleEntity.StaticBcards = BattleEntity.StaticBcards.Where(o => o.ItemVNum != item.ItemVNum);
                 Session.SendPacket(item.Type == InventoryType.Wear ? GenerateEquipment() : UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
             }
@@ -1344,8 +1405,6 @@ namespace OpenNos.GameObject
 
         public MapCell GetPos() => new MapCell { X = PositionX, Y = PositionY };
 
-        public BattleEntity GetBattleEntity() => _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
-
         public object GetSession() => this;
 
         public AttackType GetAttackType(Skill skill = null)
@@ -1364,13 +1423,11 @@ namespace OpenNos.GameObject
             return AttackType.Close;
         }
 
-        public MapInstance GetMapInstance() => MapInstance;
-
-        public bool isTargetable(SessionType type, bool isPvP = false) => type != SessionType.MateAndNpc && (type != SessionType.Character || isPvP) && Hp > 0 && !InvisibleGm && !Invisible;
+        public bool isTargetable(SessionType type, bool isPvP = false) => type != NosSharp.Enums.SessionType.MateAndNpc && (type != NosSharp.Enums.SessionType.Character || isPvP) && Hp > 0 && !InvisibleGm && !Invisible;
 
         public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, MapInstance.Map.Grid);
 
-        public SessionType GetSessionType() => SessionType.Character;
+        public SessionType SessionType() => NosSharp.Enums.SessionType.Character;
 
         public long GetId() => CharacterId;
 
@@ -1390,10 +1447,6 @@ namespace OpenNos.GameObject
                 GenerateKillBonus(monster);
             }
         }
-
-        public int GetCurrentHp() => Hp;
-
-        public int GetMaxHp() => (int)HpLoad();
 
         public void GenerateDignity(NpcMonster monsterinfo)
         {
@@ -2471,26 +2524,26 @@ namespace OpenNos.GameObject
                                 {
                                     case (byte)EquipmentType.MainWeapon:
                                         Inventory.PrimaryWeapon = wearableinstance;
-                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => GetBattleEntity().StaticBcards.Add(s));
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => BattleEntity.StaticBcards.Add(s));
                                         break;
 
                                     case (byte)EquipmentType.SecondaryWeapon:
                                         Inventory.SecondaryWeapon = wearableinstance;
-                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => GetBattleEntity().StaticBcards.Add(s));
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => BattleEntity.StaticBcards.Add(s));
                                         break;
 
                                     case (byte)EquipmentType.Armor:
                                         Inventory.Armor = wearableinstance;
-                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => GetBattleEntity().StaticBcards.Add(s));
+                                        EquipmentOptionHelper.Instance.ShellToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => BattleEntity.StaticBcards.Add(s));
                                         break;
 
                                     case (byte)EquipmentType.Bracelet:
                                     case (byte)EquipmentType.Necklace:
                                     case (byte)EquipmentType.Ring:
-                                        EquipmentOptionHelper.Instance.CellonToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => GetBattleEntity().StaticBcards.Add(s));
+                                        EquipmentOptionHelper.Instance.CellonToBCards(wearableinstance.EquipmentOptions, wearableinstance.ItemVNum).ForEach(s => BattleEntity.StaticBcards.Add(s));
                                         break;
                                 }
-                                inv.Item.BCards.ForEach(s => GetBattleEntity().StaticBcards.Add(s));
+                                inv.Item.BCards.ForEach(s => BattleEntity.StaticBcards.Add(s));
                             }
                             break;
                         case InventoryType.Equipment:
@@ -3334,6 +3387,7 @@ namespace OpenNos.GameObject
             LastSpGaugeRemove = DateTime.Now;
             Session = null;
             MailList = new Dictionary<int, MailDTO>();
+            BattleEntity = new BattleEntity(this);
             Group = null;
             GmPvtBlock = false;
         }
@@ -3497,7 +3551,7 @@ namespace OpenNos.GameObject
         {
             // TODO IMPROVE PERFORMANCES
             // ACCESSING A DICTIONARY LIKE THIS IS CPU CYCLE KILLER
-            PassiveSkillHelper.Instance.PassiveSkillToBcards(Skills.Values.Where(s => s.Skill.SkillType == 0).ToList()).ForEach(s => GetBattleEntity().StaticBcards.Add(s));
+            PassiveSkillHelper.Instance.PassiveSkillToBcards(Skills.Values.Where(s => s.Skill.SkillType == 0).ToList()).ForEach(s => BattleEntity.StaticBcards.Add(s));
         }
 
 
@@ -4270,7 +4324,7 @@ namespace OpenNos.GameObject
                     HeroLevel = 1;
                     HeroXp = 0;
                 }
-                GetBattleEntity().Level = Level;
+                BattleEntity.Level = Level;
                 Hp = (int)HpLoad();
                 Mp = (int)MpLoad();
                 Session.SendPacket(GenerateStat());
@@ -4744,7 +4798,7 @@ namespace OpenNos.GameObject
         /// <returns></returns>
         public int GetMostValueEquipmentBuff(CardType type, byte subtype)
         {
-            return GetBattleEntity().StaticBcards.Where(s => s.Type == (byte)type && s.SubType.Equals(subtype)).OrderByDescending(s => s.FirstData).FirstOrDefault()?.FirstData ?? 0;
+            return BattleEntity.StaticBcards.Where(s => s.Type == (byte)type && s.SubType.Equals(subtype)).OrderByDescending(s => s.FirstData).FirstOrDefault()?.FirstData ?? 0;
         }
 
         /// <summary>
@@ -4760,7 +4814,7 @@ namespace OpenNos.GameObject
         {
             int value1 = 0;
             int value2 = 0;
-            foreach (BCard entry in GetBattleEntity().StaticBcards.Where(
+            foreach (BCard entry in BattleEntity.StaticBcards.Where(
                 s => s.Type.Equals((byte)type) && s.SubType.Equals((byte)(subtype / 10))))
             {
                 if (entry.IsLevelScaled)

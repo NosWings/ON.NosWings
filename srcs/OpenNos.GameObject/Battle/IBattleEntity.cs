@@ -7,19 +7,29 @@ namespace OpenNos.GameObject.Battle
 {
     public interface IBattleEntity
     {
+        #region Properties
+
+        int CurrentHp { get; set; }
+
+        int MaxHp { get; }
+
+        MapInstance MapInstance { get; }
+
+        BattleEntity BattleEntity { get; set; }
+
+        #endregion
+
+        #region Methods
+
         Node[,] GetBrushFire();
 
         MapCell GetPos();
-
-        MapInstance GetMapInstance();
-
-        BattleEntity GetBattleEntity();
 
         EffectPacket GenerateEff(int effectid);
 
         AttackType GetAttackType(Skill skill = null);
 
-        SessionType GetSessionType();
+        SessionType SessionType();
 
         void GetDamage(int damage, bool canKill = true);
 
@@ -29,12 +39,10 @@ namespace OpenNos.GameObject.Battle
 
         bool isTargetable(SessionType type, bool isPvP = false);
 
-        int GetCurrentHp();
-
-        int GetMaxHp();
-
         long GetId();
 
         object GetSession();
+
+        #endregion
     }
 }

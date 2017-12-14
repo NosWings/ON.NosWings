@@ -894,7 +894,7 @@ namespace OpenNos.Handler
                         Session.Character.Inventory.SecondaryWeapon = null;
                         break;
                 }
-                Session.Character.GetBattleEntity().StaticBcards = Session.Character.GetBattleEntity().StaticBcards.Where(o => o.ItemVNum != inventory.ItemVNum);
+                Session.Character.BattleEntity.StaticBcards = Session.Character.BattleEntity.StaticBcards.Where(o => o.ItemVNum != inventory.ItemVNum);
             }
 
             ItemInstance inv = Session.Character.Inventory.MoveInInventory(removePacket.InventorySlot, equipment, InventoryType.Equipment);
@@ -2057,17 +2057,13 @@ namespace OpenNos.Handler
         /// <param name="vnum"></param>
         private void RemoveSP(short vnum)
         {
-            if (Session == null || !Session.HasSession)
-            {
-                return;
-            }
-            if (Session.Character.IsVehicled)
+            if (Session == null || !Session.HasSession || Session.Character.IsVehicled)
             {
                 return;
             }
             List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
             Session.Character.DisableBuffs(bufftodisable);
-            Session.Character.GetBattleEntity().StaticBcards = Session.Character.GetBattleEntity().StaticBcards.Where(s => !s.ItemVNum.Equals(vnum));
+            Session.Character.BattleEntity.StaticBcards = Session.Character.BattleEntity.StaticBcards.Where(s => !s.ItemVNum.Equals(vnum));
             Session.Character.UseSp = false;
             Session.Character.LoadSpeed();
             Session.SendPacket(Session.Character.GenerateCond());

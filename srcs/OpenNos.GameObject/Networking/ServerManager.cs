@@ -1899,7 +1899,7 @@ namespace OpenNos.GameObject.Networking
                     ShouldRespawn = false
                 };
                 monster.Initialize(instance);
-                monster.GetBattleEntity().OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<byte, byte>((byte)RandomNumber(0, 4), faction)));
+                monster.BattleEntity.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<byte, byte>((byte)RandomNumber(0, 4), faction)));
                 instance.AddMonster(monster);
                 instance.Broadcast(monster.GenerateIn());
                 Observable.Timer(TimeSpan.FromSeconds(300)).Subscribe(o =>

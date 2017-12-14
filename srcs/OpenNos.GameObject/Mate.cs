@@ -38,8 +38,6 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        public BattleEntity _battleEntity;
-
         #endregion
 
         #region Instantiation
@@ -54,6 +52,7 @@ namespace OpenNos.GameObject
             NpcMonsterVNum = npcMonster.NpcMonsterVNum;
             Monster = npcMonster;
             Level = level;
+            BattleEntity = new BattleEntity(this);
             Name = npcMonster.Name;
             MateType = matetype;
             Loyalty = 1000;
@@ -75,15 +74,31 @@ namespace OpenNos.GameObject
 
         #region BattleEntityProperties
 
-        public void AddBuff(Buff.Buff indicator) => GetBattleEntity().AddBuff(indicator);
+        public BattleEntity BattleEntity { get; set; }
 
-        public void RemoveBuff(short cardId) => GetBattleEntity().RemoveBuff(cardId);
+        public int[] GetBuff(CardType type, byte subtype) => BattleEntity.GetBuff(type, subtype);
 
-        public int[] GetBuff(CardType type, byte subtype) => GetBattleEntity().GetBuff(type, subtype);
+        public bool HasBuff(CardType type, byte subtype) => BattleEntity.HasBuff(type, subtype);
 
-        public bool HasBuff(CardType type, byte subtype) => GetBattleEntity().HasBuff(type, subtype);
+        public ConcurrentBag<Buff.Buff> Buffs => BattleEntity.Buffs;
 
-        public ConcurrentBag<Buff.Buff> Buffs => GetBattleEntity().Buffs;
+        public int Concentrate
+        {
+            get { return BattleEntity.HitRate; }
+            set { BattleEntity.HitRate = value; }
+        }
+
+        public int DamageMaximum
+        {
+            get { return BattleEntity.MaxDamage; }
+            set { BattleEntity.MaxDamage = value; }
+        }
+
+        public int DamageMinimum
+        {
+            get { return BattleEntity.MinDamage; }
+            set { BattleEntity.MinDamage = value; }
+        }
 
         #endregion
 
@@ -93,13 +108,15 @@ namespace OpenNos.GameObject
 
         public Node[,] BrushFire { get; set; }
 
+        public int CurrentHp
+        {
+            get
+            { return Hp; }
+            set
+            { Hp = value; }
+        }
+
         public short CloseDefence { get; set; }
-
-        public int Concentrate { get { return GetBattleEntity().HitRate; } set { GetBattleEntity().HitRate = value; } }
-
-        public int DamageMaximum { get { return GetBattleEntity().MaxDamage; } set { GetBattleEntity().MaxDamage = value; } }
-
-        public int DamageMinimum { get { return GetBattleEntity().MinDamage; } set { GetBattleEntity().MinDamage = value; } }
 
         public ItemInstance GlovesInstance { get; set; }
 
@@ -122,6 +139,8 @@ namespace OpenNos.GameObject
         public IDisposable Life { get; private set; }
 
         public short MagicDefence { get; set; }
+
+        public MapInstance MapInstance => Owner?.MapInstance;
 
         public int MateTransportId { get; set; }
 
@@ -262,7 +281,7 @@ namespace OpenNos.GameObject
                     Level = ServerManager.Instance.MaxMateLevel;
                     Experience = 0;
                 }
-                GetBattleEntity().Level = Level;
+                BattleEntity.Level = Level;
                 RefreshStats();
                 Hp = MaxHp;
                 Mp = MaxMp;
@@ -385,6 +404,7 @@ namespace OpenNos.GameObject
                 return;
             }
             Life = null;
+            BattleEntity = new BattleEntity(this);
             byte type = (byte)(Monster.AttackClass == 2 ? 1 : 0);
             Concentrate = (short)(MateHelper.Instance.Concentrate[type, Level] + (Monster.Concentrate - MateHelper.Instance.Concentrate[type, Monster.Level]));
             DamageMinimum = (short)(MateHelper.Instance.MinDamageData[type, Level] + (Monster.DamageMinimum - MateHelper.Instance.MinDamageData[type, Monster.Level]));
@@ -552,21 +572,17 @@ namespace OpenNos.GameObject
 
         public MapCell GetPos() => new MapCell { X = PositionX, Y = PositionY };
 
-        public BattleEntity GetBattleEntity() => _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
-
         public object GetSession() => this;
 
         public AttackType GetAttackType(Skill skill = null) => (AttackType)Monster.AttackClass;
 
-        public bool isTargetable(SessionType type, bool isPvP = false) => type == SessionType.Monster && IsAlive && Hp > 0;
+        public bool isTargetable(SessionType type, bool isPvP = false) => type == NosSharp.Enums.SessionType.Monster && IsAlive && Hp > 0;
 
         public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, Owner.MapInstance.Map.Grid);
 
-        public SessionType GetSessionType() => SessionType.MateAndNpc;
+        public SessionType SessionType() => NosSharp.Enums.SessionType.MateAndNpc;
 
         public long GetId() => MateTransportId;
-
-        public MapInstance GetMapInstance() => Owner.MapInstance;
 
         public void GenerateDeath(IBattleEntity killer)
         {
@@ -613,10 +629,6 @@ namespace OpenNos.GameObject
                 Owner.GenerateKillBonus(monster);
             }
         }
-
-        public int GetCurrentHp() => Hp;
-
-        public int GetMaxHp() => MaxHp;
 
         #endregion
     }

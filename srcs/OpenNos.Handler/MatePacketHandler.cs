@@ -169,7 +169,7 @@ namespace OpenNos.Handler
             attacker.Mp -= skill.Skill == null ? 0 : skill.Skill.MpCost;
             target.Monster.BCards.Where(s => s.CastType == 1).ToList().ForEach(s => s.ApplyBCards(attacker));
             Session.CurrentMapInstance?.Broadcast($"ct 2 {attacker.MateTransportId} 3 {target.MapMonsterId} {skill.Skill?.CastAnimation} {skill.Skill?.CastEffect} {skill.Skill?.SkillVNum}");
-            attacker.GetBattleEntity().TargetHit(target, TargetHitType.SingleTargetHit, skill.Skill);
+            attacker.BattleEntity.TargetHit(target, TargetHitType.SingleTargetHit, skill.Skill);
         }
 
         public void AttackCharacter(Mate attacker, NpcMonsterSkill skill, Character target)

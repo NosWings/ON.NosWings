@@ -36,47 +36,35 @@ namespace OpenNos.GameObject.Battle
             if (Session is Character character)
             {
                 Level = character.Level;
+                return;
             }
-            else if (Session is Mate mate)
+            NpcMonster npcMonster = Session is MapMonster mon ? mon.Monster
+                                  : Session is MapNpc npc ? npc.Npc
+                                  : Session is Mate mate ? mate.Monster
+                                  : null;
+
+            if (npcMonster == null)
             {
-                Level = mate.Level;
-                Element = mate.Monster.Element;
-                ElementRate = mate.Monster.ElementRate;
-                FireResistance = mate.Monster.FireResistance;
-                WaterResistance = mate.Monster.WaterResistance;
-                LightResistance = mate.Monster.LightResistance;
-                DarkResistance = mate.Monster.DarkResistance;
-                DefenceRate = mate.Monster.DefenceDodge;
-                DistanceDefenceRate = mate.Monster.DistanceDefenceDodge;
-                CloseDefence = mate.Monster.CloseDefence;
-                RangedDefence = mate.Monster.DistanceDefence;
-                MagicDefence = mate.Monster.MagicDefence;
-                AttackUpgrade = mate.Monster.AttackUpgrade;
-                CriticalRate = mate.Monster.CriticalChance;
-                Critical = mate.Monster.CriticalRate - 30;
+                return;
             }
-            else if (Session is MapMonster || Session is MapNpc)
-            {
-                NpcMonster npcMonster = Session.GetType() == typeof(MapMonster) ? (Session as MapMonster).Monster : (Session as MapNpc).Npc;
-                Level = npcMonster.Level;
-                Element = npcMonster.Element;
-                ElementRate = npcMonster.ElementRate;
-                FireResistance = npcMonster.FireResistance;
-                WaterResistance = npcMonster.WaterResistance;
-                LightResistance = npcMonster.LightResistance;
-                DarkResistance = npcMonster.DarkResistance;
-                DefenceRate = npcMonster.DefenceDodge;
-                DistanceDefenceRate = npcMonster.DistanceDefenceDodge;
-                CloseDefence = npcMonster.CloseDefence;
-                RangedDefence = npcMonster.DistanceDefence;
-                MagicDefence = npcMonster.MagicDefence;
-                AttackUpgrade = npcMonster.AttackUpgrade;
-                CriticalRate = npcMonster.CriticalChance;
-                Critical = npcMonster.CriticalRate - 30;
-                MinDamage = npcMonster.DamageMinimum;
-                MaxDamage = npcMonster.DamageMaximum;
-                HitRate = npcMonster.Concentrate;
-            }
+            Level = npcMonster.Level;
+            Element = npcMonster.Element;
+            ElementRate = npcMonster.ElementRate;
+            FireResistance = npcMonster.FireResistance;
+            WaterResistance = npcMonster.WaterResistance;
+            LightResistance = npcMonster.LightResistance;
+            DarkResistance = npcMonster.DarkResistance;
+            DefenceRate = npcMonster.DefenceDodge;
+            DistanceDefenceRate = npcMonster.DistanceDefenceDodge;
+            CloseDefence = npcMonster.CloseDefence;
+            RangedDefence = npcMonster.DistanceDefence;
+            MagicDefence = npcMonster.MagicDefence;
+            AttackUpgrade = npcMonster.AttackUpgrade;
+            CriticalRate = npcMonster.CriticalChance;
+            Critical = npcMonster.CriticalRate - 30;
+            MinDamage = npcMonster.DamageMinimum;
+            MaxDamage = npcMonster.DamageMaximum;
+            HitRate = npcMonster.Concentrate;
         }
 
         #endregion
@@ -192,7 +180,7 @@ namespace OpenNos.GameObject.Battle
 
             if (indicator.Card.EffectId > 0)
             {
-                Entity.GetMapInstance()?.Broadcast(Entity.GenerateEff(indicator.Card.EffectId));
+                Entity.MapInstance?.Broadcast(Entity.GenerateEff(indicator.Card.EffectId));
             }
             if (ObservableBag.TryGetValue(indicator.Card.CardId, out IDisposable value))
             {
@@ -211,7 +199,7 @@ namespace OpenNos.GameObject.Battle
 
         public ushort GenerateDamage(IBattleEntity targetEntity, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
-            BattleEntity target = targetEntity?.GetBattleEntity();
+            BattleEntity target = targetEntity?.BattleEntity;
             if (target == null)
             {
                 return 0;
@@ -820,7 +808,7 @@ namespace OpenNos.GameObject.Battle
 
         public void TargetHit(IBattleEntity target, TargetHitType hitType, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false)
         {
-            MapInstance mapInstance = target.GetMapInstance();
+            MapInstance mapInstance = target.MapInstance;
             int hitmode = 0;
             bool onyxWings = false;
             ushort damage = GenerateDamage(target, skill, ref hitmode, ref onyxWings);
@@ -847,7 +835,7 @@ namespace OpenNos.GameObject.Battle
                 target.GetDamage(damage / 2, false);
                 Observable.Timer(TimeSpan.FromMilliseconds(350)).Subscribe(o =>
                 {
-                    mapInstance.Broadcast($"su {(byte)Entity.GetSessionType()} {onyxId} {(byte)target.GetSessionType()} {target.GetId()} -1 0 -1 {skill.Effect} -1 -1 1 92 {damage / 2} 0 0");
+                    mapInstance.Broadcast($"su {(byte)Entity.SessionType()} {onyxId} {(byte)target.SessionType()} {target.GetId()} -1 0 -1 {skill.Effect} -1 -1 1 92 {damage / 2} 0 0");
                     mapInstance.RemoveMonster(onyx);
                     mapInstance.Broadcast(onyx.GenerateOut());
                 });
@@ -874,7 +862,7 @@ namespace OpenNos.GameObject.Battle
             int castTime = 0;
             if (skill != null && skill.CastEffect != 0)
             {
-                Entity.GetMapInstance().Broadcast(Entity.GenerateEff(skill.CastEffect), Entity.GetPos().X, Entity.GetPos().Y);
+                Entity.MapInstance.Broadcast(Entity.GenerateEff(skill.CastEffect), Entity.GetPos().X, Entity.GetPos().Y);
                 castTime = skill.CastTime * 100;
             }
             Observable.Timer(TimeSpan.FromMilliseconds(castTime)).Subscribe(o => TargetHit2(target, hitType, skill, damage, hitmode, skillEffect, mapX, mapY, skillCombo, showTargetAnimation, isPvp));
@@ -882,7 +870,7 @@ namespace OpenNos.GameObject.Battle
 
         private void TargetHit2(IBattleEntity target, TargetHitType hitType, Skill skill, int damage, int hitmode, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false, bool isRange = false)
         {
-            if (!target.isTargetable(Entity.GetSessionType(), isPvp))
+            if (!target.isTargetable(Entity.SessionType(), isPvp))
             {
                 if (Session is Character cha)
                 {
@@ -892,15 +880,15 @@ namespace OpenNos.GameObject.Battle
             }
 
             target.GetDamage(damage, !(Session is MapMonster mon && mon.IsInvicible));
-            string str = $"su {(byte)Entity.GetSessionType()} {Entity.GetId()} {(byte)target.GetSessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0}";
+            string str = $"su {(byte)Entity.SessionType()} {Entity.GetId()} {(byte)target.SessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0}";
             switch (hitType)
             {
                 case TargetHitType.SingleTargetHit:
-                    str += $" {skill?.AttackAnimation ?? 11} {skill?.Effect ?? skillEffect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill?.SkillType - 1 ?? 0}";
+                    str += $" {skill?.AttackAnimation ?? 11} {skill?.Effect ?? skillEffect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.CurrentHp > 0 ? 1 : 0)} {(int)(target.CurrentHp / (double)target.MaxHp * 100)} {damage} {hitmode} {skill?.SkillType - 1 ?? 0}";
                     break;
 
                 case TargetHitType.SingleTargetHitCombo:
-                    str += $" {skillCombo?.Animation ?? 0} {skillCombo?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill.SkillType - 1}";
+                    str += $" {skillCombo?.Animation ?? 0} {skillCombo?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.CurrentHp > 0 ? 1 : 0)} {(int)(target.CurrentHp / (double)target.MaxHp * 100)} {damage} {hitmode} {skill.SkillType - 1}";
                     break;
 
                 case TargetHitType.SingleAOETargetHit:
@@ -920,9 +908,9 @@ namespace OpenNos.GameObject.Battle
                     }
                     if (showTargetAnimation)
                     {
-                        Entity.GetMapInstance().Broadcast($" {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} 0 0 {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} 0 0 {skill.SkillType - 1}");
+                        Entity.MapInstance.Broadcast($" {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} 0 0 {(target.CurrentHp > 0 ? 1 : 0)} {(int)(target.CurrentHp / (double)target.MaxHp * 100)} 0 0 {skill.SkillType - 1}");
                     }
-                    str += $" {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill.SkillType - 1}";
+                    str += $" {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.CurrentHp > 0 ? 1 : 0)} {(int)(target.CurrentHp / (double)target.MaxHp * 100)} {damage} {hitmode} {skill.SkillType - 1}";
                     break;
 
                 case TargetHitType.AOETargetHit:
@@ -940,18 +928,18 @@ namespace OpenNos.GameObject.Battle
                             hitmode = 5;
                             break;
                     }
-                    str += $" {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} {hitmode} {skill.SkillType - 1}";
+                    str += $" {skill?.AttackAnimation ?? 0} {skill?.Effect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.CurrentHp > 0 ? 1 : 0)} {(int)(target.CurrentHp / (double)target.MaxHp * 100)} {damage} {hitmode} {skill.SkillType - 1}";
                     break;
 
                 case TargetHitType.ZoneHit:
-                    str += $" {skill?.AttackAnimation ?? 0} {skillEffect ?? 0} {mapX ?? Entity.GetPos().X} {mapY ?? Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} 5 {skill.SkillType - 1}";
+                    str += $" {skill?.AttackAnimation ?? 0} {skillEffect ?? 0} {mapX ?? Entity.GetPos().X} {mapY ?? Entity.GetPos().Y} {(target.CurrentHp > 0 ? 1 : 0)} {(int)(target.CurrentHp / (double)target.MaxHp * 100)} {damage} 5 {skill.SkillType - 1}";
                     break;
 
                 case TargetHitType.SpecialZoneHit:
-                    str += $" {skill?.AttackAnimation ?? 0} {skillEffect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.GetCurrentHp() > 0 ? 1 : 0)} {(int)(target.GetCurrentHp() / (double)target.GetMaxHp() * 100)} {damage} 0 {skill.SkillType - 1}";
+                    str += $" {skill?.AttackAnimation ?? 0} {skillEffect ?? 0} {Entity.GetPos().X} {Entity.GetPos().Y} {(target.CurrentHp > 0 ? 1 : 0)} {(int)(target.CurrentHp / (double)target.MaxHp * 100)} {damage} 0 {skill.SkillType - 1}";
                     break;
             }
-            Entity.GetMapInstance().Broadcast(str);
+            Entity.MapInstance.Broadcast(str);
 
             bool isBoss = false;
 
@@ -974,7 +962,7 @@ namespace OpenNos.GameObject.Battle
                 isBoss = monster.IsBoss;
                 if (isBoss)
                 {
-                    Entity.GetMapInstance()?.Broadcast(monster.GenerateBoss());
+                    Entity.MapInstance?.Broadcast(monster.GenerateBoss());
                 }
                 if (monster.DamageList.ContainsKey(Entity))
                 {
@@ -991,7 +979,7 @@ namespace OpenNos.GameObject.Battle
                 skill?.BCards.ToList().ForEach(s => s.ApplyBCards(target, Entity));
             }
 
-            if (target.GetCurrentHp() <= 0)
+            if (target.CurrentHp <= 0)
             {
                 target.GenerateDeath(Entity);
             }
@@ -1001,7 +989,7 @@ namespace OpenNos.GameObject.Battle
                 return;
             }
             
-            foreach (IBattleEntity entitiesInRange in Entity.GetMapInstance()?.GetBattleEntitiesInRange(Entity.GetPos(), skill.TargetRange).Where(e => e != target && e.isTargetable(Entity.GetSessionType())))
+            foreach (IBattleEntity entitiesInRange in Entity.MapInstance?.GetBattleEntitiesInRange(Entity.GetPos(), skill.TargetRange).Where(e => e != target && e.isTargetable(Entity.SessionType())))
             {
                 TargetHit2(entitiesInRange, TargetHitType.SingleTargetHit, skill, damage, hitmode, isRange: true);
             }

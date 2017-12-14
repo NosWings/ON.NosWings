@@ -69,7 +69,7 @@ namespace OpenNos.GameObject.Helpers
 
         public void RemovePetBuffs(ClientSession session)
         {
-            session.Character.GetBattleEntity().Buffs.Where(b => MateBuffs.Values.Any(v => v == b.Card.CardId)).ToList().ForEach(b => session.Character.RemoveBuff(b.Card.CardId, true));
+            session.Character.BattleEntity.Buffs.Where(b => MateBuffs.Values.Any(v => v == b.Card.CardId)).ToList().ForEach(b => session.Character.RemoveBuff(b.Card.CardId, true));
             session.SendPacket(session.Character.GeneratePetskill());
         }
 

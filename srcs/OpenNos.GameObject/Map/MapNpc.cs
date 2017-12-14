@@ -39,7 +39,6 @@ namespace OpenNos.GameObject.Map
         public NpcMonster Npc;
         private int _movetime;
         private Random _random;
-        public BattleEntity _battleEntity;
         private const int _maxDistance = 20;
 
         #endregion
@@ -48,15 +47,17 @@ namespace OpenNos.GameObject.Map
 
         #region BattleEntityProperties
 
-        public void AddBuff(Buff.Buff indicator) => GetBattleEntity().AddBuff(indicator);
+        public BattleEntity BattleEntity { get; set; }
 
-        public void RemoveBuff(short cardId) => GetBattleEntity().RemoveBuff(cardId);
+        public void AddBuff(Buff.Buff indicator) => BattleEntity.AddBuff(indicator);
 
-        public int[] GetBuff(CardType type, byte subtype) => GetBattleEntity().GetBuff(type, subtype);
+        public void RemoveBuff(short cardId) => BattleEntity.RemoveBuff(cardId);
 
-        public bool HasBuff(CardType type, byte subtype) => GetBattleEntity().HasBuff(type, subtype);
+        public int[] GetBuff(CardType type, byte subtype) => BattleEntity.GetBuff(type, subtype);
 
-        public ConcurrentBag<Buff.Buff> Buffs => GetBattleEntity().Buffs;
+        public bool HasBuff(CardType type, byte subtype) => BattleEntity.HasBuff(type, subtype);
+
+        public ConcurrentBag<Buff.Buff> Buffs => BattleEntity.Buffs;
 
         #endregion
 
@@ -106,6 +107,8 @@ namespace OpenNos.GameObject.Map
 
         public bool IsAlive { get; set; }
 
+        public int MaxHp => Npc.MaxHP;
+
         #endregion
 
         #region Methods
@@ -120,7 +123,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            if (!Target?.isTargetable(GetSessionType()) ?? true)
+            if (!Target?.isTargetable(SessionType()) ?? true)
             {
                 RemoveTarget();
                 return;
@@ -185,9 +188,8 @@ namespace OpenNos.GameObject.Map
             _random = new Random(MapNpcId);
             Life = null;
             Npc = ServerManager.Instance.GetNpc(NpcVNum);
-            LastEffect = DateTime.Now;
-            LastMove = DateTime.Now;
-            Death = DateTime.Now;
+            LastEffect = LastMove = Death = DateTime.Now;
+            BattleEntity = new BattleEntity(this);
             Npc.Skills.ForEach(s => Skills.Add(s));
             IsHostile = Npc.IsHostile;
             FirstX = MapX;
@@ -215,7 +217,7 @@ namespace OpenNos.GameObject.Map
         public void RunDeathEvent()
         {
             MapInstance.InstanceBag.NpcsKilled++;
-            GetBattleEntity().OnDeathEvents.ToList().ForEach(e =>
+            BattleEntity.OnDeathEvents.ToList().ForEach(e =>
             {
                 if (e.EventActionType == EventActionType.THROWITEMS)
                 {
@@ -224,7 +226,7 @@ namespace OpenNos.GameObject.Map
                 }
                 EventHelper.Instance.RunEvent(e);
             });
-            GetBattleEntity().OnDeathEvents.Clear();
+            BattleEntity.OnDeathEvents.Clear();
         }
 
         public void StartLife()
@@ -380,7 +382,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.isTargetable(GetSessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < Npc.NoticeRange);
+            IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.isTargetable(SessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < Npc.NoticeRange);
             Target = target ?? Target;
         }
 
@@ -430,29 +432,25 @@ namespace OpenNos.GameObject.Map
                 }
                 npcMonsterSkill.LastSkillUse = DateTime.Now;
                 CurrentMp -= npcMonsterSkill.Skill.MpCost;
-                MapInstance.Broadcast($"ct 2 {MapNpcId} {(byte)Target.GetSessionType()} {Target.GetId()} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
+                MapInstance.Broadcast($"ct 2 {MapNpcId} {(byte)Target.SessionType()} {Target.GetId()} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
             }
             LastMove = DateTime.Now;
-            GetBattleEntity().TargetHit(Target, TargetHitType.SingleTargetHit, npcMonsterSkill?.Skill, skillEffect: Npc.BasicSkill);
+            BattleEntity.TargetHit(Target, TargetHitType.SingleTargetHit, npcMonsterSkill?.Skill, skillEffect: Npc.BasicSkill);
         }
 
         public MapCell GetPos() => new MapCell { X = MapX, Y = MapY };
-
-        public BattleEntity GetBattleEntity() => _battleEntity == null ? _battleEntity = new BattleEntity(this) : _battleEntity;
 
         public object GetSession() => this;
 
         public AttackType GetAttackType(Skill skill = null) => (AttackType)Npc.AttackClass;
 
-        public bool isTargetable(SessionType type, bool isPvP = false) => type == SessionType.Monster && IsHostile && IsAlive && CurrentHp > 0;
+        public bool isTargetable(SessionType type, bool isPvP = false) => type == NosSharp.Enums.SessionType.Monster && IsHostile && IsAlive && CurrentHp > 0;
 
         public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = MapX, Y = MapY }, MapInstance.Map.Grid);
 
-        public SessionType GetSessionType() => SessionType.MateAndNpc;
+        public SessionType SessionType() => NosSharp.Enums.SessionType.MateAndNpc;
 
         public long GetId() => MapNpcId;
-
-        public MapInstance GetMapInstance() => MapInstance;
 
         public void GenerateDeath(IBattleEntity killer)
         {
@@ -465,7 +463,7 @@ namespace OpenNos.GameObject.Map
             CurrentMp = 0;
             Death = DateTime.Now;
             LastMove = DateTime.Now.AddMilliseconds(500);
-            GetBattleEntity().Buffs.Clear();
+            BattleEntity.Buffs.Clear();
             Target = null;
             killer?.GenerateRewards(this);
         }
@@ -474,10 +472,6 @@ namespace OpenNos.GameObject.Map
         {
             RemoveTarget();
         }
-
-        public int GetCurrentHp() => CurrentHp;
-
-        public int GetMaxHp() => Npc.MaxHP;
 
         public void GetDamage(int damage, bool canKill = true)
         {

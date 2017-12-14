@@ -41,7 +41,7 @@ namespace OpenNos.GameObject.Buff
                 case BCardType.CardType.Buff:
                     if (ServerManager.Instance.RandomNumber() < FirstData)
                     {
-                        session?.GetBattleEntity().AddBuff(new Buff(SecondData, caster.GetBattleEntity().Level));
+                        session?.BattleEntity.AddBuff(new Buff(SecondData, caster.BattleEntity.Level));
                     }
                     break;
 
@@ -68,20 +68,20 @@ namespace OpenNos.GameObject.Buff
                                 cell.X += (short)ServerManager.Instance.RandomNumber(-3, 3);
                                 summonParameters.Add(new ToSummon((short)SecondData, cell, null, true, (byte)Math.Abs(ThirdData)));
                             }
-                            EventHelper.Instance.RunEvent(new EventContainer(session.GetMapInstance(), EventActionType.SPAWNMONSTERS, summonParameters));
+                            EventHelper.Instance.RunEvent(new EventContainer(session.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                             break;
 
                         case AdditionalTypes.Summons.SummonTrainingDummy:
-                            if (npcMonster != null && session.GetBattleEntity().OnHitEvents.All(s => s?.EventActionType != EventActionType.SPAWNMONSTERS))
+                            if (npcMonster != null && session.BattleEntity.OnHitEvents.All(s => s?.EventActionType != EventActionType.SPAWNMONSTERS))
                             {
                                 summonParameters.Add(new ToSummon((short)SecondData, session.GetPos(), null, true, (byte)Math.Abs(ThirdData)));
-                                session.GetBattleEntity().OnHitEvents.Add(new EventContainer(session.GetMapInstance(), EventActionType.SPAWNMONSTERS, summonParameters));
+                                session.BattleEntity.OnHitEvents.Add(new EventContainer(session.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                             }
                             break;
 
                         case AdditionalTypes.Summons.SummonUponDeathChance:
                         case AdditionalTypes.Summons.SummonUponDeath:
-                            if (npcMonster != null && session.GetBattleEntity().OnDeathEvents.All(s => s?.EventActionType != EventActionType.SPAWNMONSTERS))
+                            if (npcMonster != null && session.BattleEntity.OnDeathEvents.All(s => s?.EventActionType != EventActionType.SPAWNMONSTERS))
                             {
                                 for (int i = 0; i < FirstData; i++)
                                 {
@@ -89,7 +89,7 @@ namespace OpenNos.GameObject.Buff
                                     cell.Y += (short)i;
                                     summonParameters.Add(new ToSummon((short)SecondData, cell, null, true, (byte)Math.Abs(ThirdData)));
                                 }
-                                session.GetBattleEntity().OnDeathEvents.Add(new EventContainer(session.GetMapInstance(), EventActionType.SPAWNMONSTERS, summonParameters));
+                                session.BattleEntity.OnDeathEvents.Add(new EventContainer(session.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
                             }
                             break;
 

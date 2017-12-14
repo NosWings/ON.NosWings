@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.GameObject;
-using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
 using System;
@@ -100,7 +99,7 @@ namespace OpenNos.Handler
                 if (mon != null && mon.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.Range) && mon.CurrentHp > 0)
                 {
                     Session.Character.LastSkillUse = DateTime.Now;
-                    Session.Character.GetBattleEntity().TargetHit(mon, TargetHitType.SpecialZoneHit, ski.Skill);
+                    Session.Character.BattleEntity.TargetHit(mon, TargetHitType.SpecialZoneHit, ski.Skill);
                 }
 
                 Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.Cooldown * 100)).Subscribe(o =>
@@ -307,7 +306,7 @@ namespace OpenNos.Handler
                                             {
                                                 break;
                                             }
-                                            Session.Character.GetBattleEntity().TargetHit(character.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp: true);
+                                            Session.Character.BattleEntity.TargetHit(character.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp: true);
                                             break;
 
                                         case MapInstanceType.IceBreakerInstance:
@@ -331,7 +330,7 @@ namespace OpenNos.Handler
                                             {
                                                 if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
                                                 {
-                                                    Session.Character.GetBattleEntity().TargetHit(character.Character, TargetHitType.AOETargetHit, ski.Skill, isPvp: true);
+                                                    Session.Character.BattleEntity.TargetHit(character.Character, TargetHitType.AOETargetHit, ski.Skill, isPvp: true);
                                                     break;
                                                 }
                                                     Session.SendPacket($"cancel 2 {targetId}");
@@ -346,7 +345,7 @@ namespace OpenNos.Handler
                                     foreach (MapMonster mon in Session.CurrentMapInstance.GetListMonsterInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange)
                                         .Where(s => s.CurrentHp > 0))
                                     {
-                                        Session.Character.GetBattleEntity().TargetHit(mon, TargetHitType.AOETargetHit, ski.Skill, skillinfo?.Skill.Effect ?? ski.Skill.Effect);
+                                        Session.Character.BattleEntity.TargetHit(mon, TargetHitType.AOETargetHit, ski.Skill, skillinfo?.Skill.Effect ?? ski.Skill.Effect);
                                     }
                                 }
                             }
@@ -531,7 +530,7 @@ namespace OpenNos.Handler
                                                 }
                                                 count++;
 
-                                                Session.Character.GetBattleEntity().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHitCombo, ski.Skill, skillCombo: skillCombo, isPvp: true);
+                                                Session.Character.BattleEntity.TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHitCombo, ski.Skill, skillCombo: skillCombo, isPvp: true);
                                             }
                                             if (playerToAttack.Character.Hp <= 0 || count == 0)
                                             {
@@ -559,7 +558,7 @@ namespace OpenNos.Handler
                                                     || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                                     (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                 {
-                                                    Session.Character.GetBattleEntity().TargetHit(playerToAttack.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp: true);
+                                                    Session.Character.BattleEntity.TargetHit(playerToAttack.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp: true);
                                                 }
                                                 else
                                                 {
@@ -587,7 +586,7 @@ namespace OpenNos.Handler
                                                     || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                                     (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId)))
                                                 {
-                                                    Session.Character.GetBattleEntity().TargetHit(character.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp: true);
+                                                    Session.Character.BattleEntity.TargetHit(character.Character, TargetHitType.SingleAOETargetHit, ski.Skill, isPvp: true);
                                                 }
                                             }
                                             if (playerToAttack.Character.Hp <= 0)
@@ -619,7 +618,7 @@ namespace OpenNos.Handler
                                                         || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                                         (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                     {
-                                                        Session.Character.GetBattleEntity().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill, isPvp: true);
+                                                        Session.Character.BattleEntity.TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill, isPvp: true);
                                                     }
                                                     else
                                                     {
@@ -638,7 +637,7 @@ namespace OpenNos.Handler
                                                         || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                                         (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                     {
-                                                        Session.Character.GetBattleEntity().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill, isPvp: true);
+                                                        Session.Character.BattleEntity.TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill, isPvp: true);
                                                     }
                                                     else
                                                     {
@@ -665,7 +664,7 @@ namespace OpenNos.Handler
                                                     || Session.CurrentMapInstance.MapInstanceType != MapInstanceType.TalentArenaMapInstance &&
                                                     (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId)))
                                                 {
-                                                    Session.Character.GetBattleEntity().TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill, isPvp: true);
+                                                    Session.Character.BattleEntity.TargetHit(playerToAttack.Character, TargetHitType.SingleTargetHit, ski.Skill, isPvp: true);
                                                 }
                                                 else
                                                 {
@@ -748,7 +747,7 @@ namespace OpenNos.Handler
                                             {
                                                 foreach (MapMonster mon in monstersInAoeRange)
                                                 {
-                                                    Session.Character.GetBattleEntity().TargetHit(mon, TargetHitType.SingleTargetHitCombo, ski.Skill, skillCombo: skillCombo);
+                                                    Session.Character.BattleEntity.TargetHit(mon, TargetHitType.SingleTargetHitCombo, ski.Skill, skillCombo: skillCombo);
                                                 }
                                             }
                                             else
@@ -767,14 +766,14 @@ namespace OpenNos.Handler
                                                 .ToList();
 
                                             //hit the targetted monster
-                                            Session.Character.GetBattleEntity().TargetHit(monsterToAttack, TargetHitType.SingleAOETargetHit, ski.Skill, characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: true);
+                                            Session.Character.BattleEntity.TargetHit(monsterToAttack, TargetHitType.SingleAOETargetHit, ski.Skill, characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: true);
 
                                             //hit all other monsters
                                             if (monstersInAoeRange != null)
                                             {
                                                 foreach (MapMonster mon in monstersInAoeRange.Where(m => m.MapMonsterId != monsterToAttack.MapMonsterId)) //exclude targetted monster
                                                 {
-                                                    Session.Character.GetBattleEntity().TargetHit(mon, TargetHitType.SingleAOETargetHit, ski.Skill, characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect);
+                                                    Session.Character.BattleEntity.TargetHit(mon, TargetHitType.SingleAOETargetHit, ski.Skill, characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect);
                                                 }
                                             }
                                             else
@@ -801,11 +800,11 @@ namespace OpenNos.Handler
                                             {
                                                 ski.Hit = 0;
                                             }
-                                            Session.Character.GetBattleEntity().TargetHit(monsterToAttack, TargetHitType.SingleTargetHitCombo, ski.Skill, skillCombo: skillCombo);
+                                            Session.Character.BattleEntity.TargetHit(monsterToAttack, TargetHitType.SingleTargetHitCombo, ski.Skill, skillCombo: skillCombo);
                                         }
                                         else
                                         {
-                                            Session.Character.GetBattleEntity().TargetHit(monsterToAttack, TargetHitType.SingleTargetHit, ski.Skill);
+                                            Session.Character.BattleEntity.TargetHit(monsterToAttack, TargetHitType.SingleTargetHit, ski.Skill);
                                         }
                                     }
                                 }
@@ -867,7 +866,7 @@ namespace OpenNos.Handler
                     characterSkill.LastUse = DateTime.Now;
                     Observable.Timer(TimeSpan.FromMilliseconds(characterSkill.Skill.CastTime * 100))
                     .Subscribe(
-                    o =>
+(Action<long>)(                    o =>
                     {
                         Session.Character.LastSkillUse = DateTime.Now;
 
@@ -878,7 +877,7 @@ namespace OpenNos.Handler
                         {
                             foreach (MapMonster mon in monstersInRange.Where(s => s.CurrentHp > 0))
                             {
-                                Session.Character.GetBattleEntity().TargetHit(mon, TargetHitType.ZoneHit, characterSkill.Skill, mapX:x, mapY:y);
+                                Session.Character.BattleEntity.TargetHit(mon, TargetHitType.ZoneHit, characterSkill.Skill, mapX: x, mapY: y);
                             }
                         }
                         foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(x, y, characterSkill.Skill.TargetRange)))
@@ -889,10 +888,10 @@ namespace OpenNos.Handler
                             }
                             if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
                             {
-                                Session.Character.GetBattleEntity().TargetHit(character.Character, TargetHitType.ZoneHit, characterSkill.Skill, mapX: x, mapY: y, isPvp: true);
+                                Session.Character.BattleEntity.TargetHit(character.Character, TargetHitType.ZoneHit, characterSkill.Skill, mapX: x, mapY: y, isPvp: true);
                             }
                         }
-                    });
+                    }));
 
                     Observable.Timer(TimeSpan.FromMilliseconds(characterSkill.Skill.Cooldown * 100)).Subscribe(o =>
                     {

@@ -167,7 +167,7 @@ namespace OpenNos.GameObject.Networking
             // Create a ChatClient and store it in a collection
             _sessions[session.Character.CharacterId] = session;
             _battleEntities[new Tuple<SessionType, long>(SessionType.Character, session.Character.CharacterId)] = session.Character;
-            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities[new Tuple<SessionType, long>(m.GetSessionType(), m.GetId())] = m);
+            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities[new Tuple<SessionType, long>(m.SessionType(), m.GetId())] = m);
 
             if (session.HasCurrentMapInstance)
             {
@@ -188,7 +188,7 @@ namespace OpenNos.GameObject.Networking
                 session.CurrentMapInstance.IsSleeping = true;
             }
             _battleEntities.TryRemove(new Tuple<SessionType, long>(SessionType.Character, session.Character.CharacterId), out IBattleEntity character);
-            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities.TryRemove(new Tuple<SessionType, long>(m.GetSessionType(), m.GetId()), out IBattleEntity mate));
+            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities.TryRemove(new Tuple<SessionType, long>(m.SessionType(), m.GetId()), out IBattleEntity mate));
 
             Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             LastUnregister = DateTime.Now;
