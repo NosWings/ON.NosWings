@@ -1849,7 +1849,7 @@ namespace OpenNos.GameObject.Networking
         private void Act4FlowerProcess()
         {
             // FIND THE REAL VALUES
-            foreach (MapInstance map in Act4Maps.Where(s => (s.Map.MapId == 132 && s.Map.MapId == 133 && s.Npcs.Count(o => o.NpcVNum == 2004 && o.IsOut) < 5) || s.Map.MapId == 134 && s.Npcs.Count(o => o.NpcVNum == 2004 && o.IsOut) < 10))
+            foreach (MapInstance map in Act4Maps.Where(s => s.Map.MapId == 132 || s.Map.MapId == 133 || s.Map.MapId == 134 && s.Npcs.Count(o => o.NpcVNum == 2004 && o.IsOut) < (s.Map.MapId == 134 ? 10 : 5)))
             {
                 // TODO PROPERTY
                 IEnumerable<MapNpc> npcs = map.Npcs.Where(s => s.IsOut);
