@@ -357,7 +357,7 @@ namespace OpenNos.GameObject.Networking
         public void AskRevive(long characterId)
         {
             ClientSession session = GetSessionByCharacterId(characterId);
-            if (session == null || !session.HasSelectedCharacter || session.CurrentMapInstance == null || session.Character.IsAlive)
+            if (session == null || !session.HasSelectedCharacter || session.CurrentMapInstance == null || session.Character.LastDeath.AddSeconds(1) > DateTime.Now)
             {
                 return;
             }
@@ -371,7 +371,6 @@ namespace OpenNos.GameObject.Networking
             session.SendPacket(session.Character.GenerateCond());
             session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
             session.Character.LastDeath = DateTime.Now;
-            session.Character.IsAlive = false;
             switch (session.CurrentMapInstance.MapInstanceType)
             {
                 case MapInstanceType.BaseMapInstance:
@@ -411,7 +410,6 @@ namespace OpenNos.GameObject.Networking
                         if (revive)
                         {
                             Instance.ReviveFirstPosition(session.Character.CharacterId);
-                            session.Character.IsAlive = true;
                         }
                     });
                     break;
@@ -445,7 +443,6 @@ namespace OpenNos.GameObject.Networking
                         if (revive)
                         {
                             Instance.ReviveFirstPosition(session.Character.CharacterId);
-                            session.Character.IsAlive = true;
                         }
                     });
 
@@ -459,7 +456,6 @@ namespace OpenNos.GameObject.Networking
                         {
                             await Task.Delay(5000);
                             Instance.ReviveFirstPosition(session.Character.CharacterId);
-                            session.Character.IsAlive = true;
                         });
                     }
                     else
@@ -490,7 +486,6 @@ namespace OpenNos.GameObject.Networking
                             {
                                 await Task.Delay(20000);
                                 Instance.ReviveFirstPosition(session.Character.CharacterId);
-                                session.Character.IsAlive = true;
                             });
                         }
                         else
@@ -537,14 +532,12 @@ namespace OpenNos.GameObject.Networking
                         if (revive)
                         {
                             Instance.ReviveFirstPosition(session.Character.CharacterId);
-                            session.Character.IsAlive = true;
                         }
                     });
                     break;
 
                 default:
                     Instance.ReviveFirstPosition(session.Character.CharacterId);
-                    session.Character.IsAlive = true;
                     break;
             }
         }

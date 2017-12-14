@@ -12,24 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using NosSharp.Enums;
 using OpenNos.Core;
-using OpenNos.Core.Extensions;
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.GameObject.Buff;
-using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
-using OpenNos.GameObject.Item.Instance;
-using OpenNos.GameObject.Logs.Classes;
-using OpenNos.GameObject.Map;
-using OpenNos.GameObject.Networking;
-using OpenNos.GameObject.Npc;
-using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
-using OpenNos.PathFinder.PathFinder;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -37,7 +26,18 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
+using NosSharp.Enums;
+using OpenNos.Core.Extensions;
+using OpenNos.GameObject.Buff;
+using OpenNos.GameObject.Item.Instance;
 using static NosSharp.Enums.BCardType;
+using OpenNos.GameObject.Logs.Classes;
+using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Npc;
+using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.PathFinder.PathFinder;
+using OpenNos.GameObject.Event;
 
 namespace OpenNos.GameObject
 {
@@ -306,8 +306,6 @@ namespace OpenNos.GameObject
         public bool NoAttack { get; set; }
 
         public bool NoMove { get; set; }
-
-        public bool IsAlive { get; set; }
 
         public short PositionX { get; set; }
 
