@@ -660,7 +660,8 @@ namespace OpenNos.GameObject.Networking
                     }
                 });
                 session.SendPacket(
-                    session.Character.MapInstance.Map.MapId >= 228 && session.Character.MapInstance.Map.MapId <= 238
+                    session.Character.MapInstance.Map.MapId >= 228 && session.Character.MapInstance.Map.MapId <= 238 ||
+                    session.Character.MapInstance.Map.MapId == 2604
                         ? session.Character.GenerateAct6()
                         : session.Character.GenerateAct());
                 session.SendPacket(session.Character.GeneratePinit());
@@ -1952,7 +1953,7 @@ namespace OpenNos.GameObject.Networking
                 Act6Zenas.Percentage = 0;
                 Act6Zenas.IsRaidActive = false;
             }
-            Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.Map.MapId >= 228 && s.CurrentMapInstance?.Map.MapId < 238), sess => sess.SendPacket(sess.Character.GenerateAct6()));
+            Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.Map.MapId >= 228 && s.CurrentMapInstance?.Map.MapId < 238 || s?.CurrentMapInstance?.Map.MapId == 2604), sess => sess.SendPacket(sess.Character.GenerateAct6()));
         }
 
         private void LoadBazaar()

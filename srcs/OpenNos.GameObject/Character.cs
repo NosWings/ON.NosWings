@@ -2768,7 +2768,10 @@ namespace OpenNos.GameObject
                     ServerManager.Instance.Act6Zenas.Percentage++;
                     ServerManager.Instance.Act6Process();
                 }
-                if (monsterToAttack.MapInstance.Map.MapId >= 233 && monsterToAttack.MapInstance.Map.MapId <= 236 && !ServerManager.Instance.Act6Erenia.IsRaidActive)
+                if (monsterToAttack.MapInstance.Map.MapId >= 233 &&
+                    monsterToAttack.MapInstance.Map.MapId <= 236 ||
+                    monsterToAttack.MapInstance.Map.MapId == 2604 &&
+                    !ServerManager.Instance.Act6Erenia.IsRaidActive)
                 {
                     ServerManager.Instance.Act6Erenia.Percentage++;
                     ServerManager.Instance.Act6Process();
