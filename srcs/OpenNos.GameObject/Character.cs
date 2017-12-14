@@ -780,9 +780,9 @@ namespace OpenNos.GameObject
 
         }
 
-        public void ChangeClass(ClassType characterClass)
+        public void ChangeClass(ClassType characterClass, bool isCommand = false)
         {
-            JobLevel = 1;
+            JobLevel = (byte)(isCommand ? JobLevel : 1);
             JobLevelXp = 0;
             Session.SendPacket("npinfo 0");
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());

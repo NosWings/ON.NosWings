@@ -989,7 +989,7 @@ namespace OpenNos.Handler
             if (changeClassPacket != null)
             {
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeClassPacket, Session.IpAddress);
-                Session.Character.ChangeClass(changeClassPacket.ClassType);
+                Session.Character.ChangeClass(changeClassPacket.ClassType, true);
             }
             else
             {
