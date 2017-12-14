@@ -85,7 +85,6 @@ namespace OpenNos.GameObject
         public void RemoveBuff(short cardId, bool removePermaBuff = false) => BattleEntity.RemoveBuff(cardId, removePermaBuff);
 
         public int[] GetBuff(CardType type, byte subtype) => BattleEntity.GetBuff(type, subtype);
-        public DateTime LastUnregister { get; set; }
 
         public bool HasBuff(CardType type, byte subtype) => BattleEntity.HasBuff(type, subtype);
 
@@ -98,6 +97,8 @@ namespace OpenNos.GameObject
         public DateTime LastSkillCombo { get; set; }
 
         public DateTime LastQuest { get; set; }
+
+        public DateTime LastUnregister { get; set; }
 
         public AuthorityType Authority { get; set; }
 
@@ -1341,8 +1342,8 @@ namespace OpenNos.GameObject
                     continue;
                 }
                 Inventory.DeleteById(item.Id);
-                Session.Character.EquipmentBCards.RemoveWhere(o => o.ItemVNum != item.ItemVNum, out ConcurrentBag<BCard> tmp);
-                Session.Character.EquipmentBCards = tmp;
+                BattleEntity.StaticBcards.RemoveWhere(o => o.ItemVNum != item.ItemVNum, out ConcurrentBag<BCard> tmp);
+                BattleEntity.StaticBcards = tmp;
                 Session.SendPacket(item.Type == InventoryType.Wear ? GenerateEquipment() : UserInterfaceHelper.Instance.GenerateInventoryRemove(item.Type, item.Slot));
                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
             }

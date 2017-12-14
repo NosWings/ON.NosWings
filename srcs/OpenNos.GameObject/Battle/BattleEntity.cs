@@ -149,7 +149,8 @@ namespace OpenNos.GameObject.Battle
             {
                 return;
             }
-            Buffs = Buffs.Where(s => !s.Card.CardId.Equals(indicator.Card.CardId));
+            Buffs.RemoveWhere(s => !s.Card.CardId.Equals(indicator.Card.CardId), out ConcurrentBag<Buff.Buff> buffs);
+            Buffs = buffs;
             //TODO: Find a better way to do this
             int randomTime = 0;
             if (Session is Character character)
@@ -751,7 +752,8 @@ namespace OpenNos.GameObject.Battle
                 AddBuff(indicator);
                 return;
             }
-            Buffs = Buffs.Where(s => s.Card.CardId != id);
+            Buffs.RemoveWhere(s => s.Card.CardId != id, out ConcurrentBag<Buff.Buff> buffs);
+            Buffs = buffs;
             if (Session is Character character)
             {
                 if (indicator.StaticBuff)

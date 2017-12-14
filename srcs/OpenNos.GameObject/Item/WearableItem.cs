@@ -232,8 +232,8 @@ namespace OpenNos.GameObject.Item
                         // move from wear to equipment and back
                         session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
-                        session.Character.EquipmentBCards.RemoveWhere(o => o.ItemVNum != currentlyEquippedItem.ItemVNum, out ConcurrentBag<BCard> eqBcard);
-                        session.Character.EquipmentBCards = eqBcard;
+                        session.Character.BattleEntity.StaticBcards.RemoveWhere(o => o.ItemVNum != currentlyEquippedItem.ItemVNum, out ConcurrentBag<BCard> eqBcards);
+                        session.Character.BattleEntity.StaticBcards = eqBcards;
                     }
                     inv.Item.BCards.ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
 
