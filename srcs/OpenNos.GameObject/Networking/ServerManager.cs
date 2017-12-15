@@ -106,7 +106,7 @@ namespace OpenNos.GameObject.Networking
             get { return _instance ?? (_instance = new ServerManager()); }
         }
 
-        public List<ScriptedInstance> Act4Raids { get; set; }
+        public ConcurrentBag<ScriptedInstance> Act4Raids { get; set; }
 
         public MapInstance ArenaInstance { get; private set; }
 
@@ -191,9 +191,9 @@ namespace OpenNos.GameObject.Networking
 
         public List<Card> Cards { get; set; }
 
-        public List<ScriptedInstance> Raids { get; set; }
+        public ConcurrentBag<ScriptedInstance> Raids { get; set; }
 
-        public List<ScriptedInstance> TimeSpaces { get; set; }
+        public ConcurrentBag<ScriptedInstance> TimeSpaces { get; set; }
 
         public List<Group> GroupList { get; set; } = new List<Group>();
 
@@ -2006,7 +2006,7 @@ namespace OpenNos.GameObject.Networking
 
         private void LoadAct6ScriptedInstance()
         {
-            Raids = new List<ScriptedInstance>();
+            Raids = new ConcurrentBag<ScriptedInstance>();
             Parallel.ForEach(Mapinstances, map =>
             {
                 foreach (ScriptedInstanceDTO scriptedInstanceDto in DaoFactory.ScriptedInstanceDao.LoadByMap(map.Value.Map.MapId).ToList())
@@ -2056,9 +2056,9 @@ namespace OpenNos.GameObject.Networking
 
         private void LoadScriptedInstances()
         {
-            Raids = new List<ScriptedInstance>();
-            TimeSpaces = new List<ScriptedInstance>();
-            Act4Raids = new List<ScriptedInstance>();
+            Raids = new ConcurrentBag<ScriptedInstance>();
+            TimeSpaces = new ConcurrentBag<ScriptedInstance>();
+            Act4Raids = new ConcurrentBag<ScriptedInstance>();
             Parallel.ForEach(Mapinstances, map =>
             {
                 foreach (ScriptedInstanceDTO scriptedInstanceDto in DaoFactory.ScriptedInstanceDao.LoadByMap(map.Value.Map.MapId).ToList())
