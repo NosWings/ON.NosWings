@@ -237,6 +237,7 @@
     <Compile Include="Packets\CommandPackets\CreateRaidA4.cs" />
     <Compile Include="Packets\CommandPackets\Act6RaidPacket.cs" />
     <Compile Include="Packets\CommandPackets\MoveCommandPacket.cs" />
+    <Compile Include="Packets\CommandPackets\MuteMapPacket.cs" />
     <Compile Include="Packets\CommandPackets\PetExpPacket.cs" />
     <Compile Include="Packets\CommandPackets\ShutdownAllPacket.cs" />
     <Compile Include="Packets\CommandPackets\CharacterEditPacket.cs" />

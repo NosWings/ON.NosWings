@@ -110,6 +110,8 @@ namespace OpenNos.GameObject.Map
 
         public InstanceBag InstanceBag { get; set; }
 
+        public bool IsMute { get; set; }
+
         public bool IsDancing { get; set; }
 
         public bool IsPvp { get; set; }

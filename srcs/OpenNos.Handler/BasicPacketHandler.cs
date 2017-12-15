@@ -962,7 +962,7 @@ namespace OpenNos.Handler
         /// <param name="sayPacket"></param>
         public void Say(SayPacket sayPacket)
         {
-            if (string.IsNullOrEmpty(sayPacket.Message))
+            if (string.IsNullOrEmpty(sayPacket.Message) || Session.CurrentMapInstance == null || Session.CurrentMapInstance.IsMute && Session.Character?.Authority < AuthorityType.GameMaster)
             {
                 return;
             }

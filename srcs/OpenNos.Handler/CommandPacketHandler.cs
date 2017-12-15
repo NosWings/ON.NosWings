@@ -2134,6 +2134,19 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        ///     $MuteMap Command
+        /// </summary>
+        /// <param name="muteMapPacket"></param>
+        public void MuteMap(MuteMapPacket muteMapPacket)
+        {
+            if (Session.CurrentMapInstance == null)
+            {
+                return;
+            }
+            Session.CurrentMapInstance.IsMute = !Session.CurrentMapInstance.IsMute;
+        }
+
+        /// <summary>
         ///     $Packet Command
         /// </summary>
         /// <param name="packetCallbackPacket"></param>
