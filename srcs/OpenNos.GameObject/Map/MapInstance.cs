@@ -321,7 +321,7 @@ namespace OpenNos.GameObject.Map
         // TODO: Fix, Seems glitchy.
         public int GetNextMonsterId()
         {
-            int nextId = _mapMonsterIds.Any() ? _mapMonsterIds.Last() + 1 : 1;
+            int nextId = _mapMonsterIds.Any() ? _mapMonsterIds.LastOrDefault() + 1 : 1;
             _mapMonsterIds.Add(nextId);
             return nextId;
         }
