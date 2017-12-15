@@ -390,6 +390,7 @@ namespace OpenNos.Handler
                                                         {
                                                             return;
                                                         }
+                                                        Session.Character.IncrementQuests(QuestType.Collect1, vnum);
                                                         Session.CurrentMapInstance.Broadcast(npc.GenerateOut());
                                                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
                                                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 11));
@@ -412,6 +413,7 @@ namespace OpenNos.Handler
                                                                 string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
                                                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name),
                                                                 11));
+                                                            Session.Character.IncrementQuests(QuestType.Collect1, vnum);
                                                         }
                                                         else
                                                         {
