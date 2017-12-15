@@ -329,7 +329,7 @@ namespace OpenNos.GameObject.Map
         // TODO: Fix, Seems glitchy.
         private int GetNextNpcId()
         {
-            int nextId = _mapNpcIds.Any() ? _mapNpcIds.Last() + 1 : 1;
+            int nextId = _mapNpcIds.Any() ? _mapNpcIds.LastOrDefault() + 1 : 1;
             _mapNpcIds.Add(nextId);
             return nextId;
         }
