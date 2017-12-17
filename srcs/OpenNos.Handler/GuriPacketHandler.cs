@@ -383,13 +383,15 @@ namespace OpenNos.Handler
                                                 DropDTO drop = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum);
                                                 if (drop != null)
                                                 {
+                                                    short vnum = drop.ItemVNum;
                                                     if (npc.NpcVNum == 2004 && npc.IsOut == false)
                                                     {
-                                                        ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(drop.ItemVNum).FirstOrDefault();
+                                                        ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(vnum).FirstOrDefault();
                                                         if (newInv == null)
                                                         {
                                                             return;
                                                         }
+                                                        Session.Character.IncrementQuests(QuestType.Collect1, drop.ItemVNum);
                                                         Session.CurrentMapInstance.Broadcast(npc.GenerateOut());
                                                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
                                                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 11));
@@ -398,7 +400,6 @@ namespace OpenNos.Handler
                                                     int dropChance = drop.DropChance;
                                                     if (randomAmount <= (double) dropChance * rateDrop / 5000.000)
                                                     {
-                                                        short vnum = drop.ItemVNum;
                                                         ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(vnum).FirstOrDefault();
                                                         Session.Character.LastMapObject = DateTime.Now;
                                                         Session.Character.TimesUsed++;
@@ -412,6 +413,7 @@ namespace OpenNos.Handler
                                                                 string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
                                                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name),
                                                                 11));
+                                                            Session.Character.IncrementQuests(QuestType.Collect1, vnum);
                                                         }
                                                         else
                                                         {

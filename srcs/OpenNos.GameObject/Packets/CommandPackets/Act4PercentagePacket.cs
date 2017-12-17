@@ -16,7 +16,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
 
         public override string ToString()
         {
-            return "Act4Connect Faction Percent";
+            return "$Act4Percent Faction Percent";
         }
 
         #endregion

@@ -28,8 +28,6 @@ namespace OpenNos.Data
 
         public bool IsDisabled { get; set; }
 
-        public bool IsHostile { get; set; }
-
         public bool IsMoving { get; set; }
 
         public bool IsSitting { get; set; }

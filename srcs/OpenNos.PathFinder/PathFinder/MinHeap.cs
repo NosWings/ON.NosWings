@@ -6,7 +6,7 @@ namespace OpenNos.PathFinder.PathFinder
     {
         #region Members
 
-        private readonly List<Node> array = new List<Node>();
+        private readonly List<Node> _array = new List<Node>();
 
         #endregion
 
@@ -16,7 +16,7 @@ namespace OpenNos.PathFinder.PathFinder
         {
             get
             {
-                return array.Count;
+                return _array.Count;
             }
         }
 
@@ -26,19 +26,19 @@ namespace OpenNos.PathFinder.PathFinder
 
         public Node Pop()
         {
-            Node ret = array[0];
-            array[0] = array[array.Count - 1];
-            array.RemoveAt(array.Count - 1);
+            Node ret = _array[0];
+            _array[0] = _array[_array.Count - 1];
+            _array.RemoveAt(_array.Count - 1);
 
             int c = 0;
-            while (c < array.Count)
+            while (c < _array.Count)
             {
                 int min = c;
-                if ((2 * c) + 1 < array.Count && array[(2 * c) + 1].CompareTo(array[min]) == -1)
+                if ((2 * c) + 1 < _array.Count && _array[(2 * c) + 1].CompareTo(_array[min]) == -1)
                 {
                     min = (2 * c) + 1;
                 }
-                if ((2 * c) + 2 < array.Count && array[(2 * c) + 2].CompareTo(array[min]) == -1)
+                if ((2 * c) + 2 < _array.Count && _array[(2 * c) + 2].CompareTo(_array[min]) == -1)
                 {
                     min = (2 * c) + 2;
                 }
@@ -49,9 +49,9 @@ namespace OpenNos.PathFinder.PathFinder
                 }
                 else
                 {
-                    Node tmp = array[c];
-                    array[c] = array[min];
-                    array[min] = tmp;
+                    Node tmp = _array[c];
+                    _array[c] = _array[min];
+                    _array[min] = tmp;
                     c = min;
                 }
             }
@@ -61,14 +61,14 @@ namespace OpenNos.PathFinder.PathFinder
 
         public void Push(Node element)
         {
-            array.Add(element);
-            int c = array.Count - 1;
+            _array.Add(element);
+            int c = _array.Count - 1;
             int parent = (c - 1) >> 1;
-            while (c > 0 && array[c].CompareTo(array[parent]) < 0)
+            while (c > 0 && _array[c].CompareTo(_array[parent]) < 0)
             {
-                Node tmp = array[c];
-                array[c] = array[parent];
-                array[parent] = tmp;
+                Node tmp = _array[c];
+                _array[c] = _array[parent];
+                _array[parent] = tmp;
                 c = parent;
                 parent = (c - 1) >> 1;
             }

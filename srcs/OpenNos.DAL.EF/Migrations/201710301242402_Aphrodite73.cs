@@ -6,14 +6,15 @@ namespace OpenNos.DAL.EF.Migrations
     {
         public override void Up()
         {
-            DropColumn("dbo.Character", "IsPartnerAutoRelive");
-            DropColumn("dbo.Character", "IsPetAutoRelive");
+            AddColumn("dbo.Character", "IsPetAutoRelive", c => c.Boolean(nullable: false));
+            AddColumn("dbo.Character", "IsPartnerAutoRelive", c => c.Boolean(nullable: false));
+            
         }
         
         public override void Down()
         {
-            AddColumn("dbo.Character", "IsPetAutoRelive", c => c.Boolean(nullable: false));
-            AddColumn("dbo.Character", "IsPartnerAutoRelive", c => c.Boolean(nullable: false));
+            DropColumn("dbo.Character", "IsPartnerAutoRelive");
+            DropColumn("dbo.Character", "IsPetAutoRelive");
         }
     }
 }

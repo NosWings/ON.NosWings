@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using CloneExtensions;
 using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
@@ -208,16 +209,21 @@ namespace OpenNos.Handler
         [Packet("exc_list")]
         public void ExchangeList(string packet)
         {
+            if (packet.Length < 4)
+            {
+                return;
+            }
             string[] packetsplit = packet.Split(' ');
             if (!long.TryParse(packetsplit[2], out long gold))
             {
                 return;
             }
 
-            /*if (!long.TryParse(packetsplit[3], out long bankGold))
+            if (!long.TryParse(packetsplit[3], out long bankGold))
             {
                 return;
-            }*/
+            }
+
             byte[] type = new byte[10], qty = new byte[10];
             short[] slot = new short[10];
             string packetList = string.Empty;
@@ -234,7 +240,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            for (int j = 6, i = 0; j <= packetsplit.Length && i < 10; j += 3, i++)
+            for (int j = 7, i = 0; j <= packetsplit.Length && i < 10; j += 3, i++)
             {
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
@@ -278,9 +284,8 @@ namespace OpenNos.Handler
                 }
             }
             Session.Character.ExchangeInfo.Gold = gold;
-            //Session.Character.ExchangeInfo.BankGold = bankGold;
-            byte bankGold = 0; // Temporaire
-            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
+            Session.Character.ExchangeInfo.BankGold = bankGold;
+            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {bankGold} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
             Session.Character.ExchangeInfo.Validate = true;
         }
 

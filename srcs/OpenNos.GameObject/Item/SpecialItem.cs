@@ -306,6 +306,22 @@ namespace OpenNos.GameObject.Item
                     session.CurrentMapInstance?.Broadcast(partner.GenerateCMode(partner.Skin));
                     break;
 
+                //suction Funnel (Quest Item / QuestId = 1724)
+                case 400:
+                    if (session.Character == null || session.Character.Quests.All(q => q.QuestId != 1724))
+                    {
+                        break;
+                    }
+                    MapMonster kenko = session.CurrentMapInstance?.Monsters.FirstOrDefault(m => m.MapMonsterId == session.Character.LastMonsterId && m.MonsterVNum == 146);
+                    if (kenko == null)
+                    {
+                        break;
+                    }
+                    kenko.KillMonster();
+                    session.Character.Inventory.AddNewToInventory(1174); // Kenko Bead
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    break;
+
                 //speed booster
                 case 998:
                     if (!session.Character.IsVehicled || session.Character.Buff.Any(s => s.Card.CardId == 336))
