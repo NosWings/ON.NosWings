@@ -423,9 +423,14 @@ namespace OpenNos.GameObject.Npc
                     }
                     if (session.Character?.Family?.LandOfDeath == null)
                     {
-                        session.Character.Family.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
+                        session.Character.Family.LandOfDeath =
+                            ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance,
+                                new InstanceBag());
                     }
-                    ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
+                    if (session.Character?.Family?.LandOfDeath != null)
+                    {
+                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
+                    }
                     break;
 
                 case 301:
