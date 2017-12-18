@@ -28,6 +28,7 @@ using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ServerPackets;
+using OpenNos.PathFinder;
 using OpenNos.PathFinder.PathFinder;
 
 namespace OpenNos.GameObject.Map
