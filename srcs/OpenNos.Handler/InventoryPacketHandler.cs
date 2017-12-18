@@ -209,12 +209,12 @@ namespace OpenNos.Handler
         [Packet("exc_list")]
         public void ExchangeList(string packet)
         {
-            if (packet.Length < 4)
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length < 4)
             {
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("UPDATE_CLIENT")));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo("Update your Client & Download the new launcher"));
                 return;
             }
-            string[] packetsplit = packet.Split(' ');
             if (!long.TryParse(packetsplit[2], out long gold))
             {
                 return;
