@@ -4471,6 +4471,15 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Please Update your client and download the new Launcher..
+        /// </summary>
+        internal static string UPDATE_CLIENT {
+            get {
+                return ResourceManager.GetString("UPDATE_CLIENT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à {0}.
         /// </summary>
         internal static string UPDATE_ERROR {

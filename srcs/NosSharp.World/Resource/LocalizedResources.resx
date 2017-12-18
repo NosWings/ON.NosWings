@@ -1708,4 +1708,7 @@
   <data name="ACT4_PVP_KILL" xml:space="preserve">
     <value>{1} Killed a guardian of {0}.</value>
   </data>
+  <data name="UPDATE_CLIENT" xml:space="preserve">
+    <value>Please Update your client and download the new Launcher.</value>
+  </data>
 </root>

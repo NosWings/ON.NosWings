@@ -209,8 +209,9 @@ namespace OpenNos.Handler
         [Packet("exc_list")]
         public void ExchangeList(string packet)
         {
-            if (packet.Length < 3)
+            if (packet.Length < 4)
             {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("UPDATE_CLIENT")));
                 return;
             }
             string[] packetsplit = packet.Split(' ');
@@ -219,10 +220,10 @@ namespace OpenNos.Handler
                 return;
             }
 
-            /*if (!long.TryParse(packetsplit[3], out long bankGold))
+            if (!long.TryParse(packetsplit[3], out long bankGold))
             {
                 return;
-            }*/
+            }
 
             byte[] type = new byte[10], qty = new byte[10];
             short[] slot = new short[10];
@@ -284,8 +285,8 @@ namespace OpenNos.Handler
                 }
             }
             Session.Character.ExchangeInfo.Gold = gold;
-            //Session.Character.ExchangeInfo.BankGold = bankGold;
-            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
+            Session.Character.ExchangeInfo.BankGold = bankGold;
+            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {bankGold} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
             Session.Character.ExchangeInfo.Validate = true;
         }
 
