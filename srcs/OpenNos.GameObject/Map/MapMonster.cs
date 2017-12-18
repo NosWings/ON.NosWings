@@ -544,6 +544,7 @@ namespace OpenNos.GameObject.Map
 
         public void GenerateRewards(IBattleEntity target)
         {
+            DamageList.Remove(target);
             RemoveTarget();
         }
 
