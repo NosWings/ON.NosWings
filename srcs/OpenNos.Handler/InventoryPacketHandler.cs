@@ -1985,6 +1985,7 @@ namespace OpenNos.Handler
             });
             Session.SendPacket(Session.Character.GenerateSki());
             Session.SendPackets(Session.Character.GenerateQuicklist());
+            Session.Character.LoadPassive();
         }
 
         /// <summary>
