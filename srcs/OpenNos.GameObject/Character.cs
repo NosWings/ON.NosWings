@@ -38,7 +38,6 @@ using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.PathFinder.PathFinder;
 using OpenNos.GameObject.Event;
-using OpenNos.PathFinder;
 
 namespace OpenNos.GameObject
 {
