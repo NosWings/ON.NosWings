@@ -1400,7 +1400,7 @@ namespace OpenNos.Handler
         /// <param name="walkPacket"></param>
         public void Walk(WalkPacket walkPacket)
         {
-            if (Session.Character.NoMove)
+            if (Session.Character.HasBuff(BCardType.CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
             {
                 return;
             }

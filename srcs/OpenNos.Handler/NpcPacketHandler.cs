@@ -128,7 +128,7 @@ namespace OpenNos.Handler
                         MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)buyPacket.OwnerId));
                         if (npc != null)
                         {
-                            int dist = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = npc.MapX, Y = npc.MapY });
+                            int dist = Map.GetDistance(Session.Character.GetPos(), npc.GetPos());
                             if (npc.Shop == null || dist > 5)
                             {
                                 return;
@@ -368,7 +368,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (Session.CurrentMapInstance.Portals.Any(por => Session.Character.PositionX < por.SourceX + 6 && Session.Character.PositionX > por.SourceX - 6 && Session.Character.PositionY < por.SourceY + 6 && Session.Character.PositionY > por.SourceY - 6))
+            if (Session.CurrentMapInstance.Portals.Any(por => Math.Abs(Session.Character.PositionX - por.SourceX) < 6 && Math.Abs(Session.Character.PositionY - por.SourceY) < 6 ))
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"), 0));
                 return;
@@ -527,15 +527,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                int distance = Map.GetDistance(new MapCell
-                {
-                    X = Session.Character.PositionX,
-                    Y = Session.Character.PositionY
-                }, new MapCell
-                {
-                    X = npc.MapX,
-                    Y = npc.MapY
-                });
+                int distance = Map.GetDistance(Session.Character.GetPos(), npc.GetPos());
                 if (npc.MapInstance != Session.CurrentMapInstance || distance > 5)
                 {
                     return;
@@ -557,15 +549,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                int distance = Map.GetDistance(new MapCell
-                {
-                    X = Session.Character.PositionX,
-                    Y = Session.Character.PositionY
-                }, new MapCell
-                {
-                    X = npc.MapX,
-                    Y = npc.MapY
-                });
+                int distance = Map.GetDistance(Session.Character.GetPos(), npc.GetPos());
                 if (npc.MapInstance != Session.CurrentMapInstance || distance > 5)
                 {
                     return;
@@ -621,21 +605,13 @@ namespace OpenNos.Handler
                 {
                     continue;
                 }
-                if (!int.TryParse(packetsplit[i], out int petId))
-                {
-                    return;
-                }
-                if (!short.TryParse(packetsplit[i + 1], out short positionX))
-                {
-                    return;
-                }
-                if (!short.TryParse(packetsplit[i + 2], out short positionY))
+                if (!int.TryParse(packetsplit[i], out int petId) || !short.TryParse(packetsplit[i + 1], out short positionX) || !short.TryParse(packetsplit[i + 2], out short positionY))
                 {
                     return;
                 }
 
                 Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == petId);
-                if (mate == null)
+                if (mate == null || mate.HasBuff(BCardType.CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
                 {
                     continue;
                 }
