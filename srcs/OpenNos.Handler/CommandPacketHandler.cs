@@ -665,18 +665,14 @@ namespace OpenNos.Handler
                     MapX = Session.Character.PositionX,
                     MapId = Session.Character.MapInstance.Map.MapId,
                     Position = (byte)Session.Character.Direction,
-                    IsMoving = addMonsterPacket.IsMoving,
-                    MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId()
+                    IsMoving = addMonsterPacket.IsMoving
                 };
-                if (!DaoFactory.MapMonsterDao.DoesMonsterExist(monst.MapMonsterId))
+                DaoFactory.MapMonsterDao.Insert(monst);
+                if (DaoFactory.MapMonsterDao.LoadById(monst.MapMonsterId) is MapMonster monster)
                 {
-                    DaoFactory.MapMonsterDao.Insert(monst);
-                    if (DaoFactory.MapMonsterDao.LoadById(monst.MapMonsterId) is MapMonster monster)
-                    {
-                        monster.Initialize(Session.CurrentMapInstance);
-                        Session.CurrentMapInstance.AddMonster(monster);
-                        Session.CurrentMapInstance?.Broadcast(monster.GenerateIn());
-                    }
+                    monster.Initialize(Session.CurrentMapInstance);
+                    Session.CurrentMapInstance.AddMonster(monster);
+                    Session.CurrentMapInstance?.Broadcast(monster.GenerateIn());
                 }
 
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, addMonsterPacket, Session.IpAddress);

@@ -1879,12 +1879,16 @@ namespace OpenNos.GameObject
                     {
                         if (d.Value[1] == monsterToAttack.MonsterVNum)
                         {
+                            if (qst.Quest.SpecialData == null)
+                            {
+                                qst.Quest.SpecialData = 100;
+                            }
                             droplist.Add(new DropDTO()
                             {
                                 ItemVNum = (short)d.Value[0],
                                 Amount = 1,
                                 MonsterVNum = monsterToAttack.MonsterVNum,
-                                DropChance = (qst.Quest.SpecialData ?? 100) * ServerManager.Instance.QuestDropRate
+                                DropChance = (int) (qst.Quest.SpecialData * 10 * ServerManager.Instance.QuestDropRate) // Approx
                             });
                         }
                     });

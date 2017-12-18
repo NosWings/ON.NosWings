@@ -1420,7 +1420,7 @@ namespace OpenNos.Handler
             }
             if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(5) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
             {
-                if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                if (Session.Character.MapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance)
                 {
                     Session.Character.MapX = walkPacket.XCoordinate;
                     Session.Character.MapY = walkPacket.YCoordinate;
