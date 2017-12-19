@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace NosSharp.Mediator.BodyValues
+﻿namespace NosSharp.Web.BodyValues
 {
     public class AccountBody
     {

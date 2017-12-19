@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace NosSharp.Mediator
+namespace NosSharp.Web
 {
     public class Program
     {

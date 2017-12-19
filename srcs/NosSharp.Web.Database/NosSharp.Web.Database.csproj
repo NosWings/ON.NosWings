@@ -47,7 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Context\NosSharpWebContext.cs" />
+    <Compile Include="Entities\News.cs" />
+    <Compile Include="Entities\ShopPack.cs" />
+    <Compile Include="Entities\ShopPackItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

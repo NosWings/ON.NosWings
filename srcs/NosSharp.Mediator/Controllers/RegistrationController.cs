@@ -1,12 +1,11 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NosSharp.Enums;
-using NosSharp.Mediator.BodyValues;
+using NosSharp.Web.BodyValues;
 using OpenNos.Data;
 using OpenNos.DAL;
 
-namespace NosSharp.Mediator.Controllers
+namespace NosSharp.Web.Controllers
 {
     [Produces("application/json")]
     [Route("register")]
