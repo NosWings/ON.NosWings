@@ -146,11 +146,16 @@ namespace NosSharp.Parser
                 questRewardStream.Close();
             }
 
-            QuestDTO quest = new QuestDTO();
-
+            
+            // Final List
             List<QuestDTO> quests = new List<QuestDTO>();
             List<QuestRewardDTO> rewards = new List<QuestRewardDTO>();
             List<QuestObjectiveDTO> questObjectives = new List<QuestObjectiveDTO>();
+
+            // Current
+            QuestDTO quest = new QuestDTO();
+            List<QuestRewardDTO> currentRewards = new List<QuestRewardDTO>();
+            List<QuestObjectiveDTO> currentObjectives = new List<QuestObjectiveDTO>();
 
             byte objectiveIndex = 0;
             using (StreamReader questStream = new StreamReader(fileQuestDat, Encoding.GetEncoding(1252)))
@@ -170,6 +175,8 @@ namespace NosSharp.Parser
                                     InfoId = int.Parse(currentLine[1])
                                 };
                                 objectiveIndex = 0;
+                                currentRewards.Clear();
+                                currentObjectives.Clear();
                                 break;
 
                             case "LINK":
@@ -341,7 +348,7 @@ namespace NosSharp.Parser
                                         break;
 
                                 }
-                                questObjectives.Add(new QuestObjectiveDTO()
+                                currentObjectives.Add(new QuestObjectiveDTO()
                                 {
                                     Data = data,
                                     Objective = objective ?? 1,
@@ -359,7 +366,7 @@ namespace NosSharp.Parser
                                         continue;
                                     }
                                     QuestRewardDTO currentReward = dictionaryRewards[long.Parse(currentLine[a])];
-                                    rewards.Add(new QuestRewardDTO()
+                                    currentRewards.Add(new QuestRewardDTO()
                                     {
                                         RewardType = currentReward.RewardType,
                                         Data = currentReward.Data,
@@ -372,6 +379,8 @@ namespace NosSharp.Parser
                             case "END":
                                 if (DaoFactory.QuestDao.LoadById(quest.QuestId) == null)
                                 {
+                                    questObjectives.AddRange(currentObjectives);
+                                    rewards.AddRange(currentRewards);
                                     quests.Add(quest);
                                     qstCounter++;
                                 }
@@ -381,8 +390,10 @@ namespace NosSharp.Parser
                 }
                 DaoFactory.QuestDao.Insert(quests);
                 DaoFactory.QuestRewardDao.Insert(rewards);
+                DaoFactory.QuestObjectiveDao.Insert(questObjectives);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("QUEST_PARSED"), qstCounter));
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("REWARD_PARSED"), rewards.Count));
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("QUEST_REWARD_PARSED"), rewards.Count));
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("QUEST_OBJECTIVE_PARSED"), questObjectives.Count));
 
                 questStream.Close();
             }

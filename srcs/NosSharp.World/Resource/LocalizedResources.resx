@@ -1711,4 +1711,13 @@
   <data name="UPDATE_CLIENT" xml:space="preserve">
     <value>Please Update your client and download the new Launcher.</value>
   </data>
+  <data name="QUEST_OBJECTIVE_PARSED" xml:space="preserve">
+    <value>{0} quest objectives parsed.</value>
+  </data>
+  <data name="QUEST_PARSED" xml:space="preserve">
+    <value>{0} quest parsed.</value>
+  </data>
+  <data name="QUEST_REWARD_PARSED" xml:space="preserve">
+    <value>{0} quest rewards parsed.</value>
+  </data>
 </root>

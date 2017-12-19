@@ -3535,6 +3535,33 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} quest objectives parsed..
+        /// </summary>
+        internal static string QUEST_OBJECTIVE_PARSED {
+            get {
+                return ResourceManager.GetString("QUEST_OBJECTIVE_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} quest parsed..
+        /// </summary>
+        internal static string QUEST_PARSED {
+            get {
+                return ResourceManager.GetString("QUEST_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} quest rewards parsed..
+        /// </summary>
+        internal static string QUEST_REWARD_PARSED {
+            get {
+                return ResourceManager.GetString("QUEST_REWARD_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à {0} Quests loaded!.
         /// </summary>
         internal static string QUESTS_LOADED {
