@@ -264,7 +264,7 @@ namespace OpenNos.GameObject.Buff
                                                 int capturerate = 100 - (monster.CurrentHp / monster.Monster.MaxHP + 1) / 2;
                                                 if (ServerManager.Instance.RandomNumber() <= capturerate)
                                                 {
-                                                    if (character.Quests.Any(q => q.Quest.QuestType == (int) QuestType.Capture1 && q.Data.Any(d => d.Value[0] == monster.MonsterVNum)))
+                                                    if (character.Quests.Any(q => q.Quest.QuestType == (int) QuestType.Capture1 && q.Quest.QuestObjectives.Any(d => d.Data == monster.MonsterVNum)))
                                                     {
                                                         character.IncrementQuests(QuestType.Capture1, monster.MonsterVNum);
                                                         return;

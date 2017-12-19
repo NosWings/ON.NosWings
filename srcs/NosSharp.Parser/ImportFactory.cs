@@ -73,7 +73,7 @@ namespace NosSharp.Parser
             string fileQuestDat = $"{_folder}\\quest.dat";
             string fileRewardsDat = $"{_folder}\\qstprize.dat";
             int qstCounter = 0;
-            List<QuestDTO> quests = new List<QuestDTO>();
+
             Dictionary<long, QuestRewardDTO> dictionaryRewards = new Dictionary<long, QuestRewardDTO>();
             QuestRewardDTO reward = new QuestRewardDTO();
             string line;
@@ -147,9 +147,12 @@ namespace NosSharp.Parser
             }
 
             QuestDTO quest = new QuestDTO();
+
+            List<QuestDTO> quests = new List<QuestDTO>();
             List<QuestRewardDTO> rewards = new List<QuestRewardDTO>();
+            List<QuestObjectiveDTO> questObjectives = new List<QuestObjectiveDTO>();
 
-
+            byte objectiveIndex = 0;
             using (StreamReader questStream = new StreamReader(fileQuestDat, Encoding.GetEncoding(1252)))
             {
                 while ((line = questStream.ReadLine()) != null)
@@ -166,6 +169,7 @@ namespace NosSharp.Parser
                                     QuestType = int.Parse(currentLine[2]),
                                     InfoId = int.Parse(currentLine[1])
                                 };
+                                objectiveIndex = 0;
                                 break;
 
                             case "LINK":
@@ -249,6 +253,7 @@ namespace NosSharp.Parser
                                 {
                                     return;
                                 }
+                                objectiveIndex++;
                                 int? data = null, objective = null, specialData = null, secondSpecialData = null;
                                 switch ((QuestType)quest.QuestType)
                                 {
@@ -336,45 +341,14 @@ namespace NosSharp.Parser
                                         break;
 
                                 }
-                                if (specialData < 0)
+                                questObjectives.Add(new QuestObjectiveDTO()
                                 {
-                                    specialData = null;
-                                }
-                                if (secondSpecialData < 0)
-                                {
-                                    secondSpecialData = null;
-                                }
-                                if (quest.FirstData == 0)
-                                {
-                                    quest.FirstData = data ?? 0;
-                                    quest.FirstObjective = objective ?? 1;
-                                    quest.FirstSpecialData = specialData;
-                                    quest.SpecialData = secondSpecialData;
-                                }
-                                else if (quest.SecondData == null)
-                                {
-                                    quest.SecondData = data;
-                                    quest.SecondObjective = objective;
-                                    quest.SecondSpecialData = specialData;
-                                }
-                                else if (quest.ThirdData == null)
-                                {
-                                    quest.ThirdData = data;
-                                    quest.ThirdObjective = objective;
-                                    quest.ThirdSpecialData = specialData;
-                                }
-                                else if (quest.FourthData == null)
-                                {
-                                    quest.FourthData = data;
-                                    quest.FourthObjective = objective;
-                                    quest.FourthSpecialData = specialData;
-                                }
-                                else if (quest.FifthData == null)
-                                {
-                                    quest.FifthData = data;
-                                    quest.FifthObjective = objective;
-                                    quest.FifthSpecialData = specialData;
-                                }
+                                    Data = data,
+                                    Objective = objective ?? 1,
+                                    SpecialData = specialData < 0 ? null : specialData,
+                                    DropRate = secondSpecialData < 0 ? null : specialData,
+                                    ObjectiveIndex = objectiveIndex
+                                });
                                 break;
 
                             case "PRIZE":
@@ -384,9 +358,14 @@ namespace NosSharp.Parser
                                     {
                                         continue;
                                     }
-                                    QuestRewardDTO currentReward = dictionaryRewards[long.Parse(currentLine[a])].GetClone();
-                                    currentReward.QuestId = quest.QuestId;
-                                    rewards.Add(currentReward);
+                                    QuestRewardDTO currentReward = dictionaryRewards[long.Parse(currentLine[a])];
+                                    rewards.Add(new QuestRewardDTO()
+                                    {
+                                        RewardType = currentReward.RewardType,
+                                        Data = currentReward.Data,
+                                        Amount = currentReward.Amount,
+                                        QuestId = quest.QuestId
+                                    });
                                 }
                                 break;
 

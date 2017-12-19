@@ -508,7 +508,7 @@ namespace OpenNos.GameObject
                     Timestamp = DateTime.Now
                 });
             }
-            if (characterQuest.Quest.QuestType == (int)QuestType.TimesSpace && ServerManager.Instance.TimeSpaces.All(t => t?.LevelMinimum != characterQuest.Quest.FirstData)
+            if (characterQuest.Quest.QuestType == (int)QuestType.TimesSpace && ServerManager.Instance.TimeSpaces.All(t => t.LevelMinimum != (characterQuest.Quest.QuestObjectives.FirstOrDefault()?.Data ?? -1))
                 || characterQuest.Quest.QuestType == (int)QuestType.Product || characterQuest.Quest.QuestType == (int)QuestType.Collect3
                 || characterQuest.Quest.QuestType == (int)QuestType.TransmitGold || characterQuest.Quest.QuestType == (int)QuestType.TsPoint || characterQuest.Quest.QuestType == (int)QuestType.NumberOfKill
                 || characterQuest.Quest.QuestType == (int)QuestType.TargetReput || characterQuest.Quest.QuestType == (int)QuestType.Inspect || characterQuest.Quest.QuestType == (int)QuestType.Needed
@@ -564,7 +564,7 @@ namespace OpenNos.GameObject
                     ? (short) 5
                     : (qst.Quest.QuestType == (byte) QuestType.WinRaid ? b++ : a++);
             });
-            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.{quest.FourthObjective}.{quest.Quest.FourthObjective ?? 0}.{quest.FifthObjective}.{quest.Quest.FifthObjective ?? 0}.{(quest.QuestId == newQuestId ? 1 : 0)}")}";
+            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.Quest}")}";
         }
 
         public void IncrementQuests(QuestType type, int firstData = 0, int secondData = 0, int thirdData = 0)
@@ -581,20 +581,21 @@ namespace OpenNos.GameObject
                     case QuestType.Collect3:
                     case QuestType.Collect4:
                     case QuestType.Hunt:
-                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => IncrementObjective(quest, d.Key));
+                        quest.Quest.QuestObjectives.Where(o => o.Data == firstData).ToList().ForEach(d => IncrementObjective(quest, d.ObjectiveIndex));
                         break;
 
                     case QuestType.Product:
-                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => IncrementObjective(quest, d.Key, secondData));
+                        quest.Quest.QuestObjectives.Where(o => o.Data == firstData).ToList().ForEach(d => IncrementObjective(quest, d.ObjectiveIndex, secondData));
                         break;
 
                     case QuestType.Dialog1:
                     case QuestType.Dialog2:
-                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => IncrementObjective(quest, d.Key, isOver:true));
+                        quest.Quest.QuestObjectives.Where(o => o.Data == firstData).ToList().ForEach(d => IncrementObjective(quest, d.ObjectiveIndex, isOver: true));
                         break;
 
                     case QuestType.Wear:
-                        if (quest.Quest.FirstSpecialData == firstData && (Session.Character.Inventory.Any(i => i.Value.ItemVNum == quest.Quest.FirstData && i.Value.Type == InventoryType.Wear) || (quest.QuestId == 1541 || quest.QuestId == 1546) && Class != ClassType.Adventurer))
+                        if (quest.Quest.QuestObjectives.Any(q => q.SpecialData == firstData &&
+                        (Session.Character.Inventory.Any(i => i.Value.ItemVNum == q.Data && i.Value.Type == InventoryType.Wear) || (quest.QuestId == 1541 || quest.QuestId == 1546) && Class != ClassType.Adventurer)))
                         {
                             IncrementObjective(quest, isOver: true);
                         }
@@ -602,11 +603,11 @@ namespace OpenNos.GameObject
 
                     case QuestType.Brings:
                     case QuestType.Required:
-                        quest.Data.Where(d => d.Value[0] == firstData).ToList().ForEach(d => {
-                            if (Inventory.CountItem(d.Value[1]) >= d.Value[2])
+                        quest.Quest.QuestObjectives.Where(o => o.Data == firstData).ToList().ForEach(d => {
+                            if (Inventory.CountItem(d.SpecialData ?? -1) >= d.Objective)
                             {
-                                Inventory.RemoveItemAmount(d.Value[1], d.Value[2]);
-                                IncrementObjective(quest, d.Key, d.Value[2]);
+                                Inventory.RemoveItemAmount(d.SpecialData ?? -1, d.Objective ?? 1);
+                                IncrementObjective(quest, d.ObjectiveIndex, d.Objective ?? 1);
                             }
                         });
                         break;
@@ -619,7 +620,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case QuestType.Use:
-                        quest.Data.Where(d => d.Value[0] == firstData && Mates.Any(m => m.NpcMonsterVNum == d.Value[1] && m.IsTeamMember)).ToList().ForEach(d => IncrementObjective(quest, d.Key, d.Value[2]));
+                        quest.Quest.QuestObjectives.Where(o => o.Data == firstData && Mates.Any(m => m.NpcMonsterVNum == o.SpecialData && m.IsTeamMember)).ToList().ForEach(d => IncrementObjective(quest, d.ObjectiveIndex, d.Objective ?? 1));
                         break;
 
                     case QuestType.FlowerQuest:
@@ -644,38 +645,17 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void IncrementObjective(CharacterQuest quest, byte objective = 0, int amount = 1, bool isOver = false)
+        private void IncrementObjective(CharacterQuest quest, byte index = 0, int amount = 1, bool isOver = false)
         {
             bool isFinish = isOver;
-            switch (objective)
-            {
-                case 1:
-                    quest.FirstObjective += quest.FirstObjective >= quest.Quest.FirstObjective ? 0 : amount;
-                    break;
-
-                case 2:
-                    quest.SecondObjective += quest.SecondObjective >= quest.Quest.SecondObjective ? 0 : amount;
-                    break;
-
-                case 3:
-                    quest.ThirdObjective += quest.ThirdObjective >= quest.Quest.ThirdObjective ? 0 : amount;
-                    break;
-
-                case 4:
-                    quest.FourthObjective += quest.FourthObjective >= quest.Quest.FourthObjective ? 0 : amount;
-                    break;
-
-                case 5:
-                    quest.FifthObjective += quest.FifthObjective >= quest.Quest.FifthObjective ? 0 : amount;
-                    break;
-            }
-
-            if (quest.FirstObjective >= quest.Quest.FirstObjective && quest.SecondObjective >= (quest.Quest.SecondObjective ?? 0) && quest.ThirdObjective >= (quest.Quest.ThirdObjective ?? 0))
+            quest.Incerment(index, amount);
+            byte a = 1;
+            if (quest.GetObjectives().All(q => q >= quest.GetObjectiveByIndex(a++)?.Objective))
             {
                 isFinish = true;
             }
 
-            Session.SendPacket($"qsti {quest.QuestNumber}.{quest.Quest.InfoId}.{quest.Quest.InfoId}.{quest.Quest.QuestType}.{quest.FirstObjective}.{quest.Quest.FirstObjective}.{(quest.RewardInWaiting ? 1 : 0)}.{quest.SecondObjective}.{quest.Quest.SecondObjective ?? 0}.{quest.ThirdObjective}.{quest.Quest.ThirdObjective ?? 0}.{quest.FourthObjective}.{quest.Quest.FourthObjective ?? 0}.{quest.FifthObjective}.{quest.Quest.FifthObjective ?? 0}.0");
+            Session.SendPacket($"qsti {quest.GetInfoPacket(false)}");
 
             if (!isFinish)
             {
@@ -863,9 +843,9 @@ namespace OpenNos.GameObject
                 return;
             }
             ConcurrentBag<MonsterToSummon> monsters = new ConcurrentBag<MonsterToSummon>();
-            for (int a = 0; a < quest.Quest.FirstObjective / 2 + 1; a++)
+            for (int a = 0; a < quest.GetObjectiveByIndex(1)?.Objective / 2 + 1; a++)
             {
-                monsters.Add(new MonsterToSummon((short)quest.Quest.FirstData, new MapCell { X = (short) (PositionX + ServerManager.Instance.RandomNumber(-2,3)), Y = (short)(PositionY + ServerManager.Instance.RandomNumber(-2, 3)) }, this, true));
+                monsters.Add(new MonsterToSummon(quest.GetObjectiveByIndex(1)?.Data ?? -1, new MapCell { X = (short) (PositionX + ServerManager.Instance.RandomNumber(-2,3)), Y = (short)(PositionY + ServerManager.Instance.RandomNumber(-2, 3)) }, this, true));
             }
             EventHelper.Instance.RunEvent(new EventContainer(MapInstance, EventActionType.SPAWNMONSTERS, monsters.AsEnumerable()));
         }
@@ -2688,20 +2668,16 @@ namespace OpenNos.GameObject
 
                 Quests.Where(q => (q.Quest?.QuestType == (int)QuestType.Collect4 || q.Quest?.QuestType == (int)QuestType.Collect2)).ToList().ForEach(qst =>
                 {
-                    qst.Data.ToList().ForEach(d =>
+                    qst.Quest.QuestObjectives.ForEach(d =>
                     {
-                        if (d.Value[1] == monsterToAttack.MonsterVNum)
+                        if (d.SpecialData == monsterToAttack.MonsterVNum)
                         {
-                            if (qst.Quest.SpecialData == null)
-                            {
-                                qst.Quest.SpecialData = 100;
-                            }
                             droplist.Add(new DropDTO()
                             {
-                                ItemVNum = (short)d.Value[0],
+                                ItemVNum = (short)d.Data,
                                 Amount = 1,
                                 MonsterVNum = monsterToAttack.MonsterVNum,
-                                DropChance = (int) (qst.Quest.SpecialData * 10 * ServerManager.Instance.QuestDropRate) // Approx
+                                DropChance = (int) ((d.DropRate ?? 100)* 10 * ServerManager.Instance.QuestDropRate) // Approx
                             });
                         }
                     });
@@ -2856,7 +2832,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.HasCurrentMapInstance)
                             {
-                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY, Quests.Any(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Data.Any(d => d.Value[0] == drop.ItemVNum)));
+                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY, Quests.Any(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Quest.QuestObjectives.Any(qst => qst.Data == drop.ItemVNum)));
                             }
                         });
                     }

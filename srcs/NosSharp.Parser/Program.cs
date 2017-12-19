@@ -271,6 +271,7 @@ namespace NosSharp.Parser
             DaoFactory.PortalDao.RegisterMapping(typeof(PortalDTO)).InitializeMapper();
             DaoFactory.QuestDao.RegisterMapping(typeof(QuestDTO)).InitializeMapper();
             DaoFactory.QuestRewardDao.RegisterMapping(typeof(QuestRewardDTO)).InitializeMapper();
+            DaoFactory.QuestObjectiveDao.RegisterMapping(typeof(QuestObjectiveDTO)).InitializeMapper();
             DaoFactory.QuicklistEntryDao.RegisterMapping(typeof(QuicklistEntryDTO)).InitializeMapper();
             DaoFactory.RecipeDao.RegisterMapping(typeof(RecipeDTO)).InitializeMapper();
             DaoFactory.RecipeItemDao.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
