@@ -1958,6 +1958,7 @@ namespace OpenNos.GameObject.Map
                         int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
                         if (Path[maxindex - 1] == null)
                         {
+                            Path.Clear();
                             return;
                         }
                         short mapX = Path[maxindex - 1].X;
