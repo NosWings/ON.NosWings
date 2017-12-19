@@ -2122,6 +2122,11 @@ namespace OpenNos.GameObject
             elementalDamage = (int)(elementalDamage + (baseDamage + 100) * ((ElementRate + ElementRateSp) / 100D));
             elementalDamage = (int)(elementalDamage / 100D * (100 - monsterResistance) * elementalBoost);
 
+            if (elementalDamage < 0)
+            {
+                elementalDamage = 0;
+            }
+
             #endregion
 
             #region Critical Damage
@@ -3764,6 +3769,7 @@ namespace OpenNos.GameObject
             elementalRez = elementalRez > 100 ? 100 : elementalRez;
             elementalDamage = (int)(elementalDamage + (baseDamage + 100) * ((ElementRate + ElementRateSp) / 100D));
             elementalDamage = (int)(elementalDamage / 100D * (100 - elementalRez) * elementalBoost);
+
             if (elementalDamage < 0)
             {
                 elementalDamage = 0;
