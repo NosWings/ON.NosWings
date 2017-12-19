@@ -1099,10 +1099,32 @@ namespace OpenNos.Handler
                 specialistInstance.SlElement += specialistElement;
                 specialistInstance.SlHP += specialistHealpoints;
 
+                int slHit = CharacterHelper.Instance.SlPoint(specialistInstance.SlDamage, 0);
+                int slDefence = CharacterHelper.Instance.SlPoint(specialistInstance.SlDefence, 1);
                 int slElement = CharacterHelper.Instance.SlPoint(specialistInstance.SlElement, 2);
                 int slHp = CharacterHelper.Instance.SlPoint(specialistInstance.SlHP, 3);
-                int slDefence = CharacterHelper.Instance.SlPoint(specialistInstance.SlDefence, 1);
-                int slHit = CharacterHelper.Instance.SlPoint(specialistInstance.SlDamage, 0);
+
+
+                if (Session != null)
+                {
+                    slHit += Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack) +
+                             Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+                    slDefence += Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
+                                 Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+                    slElement += Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
+                                 Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+                    slHp += Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
+                            Session.Character.GetMostValueEquipmentBuff(CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+                    slHit = slHit > 100 ? 100 : slHit;
+                    slDefence = slDefence > 100 ? 100 : slDefence;
+                    slElement = slElement > 100 ? 100 : slElement;
+                    slHp = slHp > 100 ? 100 : slHp;
+                }
+
 
                 #region slHit
 
