@@ -767,7 +767,7 @@ namespace OpenNos.GameObject.Battle
                     character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 20));
                 }
 
-                if (indicator.Card.BCards.All(s => s.Type == (byte)CardType.Move))
+                if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move))
                 {
                     character.LoadSpeed();
                     character.LastSpeedChange = DateTime.Now;
@@ -922,7 +922,7 @@ namespace OpenNos.GameObject.Battle
             if (Entity.GetSession() is Character character)
             {
                 character.LastSkillUse = DateTime.Now;
-                character.RemoveBuff(85); // Hideout
+                RemoveBuff(85); // Hideout
             }
             else if (Entity.GetSession() is Mate mate)
             {
