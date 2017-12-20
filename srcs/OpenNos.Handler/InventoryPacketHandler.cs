@@ -1086,7 +1086,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
                 }
-                if (CharacterHelper.Instance.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - SpecialistDamage - SpecialistDefense - SpecialistElement - SpecialistHp < 0)
+                if (CharacterHelper.Instance.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - Session.Character.SpecialistDamage - Session.Character.SpecialistDefense - Session.Character.SpecialistElement - Session.Character.SpecialistHp < 0)
                 {
                     return;
                 }

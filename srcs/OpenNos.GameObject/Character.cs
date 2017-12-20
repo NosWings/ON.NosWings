@@ -853,7 +853,7 @@ namespace OpenNos.GameObject
             ConcurrentBag<MonsterToSummon> monsters = new ConcurrentBag<MonsterToSummon>();
             for (int a = 0; a < quest.GetObjectiveByIndex(1)?.Objective / 2 + 1; a++)
             {
-                monsters.Add(new MonsterToSummon(quest.GetObjectiveByIndex(1)?.Data ?? -1, new MapCell { X = (short) (PositionX + ServerManager.Instance.RandomNumber(-2,3)), Y = (short)(PositionY + ServerManager.Instance.RandomNumber(-2, 3)) }, this, true));
+                monsters.Add(new MonsterToSummon((short)(quest.GetObjectiveByIndex(1)?.Data ?? -1), new MapCell { X = (short) (PositionX + ServerManager.Instance.RandomNumber(-2,3)), Y = (short)(PositionY + ServerManager.Instance.RandomNumber(-2, 3)) }, this, true));
             }
             EventHelper.Instance.RunEvent(new EventContainer(MapInstance, EventActionType.SPAWNMONSTERS, monsters.AsEnumerable()));
         }
