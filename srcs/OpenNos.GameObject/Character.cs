@@ -658,7 +658,7 @@ namespace OpenNos.GameObject
             bool isFinish = isOver;
             quest.Incerment(index, amount);
             byte a = 1;
-            if (quest.GetObjectives().All(q => q >= quest.GetObjectiveByIndex(a++)?.Objective))
+            if (quest.GetObjectives().All(q => quest.GetObjectiveByIndex(a) == null || q >= quest.GetObjectiveByIndex(a++).Objective))
             {
                 isFinish = true;
             }
