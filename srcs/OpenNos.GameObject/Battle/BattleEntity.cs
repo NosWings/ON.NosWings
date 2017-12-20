@@ -615,7 +615,7 @@ namespace OpenNos.GameObject.Battle
                 elementalBoost = 0;
             }
 
-            elementalDamage = (int)(elementalDamage + (baseDamage + 100) * (ElementRate + ElementRateSp / 100D));
+            elementalDamage = (int)(elementalDamage + (baseDamage + 100) * ((ElementRate + ElementRateSp) / 100D));
             elementalDamage = (int)(elementalDamage / 100D * (100 - targetResistance) * elementalBoost);
 
             #endregion
@@ -665,11 +665,7 @@ namespace OpenNos.GameObject.Battle
             #region Total Damage
 
             int totalDamage = baseDamage + elementalDamage;
-
-            if (totalDamage < 5)
-            {
-                totalDamage = ServerManager.Instance.RandomNumber(1, 6);
-            }
+            totalDamage = totalDamage < 5 ? ServerManager.Instance.RandomNumber(1, 6) : totalDamage;
 
             #endregion
 
