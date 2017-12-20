@@ -463,6 +463,14 @@ namespace OpenNos.GameObject
 
         public IDisposable Life { get; set; }
 
+        public short SpecialistDamage { get; set; }
+
+        public short SpecialistDefense { get; set; }
+
+        public short SpecialistElement { get; set; }
+
+        public short SpecialistHp { get; set; }
+
         #endregion
 
         #region Methods
