@@ -198,6 +198,20 @@ namespace OpenNos.GameObject.Battle
             });
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="types"></param>
+        /// <param name="level"></param>
+        public void DisableBuffs(List<BuffType> types, int level = 100)
+        {
+            lock (Buffs)
+            {
+                Buffs.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level <= level).ToList()
+                    .ForEach(s => RemoveBuff(s.Card.CardId));
+            }
+        }
+
         public ushort GenerateDamage(IBattleEntity targetEntity, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
             BattleEntity target = targetEntity?.BattleEntity;

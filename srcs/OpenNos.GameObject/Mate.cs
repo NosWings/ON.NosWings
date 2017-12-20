@@ -110,10 +110,8 @@ namespace OpenNos.GameObject
 
         public int CurrentHp
         {
-            get
-            { return Hp; }
-            set
-            { Hp = value; }
+            get { return Hp; }
+            set { Hp = value; }
         }
 
         public short CloseDefence { get; set; }

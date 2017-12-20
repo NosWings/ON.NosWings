@@ -90,6 +90,8 @@ namespace OpenNos.GameObject
 
         public ConcurrentBag<Buff.Buff> Buff => BattleEntity.Buffs;
 
+        public void DisableBuffs(List<BuffType> types, int level = 100) => BattleEntity.DisableBuffs(types, level);
+
         #endregion
 
         public CharacterLog CharacterLog { get; }
@@ -4728,20 +4730,6 @@ namespace OpenNos.GameObject
             }
             return
                 $"ta_p {tatype} {(byte)type} {5 - arenateam.Where(s => s.ArenaTeamType == type).Sum(s => s.SummonCount)} {5 - arenateam.Where(s => s.ArenaTeamType != type).Sum(s => s.SummonCount)} {groups.TrimEnd(' ')}";
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="types"></param>
-        /// <param name="level"></param>
-        public void DisableBuffs(List<BuffType> types, int level = 100)
-        {
-            lock (Buff)
-            {
-                Buff.Where(s => types.Contains(s.Card.BuffType) && !s.StaticBuff && s.Card.Level <= level).ToList()
-                    .ForEach(s => RemoveBuff(s.Card.CardId));
-            }
         }
 
         public int[] GetWeaponSoftDamage()

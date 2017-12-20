@@ -61,27 +61,6 @@ namespace OpenNos.GameObject.Networking
             }
         }
 
-        // TO DO : OPTIMIZE
-        public IEnumerable<Mate> Mates
-        {
-            get
-            {
-                ConcurrentBag<Mate> mate = new ConcurrentBag<Mate>();
-                Sessions.ToList().ForEach(s => s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => mate.Add(m)));
-                return mate;
-            }
-        }
-
-        public IEnumerable<Character> Characters
-        {
-            get
-            {
-                ConcurrentBag<Character> characters = new ConcurrentBag<Character>();
-                Sessions.ToList().ForEach(s => characters.Add(s.Character));
-                return characters;
-            }
-        }
-
         protected DateTime LastUnregister { get; private set; }
 
         #endregion
@@ -153,7 +132,7 @@ namespace OpenNos.GameObject.Networking
 
         public Mate GetMateByMateTransportId(long mateTransportId)
         {
-            return Mates.FirstOrDefault(m => m.MateTransportId == mateTransportId);
+            return (Mate)_battleEntities.Values.FirstOrDefault(b => b is Mate m && m.MateTransportId == mateTransportId).GetSession();
         }
 
         public void RegisterSession(ClientSession session)

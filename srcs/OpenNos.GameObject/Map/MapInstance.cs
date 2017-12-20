@@ -536,7 +536,7 @@ namespace OpenNos.GameObject.Map
             return characters;
         }
 
-        internal IEnumerable<IBattleEntity> GetBattleEntitiesInRange(MapCell pos, byte distance)
+        public IEnumerable<IBattleEntity> GetBattleEntitiesInRange(MapCell pos, byte distance)
         {
             return BattleEntities.Where(b => Map.GetDistance(b.GetPos(), pos) <= distance);
         }

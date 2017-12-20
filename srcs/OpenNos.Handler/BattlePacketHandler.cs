@@ -30,6 +30,7 @@ using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Event.ICEBREAKER;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.GameObject.Battle;
 
 namespace OpenNos.Handler
 {
@@ -388,18 +389,15 @@ namespace OpenNos.Handler
                         switch (ski.Skill.HitType)
                         {
                             case 2:
-                                IEnumerable<ClientSession> clientSessions =
-                                    Session.CurrentMapInstance?.Sessions?.Where(s => s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
-                                IEnumerable<Mate> matesInRange =
-                                    Session.CurrentMapInstance?.Mates?.Where(s => s.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange));
-                                if (clientSessions != null)
+                                IEnumerable<IBattleEntity> entityInRange = Session.CurrentMapInstance?.GetBattleEntitiesInRange(Session.Character.GetPos(), ski.Skill.TargetRange).Where(b => b.SessionType() == SessionType.Character || b.SessionType() == SessionType.MateAndNpc);
+                                if (entityInRange != null)
                                 {
-                                    foreach (ClientSession target in clientSessions)
+                                    foreach (IBattleEntity target in entityInRange)
                                     {
                                         if (ski.SkillVNum == 871) // No bcard for this skill
                                         {
                                             List<BuffType> buffsToDisable = new List<BuffType> { BuffType.Bad };
-                                            target.Character.DisableBuffs(buffsToDisable, 4);
+                                            target.BattleEntity.DisableBuffs(buffsToDisable, 4);
                                         }
                                         ski.Skill.BCards.ToList().ForEach(s =>
                                         {
@@ -410,13 +408,13 @@ namespace OpenNos.Handler
                                                     switch (bf.Card?.BuffType)
                                                     {
                                                         case BuffType.Bad:
-                                                            s.ApplyBCards(target.Character);
+                                                            s.ApplyBCards(target);
                                                             break;
                                                         case BuffType.Good:
                                                         case BuffType.Neutral:
-                                                            if (Session.Character.Faction == target.Character.Faction)
+                                                            if (target is Character character && Session.Character.Faction == character.Faction)
                                                             {
-                                                                s.ApplyBCards(target.Character);
+                                                                s.ApplyBCards(target);
                                                             }
                                                             break;
                                                     }
@@ -426,14 +424,14 @@ namespace OpenNos.Handler
                                                     switch (b.Card?.BuffType)
                                                     {
                                                         case BuffType.Bad:
-                                                            s.ApplyBCards(target.Character);
+                                                            s.ApplyBCards(target);
                                                             break;
                                                         case BuffType.Good:
                                                         case BuffType.Neutral:
-                                                            if (Session.Character.Group?.GroupType == GroupType.Group &&
-                                                                Session.Character.Group.IsMemberOfGroup(target))
+                                                            if (target is Character character && Session.Character.Group?.GroupType == GroupType.Group &&
+                                                                Session.Character.Group.IsMemberOfGroup(character.CharacterId))
                                                             {
-                                                                s.ApplyBCards(target.Character);
+                                                                s.ApplyBCards(target);
                                                             }
                                                             else
                                                             {
@@ -443,7 +441,7 @@ namespace OpenNos.Handler
                                                     }
                                                     break;
                                                 default:
-                                                    s.ApplyBCards(target.Character);
+                                                    s.ApplyBCards(target);
                                                     break;
                                             }
                                         });
