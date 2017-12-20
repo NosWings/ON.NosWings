@@ -572,7 +572,7 @@ namespace OpenNos.GameObject
                     ? (short) 5
                     : (qst.Quest.QuestType == (byte) QuestType.WinRaid ? b++ : a++);
             });
-            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.Quest}")}";
+            return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.GetInfoPacket(quest.QuestId == newQuestId)}")}";
         }
 
         public void IncrementQuests(QuestType type, int firstData = 0, int secondData = 0, int thirdData = 0)
