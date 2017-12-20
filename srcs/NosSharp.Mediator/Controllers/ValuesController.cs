@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
-namespace NosSharp.Mediator.Controllers
+namespace NosSharp.Web.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller

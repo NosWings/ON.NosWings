@@ -1278,6 +1278,7 @@ namespace OpenNos.GameObject.Networking
             {
                 Quest quest = (Quest) questdto;
                 quest.QuestRewards = DaoFactory.QuestRewardDao.LoadByQuestId(quest.QuestId).ToList();
+                quest.QuestObjectives = DaoFactory.QuestObjectiveDao.LoadByQuestId(quest.QuestId).ToList();
                 Quests.Add(quest);
             }
             FlowerQuestId = Quests.FirstOrDefault(q => q.QuestType == (byte) QuestType.FlowerQuest)?.QuestId;

@@ -229,11 +229,16 @@ namespace OpenNos.GameObject.Buff
                                         {
                                             if (hunter.Quests.Any(q => q.Quest.QuestType == (int)QuestType.Capture1 && q.Data.Any(d => d.Value[0] == monsterToCapture.MonsterVNum)))
                                             {
-                                                hunter.IncrementQuests(QuestType.Capture1, monsterToCapture.MonsterVNum);
-                                                return;
-                                            }
-                                            hunter.IncrementQuests(QuestType.Capture2, monsterToCapture.MonsterVNum);
-                                            int level = monsterToCapture.Monster.Level - 15 < 1 ? 1 : monsterToCapture.Monster.Level - 15;
+                                                // Algo  
+                                                int capturerate = 100 - (monster.CurrentHp / monster.Monster.MaxHP + 1) / 2;
+                                                if (ServerManager.Instance.RandomNumber() <= capturerate)
+                                                {
+                                                    if (character.Quests.Any(q => q.Quest.QuestType == (int) QuestType.Capture1 && q.Quest.QuestObjectives.Any(d => d.Data == monster.MonsterVNum)))
+                                                    {
+                                                        character.IncrementQuests(QuestType.Capture1, monster.MonsterVNum);
+                                                        return;
+                                                    }
+                                                    character.IncrementQuests(QuestType.Capture2, monster.MonsterVNum);
 
                                             Mate currentmate = hunter.Mates?.FirstOrDefault(m => m.IsTeamMember && m.MateType == MateType.Pet);
                                             if (currentmate != null)

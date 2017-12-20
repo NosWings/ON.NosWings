@@ -177,18 +177,19 @@ namespace OpenNos.DAL.EF
 
         private AccountDTO Update(Account entity, AccountDTO account, OpenNosContext context)
         {
-            if (entity != null)
+            if (entity == null)
             {
-                // The Mapper breaks context.SaveChanges(), so we need to "map" the data by hand...
-                // entity = _mapper.Map<Account>(account);
-                entity.Authority = account.Authority;
-                entity.Name = account.Name;
-                entity.Password = account.Password;
-                entity.BankMoney = account.BankMoney;
-                entity.Money = account.Money;
-                context.Entry(entity).State = EntityState.Modified;
-                context.SaveChanges();
+                return null;
             }
+            // The Mapper breaks context.SaveChanges(), so we need to "map" the data by hand...
+            // entity = _mapper.Map<Account>(account);
+            entity.Authority = account.Authority;
+            entity.Name = account.Name;
+            entity.Password = account.Password;
+            entity.BankMoney = account.BankMoney;
+            entity.Money = account.Money;
+            context.Entry(entity).State = EntityState.Modified;
+            context.SaveChanges();
 
             return _mapper.Map<AccountDTO>(entity);
         }

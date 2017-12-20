@@ -157,6 +157,7 @@
     <Compile Include="LogCommandsDTO.cs" />
     <Compile Include="LogVIPDTO.cs" />
     <Compile Include="QuestDTO.cs" />
+    <Compile Include="QuestObjectiveDTO.cs" />
     <Compile Include="QuestRewardDTO.cs" />
     <Compile Include="RollGeneratedItemDTO.cs" />
     <Compile Include="CardDTO.cs" />

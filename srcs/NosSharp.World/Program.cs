@@ -226,6 +226,7 @@ namespace NosSharp.World
             DaoFactory.QuestDao.RegisterMapping(typeof(QuestDTO)).InitializeMapper();
             DaoFactory.QuestDao.RegisterMapping(typeof(Quest)).InitializeMapper();
             DaoFactory.QuestRewardDao.RegisterMapping(typeof(QuestRewardDTO)).InitializeMapper();
+            DaoFactory.QuestObjectiveDao.RegisterMapping(typeof(QuestObjectiveDTO)).InitializeMapper();
             DaoFactory.QuicklistEntryDao.RegisterMapping(typeof(QuicklistEntryDTO)).InitializeMapper();
             DaoFactory.RecipeDao.RegisterMapping(typeof(Recipe)).InitializeMapper();
             DaoFactory.RecipeItemDao.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();

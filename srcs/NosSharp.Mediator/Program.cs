@@ -1,18 +1,25 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace NosSharp.Mediator
+namespace NosSharp.Web
 {
     public class Program
     {
+        private static void InitConfiguration()
+        {
+            
+        }
+
+
         public static void Main(string[] args)
         {
+            InitConfiguration();
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            return WebHost.CreateDefaultBuilder(args).UseStartup<Startup>().Build();
+        }
     }
 }

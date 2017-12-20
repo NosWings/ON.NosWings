@@ -20,6 +20,8 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public List<QuestObjectiveDTO> QuestObjectives { get; set; }
+
         public List<QuestRewardDTO> QuestRewards { get; set; }
 
         #endregion

@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
     <ApplicationIcon>nossharp-logo.ico</ApplicationIcon>
+    <AssemblyName>NosSharp.Web</AssemblyName>
+    <RootNamespace>NosSharp.Web</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
