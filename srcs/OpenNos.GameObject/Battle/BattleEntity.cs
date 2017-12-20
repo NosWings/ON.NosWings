@@ -717,7 +717,7 @@ namespace OpenNos.GameObject.Battle
 
             foreach (BCard entry in StaticBcards.Concat(SkillBcards).Where(s => s != null && s.Type.Equals((byte)type) && s.SubType.Equals(subtype)))
             {
-                value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? Level / entry.FirstData : entry.FirstData * Level) : entry.FirstData;
+                value1 += entry.IsLevelScaled ? entry.IsLevelDivided ? Level / entry.FirstData : entry.FirstData * Level : entry.FirstData;
                 value2 += entry.SecondData;
             }
 
@@ -726,7 +726,7 @@ namespace OpenNos.GameObject.Battle
                 foreach (BCard entry in buff.Card.BCards.Where(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype) &&
                     (s.CastType != 1 || s.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)))
                 {
-                    value1 += entry.IsLevelScaled ? (entry.IsLevelDivided ? buff.Level / entry.FirstData : entry.FirstData * buff.Level) : entry.FirstData;
+                    value1 += entry.IsLevelScaled ? entry.IsLevelDivided ? buff.Level / entry.FirstData : entry.FirstData * buff.Level : entry.FirstData;
                     value2 += entry.SecondData;
                 }
             }
@@ -958,6 +958,7 @@ namespace OpenNos.GameObject.Battle
             if (target.CurrentHp <= 0)
             {
                 target.GenerateDeath(Entity);
+                Entity.GenerateRewards(target);
             }
 
             if (skill == null || (skill.Range <= 0 && skill.TargetRange <= 0) || isRange || !(Entity.GetSession() is MapMonster))

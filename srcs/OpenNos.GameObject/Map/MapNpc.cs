@@ -467,7 +467,6 @@ namespace OpenNos.GameObject.Map
             LastMove = DateTime.Now.AddMilliseconds(500);
             BattleEntity.Buffs.Clear();
             Target = null;
-            killer?.GenerateRewards(this);
         }
 
         public void GenerateRewards(IBattleEntity target)

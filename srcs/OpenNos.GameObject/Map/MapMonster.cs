@@ -535,7 +535,6 @@ namespace OpenNos.GameObject.Map
             LastMove = DateTime.Now.AddMilliseconds(500);
             BattleEntity.Buffs.Clear();
             Target = null;
-            killer?.GenerateRewards(this);
             MapInstance.InstanceBag.Combo += IsBonus ? 1 : 0;
             MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + (IsBonus ? 1 : 0));
             MapInstance.InstanceBag.MonstersKilled++;
