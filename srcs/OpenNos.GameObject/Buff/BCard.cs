@@ -227,19 +227,13 @@ namespace OpenNos.GameObject.Buff
                                         int capturerate = 100 - (monsterToCapture.CurrentHp / monsterToCapture.Monster.MaxHP + 1) / 2;
                                         if (ServerManager.Instance.RandomNumber() <= capturerate)
                                         {
-                                            if (hunter.Quests.Any(q => q.Quest.QuestType == (int)QuestType.Capture1 && q.Data.Any(d => d.Value[0] == monsterToCapture.MonsterVNum)))
+                                            if (hunter.Quests.Any(q => q.Quest.QuestType == (int)QuestType.Capture1 && q.Quest.QuestObjectives.Any(d => d.Data == monsterToCapture.MonsterVNum)))
                                             {
-                                                // Algo  
-                                                int capturerate = 100 - (monster.CurrentHp / monster.Monster.MaxHP + 1) / 2;
-                                                if (ServerManager.Instance.RandomNumber() <= capturerate)
-                                                {
-                                                    if (character.Quests.Any(q => q.Quest.QuestType == (int) QuestType.Capture1 && q.Quest.QuestObjectives.Any(d => d.Data == monster.MonsterVNum)))
-                                                    {
-                                                        character.IncrementQuests(QuestType.Capture1, monster.MonsterVNum);
-                                                        return;
-                                                    }
-                                                    character.IncrementQuests(QuestType.Capture2, monster.MonsterVNum);
-
+                                                hunter.IncrementQuests(QuestType.Capture1, monsterToCapture.MonsterVNum);
+                                                return;
+                                            }
+                                            hunter.IncrementQuests(QuestType.Capture2, monsterToCapture.MonsterVNum);
+                                            int level = monsterToCapture.Monster.Level - 15 < 1 ? 1 : monsterToCapture.Monster.Level - 15;
                                             Mate currentmate = hunter.Mates?.FirstOrDefault(m => m.IsTeamMember && m.MateType == MateType.Pet);
                                             if (currentmate != null)
                                             {
