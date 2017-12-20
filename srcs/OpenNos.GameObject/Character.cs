@@ -2955,7 +2955,7 @@ namespace OpenNos.GameObject
                     break;
             }
             Hp = Hp <= 0 ? !canKill ? 1 : 0 : Hp;
-            GenerateStat();
+            Session.SendPacket(GenerateStat());
         }
 
         public int GetDignityIco()
