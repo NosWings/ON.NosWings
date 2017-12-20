@@ -354,7 +354,8 @@ namespace NosSharp.Parser
                                     Objective = objective ?? 1,
                                     SpecialData = specialData < 0 ? null : specialData,
                                     DropRate = secondSpecialData < 0 ? null : specialData,
-                                    ObjectiveIndex = objectiveIndex
+                                    ObjectiveIndex = objectiveIndex,
+                                    QuestId = (int)quest.QuestId
                                 });
                                 break;
 
