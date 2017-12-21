@@ -122,49 +122,13 @@ namespace OpenNos.GameObject.Item.Instance
             return $"pslinfo {Item.VNum} {Item.Element} {Item.ElementRate} {Item.LevelJobMinimum} {Item.Speed} {Item.FireResistance} {Item.WaterResistance} {Item.LightResistance} {Item.DarkResistance} 0.0 0.0 0.0";
         }
 
-        public void RestorePoints(SpecialistInstance specialistInstance, ClientSession session, bool changeSp = false)
+        public void RestorePoints(ClientSession session, SpecialistInstance specialistInstance)
         {
-            if (session == null || specialistInstance == null)
-            {
-                return;
-            }
-            if (changeSp)
-            {
-                specialistInstance.SlDamage += session.Character.SpecialistDamage;
-                specialistInstance.SlDefence += session.Character.SpecialistDefense;
-                specialistInstance.SlElement += session.Character.SpecialistElement;
-                specialistInstance.SlHP += session.Character.SpecialistHp;
-            }
-            else
-            {
-                specialistInstance.SlDamage = session.Character.SpecialistDamage;
-                specialistInstance.SlDefence = session.Character.SpecialistDefense;
-                specialistInstance.SlElement = session.Character.SpecialistElement;
-                specialistInstance.SlHP = session.Character.SpecialistHp;
-            }
 
-            int slHit = CharacterHelper.Instance.SlPoint(specialistInstance.SlDamage, 0);
-            int slDefence = CharacterHelper.Instance.SlPoint(specialistInstance.SlDefence, 1);
-            int slElement = CharacterHelper.Instance.SlPoint(specialistInstance.SlElement, 2);
-            int slHp = CharacterHelper.Instance.SlPoint(specialistInstance.SlHP, 3);
-
-            slHit += session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack) +
-                     session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-
-            slDefence += session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
-                         session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-
-            slElement += session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
-                         session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-
-            slHp += session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
-                    session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
-
-            slHit = slHit > 100 ? 100 : slHit;
-            slDefence = slDefence > 100 ? 100 : slDefence;
-            slElement = slElement > 100 ? 100 : slElement;
-            slHp = slHp > 100 ? 100 : slHp;
-
+            int slHit = specialistInstance.GetSlHit(session, specialistInstance);
+            int slDefence = specialistInstance.GetSlDefense(session, specialistInstance);
+            int slElement = specialistInstance.GetSlElement(session, specialistInstance);
+            int slHp = specialistInstance.GetSlHp(session, specialistInstance);
 
             #region slHit
 
@@ -564,10 +528,79 @@ namespace OpenNos.GameObject.Item.Instance
                 specialistInstance.MP += 200;
                 specialistInstance.ElementRate += 2;
             }
-            session.SendPacket(session.Character.GenerateStatChar());
-            session.SendPacket(session.Character.GenerateStat());
-            session.SendPacket(specialistInstance.GenerateSlInfo());
+
             #endregion
+        }
+
+        public int GetSlHit(ClientSession session, SpecialistInstance specialistInstance)
+        {
+            int slHit = CharacterHelper.Instance.SlPoint(specialistInstance.SlDamage, 0);
+
+
+            if (session == null)
+            {
+                return slHit;
+            }
+
+            slHit += session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Attack) +
+                     session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+            
+            slHit = slHit > 100 ? 100 : slHit;
+
+            return slHit;
+        }
+
+        public int GetSlDefense(ClientSession session, SpecialistInstance specialistInstance)
+        {
+            int slDefence = CharacterHelper.Instance.SlPoint(specialistInstance.SlDefence, 1);
+
+
+            if (session == null)
+            {
+                return slDefence;
+            }
+
+            slDefence += session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Defense) +
+                         session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+            slDefence = slDefence > 100 ? 100 : slDefence;
+
+            return slDefence;
+        }
+
+        public int GetSlElement(ClientSession session, SpecialistInstance specialistInstance)
+        {
+            int slElement = CharacterHelper.Instance.SlPoint(specialistInstance.SlElement, 2);
+
+
+            if (session == null)
+            {
+                return slElement;
+            }
+
+             slElement += session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.Element) +
+                         session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+            
+            slElement = slElement > 100 ? 100 : slElement;
+
+            return slElement;
+        }
+
+        public int GetSlHp(ClientSession session, SpecialistInstance specialistInstance)
+        {
+            int slHp = CharacterHelper.Instance.SlPoint(specialistInstance.SlHP, 3);
+
+
+            if (session == null)
+            {
+                return slHp;
+            }
+            slHp += session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.HPMP) +
+                    session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
+
+            slHp = slHp > 100 ? 100 : slHp;
+
+            return slHp;
         }
 
         public string GenerateSlInfo()

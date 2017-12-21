@@ -1075,28 +1075,35 @@ namespace OpenNos.Handler
 
             if (spTransformPacket.Type == 10)
             {
-                Session.Character.SpecialistDamage = spTransformPacket.SpecialistDamage;
-                Session.Character.SpecialistDefense = spTransformPacket.SpecialistDefense;
-                Session.Character.SpecialistElement = spTransformPacket.SpecialistElement;
-                Session.Character.SpecialistHp = spTransformPacket.SpecialistHp;
-                
+                short specialistDamage = spTransformPacket.SpecialistDamage;
+                short specialistDefense = spTransformPacket.SpecialistDefense;
+                short specialistElement = spTransformPacket.SpecialistElement;
+                short specialistHealpoints = spTransformPacket.SpecialistHp;
                 int transportId = spTransformPacket.TransportId;
                 if (!Session.Character.UseSp || specialistInstance == null || transportId != specialistInstance.TransportId)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
                 }
-                if (CharacterHelper.Instance.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - Session.Character.SpecialistDamage - Session.Character.SpecialistDefense - Session.Character.SpecialistElement - Session.Character.SpecialistHp < 0)
+                if (CharacterHelper.Instance.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
                 {
                     return;
                 }
-                if (Session.Character.SpecialistDamage < 0 || Session.Character.SpecialistDefense < 0 || Session.Character.SpecialistElement < 0 || Session.Character.SpecialistHp < 0)
+                if (specialistDamage < 0 || specialistDefense < 0 || specialistElement < 0 || specialistHealpoints < 0)
                 {
                     return;
                 }
-                specialistInstance.RestorePoints(specialistInstance, Session, true);
 
-                #endregion
+                specialistInstance.SlDamage += specialistDamage;
+                specialistInstance.SlDefence += specialistDefense;
+                specialistInstance.SlElement += specialistElement;
+                specialistInstance.SlHP += specialistHealpoints;
+
+                specialistInstance.RestorePoints(Session, specialistInstance);
+
+                Session.SendPacket(Session.Character.GenerateStatChar());
+                Session.SendPacket(Session.Character.GenerateStat());
+                Session.SendPacket(specialistInstance.GenerateSlInfo());
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_SET"), 0));
             }
             else if (!Session.Character.IsSitting)
@@ -1171,7 +1178,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (Session.Character.LastDelay.AddSeconds(5) > DateTime.Now)
+            if (Session.Character.LastDelay.AddSeconds(5) > DateTime.Now && Session.Character.Authority < AuthorityType.GameMaster)
             {
                 return;
             }
@@ -1298,7 +1305,6 @@ namespace OpenNos.Handler
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
                             RarifyMode mode = RarifyMode.Normal;
-                            FixedUpMode isFixed = FixedUpMode.HasAmulet;
                             RarifyProtection protection = RarifyProtection.None;
                             WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                             if (amulet != null)
@@ -1322,6 +1328,10 @@ namespace OpenNos.Handler
                                         {
                                             mode = RarifyMode.Success;
                                         }
+                                        break;
+                                    case 797:
+                                        mode = RarifyMode.Reduce;
+                                        protection = RarifyProtection.RandomHeroicAmulet;
                                         break;
                                 }
                             }
@@ -1695,5 +1705,7 @@ namespace OpenNos.Handler
                 Session.SendPacket("sd 0");
             });
         }
+
+        #endregion
     }
 }

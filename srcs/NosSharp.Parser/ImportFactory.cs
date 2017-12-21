@@ -3728,6 +3728,11 @@ namespace NosSharp.Parser
                                             item.EffectValue = 3;
                                             break;
 
+                                        case 4261: // Amulet to reduce rarity
+                                            item.Effect = 797;
+                                            item.EffectValue = 1;
+                                            break;
+
                                         default:
                                             item.EffectValue = Convert.ToInt16(currentLine[7]);
                                             break;

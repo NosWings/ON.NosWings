@@ -19,6 +19,7 @@ namespace NosSharp.Enums
         Normal,
         Free,
         Drop,
-        Success
+        Success,
+        Reduce
     }
 }
