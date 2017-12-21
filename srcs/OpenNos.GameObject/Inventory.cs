@@ -187,6 +187,17 @@ namespace OpenNos.GameObject
             }
             if (newItem.Rare != 0 && newItem is WearableInstance wearable)
             {
+                if (wearable.Item.IsHeroic)
+                {
+                    switch (wearable.Slot)
+                    {
+                        case (short)EquipmentType.Armor:
+                        case (short)EquipmentType.MainWeapon:
+                        case (short)EquipmentType.SecondaryWeapon:
+                            wearable.GenerateHeroicShell(RarifyProtection.RandomHeroicAmulet);
+                            break;
+                    }
+                }
                 wearable.SetRarityPoint();
             }
             return AddToInventory(newItem, type);
