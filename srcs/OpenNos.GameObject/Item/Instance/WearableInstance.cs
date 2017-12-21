@@ -267,6 +267,7 @@ namespace OpenNos.GameObject.Item.Instance
 
         public void GenerateHeroicShell(RarifyProtection protection)
         {
+            byte shellType;
             if (protection != RarifyProtection.RandomHeroicAmulet)
             {
                 return;
@@ -275,10 +276,23 @@ namespace OpenNos.GameObject.Item.Instance
             {
                 return;
             }
-            byte shellType = (byte)(Item.ItemType == ItemType.Armor ? 11 : 10);
-            if (shellType != 11 && shellType != 10)
+            if (Rare < 8)
             {
-                return;
+                shellType = (byte)(Item.ItemType == ItemType.Armor ? 11 : 10);
+                if (shellType != 11 && shellType != 10)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                List<byte> possibleTypes = new List<byte> {4, 5, 6, 7};
+                int probability = ServerManager.Instance.RandomNumber();
+                shellType = (byte) (Item.ItemType == ItemType.Armor ? (probability > 50 ? 5 : 7) : (probability > 50 ? 4 : 6));
+                if (!possibleTypes.Contains(shellType))
+                {
+                    return;
+                }
             }
             EquipmentOptions.Clear();
             int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
@@ -298,7 +312,7 @@ namespace OpenNos.GameObject.Item.Instance
             double rare5 = 5;
             double rare6 = 3;
             double rare7 = 2;
-            double rare8 = 1;
+            double rare8 = 0.5;
             const short goldprice = 500;
             const double reducedpricefactor = 0.5;
             const double reducedchancefactor = 1.1;
