@@ -1305,7 +1305,6 @@ namespace OpenNos.Handler
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
                             RarifyMode mode = RarifyMode.Normal;
-                            FixedUpMode isFixed = FixedUpMode.HasAmulet;
                             RarifyProtection protection = RarifyProtection.None;
                             WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                             if (amulet != null)
@@ -1329,6 +1328,10 @@ namespace OpenNos.Handler
                                         {
                                             mode = RarifyMode.Success;
                                         }
+                                        break;
+                                    case 797:
+                                        mode = RarifyMode.Reduce;
+                                        protection = RarifyProtection.RandomHeroicAmulet;
                                         break;
                                 }
                             }

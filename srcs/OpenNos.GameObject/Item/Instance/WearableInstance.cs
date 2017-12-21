@@ -365,10 +365,12 @@ namespace OpenNos.GameObject.Item.Instance
                             return;
                         }
                         Rare -= 1;
+                        GenerateHeroicShell(protection);
                         SetRarityPoint();
                         ItemInstance inv = session.Character.Inventory.GetItemInstanceById(Id);
                         session.SendPacket(inv?.GenerateInventoryAdd());
-                        break;
+                        session.Character.NotifyRarifyResult(Rare);
+                        return;
                     case RarifyMode.Success:
                         if (Item.IsHeroic && Rare >= 8 || !Item.IsHeroic && Rare <= 7)
                         {
