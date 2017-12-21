@@ -358,6 +358,17 @@ namespace OpenNos.GameObject.Item.Instance
                 {
                     case RarifyMode.Free:
                         break;
+                    case RarifyMode.Reduce:
+                        if (Rare < 8)
+                        {
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_MAX_RARITY"), 10));
+                            return;
+                        }
+                        Rare -= 1;
+                        SetRarityPoint();
+                        ItemInstance inv = session.Character.Inventory.GetItemInstanceById(Id);
+                        session.SendPacket(inv?.GenerateInventoryAdd());
+                        break;
                     case RarifyMode.Success:
                         if (Item.IsHeroic && Rare >= 8 || !Item.IsHeroic && Rare <= 7)
                         {
