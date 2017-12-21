@@ -457,6 +457,8 @@ namespace OpenNos.GameObject
 
         public SpecialistInstance SpInstance { get; set; }
 
+        public IDisposable WalkObservable { get; set; }
+
         public int WareHouseSize { get; set; }
 
         public int WaterResistance { get; set; }
@@ -6768,6 +6770,7 @@ namespace OpenNos.GameObject
 
         public void TeleportOnMap(short x, short y)
         {
+            WalkObservable?.Dispose();
             Session.Character.PositionX = x;
             Session.Character.PositionY = y;
             Session.SendPacket($"tp {1} {CharacterId} {x} {y} 0");
