@@ -1178,7 +1178,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (Session.Character.LastDelay.AddSeconds(5) > DateTime.Now)
+            if (Session.Character.LastDelay.AddSeconds(5) > DateTime.Now && Session.Character.Authority < AuthorityType.GameMaster)
             {
                 return;
             }
