@@ -1420,7 +1420,7 @@ namespace OpenNos.Handler
             }
             if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(5) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
             {
-                double waitingTime = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate }) / (double)Session.Character.Speed * 2.5;
+                double waitingTime = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate }) / (double)Session.Character.Speed * 2.3;
                 Session.Character.WalkObservable = Observable.Timer(TimeSpan.FromMilliseconds((int)(waitingTime * 1000))).Subscribe(s =>
                 {
                     if (Session.Character.MapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance)
