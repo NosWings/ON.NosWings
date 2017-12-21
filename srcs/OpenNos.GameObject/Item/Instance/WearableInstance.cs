@@ -359,6 +359,11 @@ namespace OpenNos.GameObject.Item.Instance
                     case RarifyMode.Free:
                         break;
                     case RarifyMode.Reduce:
+                        WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                        if (amulet == null)
+                        {
+                            return;
+                        }
                         if (Rare < 8 || !Item.IsHeroic)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_MAX_RARITY"), 10));
@@ -370,7 +375,6 @@ namespace OpenNos.GameObject.Item.Instance
                         ItemInstance inv = session.Character.Inventory.GetItemInstanceById(Id);
                         session.SendPacket(inv?.GenerateInventoryAdd());
                         session.Character.NotifyRarifyResult(Rare);
-                        WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                         session.Character.DeleteItemByItemInstanceId(amulet.Id);
                         session.SendPacket($"info {Language.Instance.GetMessageFromKey("AMULET_DESTROYED")}");
                         session.SendPacket(session.Character.GenerateEquipment());
