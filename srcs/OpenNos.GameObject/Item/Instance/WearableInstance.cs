@@ -359,7 +359,7 @@ namespace OpenNos.GameObject.Item.Instance
                     case RarifyMode.Free:
                         break;
                     case RarifyMode.Reduce:
-                        if (Rare < 8)
+                        if (Rare < 8 || !Item.IsHeroic)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_MAX_RARITY"), 10));
                             return;
