@@ -165,6 +165,7 @@ namespace OpenNos.GameObject.Item.Instance
             slElement = slElement > 100 ? 100 : slElement;
             slHp = slHp > 100 ? 100 : slHp;
 
+
             #region slHit
 
             specialistInstance.DamageMinimum = 0;
@@ -565,6 +566,7 @@ namespace OpenNos.GameObject.Item.Instance
             }
             session.SendPacket(session.Character.GenerateStatChar());
             session.SendPacket(session.Character.GenerateStat());
+            session.SendPacket(specialistInstance.GenerateSlInfo());
             #endregion
         }
 

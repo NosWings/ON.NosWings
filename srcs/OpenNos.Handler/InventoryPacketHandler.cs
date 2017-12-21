@@ -1095,7 +1095,6 @@ namespace OpenNos.Handler
                     return;
                 }
                 specialistInstance.RestorePoints(specialistInstance, Session, true);
-                Session.SendPacket(specialistInstance.GenerateSlInfo());
 
                 #endregion
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_SET"), 0));
