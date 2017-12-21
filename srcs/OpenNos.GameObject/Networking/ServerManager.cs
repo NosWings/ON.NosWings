@@ -581,7 +581,6 @@ namespace OpenNos.GameObject.Networking
             }
             try
             {
-                session.Character.WalkObservable?.Dispose();
                 if (session.Character.Authority >= AuthorityType.VipPlus && session.Character.StaticBonusList.All(s => s.StaticBonusType != StaticBonusType.PetBasket))
                 {
                     session.Character.StaticBonusList.Add(new StaticBonusDTO
