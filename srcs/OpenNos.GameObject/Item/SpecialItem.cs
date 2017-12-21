@@ -318,6 +318,7 @@ namespace OpenNos.GameObject.Item
                         break;
                     }
                     kenko.KillMonster();
+                    kenko.GenerateOut();
                     session.Character.Inventory.AddNewToInventory(1174); // Kenko Bead
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
