@@ -164,26 +164,23 @@ namespace NosSharp.World
         private static bool ExitHandler(CtrlType sig)
         {
             ServerManager.Instance.InShutdown = true;
-            Logger.Log.Debug(Language.Instance.GetMessageFromKey("SERVER_CRASH"));
-            CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
+            ServerManager.Instance.SaveAll();
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
-            ServerManager.Instance.SaveAll();
-            Thread.Sleep(5000);
+            Thread.Sleep(10000);
+            CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
             return false;
         }
         
-        // TODO SEND MAIL TO REVIEW EXCEPTION
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
         {
             ServerManager.Instance.InShutdown = true;
             Logger.Log.Error((Exception)e.ExceptionObject);
-            Logger.Log.Debug(Language.Instance.GetMessageFromKey("SERVER_CRASH"));
-            CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
+            ServerManager.Instance.SaveAll();
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
-            ServerManager.Instance.SaveAll();
-            Thread.Sleep(5000);
+            Thread.Sleep(10000);
+            CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
             Process.Start("NosSharp.World.exe");
         }
 
