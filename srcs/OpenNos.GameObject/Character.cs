@@ -1406,12 +1406,12 @@ namespace OpenNos.GameObject
             return AttackType.Close;
         }
 
-        public bool isTargetable(SessionType type, bool isPvP = false) => type != NosSharp.Enums.SessionType.MateAndNpc && (type != NosSharp.Enums.SessionType.Character || isPvP) && Hp > 0 && !InvisibleGm && !Invisible;
+        public bool IsTargetable(SessionType type, bool isPvP = false) => type != NosSharp.Enums.SessionType.MateAndNpc && (type != NosSharp.Enums.SessionType.Character || isPvP) && Hp > 0 && !InvisibleGm && !Invisible;
 
         public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, MapInstance.Map.Grid);
 
         public SessionType SessionType() => NosSharp.Enums.SessionType.Character;
-
+        
         public long GetId() => CharacterId;
 
         public void GenerateDeath(IBattleEntity killer)
