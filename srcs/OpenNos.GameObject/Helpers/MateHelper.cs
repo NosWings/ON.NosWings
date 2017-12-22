@@ -15,11 +15,29 @@ namespace OpenNos.GameObject.Helpers
             LoadHpData();
             LoadMinDamageData();
             LoadMaxDamageData();
-            LoadMateBuffs();
-            LoadPetSkills();
             LoadPrimaryMpData();
             LoadSecondaryMpData();
             LoadXpData();
+
+            PetSkills = new List<int>();
+            PetSkills.Add(1513); // Purcival
+            PetSkills.Add(1514); // Baron scratch ? 
+            PetSkills.Add(1515); // Amiral (le chat chelou)
+            PetSkills.Add(1516); // roi des pirates pussifer
+            PetSkills.Add(1524); // Miaou fou
+
+            MateBuffs = new Dictionary<int, int>();
+            MateBuffs[178] = 108; // LUCKY PIG
+            MateBuffs[670] = 374; // FIBI
+            MateBuffs[830] = 377; // RUDY LOUBARD
+            MateBuffs[836] = 381; // PADBRA
+            MateBuffs[838] = 385; // RATUFU NAVY
+            MateBuffs[840] = 442; // LEO LE LACHE
+            MateBuffs[841] = 394; // RATUFU NINJA
+            MateBuffs[842] = 399; // RATUFU INDIEN
+            MateBuffs[843] = 403; // RATUFU VIKING
+            MateBuffs[844] = 391; // RATUFU COWBOY
+            MateBuffs[2105] = 383; // INFERNO
         }
 
         #endregion
@@ -64,12 +82,18 @@ namespace OpenNos.GameObject.Helpers
             {
                 session.Character.AddBuff(new Buff.Buff(cardId, isPermaBuff: true));
             }
-            mate.Monster.Skills.Where(sk => PetSkills.Contains(sk.SkillVNum)).ToList().ForEach(s => session.SendPacket(session.Character.GeneratePetskill(s.SkillVNum)));
+            foreach (NpcMonsterSkill skill in mate.Monster.Skills.Where(sk => PetSkills.Contains(sk.SkillVNum)))
+            {
+                session.SendPacket(session.Character.GeneratePetskill(skill.SkillVNum));
+            }
         }
 
         public void RemovePetBuffs(ClientSession session)
         {
-            session.Character.BattleEntity.Buffs.Where(b => MateBuffs.Values.Any(v => v == b.Card.CardId)).ToList().ForEach(b => session.Character.RemoveBuff(b.Card.CardId, true));
+            foreach (Buff.Buff mateBuff in session.Character.BattleEntity.Buffs.Where(b => MateBuffs.Values.Any(v => v == b.Card.CardId)))
+            {
+                session.Character.RemoveBuff(mateBuff.Card.CardId, true);
+            }
             session.SendPacket(session.Character.GeneratePetskill());
         }
 
@@ -190,32 +214,6 @@ namespace OpenNos.GameObject.Helpers
                 MaxDamageData[1, i] = baseDamage;
                 baseDamage += (short)(i % 5 == 0 ? 5 : baseUp);
             }
-        }
-
-        private void LoadPetSkills()
-        {
-            PetSkills = new List<int>();
-            PetSkills.Add(1513); // Purcival
-            PetSkills.Add(1514); // Baron scratch ? 
-            PetSkills.Add(1515); // Amiral (le chat chelou)
-            PetSkills.Add(1516); // roi des pirates pussifer
-            PetSkills.Add(1524); // Miaou fou
-        }
-
-        private void LoadMateBuffs()
-        {
-            MateBuffs = new Dictionary<int, int>();
-            MateBuffs[178] = 108; // LUCKY PIG
-            MateBuffs[670] = 374; // FIBI
-            MateBuffs[830] = 377; // RUDY LOUBARD
-            MateBuffs[836] = 381; // PADBRA
-            MateBuffs[838] = 385; // RATUFU NAVY
-            MateBuffs[840] = 442; // LEO LE LACHE
-            MateBuffs[841] = 394; // RATUFU NINJA
-            MateBuffs[842] = 399; // RATUFU INDIEN
-            MateBuffs[843] = 403; // RATUFU VIKING
-            MateBuffs[844] = 391; // RATUFU COWBOY
-            MateBuffs[2105] = 383; // INFERNO
         }
 
         #endregion

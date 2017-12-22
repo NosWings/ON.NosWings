@@ -1098,7 +1098,7 @@ namespace OpenNos.GameObject
                             }
                             UseSp = false;
                             SpInstance = null;
-                            CharacterHelper.Instance.RemoveSpecialistBuff(Session);
+                            CharacterHelper.Instance.RemoveSpecialistWingsBuff(Session);
                             LoadSpeed();
                             Session.SendPacket(GenerateCond());
                             Session.SendPacket(GenerateLev());

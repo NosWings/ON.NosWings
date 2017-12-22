@@ -1585,7 +1585,7 @@ namespace OpenNos.Handler
             });
             Session.SendPacket(Session.Character.GenerateSki());
             Session.SendPackets(Session.Character.GenerateQuicklist());
-            CharacterHelper.Instance.AddSpecialistBuff(Session);
+            CharacterHelper.Instance.AddSpecialistWingsBuff(Session);
             Session.Character.LoadPassive();
         }
 

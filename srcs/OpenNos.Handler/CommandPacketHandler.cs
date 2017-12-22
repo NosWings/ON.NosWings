@@ -2055,7 +2055,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.UseSp = true;
                     Session.Character.SpInstance = Session.Character.Inventory?.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
-                    CharacterHelper.Instance.AddSpecialistBuff(Session);
+                    CharacterHelper.Instance.AddSpecialistWingsBuff(Session);
                     Session.Character.Morph = morphPacket.MorphId;
                     Session.Character.MorphUpgrade = morphPacket.Upgrade;
                     Session.Character.MorphUpgrade2 = morphPacket.MorphDesign;
@@ -2074,7 +2074,7 @@ namespace OpenNos.Handler
                     Session.Character.IsVehicled = false;
                     Session.Character.UseSp = false;
                     Session.Character.SpInstance = null;
-                    CharacterHelper.Instance.RemoveSpecialistBuff(Session);
+                    CharacterHelper.Instance.RemoveSpecialistWingsBuff(Session);
                     Session.Character.ArenaWinner = 0;
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.SendPacket(Session.Character.GenerateLev());

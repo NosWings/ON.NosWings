@@ -97,7 +97,7 @@ namespace OpenNos.GameObject.Helpers
 
         #region Methods
 
-        public void AddSpecialistBuff(ClientSession session)
+        public void AddSpecialistWingsBuff(ClientSession session)
         {
             if (!session.Character.UseSp || session.Character.SpInstance == null)
             {
@@ -137,7 +137,7 @@ namespace OpenNos.GameObject.Helpers
             }
         }
 
-        public void RemoveSpecialistBuff(ClientSession session)
+        public void RemoveSpecialistWingsBuff(ClientSession session)
         {
             session.Character.RemoveBuff(387, true);
             session.Character.RemoveBuff(395, true);
