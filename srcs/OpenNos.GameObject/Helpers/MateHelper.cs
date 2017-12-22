@@ -18,6 +18,8 @@ namespace OpenNos.GameObject.Helpers
             LoadPrimaryMpData();
             LoadSecondaryMpData();
             LoadXpData();
+            LoadMateBuffs();
+            LoadPetSkills();
         }
 
         #endregion

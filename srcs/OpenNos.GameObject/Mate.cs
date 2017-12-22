@@ -65,7 +65,6 @@ namespace OpenNos.GameObject
             AddTeamMember();
             GenerateMateTransportId();
             StartLife();
-            MateHelper.Instance.AddPetBuff(Owner.Session, this); // Add pet buffs
         }
 
         #endregion
