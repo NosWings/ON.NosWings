@@ -1161,6 +1161,7 @@ namespace OpenNos.Handler
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, changeLevelPacket, Session.IpAddress);
                     Session.Character.Level = changeLevelPacket.Level;
+                    Session.Character.BattleEntity.Level = changeLevelPacket.Level;
                     Session.Character.LevelXp = 0;
                     Session.Character.Hp = (int)Session.Character.HpLoad();
                     Session.Character.Mp = (int)Session.Character.MpLoad();
@@ -2053,7 +2054,8 @@ namespace OpenNos.Handler
                 if (morphPacket.MorphId < 30 && morphPacket.MorphId > 0)
                 {
                     Session.Character.UseSp = true;
-                    Session.Character.SpInstance = Session.Character.Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                    Session.Character.SpInstance = Session.Character.Inventory?.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
+                    CharacterHelper.Instance.AddSpecialistWingsBuff(Session);
                     Session.Character.Morph = morphPacket.MorphId;
                     Session.Character.MorphUpgrade = morphPacket.Upgrade;
                     Session.Character.MorphUpgrade2 = morphPacket.MorphDesign;
@@ -2072,6 +2074,7 @@ namespace OpenNos.Handler
                     Session.Character.IsVehicled = false;
                     Session.Character.UseSp = false;
                     Session.Character.SpInstance = null;
+                    CharacterHelper.Instance.RemoveSpecialistWingsBuff(Session);
                     Session.Character.ArenaWinner = 0;
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.SendPacket(Session.Character.GenerateLev());

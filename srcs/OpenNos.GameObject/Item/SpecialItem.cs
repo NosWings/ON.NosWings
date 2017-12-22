@@ -114,7 +114,7 @@ namespace OpenNos.GameObject.Item
                                 CharacterId = session.Character.CharacterId,
                                 RemainingTime = 7200
                             });
-                            session.Character.RemoveBuff(339);
+                            session.Character.RemoveBuff(339, true);
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             break;
                         case 5929:
@@ -124,7 +124,7 @@ namespace OpenNos.GameObject.Item
                                 CharacterId = session.Character.CharacterId,
                                 RemainingTime = 600
                             });
-                            session.Character.RemoveBuff(339);
+                            session.Character.RemoveBuff(339, true);
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             break;
                         default:
@@ -317,7 +317,7 @@ namespace OpenNos.GameObject.Item
                     {
                         break;
                     }
-                    kenko.KillMonster();
+                    kenko.GenerateDeath(session.Character);
                     kenko.GenerateOut();
                     session.Character.Inventory.AddNewToInventory(1174); // Kenko Bead
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -342,7 +342,6 @@ namespace OpenNos.GameObject.Item
                             List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad };
                             session.Character.DisableBuffs(bufftodisable, 4);
                             break;
-
                     }
                     Observable.Timer(TimeSpan.FromSeconds(session.Character.BuffRandomTime * 0.1D)).Subscribe(o =>
                     {

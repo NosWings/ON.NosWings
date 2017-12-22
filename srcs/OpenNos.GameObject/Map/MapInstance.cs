@@ -29,6 +29,7 @@ using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.PathFinder.PathFinder;
+using OpenNos.GameObject.Battle;
 
 namespace OpenNos.GameObject.Map
 {
@@ -196,6 +197,14 @@ namespace OpenNos.GameObject.Map
         #endregion
 
         #region Methods
+
+        public IEnumerable<IBattleEntity> BattleEntities
+        {
+            get
+            {
+                return _battleEntities.Select(e => e.Value).Concat(Npcs).Concat(Monsters);
+            }
+        }
 
         public void AddMonster(MapMonster monster)
         {
@@ -485,14 +494,14 @@ namespace OpenNos.GameObject.Map
         {
             Parallel.ForEach(_monsters.Select(s => s.Value).Where(s => s.MonsterVNum == monsterVnum), monster =>
             {
-                monster.KillMonster();
+                monster.GenerateDeath();
                 Broadcast(monster.GenerateOut());
             });
         }
 
         public void DespawnMonster(MapMonster monster)
         {
-            monster.KillMonster();
+            monster.GenerateDeath();
             Broadcast(monster.GenerateOut());
         }
 
@@ -527,17 +536,9 @@ namespace OpenNos.GameObject.Map
             return characters;
         }
 
-        internal IEnumerable<Mate> GetMatesInRange(short mapX, short mapY, byte distance)
+        public IEnumerable<IBattleEntity> GetBattleEntitiesInRange(MapCell pos, byte distance)
         {
-            List<Mate> mates = new List<Mate>();
-            foreach (Mate mate in Mates)
-            {
-                if (Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = mate.PositionX, Y = mate.PositionY }) <= distance + 1)
-                {
-                    mates.Add(mate);
-                }
-            }
-            return mates;
+            return BattleEntities.Where(b => Map.GetDistance(b.GetPos(), pos) <= distance);
         }
 
         internal void RemoveMonstersTarget(object target)
@@ -616,13 +617,13 @@ namespace OpenNos.GameObject.Map
             });
         }
 
-        internal void SummonMonsters(IEnumerable<MonsterToSummon> summonParameters)
+        internal void SummonMonsters(IEnumerable<ToSummon> summonParameters)
         {
             // TODO: Parallelize, if possible.
-            foreach (MonsterToSummon mon in summonParameters)
+            foreach (ToSummon mon in summonParameters)
             {
                 NpcMonster npcmonster = ServerManager.Instance.GetNpc(mon.VNum);
-                if (npcmonster == null)
+                if (npcmonster == null || ServerManager.Instance.RandomNumber() > mon.SummonChance)
                 {
                     continue;
                 }
@@ -636,27 +637,26 @@ namespace OpenNos.GameObject.Map
                     MapMonsterId = GetNextMonsterId(),
                     ShouldRespawn = false,
                     Target = mon.Target,
-                    OnDeathEvents = mon.DeathEvents,
-                    OnNoticeEvents = mon.NoticingEvents,
                     IsTarget = mon.IsTarget,
-                    IsBonus = mon.IsBonus,
-                    IsBoss = mon.IsBoss,
-                    NoticeRange = mon.NoticeRange
+                    OnNoticeEvents = mon.NoticingEvents,
+                    IsBonus = mon.IsBonusOrProtected,
+                    IsBoss = mon.IsBonusOrProtected
                 };
                 monster.Initialize(this);
                 monster.IsHostile = mon.IsHostile;
+                monster.BattleEntity.OnDeathEvents = mon.DeathEvents;
                 AddMonster(monster);
                 Broadcast(monster.GenerateIn());
             }
         }
 
-        internal void SummonNpcs(IEnumerable<NpcToSummon> summonParameters)
+        internal void SummonNpcs(IEnumerable<ToSummon> summonParameters)
         {
             // TODO: Parallelize, if possible.
-            foreach (NpcToSummon mon in summonParameters)
+            foreach (ToSummon mon in summonParameters)
             {
                 NpcMonster npcmonster = ServerManager.Instance.GetNpc(mon.VNum);
-                if (npcmonster == null)
+                if (npcmonster == null || ServerManager.Instance.RandomNumber() > mon.SummonChance)
                 {
                     continue;
                 }
@@ -670,11 +670,11 @@ namespace OpenNos.GameObject.Map
                     IsMoving = true,
                     MapNpcId = GetNextNpcId(),
                     Target = mon.Target,
-                    OnDeathEvents = mon.DeathEvents,
-                    IsMate = mon.IsMate,
-                    IsProtected = mon.IsProtected
+                    IsMate = mon.IsBossOrMate,
+                    IsProtected = mon.IsBonusOrProtected
                 };
                 npc.Initialize(this);
+                npc.BattleEntity.OnDeathEvents = mon.DeathEvents;
                 AddNpc(npc);
                 Broadcast(npc.GenerateIn());
             }

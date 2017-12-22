@@ -333,7 +333,6 @@ namespace OpenNos.GameObject.Networking
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
-            Character.Buff = new ConcurrentBag<Buff.Buff>();
         }
 
         private void ClearReceiveQueue()

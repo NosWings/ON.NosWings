@@ -80,15 +80,13 @@ namespace OpenNos.GameObject
                 if (session == player)
                 {
                     str.AddRange(player.Character.Mates.Where(s => s.IsTeamMember).OrderByDescending(s => s.MateType).Select(mate =>
-                        $"pst 2 {mate.MateTransportId} {(mate.MateType == MateType.Partner ? "0" : "1")} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0{ /*mate.Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}.{buff.Level}")*/0}"));
+                        $"pst 2 {mate.MateTransportId} {(mate.MateType == MateType.Partner ? "0" : "1")} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0{mate.Buffs.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}.{buff.Level}")}"));
                     i = session.Character.Mates.Count(s => s.IsTeamMember);
                     str.Add(
                         $"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HpLoad() * 100)} {(int)(session.Character.Mp / session.Character.MpLoad() * 100)} {session.Character.HpLoad()} {session.Character.MpLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}");
+                    continue;
                 }
-                else
-                {
-                    str.Add($"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HpLoad() * 100)} {(int)(session.Character.Mp / session.Character.MpLoad() * 100)} {session.Character.HpLoad()} {session.Character.MpLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}{session.Character.Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}")}");
-                }
+                str.Add($"pst 1 {session.Character.CharacterId} {++i} {(int)(session.Character.Hp / session.Character.HpLoad() * 100)} {(int)(session.Character.Mp / session.Character.MpLoad() * 100)} {session.Character.HpLoad()} {session.Character.MpLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}{session.Character.Buff.Aggregate(string.Empty, (current, buff) => current + $" {buff.Card.CardId}")}");
             }
             return str;
         }

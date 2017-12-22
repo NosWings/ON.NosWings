@@ -4725,6 +4725,15 @@ namespace NosSharp.World.Resource {
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Money: +{0}.
         /// </summary>
+        internal static string WILL_BE_BACK {
+            get {
+                return ResourceManager.GetString("WILL_BE_BACK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Money: +{0}.
+        /// </summary>
         internal static string WIN_MONEY {
             get {
                 return ResourceManager.GetString("WIN_MONEY", resourceCulture);
