@@ -15,38 +15,49 @@
 using System.Collections.Generic;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Battle;
+using System.Collections.Concurrent;
+using System;
+
 
 namespace OpenNos.GameObject
 {
-    public class MonsterToSummon
+    public class ToSummon
     {
         #region Instantiation
 
-        public MonsterToSummon(short vnum, MapCell spawnCell, object target, bool move, bool isTarget = false, bool isBonus = false, bool isHostile = true, bool isBoss=false)
+        public ToSummon(short vnum, MapCell spawnCell, IBattleEntity target, bool move, byte summonChance = 100, bool isTarget = false, bool isBonusOrProtected = false, bool isHostile = true, bool isBossOrMate = false)
         {
             VNum = vnum;
             SpawnCell = spawnCell;
             Target = target;
-            IsMoving = move;
             IsTarget = isTarget;
-            IsBonus = isBonus;
-            IsBoss = isBoss;
+            IsMoving = move;
+            IsBonusOrProtected = isBonusOrProtected;
+            IsBossOrMate = isBossOrMate;
             IsHostile = isHostile;
-            DeathEvents = new List<EventContainer>();
-            NoticingEvents = new List<EventContainer>();
+            SummonChance = (byte)(summonChance == 0 ? 100 : summonChance);
+            DeathEvents = new ConcurrentBag<EventContainer>();
+            NoticingEvents = new ConcurrentBag<EventContainer>();
         }
 
         #endregion
 
         #region Properties
 
-        public List<EventContainer> DeathEvents { get; set; }
+        public byte SummonChance { get; set; }
 
-        public List<EventContainer> NoticingEvents { get; set; }
+        public ConcurrentBag<EventContainer> DeathEvents { get; set; }
 
-        public bool IsBonus { get; set; }
+        public ConcurrentBag<EventContainer> NoticingEvents { get; set; }
+
+        public bool IsBonusOrProtected { get; set; }
+
+        public bool IsBossOrMate { get; set; }
 
         public bool IsHostile { get; set; }
+
+        public bool IsProtected { get; }
 
         public bool IsMoving { get; set; }
 
@@ -54,12 +65,11 @@ namespace OpenNos.GameObject
 
         public MapCell SpawnCell { get; set; }
 
-        public object Target { get; set; }
+        public IBattleEntity Target { get; set; }
 
         public short VNum { get; set; }
 
-        public bool IsBoss { get;  set; }
-        public byte NoticeRange { get; internal set; }
+        public byte NoticeRange { get; set; }
 
         #endregion
     }

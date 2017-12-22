@@ -1621,8 +1621,8 @@
   <data name="PET_AUTO_RELIVE_ENABLE" xml:space="preserve">
     <value>Partner can be revived with seed or power if it dies</value>
   </data>
-  <data name="PET_WILL_BE_BACK" xml:space="preserve">
-    <value>Nosmate dead !  It will be revived in 3 min</value>
+  <data name="WILL_BE_BACK" xml:space="preserve">
+    <value>{0} dead !  It will be revived in 3 min</value>
   </data>
   <data name="RAID_REGISTRED" xml:space="preserve">
     <value>Team was registred</value>
@@ -1635,9 +1635,6 @@
   </data>
   <data name="JOIN_TEAM" xml:space="preserve">
     <value>You join a raid team</value>
-  </data>
-  <data name="MATE_WILL_BE_BACK" xml:space="preserve">
-    <value>Mate died !  he will be back in 3 min</value>
   </data>
   <data name="LOW_RAID_LEVEL" xml:space="preserve">
     <value>You must be level {0} to join the raid.</value>

@@ -598,6 +598,7 @@ namespace OpenNos.GameObject.Networking
                 {
                     session.Character.CloseShop();
                 }
+
                 session.Character.LeaveTalentArena();
                 session.CurrentMapInstance.RemoveMonstersTarget(session.Character);
                 session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(mate => session.CurrentMapInstance.RemoveMonstersTarget(mate));
@@ -734,6 +735,19 @@ namespace OpenNos.GameObject.Networking
                 if (session.Character.Group != null && session.Character.Group.GroupType == GroupType.Group)
                 {
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                }
+                if (session.CurrentMapInstance?.Map.MapTypes.All(s => s.MapTypeId != (short)MapTypeEnum.Act52) == true && session.Character.Buff.Any(s => s.Card.CardId == 339)) //Act5.2 debuff
+                {
+                    session.Character.RemoveBuff(339, true);
+                }
+                else if (session.CurrentMapInstance?.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) == true && session.Character.Buff.All(s => s.Card.CardId != 339 && s.Card.CardId != 340))
+                {
+                    session.Character.AddStaticBuff(new StaticBuffDTO
+                    {
+                        CardId = 339,
+                        CharacterId = session.Character.CharacterId,
+                        RemainingTime = -1
+                    }, true);
                 }
                 if (!session.Character.InvisibleGm && session.CurrentMapInstance != null)
                 {
@@ -1854,8 +1868,7 @@ namespace OpenNos.GameObject.Networking
             foreach (MapInstance map in Act4Maps.Where(s => s.Npcs.Count(o => o.NpcVNum == 2004 && o.IsOut) < s.Npcs.Count(n => n.NpcVNum == 2004)))
             {
                 // TODO PROPERTY
-                IEnumerable<MapNpc> npcs = map.Npcs.Where(s => s.IsOut);
-                foreach (MapNpc i in npcs)
+                foreach (MapNpc i in map.Npcs.Where(s => s.IsOut && s.NpcVNum == 2004))
                 {
                     MapCell randomPos = map.Map.GetRandomPosition();
                     i.MapX = randomPos.X;
@@ -1888,7 +1901,7 @@ namespace OpenNos.GameObject.Networking
                     ShouldRespawn = false
                 };
                 monster.Initialize(instance);
-                monster.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<byte, byte>((byte)RandomNumber(0, 4), faction)));
+                monster.BattleEntity.OnDeathEvents.Add(new EventContainer(instance, EventActionType.STARTACT4RAID, new Tuple<byte, byte>((byte)RandomNumber(0, 4), faction)));
                 instance.AddMonster(monster);
                 instance.Broadcast(monster.GenerateIn());
                 Observable.Timer(TimeSpan.FromSeconds(300)).Subscribe(o =>

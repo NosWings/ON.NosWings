@@ -21,6 +21,7 @@ using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Serializing;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Battle;
 
 namespace OpenNos.GameObject.Networking
 {
@@ -33,6 +34,8 @@ namespace OpenNos.GameObject.Networking
         /// </summary>
         private readonly ConcurrentDictionary<long, ClientSession> _sessions;
 
+        internal readonly ConcurrentDictionary<Tuple<SessionType,long>, IBattleEntity> _battleEntities;
+
         private bool _disposed;
 
         #endregion
@@ -43,6 +46,7 @@ namespace OpenNos.GameObject.Networking
         {
             LastUnregister = DateTime.Now.AddMinutes(-1);
             _sessions = new ConcurrentDictionary<long, ClientSession>();
+            _battleEntities = new ConcurrentDictionary<Tuple<SessionType, long>, IBattleEntity>();
         }
 
         #endregion
@@ -54,17 +58,6 @@ namespace OpenNos.GameObject.Networking
             get
             {
                 return _sessions.Select(s => s.Value).Where(s => s.HasSelectedCharacter && !s.IsDisposing && s.IsConnected);
-            }
-        }
-
-        // TO DO : OPTIMIZE
-        public IEnumerable<Mate> Mates
-        {
-            get
-            {
-                ConcurrentBag<Mate> mate = new ConcurrentBag<Mate>();
-                Sessions.ToList().ForEach(s => s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => mate.Add(m)));
-                return mate;
             }
         }
 
@@ -139,7 +132,7 @@ namespace OpenNos.GameObject.Networking
 
         public Mate GetMateByMateTransportId(long mateTransportId)
         {
-            return Mates.FirstOrDefault(m => m.MateTransportId == mateTransportId);
+            return (Mate)_battleEntities.Values.FirstOrDefault(b => b is Mate m && m.MateTransportId == mateTransportId).GetSession();
         }
 
         public void RegisterSession(ClientSession session)
@@ -152,6 +145,9 @@ namespace OpenNos.GameObject.Networking
 
             // Create a ChatClient and store it in a collection
             _sessions[session.Character.CharacterId] = session;
+            _battleEntities[new Tuple<SessionType, long>(SessionType.Character, session.Character.CharacterId)] = session.Character;
+            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities[new Tuple<SessionType, long>(m.SessionType(), m.GetId())] = m);
+
             if (session.HasCurrentMapInstance)
             {
                 session.CurrentMapInstance.IsSleeping = false;
@@ -170,6 +166,9 @@ namespace OpenNos.GameObject.Networking
             {
                 session.CurrentMapInstance.IsSleeping = true;
             }
+            _battleEntities.TryRemove(new Tuple<SessionType, long>(SessionType.Character, session.Character.CharacterId), out IBattleEntity character);
+            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities.TryRemove(new Tuple<SessionType, long>(m.SessionType(), m.GetId()), out IBattleEntity mate));
+
             Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             LastUnregister = DateTime.Now;
         }
