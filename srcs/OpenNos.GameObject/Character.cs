@@ -898,7 +898,6 @@ namespace OpenNos.GameObject
                 if (LastHealth.AddSeconds(2) <= DateTime.Now)
                 {
                     int heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreHP)[0];
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
                     if (Hp + heal < HpLoad())
                     {
                         Hp += heal;
@@ -914,6 +913,7 @@ namespace OpenNos.GameObject
                     }
                     if (change)
                     {
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
                         Session.SendPacket(GenerateStat());
                     }
                 }
