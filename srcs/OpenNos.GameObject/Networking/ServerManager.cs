@@ -1608,7 +1608,6 @@ namespace OpenNos.GameObject.Networking
             {
                 session.Character.Save();
             }
-            DaoFactory.BazaarItemDao.RemoveOutDated();
         }
 
         public void SetProperty(long charId, string property, object value)
@@ -1833,6 +1832,8 @@ namespace OpenNos.GameObject.Networking
             Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(x => { Act6Process(); });
 
             Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(x => { Act4Process(); });
+
+            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { DaoFactory.BazaarItemDao.RemoveOutDated(); });
 
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x => { GroupProcess(); });
 
