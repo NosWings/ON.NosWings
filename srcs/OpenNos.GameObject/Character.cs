@@ -1420,7 +1420,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(CharacterId); });
+            Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(CharacterId, killer.GetSession() is Character character ? character.Session : null); });
         }
 
         public void GenerateRewards(IBattleEntity target)

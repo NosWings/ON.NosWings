@@ -24,7 +24,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core;
-using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.GameObject.Buff;
@@ -36,6 +35,7 @@ using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Npc;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
+using OpenNos.GameObject.Event.ICEBREAKER;
 
 namespace OpenNos.GameObject.Networking
 {
@@ -354,7 +354,7 @@ namespace OpenNos.GameObject.Networking
         }
 
         // PacketHandler -> with Callback?
-        public void AskRevive(long characterId)
+        public void AskRevive(long characterId, ClientSession killer = null)
         {
             ClientSession session = GetSessionByCharacterId(characterId);
             if (session == null || !session.HasSelectedCharacter || session.CurrentMapInstance == null || session.Character.LastDeath.AddSeconds(1) > DateTime.Now)
@@ -373,6 +373,127 @@ namespace OpenNos.GameObject.Networking
             session.Character.LastDeath = DateTime.Now;
             switch (session.CurrentMapInstance.MapInstanceType)
             {
+                case MapInstanceType.Act4Instance:
+                    if (Instance.Act4DemonStat.Mode == 0 && Instance.Act4AngelStat.Mode == 0)
+                    {
+                        switch (session.Character.Faction)
+                        {
+                            case FactionType.Angel:
+                                Instance.Act4AngelStat.Percentage += 100;
+                                break;
+                            case FactionType.Demon:
+                                Instance.Act4DemonStat.Percentage += 100;
+                                break;
+                        }
+                    }
+                    if (session.IpAddress != killer.IpAddress)
+                    {
+                        session.Character.Act4Kill += 1;
+                        killer.Character.Act4Dead += 1;
+                        killer.Character.GetAct4Points(-1);
+                        if (killer.Character.Level + 10 >= session.Character.Level && session.Character.Level <= killer.Character.Level - 10)
+                        {
+                            session.Character.GetAct4Points(2);
+                        }
+                        if (killer.Character.Reput < 50000)
+                        {
+                            killer.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), 0), 11));
+                        }
+                        else
+                        {
+                            killer.Character.LoseReput(killer.Character.Level * 50);
+                            session.Character.GetReput(killer.Character.Level * 50);
+                            session.SendPacket(session.Character.GenerateLev());
+                        }
+                    }
+                    foreach (ClientSession sess in Instance.Sessions.Where(s => s.HasSelectedCharacter && s.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance))
+                    {
+                        if (sess.Character.Faction == session.Character.Faction)
+                        {
+                            sess.SendPacket(sess.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey($"ACT4_PVP_KILL"), killer.Character.Faction, session.Character.Name), 12));
+                        }
+                        else if (sess.Character.Faction == killer.Character.Faction)
+                        {
+                            sess.SendPacket(sess.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey($"ACT4_PVP_DEATH"), killer.Character.Faction, killer.Character.Name), 11));
+                        }
+                    }
+                    killer.SendPacket(killer.Character.GenerateFd());
+                    killer.Character.DisableBuffs(bufftodisable);
+                    killer.CurrentMapInstance?.Broadcast(killer, killer.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    killer.CurrentMapInstance?.Broadcast(killer, killer.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    killer.SendPacket(killer.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));
+                    killer.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 0));
+                    Observable.Timer(TimeSpan.FromMilliseconds(2000)).Subscribe(o =>
+                    {
+                        killer.CurrentMapInstance?.Broadcast(killer, $"c_mode 1 {killer.Character.CharacterId} 1564 0 0 0");
+                        killer.CurrentMapInstance?.Broadcast(killer.Character.GenerateRevive());
+                    });
+                    Observable.Timer(TimeSpan.FromMilliseconds(30000)).Subscribe(o =>
+                    {
+                        killer.Character.Hp = (int)killer.Character.HpLoad();
+                        killer.Character.Mp = (int)killer.Character.MpLoad();
+                        short x = (short)(39 + Instance.RandomNumber(-2, 3));
+                        short y = (short)(42 + Instance.RandomNumber(-2, 3));
+                        MapInstance citadel = Instance.Act4Maps.FirstOrDefault(s => s.Map.MapId == (killer.Character.Faction == FactionType.Angel ? 130 : 131));
+                        if (citadel != null)
+                        {
+                            Instance.ChangeMapInstance(killer.Character.CharacterId, citadel.MapInstanceId, x, y);
+                        }
+                        killer.CurrentMapInstance?.Broadcast(killer, killer.Character.GenerateTp());
+                        killer.CurrentMapInstance?.Broadcast(killer.Character.GenerateRevive());
+                        killer.SendPacket(killer.Character.GenerateStat());
+                    });
+                    break;
+
+                case MapInstanceType.IceBreakerInstance:
+                    if (IceBreaker.AlreadyFrozenPlayers.Contains(killer))
+                    {
+                        IceBreaker.AlreadyFrozenPlayers.Remove(killer);
+                        Group targetGroup = IceBreaker.GetGroupByClientSession(killer);
+                        if (targetGroup != null && targetGroup.Characters.Count - 1 < 1)
+                        {
+                            IceBreaker.RemoveGroup(targetGroup);
+                        }
+                        killer.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_OUT"), killer.Character?.Name), 0));
+                        killer.Character.Hp = 1;
+                        killer.Character.Mp = 1;
+                        RespawnMapTypeDTO respawn = killer.Character?.Respawn;
+                        Instance.ChangeMap(killer.Character.CharacterId, respawn.DefaultMapId);
+                        session.SendPacket($"cancel 2 {killer.Character?.CharacterId}");
+                        return;
+                    }
+                    else
+                    {
+                        IceBreaker.FrozenPlayers.Add(killer);
+                        killer.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_PLAYER_FROZEN"), killer.Character?.Name), 0));
+                        killer.Character.Hp = (int)killer.Character.HpLoad();
+                        killer.Character.Mp = (int)killer.Character.MpLoad();
+                        killer.SendPacket(killer.Character?.GenerateStat());
+                        killer.SendPacket(killer.Character?.GenerateCond());
+                        IDisposable obs = null;
+                        obs = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(s =>
+                        {
+                            if (IceBreaker.FrozenPlayers.Contains(killer))
+                            {
+                                killer.CurrentMapInstance?.Broadcast(killer.Character?.GenerateEff(35));
+                            }
+                            else
+                            {
+                                obs?.Dispose();
+                            }
+                        });
+                    }
+                    break;
+
+                case MapInstanceType.ArenaInstance:
+                    session.Character.TalentWin += 1;
+                    killer.Character.TalentLose += 1;
+                    Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o =>
+                    {
+                        Instance.AskPvpRevive(killer.Character.CharacterId);
+                    });
+                    break;
+
                 case MapInstanceType.BaseMapInstance:
                     if (session.Character.Level > 20)
                     {
