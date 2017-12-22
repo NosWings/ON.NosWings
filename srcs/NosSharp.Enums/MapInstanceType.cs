@@ -27,6 +27,7 @@ namespace NosSharp.Enums
         IceBreakerInstance,
         RainbowBattleInstance,
         ArenaInstance,
-        PersonalMapInstance
+        PersonalMapInstance,
+        BattleRoyaleMapInstance
     }
 }

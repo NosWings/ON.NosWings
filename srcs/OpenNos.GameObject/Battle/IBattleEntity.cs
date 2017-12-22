@@ -37,7 +37,7 @@ namespace OpenNos.GameObject.Battle
 
         void GenerateRewards(IBattleEntity target);
 
-        bool isTargetable(SessionType type, bool isPvP = false);
+        bool IsTargetable(SessionType type, bool isPvP = false);
 
         long GetId();
 

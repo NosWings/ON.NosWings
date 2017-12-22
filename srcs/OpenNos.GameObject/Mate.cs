@@ -22,7 +22,6 @@ using System.Collections.Concurrent;
 using OpenNos.Core;
 using System.Reactive.Linq;
 using NosSharp.Enums;
-using OpenNos.Core.Extensions;
 using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
@@ -573,7 +572,7 @@ namespace OpenNos.GameObject
 
         public AttackType GetAttackType(Skill skill = null) => (AttackType)Monster.AttackClass;
 
-        public bool isTargetable(SessionType type, bool isPvP = false) => type == NosSharp.Enums.SessionType.Monster && IsAlive && Hp > 0;
+        public bool IsTargetable(SessionType type, bool isPvP = false) => type == NosSharp.Enums.SessionType.Monster && IsAlive && Hp > 0;
 
         public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, Owner.MapInstance.Map.Grid);
 

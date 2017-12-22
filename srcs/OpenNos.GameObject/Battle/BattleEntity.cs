@@ -757,39 +757,47 @@ namespace OpenNos.GameObject.Battle
             {
                 return;
             }
+
             if (indicator.IsPermaBuff && !removePermaBuff)
             {
                 AddBuff(indicator);
                 return;
             }
+
             Buffs.RemoveWhere(s => s.Card.CardId != id, out ConcurrentBag<Buff.Buff> buffs);
             Buffs = buffs;
-            if (Session is Character character)
+            if (!(Session is Character character))
             {
-                if (indicator.StaticBuff)
-                {
-                    character.Session.SendPacket($"vb {indicator.Card.CardId} 0 {indicator.Card.Duration}");
-                    character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 11));
-                }
-                else
-                {
-                    character.Session.SendPacket($"bf 1 {character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
-                    character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 20));
-                }
-
-                if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move))
-                {
-                    character.LoadSpeed();
-                    character.LastSpeedChange = DateTime.Now;
-                    character.Session.SendPacket(character.GenerateCond());
-                }
-                if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.SpecialActions && s.SubType.Equals((byte)AdditionalTypes.SpecialActions.Hide)))
-                {
-                    character.Invisible = false;
-                    character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => character.MapInstance?.Broadcast(m.GenerateIn()));
-                    character.MapInstance?.Broadcast(character.GenerateInvisible());
-                }
+                return;
             }
+
+
+            if (indicator.StaticBuff)
+            {
+                character.Session.SendPacket($"vb {indicator.Card.CardId} 0 {indicator.Card.Duration}");
+                character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 11));
+            }
+            else
+            {
+                character.Session.SendPacket($"bf 1 {character.CharacterId} 0.{indicator.Card.CardId}.0 {Level}");
+                character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 20));
+            }
+
+            if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move))
+            {
+                character.LoadSpeed();
+                character.LastSpeedChange = DateTime.Now;
+                character.Session.SendPacket(character.GenerateCond());
+            }
+
+            if (!indicator.Card.BCards.Any(s => s.Type == (byte)CardType.SpecialActions && s.SubType.Equals((byte)AdditionalTypes.SpecialActions.Hide)))
+            {
+                return;
+            }
+
+            character.Invisible = false;
+            character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => character.MapInstance?.Broadcast(m.GenerateIn()));
+            character.MapInstance?.Broadcast(character.GenerateInvisible());
         }
 
         public void TargetHit(IBattleEntity target, TargetHitType hitType, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false)
@@ -856,7 +864,7 @@ namespace OpenNos.GameObject.Battle
 
         private void TargetHit2(IBattleEntity target, TargetHitType hitType, Skill skill, int damage, int hitmode, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false, bool isRange = false)
         {
-            if (!target.isTargetable(Entity.SessionType(), isPvp))
+            if (!target.IsTargetable(Entity.SessionType(), isPvp))
             {
                 if (Session is Character cha)
                 {
@@ -976,7 +984,7 @@ namespace OpenNos.GameObject.Battle
                 return;
             }
             
-            foreach (IBattleEntity entitiesInRange in Entity.MapInstance?.GetBattleEntitiesInRange(Entity.GetPos(), skill.TargetRange).Where(e => e != target && e.isTargetable(Entity.SessionType())))
+            foreach (IBattleEntity entitiesInRange in Entity.MapInstance?.GetBattleEntitiesInRange(Entity.GetPos(), skill.TargetRange).Where(e => e != target && e.IsTargetable(Entity.SessionType())))
             {
                 TargetHit2(entitiesInRange, TargetHitType.SingleTargetHit, skill, damage, hitmode, isRange: true);
             }

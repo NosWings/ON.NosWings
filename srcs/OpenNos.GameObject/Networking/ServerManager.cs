@@ -28,6 +28,7 @@ using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Event.BattleRoyale;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item;
 using OpenNos.GameObject.Item.Instance;
@@ -1566,6 +1567,7 @@ namespace OpenNos.GameObject.Networking
                     }
                 }
                 Logger.Log.Info($"[ACT4] Initialized");
+                BattleRoyaleManager.Instance.Initialize(Maps.FirstOrDefault(s => s.MapId == 247));
                 LoadScriptedInstances();
             }
             catch (Exception ex)

@@ -247,7 +247,7 @@ namespace OpenNos.GameObject.Map
         /// </summary>
         internal void GetNearestOponent()
         {
-            Target = DamageList.Keys.ToList().OrderBy(e => Map.GetDistance(GetPos(), e.GetPos())).FirstOrDefault(e => e.isTargetable(SessionType()));
+            Target = DamageList.Keys.ToList().OrderBy(e => Map.GetDistance(GetPos(), e.GetPos())).FirstOrDefault(e => e.IsTargetable(SessionType()));
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.isTargetable(SessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange));
+            IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.IsTargetable(SessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange));
 
             if (target == null || MoveEvent != null)
             {
@@ -303,7 +303,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            if (!Target?.isTargetable(SessionType()) ?? true)
+            if (!Target?.IsTargetable(SessionType()) ?? true)
             {
                 RemoveTarget();
                 return;
@@ -505,7 +505,7 @@ namespace OpenNos.GameObject.Map
 
         public AttackType GetAttackType(Skill skill = null) => (AttackType)Monster.AttackClass;
 
-        public bool isTargetable(SessionType type, bool isPvP = false) => type != NosSharp.Enums.SessionType.Monster && IsAlive && CurrentHp > 0;
+        public bool IsTargetable(SessionType type, bool isPvP = false) => type != NosSharp.Enums.SessionType.Monster && IsAlive && CurrentHp > 0;
 
         public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = MapX, Y = MapY }, MapInstance.Map.Grid);
 

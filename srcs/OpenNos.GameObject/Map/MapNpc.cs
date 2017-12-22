@@ -125,7 +125,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            if (!Target?.isTargetable(SessionType()) ?? true)
+            if (!Target?.IsTargetable(SessionType()) ?? true)
             {
                 RemoveTarget();
                 return;
@@ -384,7 +384,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.isTargetable(SessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < Npc.NoticeRange);
+            IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.IsTargetable(SessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < Npc.NoticeRange);
             Target = target ?? Target;
         }
 
@@ -446,7 +446,7 @@ namespace OpenNos.GameObject.Map
 
         public AttackType GetAttackType(Skill skill = null) => (AttackType)Npc.AttackClass;
 
-        public bool isTargetable(SessionType type, bool isPvP = false) => type == NosSharp.Enums.SessionType.Monster && IsHostile && IsAlive && CurrentHp > 0;
+        public bool IsTargetable(SessionType type, bool isPvP = false) => type == NosSharp.Enums.SessionType.Monster && IsHostile && IsAlive && CurrentHp > 0;
 
         public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = MapX, Y = MapY }, MapInstance.Map.Grid);
 
