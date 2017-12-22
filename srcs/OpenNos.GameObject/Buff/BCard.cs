@@ -41,7 +41,7 @@ namespace OpenNos.GameObject.Buff
                 case BCardType.CardType.Buff:
                     if (ServerManager.Instance.RandomNumber() < FirstData)
                     {
-                        session?.BattleEntity.AddBuff(new Buff(SecondData, caster.BattleEntity.Level));
+                        session?.BattleEntity.AddBuff(new Buff(SecondData, caster?.BattleEntity.Level ?? session.BattleEntity.Level));
                     }
                     break;
 
