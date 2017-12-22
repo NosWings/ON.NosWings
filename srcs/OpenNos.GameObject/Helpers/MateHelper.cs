@@ -18,26 +18,6 @@ namespace OpenNos.GameObject.Helpers
             LoadPrimaryMpData();
             LoadSecondaryMpData();
             LoadXpData();
-
-            PetSkills = new List<int>();
-            PetSkills.Add(1513); // Purcival
-            PetSkills.Add(1514); // Baron scratch ? 
-            PetSkills.Add(1515); // Amiral (le chat chelou)
-            PetSkills.Add(1516); // roi des pirates pussifer
-            PetSkills.Add(1524); // Miaou fou
-
-            MateBuffs = new Dictionary<int, int>();
-            MateBuffs[178] = 108; // LUCKY PIG
-            MateBuffs[670] = 374; // FIBI
-            MateBuffs[830] = 377; // RUDY LOUBARD
-            MateBuffs[836] = 381; // PADBRA
-            MateBuffs[838] = 385; // RATUFU NAVY
-            MateBuffs[840] = 442; // LEO LE LACHE
-            MateBuffs[841] = 394; // RATUFU NINJA
-            MateBuffs[842] = 399; // RATUFU INDIEN
-            MateBuffs[843] = 403; // RATUFU VIKING
-            MateBuffs[844] = 391; // RATUFU COWBOY
-            MateBuffs[2105] = 383; // INFERNO
         }
 
         #endregion
@@ -214,6 +194,40 @@ namespace OpenNos.GameObject.Helpers
                 MaxDamageData[1, i] = baseDamage;
                 baseDamage += (short)(i % 5 == 0 ? 5 : baseUp);
             }
+        }
+
+        #endregion
+
+        #region List
+
+        private void LoadPetSkills()
+        {
+            PetSkills = new List<int>
+            {
+                1513, // Purcival 
+                1514, // Baron scratch ?
+                1515, // Amiral (le chat chelou) 
+                1516, // roi des pirates pussifer 
+                1524 // Miaou fou
+            };
+        }
+
+        private void LoadMateBuffs()
+        {
+            MateBuffs = new Dictionary<int, int>
+            {
+                {178, 108}, // LUCKY PIG 
+                {670, 374}, // FIBI 
+                {830, 377}, // RUDY LOUBARD 
+                {836, 381}, // PADBRA
+                {838, 385}, // RATUFU NAVY 
+                {840, 442}, // LEO LE LACHE 
+                {841, 394}, // RATUFU NINJA 
+                {842, 399}, // RATUFU INDIEN 
+                {843, 403}, // RATUFU VIKING 
+                {844, 391}, // RATUFU COWBOY 
+                {2105, 383} // INFERNO 
+            };
         }
 
         #endregion
