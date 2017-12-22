@@ -181,7 +181,7 @@ namespace OpenNos.GameObject.Battle
 
             if (indicator.Card.EffectId > 0)
             {
-                Entity.MapInstance?.Broadcast(Entity.GenerateEff(indicator.Card.EffectId));
+                //Entity.MapInstance?.Broadcast(Entity.GenerateEff(indicator.Card.EffectId));
             }
             if (ObservableBag.TryGetValue(indicator.Card.CardId, out IDisposable value))
             {
