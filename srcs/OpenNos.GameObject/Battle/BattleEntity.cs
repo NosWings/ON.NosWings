@@ -169,7 +169,7 @@ namespace OpenNos.GameObject.Battle
                 }
                 if (!indicator.StaticBuff)
                 {
-                    character.Session.SendPacket($"bf 1 {character.CharacterId} {(character.ChargeValue > 7000 ? 7000 : character.ChargeValue)}.{indicator.Card.CardId}.{indicator.RemainingTime} {Level}");
+                    character.Session.SendPacket($"bf 1 {character.CharacterId} {(character.ChargeValue > 7000 ? 7000 : character.ChargeValue)}.{indicator.Card.CardId}.{indicator.Card.Duration} {Level}");
                     character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
                 }
             }
