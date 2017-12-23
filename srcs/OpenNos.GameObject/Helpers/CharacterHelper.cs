@@ -103,6 +103,7 @@ namespace OpenNos.GameObject.Helpers
             {
                 return;
             }
+            RemoveSpecialistWingsBuff(session);
             switch (session.Character.SpInstance.Design)
             {
                 case 6:
