@@ -173,8 +173,11 @@ namespace OpenNos.GameObject.Battle
                     character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
                 }
             }
-            indicator.RemainingTime = indicator.Card.Duration == 0 ? randomTime : indicator.Card.Duration;
-            indicator.Start = DateTime.Now;
+            if (!indicator.StaticBuff)
+            {
+                indicator.RemainingTime = indicator.Card.Duration == 0 ? randomTime : indicator.Card.Duration;
+                indicator.Start = DateTime.Now;
+            }
             Buffs.Add(indicator);
 
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Entity));
