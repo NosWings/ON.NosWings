@@ -299,8 +299,7 @@ namespace OpenNos.GameObject.Item.Instance
             EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(shellType, Rare == 8 ? 7 : Rare, shellLevel));
         }
 
-        public void RarifyItem(ClientSession session, RarifyMode mode, RarifyProtection protection,
-            bool isCommand = false)
+        public void RarifyItem(ClientSession session, RarifyMode mode, RarifyProtection protection, bool isCommand = false)
         {
             double raren2 = 80;
             double raren1 = 70;
@@ -832,8 +831,7 @@ namespace OpenNos.GameObject.Item.Instance
                     {
                         if (session.Character.Inventory.CountItem(gemVnum) < gem[Upgrade])
                         {
-                            session.SendPacket(session.Character.GenerateSay(
-                                string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(gemVnum).Name, gem[Upgrade]), 10));
+                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(gemVnum).Name, gem[Upgrade]), 10));
                             return;
                         }
                         session.Character.Inventory.RemoveItemAmount(gemVnum, gem[Upgrade]);

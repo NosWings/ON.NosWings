@@ -256,12 +256,12 @@ namespace OpenNos.GameObject.Item
                                         case (byte) EquipmentType.MainWeapon:
                                             session.Character.Inventory.PrimaryWeapon = wearableInstance;
                                             EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
-                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
+                                                .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
                                             break;
                                         case (byte) EquipmentType.SecondaryWeapon:
                                             session.Character.Inventory.SecondaryWeapon = wearableInstance;
                                             EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
-                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
+                                                .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
                                             break;
                                         case (byte) EquipmentType.Ring:
                                         case (byte) EquipmentType.Necklace:
