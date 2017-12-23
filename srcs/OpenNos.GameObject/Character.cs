@@ -808,7 +808,7 @@ namespace OpenNos.GameObject
             ServerManager.Instance.RelationRefresh(addRelation.CharacterRelationId);
             Session.SendPacket(GenerateFinit());
             ClientSession target = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == characterId);
-            target?.SendPacket(target?.Character.GenerateFinit());
+            target?.SendPacket(target.Character.GenerateFinit());
         }
 
         public void ChangeFaction(FactionType faction)
@@ -960,14 +960,21 @@ namespace OpenNos.GameObject
                 if (heal != 0)
                 {
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRc(heal));
-                    change = Hp != (int)HpLoad() ? true : change;
+                    change = Hp != (int)HpLoad();
                     Hp = Hp + heal < HpLoad() ? Hp + heal : (int)HpLoad();
+                }
+
+                heal = GetBuff(CardType.HealingBurningAndCasting, (byte)AdditionalTypes.HealingBurningAndCasting.RestoreMP)[0];
+                if (heal != 0)
+                {
+                    change = Mp != (int)MpLoad() || change;
+                    Mp = Mp + heal < MpLoad() ? Mp + heal : (int)MpLoad();
                 }
 
                 int debuff = (int)(GetBuff(CardType.RecoveryAndDamagePercent, (byte)AdditionalTypes.RecoveryAndDamagePercent.HPReduced)[0] * (HpLoad() / 100)); // DEBUFF HP LOSS
                 if (debuff != 0)
                 {
-                    change = Hp != 1 ? true : change;
+                    change = Hp != 1 || change;
                     Hp = Hp - debuff > 1 ? Hp - debuff : 1;
                 }
             }
@@ -975,17 +982,12 @@ namespace OpenNos.GameObject
             if (LastHealth.AddSeconds(2) <= DateTime.Now || IsSitting && LastHealth.AddSeconds(1.5) <= DateTime.Now)
             {
                 LastHealth = DateTime.Now;
-                if (Session.HealthStop)
-                {
-                    Session.HealthStop = false;
-                    return;
-                }
                 if (LastDefence.AddSeconds(4) <= DateTime.Now && LastSkillUse.AddSeconds(2) <= DateTime.Now && Hp > 0)
                 {
-                    change = Hp != (int)HpLoad() ? true : change;
+                    change = Hp != (int)HpLoad() || change;
                     Hp += Hp + HealthHpLoad() < HpLoad() ? HealthHpLoad() : (int)HpLoad() - Hp;
 
-                    change = Mp != (int)MpLoad() ? true : change;
+                    change = Mp != (int)MpLoad() || change;
                     Mp += Mp + HealthMpLoad() < MpLoad() ? HealthMpLoad() : (int)MpLoad() - Mp;
                 }
             }
@@ -1039,15 +1041,17 @@ namespace OpenNos.GameObject
             {
                 for (int a = 532; a < 535; a++)
                 {
-                    if (MeditationDictionary.TryGetValue((short)a, out DateTime time) && time < DateTime.Now)
+                    if (!MeditationDictionary.TryGetValue((short)a, out DateTime time) || time >= DateTime.Now)
                     {
-                        Session.SendPacket(GenerateEff(4344));
-                        AddBuff(new Buff.Buff(a, Level));
-                        RemoveBuff((short)(a == 532 ? 533 : a == 533 ? 532 : 534));
-                        RemoveBuff((short)(a == 532 ? 534 : a == 533 ? 534 : 532));
-                        MeditationDictionary.Remove((short)a);
-                        break;
+                        continue;
                     }
+
+                    Session.SendPacket(GenerateEff(4344));
+                    AddBuff(new Buff.Buff(a, Level));
+                    RemoveBuff((short)(a == 532 ? 533 : a == 533 ? 532 : 534));
+                    RemoveBuff((short)(a == 532 ? 534 : a == 533 ? 534 : 532));
+                    MeditationDictionary.Remove((short)a);
+                    break;
                 }
             }
 
@@ -1129,45 +1133,7 @@ namespace OpenNos.GameObject
             Session?.SendPacket(GenerateSpPoint());
             LastSpGaugeRemove = DateTime.Now;
         }
-
-        private bool RegenMp()
-        {
-            bool change = false;
-            if (Mp + HealthMpLoad() < MpLoad())
-            {
-                Mp += HealthMpLoad();
-                change = true;
-            }
-            else
-            {
-                if (Mp != (int)MpLoad())
-                {
-                    change = true;
-                }
-                Mp = (int)MpLoad();
-            }
-            return change;
-        }
-
-        private bool RegenHp()
-        {
-            bool change = false;
-            if (Hp + HealthHpLoad() < HpLoad())
-            {
-                change = true;
-                Hp += HealthHpLoad();
-            }
-            else
-            {
-                if (Hp != (int)HpLoad())
-                {
-                    change = true;
-                }
-                Hp = (int)HpLoad();
-            }
-            return change;
-        }
-
+        
         public string GenerateTaFc(byte type)
         {
             return $"ta_fc {type} {CharacterId}";
@@ -1408,7 +1374,7 @@ namespace OpenNos.GameObject
 
         public bool IsTargetable(SessionType type, bool isPvP = false) => type != NosSharp.Enums.SessionType.MateAndNpc && (type != NosSharp.Enums.SessionType.Character || isPvP) && Hp > 0 && !InvisibleGm && !Invisible;
 
-        public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, MapInstance.Map.Grid);
+        public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos { X = PositionX, Y = PositionY }, MapInstance.Map.Grid);
 
         public SessionType SessionType() => NosSharp.Enums.SessionType.Character;
         

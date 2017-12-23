@@ -33,16 +33,11 @@ namespace OpenNos.GameObject.Networking
     public class ClientSession
     {
         #region Members
-
-        public bool HealthStop = false;
-
         private static EncryptionBase _encryptor;
         private Character _character;
         private readonly INetworkClient _client;
         private IDictionary<string, HandlerMethodReference> _handlerMethods;
-        private Random _random;
         private readonly ConcurrentQueue<byte[]> _receiveQueue;
-        private object _receiveQueueObservable;
         private readonly IList<string> _waitForPacketList = new List<string>();
 
         // Packetwait Packets
@@ -61,7 +56,7 @@ namespace OpenNos.GameObject.Networking
             _lastPacketReceive = DateTime.Now.Ticks;
 
             // lag mode
-            _random = new Random((int)client.ClientId);
+            new Random((int)client.ClientId);
 
             // initialize lagging mode
             bool isLagMode = ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
@@ -77,7 +72,7 @@ namespace OpenNos.GameObject.Networking
 
             // start observer for receiving packets
             _receiveQueue = new ConcurrentQueue<byte[]>();
-            _receiveQueueObservable = Observable.Interval(new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10)).Subscribe(x => HandlePackets());
+            Observable.Interval(new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10)).Subscribe(x => HandlePackets());
         }
 
         #endregion
