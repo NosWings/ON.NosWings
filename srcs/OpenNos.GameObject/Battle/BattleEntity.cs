@@ -179,7 +179,6 @@ namespace OpenNos.GameObject.Battle
                 indicator.Start = DateTime.Now;
             }
             Buffs.Add(indicator);
-
             indicator.Card.BCards.ForEach(c => c.ApplyBCards(Entity));
 
             if (indicator.Card.EffectId > 0)
