@@ -973,8 +973,29 @@ namespace OpenNos.GameObject.Battle
 
             if (!isBoss)
             {
-                skill?.BCards.ToList().ForEach(s => s.ApplyBCards(target, Entity));
+                foreach (BCard bcard in skill?.BCards)
+                {
+                    if (bcard.Type != (byte)CardType.Buff)
+                    {
+                        bcard.ApplyBCards(target, Entity);
+                        continue;
+                    }
+                    Buff.Buff b = new Buff.Buff(bcard.SecondData);
+
+                    switch (b.Card?.BuffType)
+                    {
+                        case BuffType.Bad:
+                            bcard.ApplyBCards(target, Entity);
+                            break;
+
+                        case BuffType.Good:
+                        case BuffType.Neutral:
+                            bcard.ApplyBCards(Entity, Entity);
+                            break;
+                    }
+                }
             }
+            
 
             if (target.CurrentHp <= 0)
             {
