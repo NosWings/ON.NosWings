@@ -224,7 +224,7 @@ namespace OpenNos.GameObject.Battle
 
             #region Definitions
 
-            if (Session is MapMonster monster)
+            if (target.Session is MapMonster monster)
             {
                 if (monster.IsPercentage && monster.TakesDamage > 0)
                 {
