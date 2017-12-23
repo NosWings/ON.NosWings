@@ -428,7 +428,7 @@ namespace OpenNos.Handler
                 });
                 Session.Character.Life = Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
                 {
-                    Session.Character.CharacterLife();
+                    Session?.Character?.CharacterLife();
                 });
                 Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Connection", Timestamp = DateTime.Now });
                         
