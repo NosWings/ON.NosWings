@@ -377,7 +377,7 @@ namespace OpenNos.GameObject.Networking
                 case MapInstanceType.Act4Instance:
                     if (Instance.Act4DemonStat.Mode == 0 && Instance.Act4AngelStat.Mode == 0)
                     {
-                        switch (killer.Character.Faction)
+                        switch (killer?.Character?.Faction)
                         {
                             case FactionType.Angel:
                                 Instance.Act4AngelStat.Percentage += 100;
