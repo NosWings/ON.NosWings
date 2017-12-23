@@ -169,7 +169,7 @@ namespace OpenNos.GameObject.Battle
                 }
                 if (!indicator.StaticBuff)
                 {
-                    character.Session.SendPacket($"bf 1 {character.CharacterId} {(character.ChargeValue > 7000 ? 7000 : character.ChargeValue)}.{indicator.Card.CardId}.{indicator.Card.Duration} {Level}");
+                    character.Session.SendPacket($"bf 1 {character.CharacterId} {(character.ChargeValue > 7000 ? 7000 : character.ChargeValue)}.{indicator.Card.CardId}.{indicator.Card.Duration / 10} {Level}");
                     character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
                 }
             }
@@ -188,7 +188,7 @@ namespace OpenNos.GameObject.Battle
                 value?.Dispose();
             }
 
-            ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds((indicator.Card.Duration == 0 ? randomTime : indicator.Card.Duration) * 100)).Subscribe(o =>
+            ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds(indicator.RemainingTime * 100)).Subscribe(o =>
             {
                 RemoveBuff(indicator.Card.CardId);
                 if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
