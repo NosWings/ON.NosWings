@@ -1060,9 +1060,9 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            byte spType = (byte)(SpInstance.Item.Morph > 1 && SpInstance.Item.Morph < 8 || SpInstance.Item.Morph > 9 && SpInstance.Item.Morph < 16 ? 3
-                : SpInstance.Item.Morph > 16 && SpInstance.Item.Morph < 29 ? 2
-                : SpInstance.Item.Morph == 9 ? 1 : 0);
+            byte spType = (byte)(SpInstance.Item.Morph > 1 && SpInstance.Item.Morph < 8 || SpInstance.Item.Morph > 9 && SpInstance.Item.Morph < 16 ? 3 :
+                SpInstance.Item.Morph > 16 && SpInstance.Item.Morph < 29 ? 2 :
+                SpInstance.Item.Morph == 9 ? 1 : 0);
 
             if (Authority != AuthorityType.User)
             {
@@ -1105,7 +1105,7 @@ namespace OpenNos.GameObject
                             Session.SendPacket(GenerateCond());
                             Session.SendPacket(GenerateLev());
                             SpCooldown = 30;
-                            foreach (CharacterSkill ski in SkillsSp?.Where(s => !s.Value.CanBeUsed()).Select(s => s.Value))
+                            foreach (CharacterSkill ski in SkillsSp?.Where(s => !s.Value?.CanBeUsed() == true).Select(s => s.Value))
                             {
                                 double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + ski.Skill.Cooldown * 100;
                                 temp /= 1000;
