@@ -86,6 +86,8 @@ namespace OpenNos.GameObject.Map
             return MonsterVNum == 679 & faction == FactionType.Angel | MonsterVNum == 680 & faction == FactionType.Demon ? false : true;
         }
 
+        public FactionType Faction { get; set; }
+
         public bool IsInvicible => MonsterVNum == 679 || MonsterVNum == 680;
 
         public bool IsBonus { get; set; }
@@ -198,6 +200,7 @@ namespace OpenNos.GameObject.Map
             IsPercentage = Monster.IsPercent;
             TakesDamage = Monster.TakeDamages;
             GiveDamagePercent = Monster.GiveDamagePercentage;
+            Faction = MonsterVNum == 679 ? FactionType.Angel : MonsterVNum == 680 ? FactionType.Demon : FactionType.Neutral;
         }
 
         /// <summary>
@@ -259,7 +262,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.IsTargetable(SessionType()) && Map.GetDistance(GetPos(), e.GetPos()) < (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange));
+            IBattleEntity target = MapInstance.BattleEntities.FirstOrDefault(e => e.IsTargetable(SessionType()) && IsFactionTargettable(e.Faction) && Map.GetDistance(GetPos(), e.GetPos()) < (NoticeRange == 0 ? Monster.NoticeRange : NoticeRange));
 
             if (target == null || MoveEvent != null)
             {

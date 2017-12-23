@@ -9,6 +9,8 @@ namespace OpenNos.GameObject.Battle
     {
         #region Properties
 
+        FactionType Faction { get; }
+
         int CurrentHp { get; set; }
 
         int MaxHp { get; }

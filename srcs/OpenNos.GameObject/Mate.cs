@@ -116,6 +116,8 @@ namespace OpenNos.GameObject
 
         public ItemInstance GlovesInstance { get; set; }
 
+        public FactionType Faction => Owner?.Faction ?? FactionType.Neutral;
+
         public bool IsAlive { get; set; }
 
         public bool IsSitting { get; set; }

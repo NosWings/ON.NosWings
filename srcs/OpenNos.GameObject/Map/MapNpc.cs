@@ -61,6 +61,8 @@ namespace OpenNos.GameObject.Map
 
         #endregion
 
+        public FactionType Faction => FactionType.Neutral;
+
         public bool ShouldRespawn { get; set; }
 
         public bool EffectActivated { get; set; }
