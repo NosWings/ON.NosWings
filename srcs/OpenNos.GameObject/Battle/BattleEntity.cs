@@ -191,7 +191,7 @@ namespace OpenNos.GameObject.Battle
                 value?.Dispose();
             }
 
-            ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds(indicator.RemainingTime * 100)).Subscribe(o =>
+            ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds(indicator.StaticBuff ? indicator.RemainingTime * 1000 : indicator.RemainingTime * 100)).Subscribe(o =>
             {
                 RemoveBuff(indicator.Card.CardId);
                 if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
