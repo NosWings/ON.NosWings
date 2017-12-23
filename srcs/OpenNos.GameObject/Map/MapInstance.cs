@@ -640,7 +640,7 @@ namespace OpenNos.GameObject.Map
                     IsTarget = mon.IsTarget,
                     OnNoticeEvents = mon.NoticingEvents,
                     IsBonus = mon.IsBonusOrProtected,
-                    IsBoss = mon.IsBonusOrProtected
+                    IsBoss = mon.IsBossOrMate
                 };
                 monster.Initialize(this);
                 monster.IsHostile = mon.IsHostile;

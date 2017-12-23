@@ -483,7 +483,7 @@ namespace OpenNos.GameObject
                         NpcAmount++;
                         List<ToSummon> lstn = new List<ToSummon>
                         {
-                            new ToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() {X = positionX, Y = positionY}, null, true, 100, isMate, isProtected)
+                            new ToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() {X = positionX, Y = positionY}, null, move, 100, isBossOrMate: isMate, isBonusOrProtected: isProtected)
                             {
                                  DeathEvents = GenerateEvent(mapevent, mapinstance)
                             }

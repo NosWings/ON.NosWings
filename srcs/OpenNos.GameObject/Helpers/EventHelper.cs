@@ -402,7 +402,7 @@ namespace OpenNos.GameObject.Helpers
                                     evt.MapInstance.Sessions.ToList().ForEach(cli =>
                                     ServerManager.Instance.ChangeMapInstance(cli.Character.CharacterId, instance.FirstMap.MapInstanceId, instance.StartX, instance.StartY));
                                 });
-                                break;
+                                return;
                             }
 
                             // Raids
