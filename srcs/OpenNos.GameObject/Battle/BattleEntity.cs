@@ -973,7 +973,7 @@ namespace OpenNos.GameObject.Battle
 
             if (!isBoss)
             {
-                foreach (BCard bcard in skill?.BCards)
+                foreach (BCard bcard in skill?.BCards.Where(b => b != null))
                 {
                     if (bcard.Type != (byte)CardType.Buff)
                     {
