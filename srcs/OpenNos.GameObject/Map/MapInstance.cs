@@ -60,8 +60,8 @@ namespace OpenNos.GameObject.Map
             OnMapClean = new ConcurrentBag<EventContainer>();
             _monsters = new ConcurrentDictionary<long, MapMonster>();
             _npcs = new ConcurrentDictionary<long, MapNpc>();
-            _mapMonsterIds = new ConcurrentBag<int>();
-            _mapNpcIds = new ConcurrentBag<int>();
+            _mapMonsterIds = new List<int>();
+            _mapNpcIds = new List<int>();
             DroppedList = new ConcurrentDictionary<long, MapItem>();
             Portals = new List<Portal>();
             UserShops = new Dictionary<long, MapShop>();
@@ -75,9 +75,9 @@ namespace OpenNos.GameObject.Map
 
         #region Members
 
-        private readonly ConcurrentBag<int> _mapMonsterIds;
+        private readonly List<int> _mapMonsterIds;
 
-        private readonly ConcurrentBag<int> _mapNpcIds;
+        private readonly List<int> _mapNpcIds;
 
         private readonly ConcurrentDictionary<long, MapMonster> _monsters;
 
