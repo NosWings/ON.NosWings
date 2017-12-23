@@ -1559,6 +1559,7 @@ namespace OpenNos.Handler
                 return;
             }
             List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
+            sp.RestorePoints(Session, sp);
             Session.Character.DisableBuffs(bufftodisable);
             Session.Character.LastTransform = DateTime.Now;
             Session.Character.UseSp = true;
