@@ -239,8 +239,6 @@ namespace OpenNos.GameObject.Item
 
                     if (inv is WearableInstance wearableInstance)
                     {
-                        SpecialistInstance specialistInstance = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-
                         if (wearableInstance.EquipmentOptions != null)
                         {
                             switch (wearableInstance.Item.ItemType)
@@ -258,14 +256,12 @@ namespace OpenNos.GameObject.Item
                                         case (byte) EquipmentType.MainWeapon:
                                             session.Character.Inventory.PrimaryWeapon = wearableInstance;
                                             EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
-                                                .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
-                                            specialistInstance?.RestorePoints(session, specialistInstance);
+                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
                                             break;
                                         case (byte) EquipmentType.SecondaryWeapon:
                                             session.Character.Inventory.SecondaryWeapon = wearableInstance;
                                             EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
-                                                .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
-                                            specialistInstance?.RestorePoints(session, specialistInstance);
+                                                .ForEach(s => session.Character.EquipmentBCards.Add(s));
                                             break;
                                         case (byte) EquipmentType.Ring:
                                         case (byte) EquipmentType.Necklace:
