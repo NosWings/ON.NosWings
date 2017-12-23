@@ -971,9 +971,9 @@ namespace OpenNos.GameObject.Battle
                 }
             }
 
-            if (!isBoss)
+            if (!isBoss && skill != null)
             {
-                foreach (BCard bcard in skill?.BCards.Where(b => b != null))
+                foreach (BCard bcard in skill.BCards.Where(b => b != null))
                 {
                     if (bcard.Type != (byte)CardType.Buff)
                     {
