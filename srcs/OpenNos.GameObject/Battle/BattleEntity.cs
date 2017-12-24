@@ -145,7 +145,7 @@ namespace OpenNos.GameObject.Battle
 
         public void AddBuff(Buff.Buff indicator)
         {
-            if (indicator?.Card == null)
+            if (indicator?.Card == null || indicator.Card.BuffType == BuffType.Bad && Buffs.Any(b => b.Card.CardId == indicator.Card.CardId))
             {
                 return;
             }
