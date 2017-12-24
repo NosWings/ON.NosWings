@@ -2020,7 +2020,7 @@ namespace OpenNos.GameObject.Networking
                     MapX = faction == 1 ? (short) 114 : (short) 20,
                     MapId = (short) (131 + faction),
                     IsMoving = true,
-                    MapMonsterId = instance.GetNextMonsterId(),
+                    MapMonsterId = instance.GetNextId(),
                     ShouldRespawn = false
                 };
                 monster.Initialize(instance);

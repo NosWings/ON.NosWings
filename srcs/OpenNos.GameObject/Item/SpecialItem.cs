@@ -627,7 +627,7 @@ namespace OpenNos.GameObject.Item
                                 MapId = session.Character.MapInstance.Map.MapId,
                                 Position = (byte)session.Character.Direction,
                                 IsMoving = true,
-                                MapMonsterId = session.CurrentMapInstance.GetNextMonsterId(),
+                                MapMonsterId = session.CurrentMapInstance.GetNextId(),
                                 ShouldRespawn = false
                             };
                             monster.Initialize(session.CurrentMapInstance);

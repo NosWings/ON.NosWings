@@ -2639,7 +2639,7 @@ namespace OpenNos.Handler
                         MapId = Session.Character.MapInstance.Map.MapId,
                         Position = (byte)Session.Character.Direction,
                         IsMoving = summonPacket.IsMoving,
-                        MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(),
+                        MapMonsterId = Session.CurrentMapInstance.GetNextId(),
                         ShouldRespawn = false
                     };
                     monster.Initialize(Session.CurrentMapInstance);
@@ -2710,7 +2710,7 @@ namespace OpenNos.Handler
                         MapId = Session.Character.MapInstance.Map.MapId,
                         Position = (byte)Session.Character.Direction,
                         IsMoving = summonNpcPacket.IsMoving,
-                        MapNpcId = Session.CurrentMapInstance.GetNextMonsterId()
+                        MapNpcId = Session.CurrentMapInstance.GetNextId()
                     };
                     monster.Initialize(Session.CurrentMapInstance);
                     Session.CurrentMapInstance.AddNpc(monster);
