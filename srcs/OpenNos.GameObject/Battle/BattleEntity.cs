@@ -973,22 +973,39 @@ namespace OpenNos.GameObject.Battle
             {
                 foreach (BCard bcard in skill.BCards.Where(b => b != null))
                 {
-                    if (bcard.Type != (byte)CardType.Buff)
+                    switch ((CardType)bcard.Type)
                     {
-                        bcard.ApplyBCards(target, Entity);
-                        continue;
-                    }
-                    Buff.Buff b = new Buff.Buff(bcard.SecondData);
+                        case CardType.Buff:
+                            Buff.Buff b = new Buff.Buff(bcard.SecondData);
+                            switch (b.Card?.BuffType)
+                            {
+                                case BuffType.Bad:
+                                    bcard.ApplyBCards(target, Entity);
+                                    break;
 
-                    switch (b.Card?.BuffType)
-                    {
-                        case BuffType.Bad:
-                            bcard.ApplyBCards(target, Entity);
+                                case BuffType.Good:
+                                case BuffType.Neutral:
+                                    bcard.ApplyBCards(Entity, Entity);
+                                    break;
+                            }
                             break;
 
-                        case BuffType.Good:
-                        case BuffType.Neutral:
-                            bcard.ApplyBCards(Entity, Entity);
+                        case CardType.HealingBurningAndCasting:
+                            switch ((AdditionalTypes.HealingBurningAndCasting)bcard.SubType)
+                            {
+                                case AdditionalTypes.HealingBurningAndCasting.RestoreHP:
+                                case AdditionalTypes.HealingBurningAndCasting.RestoreHPWhenCasting:
+                                    bcard.ApplyBCards(Entity, Entity);
+                                    break;
+
+                                default:
+                                    bcard.ApplyBCards(target, Entity);
+                                    break;
+                            }
+                            break;
+
+                        default:
+                            bcard.ApplyBCards(target, Entity);
                             break;
                     }
                 }
