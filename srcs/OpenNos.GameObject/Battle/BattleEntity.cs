@@ -391,7 +391,7 @@ namespace OpenNos.GameObject.Battle
 
             #region Base Damage
 
-            int baseDamage = ServerManager.Instance.RandomNumber(minDmg, maxDmg + 1) + morale - targetMorale;
+            int baseDamage = ServerManager.Instance.RandomNumber(minDmg, maxDmg < minDmg ? minDmg + 1 : maxDmg) + morale - targetMorale;
 
             double upgradeBonus = 0;
             switch (Math.Abs(upgrade))
