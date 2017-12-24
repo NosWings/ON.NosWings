@@ -60,8 +60,7 @@ namespace OpenNos.GameObject.Map
             OnMapClean = new ConcurrentBag<EventContainer>();
             _monsters = new ConcurrentDictionary<long, MapMonster>();
             _npcs = new ConcurrentDictionary<long, MapNpc>();
-            _mapMonsterIds = new List<int>();
-            _mapNpcIds = new List<int>();
+            _lastMapId = 1;
             DroppedList = new ConcurrentDictionary<long, MapItem>();
             Portals = new List<Portal>();
             UserShops = new Dictionary<long, MapShop>();
@@ -75,9 +74,7 @@ namespace OpenNos.GameObject.Map
 
         #region Members
 
-        private readonly List<int> _mapMonsterIds;
-
-        private readonly List<int> _mapNpcIds;
+        private int _lastMapId;
 
         private readonly ConcurrentDictionary<long, MapMonster> _monsters;
 
@@ -126,6 +123,7 @@ namespace OpenNos.GameObject.Map
                 {
                     return _isSleeping;
                 }
+
                 _isSleeping = true;
                 _isSleepingRequest = false;
                 Parallel.ForEach(Monsters.Where(s => s.Life != null), m => { m.StopLife(); });
@@ -200,10 +198,7 @@ namespace OpenNos.GameObject.Map
 
         public IEnumerable<IBattleEntity> BattleEntities
         {
-            get
-            {
-                return _battleEntities.Select(e => e.Value).Concat(Npcs).Concat(Monsters);
-            }
+            get { return _battleEntities.Select(e => e.Value).Concat(Npcs).Concat(Monsters); }
         }
 
         public void AddMonster(MapMonster monster)
@@ -222,6 +217,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
+
             Dispose(true);
             GC.SuppressFinalize(this);
             _disposed = true;
@@ -254,7 +250,7 @@ namespace OpenNos.GameObject.Map
                     }
                 }
 
-                MonsterMapItem droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, owner ?? -1);
+                var droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, owner ?? -1);
                 DroppedList[droppedItem.TransportId] = droppedItem;
                 Broadcast(
                     $"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} {(isQuest ? 1 : 0)} 0 -1");
@@ -270,7 +266,7 @@ namespace OpenNos.GameObject.Map
             // TODO: Parallelize, if possible.
             foreach (Tuple<short, int, short, short> drop in list)
             {
-                MonsterMapItem droppedItem = new MonsterMapItem(drop.Item3, drop.Item4, drop.Item1, drop.Item2);
+                var droppedItem = new MonsterMapItem(drop.Item3, drop.Item4, drop.Item1, drop.Item2);
                 DroppedList[droppedItem.TransportId] = droppedItem;
                 Broadcast(
                     $"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
@@ -330,19 +326,9 @@ namespace OpenNos.GameObject.Map
         }
 
         // TODO: Fix, Seems glitchy.
-        public int GetNextMonsterId()
+        public int GetNextId()
         {
-            int nextId = _mapMonsterIds.Any() ? _mapMonsterIds.LastOrDefault() + 1 : 1;
-            _mapMonsterIds.Add(nextId);
-            return nextId;
-        }
-
-        // TODO: Fix, Seems glitchy.
-        private int GetNextNpcId()
-        {
-            int nextId = _mapNpcIds.Any() ? _mapNpcIds.LastOrDefault() + 1 : 1;
-            _mapNpcIds.Add(nextId);
-            return nextId;
+            return _lastMapId += 1;
         }
 
         public void LoadMonsters()
@@ -354,10 +340,10 @@ namespace OpenNos.GameObject.Map
                 {
                     return;
                 }
+
                 mapMonster.Initialize(this);
-                int mapMonsterId = mapMonster.MapMonsterId;
-                _monsters[mapMonsterId] = mapMonster;
-                _mapMonsterIds.Add(mapMonsterId);
+                mapMonster.MapMonsterId = GetNextId();
+                _monsters[mapMonster.MapMonsterId] = mapMonster;
             });
         }
 
@@ -370,10 +356,10 @@ namespace OpenNos.GameObject.Map
                 {
                     return;
                 }
+
                 mapNpc.Initialize(this);
-                int mapNpcId = mapNpc.MapNpcId;
-                _npcs[mapNpcId] = mapNpc;
-                _mapNpcIds.Add(mapNpcId);
+                mapNpc.MapNpcId = GetNextId();
+                _npcs[mapNpc.MapNpcId] = mapNpc;
             });
         }
 
@@ -387,6 +373,7 @@ namespace OpenNos.GameObject.Map
                 {
                     return;
                 }
+
                 portal2.SourceMapInstanceId = MapInstanceId;
                 portalList[portal2.PortalId] = portal2;
             });
@@ -408,6 +395,7 @@ namespace OpenNos.GameObject.Map
                 mlobjstring += $" {mp.ItemInstance.ItemVNum}.{i}.{mp.MapX}.{mp.MapY}";
                 i++;
             }
+
             return mlobjstring;
         }
 
@@ -440,6 +428,7 @@ namespace OpenNos.GameObject.Map
                 {
                     continue;
                 }
+
                 niceSpot = true;
                 break;
             }
@@ -448,10 +437,12 @@ namespace OpenNos.GameObject.Map
             {
                 return null;
             }
+
             if (amount <= 0 || amount > inv.Amount)
             {
                 return null;
             }
+
             ItemInstance newItemInstance = inv.DeepCopy();
             newItemInstance.Id = random2;
             newItemInstance.Amount = amount;
@@ -533,6 +524,7 @@ namespace OpenNos.GameObject.Map
                     characters.Add(clientSessions.ElementAt(i).Character);
                 }
             }
+
             return characters;
         }
 
@@ -554,6 +546,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
+
             short originX = mon.MapX;
             short originY = mon.MapY;
             int amount = ServerManager.Instance.RandomNumber(parameter.Item4, parameter.Item5);
@@ -561,6 +554,7 @@ namespace OpenNos.GameObject.Map
             {
                 amount *= ServerManager.Instance.GoldRate;
             }
+
             for (int i = 0; i < parameter.Item3; i++)
             {
                 positionRandomizer:
@@ -570,7 +564,8 @@ namespace OpenNos.GameObject.Map
                 {
                     goto positionRandomizer;
                 }
-                MonsterMapItem droppedItem = new MonsterMapItem(destX, destY, parameter.Item2, amount);
+
+                var droppedItem = new MonsterMapItem(destX, destY, parameter.Item2, amount);
                 DroppedList[droppedItem.TransportId] = droppedItem;
                 Broadcast(
                     $"throw {droppedItem.ItemVNum} {droppedItem.TransportId} {originX} {originY} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)}");
@@ -587,10 +582,12 @@ namespace OpenNos.GameObject.Map
                     {
                         return;
                     }
+
                     if (s.Offset == 0 && Sessions.Any())
                     {
                         s.Events.ToList().ForEach(e => EventHelper.Instance.RunEvent(e));
                     }
+
                     s.Offset = s.Offset > 0 ? (byte)(s.Offset - 1) : (byte)0;
                     s.LastStart = DateTime.Now;
                 });
@@ -600,6 +597,7 @@ namespace OpenNos.GameObject.Map
                     {
                         return;
                     }
+
                     if (Monsters.Count(s => s.IsAlive) == 0)
                     {
                         OnMapClean.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e); });
@@ -627,14 +625,15 @@ namespace OpenNos.GameObject.Map
                 {
                     continue;
                 }
-                MapMonster monster = new MapMonster
+
+                var monster = new MapMonster
                 {
                     MonsterVNum = npcmonster.NpcMonsterVNum,
                     MapY = mon.SpawnCell.Y,
                     MapX = mon.SpawnCell.X,
                     MapId = Map.MapId,
                     IsMoving = mon.IsMoving,
-                    MapMonsterId = GetNextMonsterId(),
+                    MapMonsterId = GetNextId(),
                     ShouldRespawn = false,
                     Target = mon.Target,
                     IsTarget = mon.IsTarget,
@@ -660,7 +659,8 @@ namespace OpenNos.GameObject.Map
                 {
                     continue;
                 }
-                MapNpc npc = new MapNpc
+
+                var npc = new MapNpc
                 {
                     NpcVNum = npcmonster.NpcMonsterVNum,
                     MapY = mon.SpawnCell.X,
@@ -668,7 +668,7 @@ namespace OpenNos.GameObject.Map
                     MapId = Map.MapId,
                     IsHostile = true,
                     IsMoving = true,
-                    MapNpcId = GetNextNpcId(),
+                    MapNpcId = GetNextId(),
                     Target = mon.Target,
                     IsMate = mon.IsBossOrMate,
                     IsProtected = mon.IsBonusOrProtected
@@ -686,6 +686,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
+
             Clock.Dispose();
             Life.Dispose();
             _monsters.Select(s => s.Value).ToList().ForEach(monster => monster.Life?.Dispose());
