@@ -224,17 +224,10 @@ namespace OpenNos.GameObject.Battle
 
             #region Definitions
 
-            if (target.Session is MapMonster monster)
+            // Percent Damage
+            if (target.Session is MapMonster monster && monster.IsPercentage && monster.TakesDamage > 0)
             {
-                if (monster.IsPercentage && monster.TakesDamage > 0)
-                {
-                    monster.CurrentHp -= monster.TakesDamage;
-                    if (monster.CurrentHp <= 0)
-                    {
-                        monster.GenerateDeath();
-                    }
-                    return (ushort)monster.TakesDamage;
-                }
+                return (ushort)monster.TakesDamage;
             }
 
             AttackType attackType = Entity.GetAttackType(skill);
