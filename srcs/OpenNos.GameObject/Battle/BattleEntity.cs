@@ -261,7 +261,6 @@ namespace OpenNos.GameObject.Battle
                 {
                     character.TeleportOnMap(targetEntity.GetPos().X, targetEntity.GetPos().Y);
                 }
-
                 if (character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Equipment)?.Item?.Effect == 932)
                 {
                     upgrade += 1;
