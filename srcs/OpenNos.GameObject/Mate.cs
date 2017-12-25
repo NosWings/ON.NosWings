@@ -500,6 +500,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
+            IsAlive = true;
             RemoveTeamMember();
             Owner.Session.SendPacket(Owner.GeneratePinit());
             Owner.MapInstance.Broadcast(GenerateOut());
