@@ -938,10 +938,9 @@ namespace OpenNos.GameObject.Networking
 
         public void DisconnectAll()
         {
-            foreach (ClientSession session in Sessions.Where(s =>
-                s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null))
+            foreach (ClientSession session in Sessions)
             {
-                session.Disconnect();
+                session?.Disconnect();
             }
         }
 
