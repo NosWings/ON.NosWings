@@ -1757,28 +1757,11 @@ namespace OpenNos.GameObject.Networking
         public void Shutdown()
         {
             CommunicationServiceClient.Instance.DisableWorldServerConnexions(WorldId);
-            string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
+            string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 15);
             Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
             Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            Observable.Timer(TimeSpan.FromMinutes(4)).Subscribe(c =>
-            {
-                message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
-                Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-                Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            });
-            Observable.Timer(TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(30)).Subscribe(c =>
-            {
-                message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
-                Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-                Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            });
-            Observable.Timer(TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(50)).Subscribe(c =>
-            {
-                message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
-                Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-                Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            });
-            Observable.Timer(TimeSpan.FromMinutes(5)).Subscribe(c =>
+
+            Observable.Timer(TimeSpan.FromSeconds(15)).Subscribe(c =>
             {
                 Instance.SaveAll();
                 Instance.DisconnectAll();
