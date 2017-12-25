@@ -174,7 +174,7 @@ namespace OpenNos.Master.Library.Interface
         /// Prevents connexions from client
         /// </summary>
         /// <param name="worldId">Id of the targeted World</param>
-        void DisableWorldServerConnexions(Guid worldId);
+        void SetWorldServerAsInvisible(Guid worldId);
 
 
         /*

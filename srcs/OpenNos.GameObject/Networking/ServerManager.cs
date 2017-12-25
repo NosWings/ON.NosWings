@@ -1756,7 +1756,7 @@ namespace OpenNos.GameObject.Networking
 
         public void Shutdown()
         {
-            CommunicationServiceClient.Instance.DisableWorldServerConnexions(WorldId);
+            CommunicationServiceClient.Instance.SetWorldServerAsInvisible(WorldId);
             string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 15);
             Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
             Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));

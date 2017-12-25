@@ -120,9 +120,9 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.ConnectCharacter(worldId, characterId);
         }
 
-        public void DisableWorldServerConnexions(Guid worldId)
+        public void SetWorldServerAsInvisible(Guid worldId)
         {
-            _client.ServiceProxy.DisableWorldServerConnexions(worldId);
+            _client.ServiceProxy.SetWorldServerAsInvisible(worldId);
         }
 
         public void DisconnectAccount(long accountId)
