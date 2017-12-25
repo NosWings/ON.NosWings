@@ -1258,7 +1258,14 @@ namespace OpenNos.Handler
             }
             else
             {
-                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                if (Session.Character.MapId == (short)SpecialMapIdType.Lobby)
+                {
+                    ServerManager.Instance.TeleportToLobby(Session);
+                }
+                else
+                {
+                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                }
             }
             Session.SendPacket(Session.Character.GenerateSki());
             Session.SendPacket($"fd {Session.Character.Reput} 0 {(int)Session.Character.Dignity} {Math.Abs(Session.Character.GetDignityIco())}");
