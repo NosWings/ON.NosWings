@@ -322,7 +322,7 @@ namespace NosSharp.Master
                 return null;
             }
             string channelPacket = $"NsTeST {account.AccountName} {sessionId} ";
-            foreach (WorldServer world in MsManager.Instance.WorldServers.OrderBy(w => w.WorldGroup))
+            foreach (WorldServer world in MsManager.Instance.WorldServers.Where(x => x.IsConnexionsDisabled == false).OrderBy(w => w.WorldGroup))
             {
                 if (lastGroup != world.WorldGroup)
                 {
@@ -564,6 +564,18 @@ namespace NosSharp.Master
                     return;
                 }
                 account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().SendMail(mail);
+            }
+        }
+
+        public void DisableWorldServerConnexions(Guid worldId)
+        {
+            if (!MsManager.Instance.AuthentificatedClients.Any(s => s.Equals(CurrentClient.ClientId)))
+            {
+                return;
+            }
+            foreach (var worldServer in MsManager.Instance.WorldServers.Where(x => x.Id.Equals(worldId)))
+            {
+                worldServer.IsConnexionsDisabled = true;
             }
         }
 

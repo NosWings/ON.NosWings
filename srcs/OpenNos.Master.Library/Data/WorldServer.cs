@@ -14,6 +14,7 @@ namespace OpenNos.Master.Library.Data
             Endpoint = endpoint;
             AccountLimit = accountLimit;
             WorldGroup = worldGroup;
+            IsConnexionsDisabled = false;
         }
 
         #endregion
@@ -35,6 +36,8 @@ namespace OpenNos.Master.Library.Data
         public string WorldGroup { get; set; }
 
         public bool IsAct4 { get; set; }
+
+        public bool IsConnexionsDisabled { get; set; }
 
         #endregion
     }

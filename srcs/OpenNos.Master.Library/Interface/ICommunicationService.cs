@@ -170,6 +170,12 @@ namespace OpenNos.Master.Library.Interface
         /// <param name="worldId">Id of the World to be unregistered</param>
         void UnregisterWorldServer(Guid worldId);
 
+        /// <summary>
+        /// Prevents connexions from client
+        /// </summary>
+        /// <param name="worldId">Id of the targeted World</param>
+        void DisableWorldServerConnexions(Guid worldId);
+
 
         /*
          * ACT 4

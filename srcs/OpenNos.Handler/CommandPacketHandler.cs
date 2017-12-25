@@ -2474,16 +2474,7 @@ namespace OpenNos.Handler
         public void Shutdown(ShutdownPacket shutdownPacket)
         {
             LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, shutdownPacket, Session.IpAddress);
-            if (ServerManager.Instance.TaskShutdown != null)
-            {
-                ServerManager.Instance.ShutdownStop = true;
-                ServerManager.Instance.TaskShutdown = null;
-            }
-            else
-            {
-                ServerManager.Instance.TaskShutdown = new Task(ServerManager.Instance.ShutdownTask);
-                ServerManager.Instance.TaskShutdown.Start();
-            }
+            ServerManager.Instance.Shutdown();
         }
 
         /// <summary>

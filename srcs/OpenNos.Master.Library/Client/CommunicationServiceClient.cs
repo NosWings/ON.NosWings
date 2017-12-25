@@ -120,6 +120,11 @@ namespace OpenNos.Master.Library.Client
             return _client.ServiceProxy.ConnectCharacter(worldId, characterId);
         }
 
+        public void DisableWorldServerConnexions(Guid worldId)
+        {
+            _client.ServiceProxy.DisableWorldServerConnexions(worldId);
+        }
+
         public void DisconnectAccount(long accountId)
         {
             _client.ServiceProxy.DisconnectAccount(accountId);
@@ -262,11 +267,6 @@ namespace OpenNos.Master.Library.Client
             MessageSentToCharacter?.Invoke(message, null);
         }
 
-        internal void OnShutdown()
-        {
-            ShutdownEvent?.Invoke(null, null);
-        }
-
         internal void OnUpdateBazaar(long bazaarItemId)
         {
             BazaarRefresh?.Invoke(bazaarItemId, null);
@@ -297,6 +297,11 @@ namespace OpenNos.Master.Library.Client
         {
             Tuple<long, AuthorityType> tu = new Tuple<long, AuthorityType>(accountId, authority);
             AuthorityChange?.Invoke(tu, null);
+        }
+
+        internal void OnShutdown()
+        {
+            ShutdownEvent?.Invoke(null, null);
         }
 
         public void SendMail(string worldGroup, MailDTO mail)

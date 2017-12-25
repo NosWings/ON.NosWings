@@ -53,8 +53,6 @@ namespace OpenNos.GameObject.Networking
 
         #region Members
 
-        public bool ShutdownStop;
-
         private static readonly List<Item.Item> Items = new List<Item.Item>();
 
         private static readonly ConcurrentDictionary<Guid, MapInstance> Mapinstances = new ConcurrentDictionary<Guid, MapInstance>();
@@ -175,8 +173,6 @@ namespace OpenNos.GameObject.Networking
         public string ServerGroup { get; set; }
 
         public List<EventType> StartedEvents { get; set; }
-
-        public Task TaskShutdown { get; set; }
 
         public int? RaidType { get; set; }
 
@@ -937,6 +933,15 @@ namespace OpenNos.GameObject.Networking
             {
                 Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
                 session.Character.IsChangingMapInstance = false;
+            }
+        }
+
+        public void DisconnectAll()
+        {
+            foreach (ClientSession session in Sessions.Where(s =>
+                s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null))
+            {
+                session.Disconnect();
             }
         }
 
@@ -1749,63 +1754,37 @@ namespace OpenNos.GameObject.Networking
             Broadcast($"msg 2 {message}");
         }
 
-        public async void ShutdownTask()
+        public void Shutdown()
         {
+            CommunicationServiceClient.Instance.DisableWorldServerConnexions(WorldId);
             string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
             Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
             Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 60 * 4; i++)
+            Observable.Timer(TimeSpan.FromMinutes(4)).Subscribe(c =>
             {
-                await Task.Delay(1000);
-                if (!Instance.ShutdownStop)
-                {
-                    continue;
-                }
-                Instance.ShutdownStop = false;
-                return;
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
-            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 30; i++)
+                message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
+                Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+                Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            });
+            Observable.Timer(TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(30)).Subscribe(c =>
             {
-                await Task.Delay(1000);
-                if (!Instance.ShutdownStop)
-                {
-                    continue;
-                }
-                Instance.ShutdownStop = false;
-                return;
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
-            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 30; i++)
+                message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
+                Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+                Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            });
+            Observable.Timer(TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(50)).Subscribe(c =>
             {
-                await Task.Delay(1000);
-                if (!Instance.ShutdownStop)
-                {
-                    continue;
-                }
-                Instance.ShutdownStop = false;
-                return;
-            }
-            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
-            Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
-            for (int i = 0; i < 10; i++)
+                message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
+                Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+                Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(message, 2));
+            });
+            Observable.Timer(TimeSpan.FromMinutes(5)).Subscribe(c =>
             {
-                await Task.Delay(1000);
-                if (!Instance.ShutdownStop)
-                {
-                    continue;
-                }
-                Instance.ShutdownStop = false;
-                return;
-            }
-            Instance.SaveAll();
-            CommunicationServiceClient.Instance.UnregisterWorldServer(WorldId);
-            Environment.Exit(0);
+                Instance.SaveAll();
+                Instance.DisconnectAll();
+                CommunicationServiceClient.Instance.UnregisterWorldServer(WorldId);
+                Environment.Exit(0);
+            });
         }
 
         public void TeleportForward(ClientSession session, Guid guid, short x, short y)
@@ -1906,8 +1885,7 @@ namespace OpenNos.GameObject.Networking
 
         internal void StopServer()
         {
-            Instance.ShutdownStop = true;
-            Instance.TaskShutdown = null;
+            Instance.Shutdown();
         }
 
         // Server
@@ -2564,16 +2542,7 @@ namespace OpenNos.GameObject.Networking
 
         private void OnShutdown(object sender, EventArgs e)
         {
-            if (Instance.TaskShutdown != null)
-            {
-                Instance.ShutdownStop = true;
-                Instance.TaskShutdown = null;
-            }
-            else
-            {
-                Instance.TaskShutdown = new Task(Instance.ShutdownTask);
-                Instance.TaskShutdown.Start();
-            }
+            Instance.Shutdown();
         }
 
         private void RemoveItemProcess()
