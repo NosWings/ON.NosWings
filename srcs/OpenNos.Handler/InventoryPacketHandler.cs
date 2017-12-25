@@ -618,9 +618,6 @@ namespace OpenNos.Handler
 
                     // initialize and rarify
                     item.Rarify(null);
-                    Session.Character.IncrementQuests(QuestType.Collect1, mapItem.ItemVNum);
-                    Session.Character.IncrementQuests(QuestType.Collect2, mapItem.ItemVNum);
-                    Session.Character.IncrementQuests(QuestType.Collect4, mapItem.ItemVNum);
                 }
 
                 if (mapItem.ItemVNum != 1046)
@@ -656,6 +653,13 @@ namespace OpenNos.Handler
                             ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
                             if (inv != null)
                             {
+                                if (mapItem is MonsterMapItem)
+                                {
+                                    Session.Character.IncrementQuests(QuestType.Collect1, mapItem.ItemVNum);
+                                    Session.Character.IncrementQuests(QuestType.Collect2, mapItem.ItemVNum);
+                                    Session.Character.IncrementQuests(QuestType.Collect4, mapItem.ItemVNum);
+                                }
+
                                 Session?.CurrentMapInstance?.DroppedList.TryRemove(getPacket.TransportId, out MapItem value);
                                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                                 if (getPacket.PickerType == 2)
