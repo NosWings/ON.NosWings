@@ -226,6 +226,8 @@ namespace OpenNos.GameObject.Networking
 
         public long? FlowerQuestId { get; set; }
 
+        public MapInstance LobbyMapInstance { get; set; }
+
         #endregion
 
         #region Methods
@@ -1467,6 +1469,11 @@ namespace OpenNos.GameObject.Networking
                 CharacterRelations = DaoFactory.CharacterRelationDao.LoadAll().ToList();
                 PenaltyLogs = DaoFactory.PenaltyLogDao.LoadAll().ToList();
 
+                if (DaoFactory.MapDao.LoadById((short)SpecialMapIdType.Lobby) != null)
+                {
+                    Logger.Log.Info("[LOBBY] Lobby Map Loaded");
+                    LobbyMapInstance = GenerateMapInstance((short)SpecialMapIdType.Lobby, MapInstanceType.LobbyMapInstance, new InstanceBag());
+                }
                 if (DaoFactory.MapDao.LoadById(2006) != null)
                 {
                     Logger.Log.Info("[ARENA] Arena Map Loaded");
@@ -1767,6 +1774,11 @@ namespace OpenNos.GameObject.Networking
                 CommunicationServiceClient.Instance.UnregisterWorldServer(WorldId);
                 Environment.Exit(0);
             });
+        }
+
+        public void TeleportToLobby(ClientSession session)
+        {
+            ChangeMapInstance(session.Character.CharacterId, LobbyMapInstance.MapInstanceId, RandomNumber(141, 147), RandomNumber(87, 94));
         }
 
         public void TeleportForward(ClientSession session, Guid guid, short x, short y)
