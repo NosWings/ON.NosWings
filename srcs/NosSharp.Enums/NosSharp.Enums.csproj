@@ -190,6 +190,7 @@
     <Compile Include="ReceiverType.cs" />
     <Compile Include="RequestExchangeType.cs" />
     <Compile Include="StaticBonusType.cs" />
+    <Compile Include="SpecialMapIdType.cs" />
     <Compile Include="TargetHitType.cs" />
     <Compile Include="TeleporterType.cs" />
     <Compile Include="TimeSpaceType.cs" />
