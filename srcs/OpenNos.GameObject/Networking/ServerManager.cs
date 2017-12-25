@@ -1791,6 +1791,7 @@ namespace OpenNos.GameObject.Networking
         public void TeleportToLobby(ClientSession session)
         {
             ChangeMapInstance(session.Character.CharacterId, LobbyMapInstance.MapInstanceId, RandomNumber(141, 147), RandomNumber(87, 94));
+            session.Character.GenerateEff(23);
         }
 
         public void TeleportForward(ClientSession session, Guid guid, short x, short y)
