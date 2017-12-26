@@ -369,7 +369,7 @@ namespace OpenNos.GameObject.Map
                 }
 
                 // check if target is in range & if monster has enough mp to use the skill
-                if (CurrentMp >= (npcMonsterSkill?.Skill.MpCost ?? CurrentMp) && Map.GetDistance(GetPos(), Target.GetPos()) <= (npcMonsterSkill?.Skill.Range + 1 ?? Monster.BasicRange))
+                if (CurrentMp >= (npcMonsterSkill?.Skill.MpCost ?? CurrentMp) && Map.GetDistance(GetPos(), Target.GetPos()) <= (npcMonsterSkill?.Skill.Range + 1 ?? Monster?.BasicRange))
                 {
                     TargetHit(npcMonsterSkill);
                     return;
