@@ -1915,8 +1915,17 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        ///     $Kick Command
+        ///  $Lobby Command
         /// </summary>
+        /// <param name="lobbyPacket"></param>
+        public void Lobby(LobbyPacket lobbyPacket)
+        {
+            ServerManager.Instance.TeleportToLobby(Session);
+        }
+
+        /// <summary>
+        ///     $Kick Command
+        /// </summary>(
         /// <param name="kickPacket"></param>
         public void Kick(KickPacket kickPacket)
         {
