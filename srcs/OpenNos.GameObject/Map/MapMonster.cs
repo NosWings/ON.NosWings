@@ -526,9 +526,9 @@ namespace OpenNos.GameObject.Map
 
         public void GenerateDeath(IBattleEntity killer = null)
         {
-            if (IsInvicible) // Act4 Guardians
+            if (!IsAlive || IsInvicible) // Act4 Guardians
             {
-                CurrentHp = 1;
+                CurrentHp = IsInvicible ? 1 : CurrentHp;
                 return;
             }
             IsAlive = false;
