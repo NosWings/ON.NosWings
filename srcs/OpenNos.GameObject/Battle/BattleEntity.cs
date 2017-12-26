@@ -958,7 +958,14 @@ namespace OpenNos.GameObject.Battle
                 }
                 else
                 {
-                    monster.DamageList.Add(Entity, damage);
+                    try
+                    {
+                        monster.DamageList.Add(Entity, damage);
+                    }
+                    catch
+                    {
+                        monster.DamageList[Entity] += damage;
+                    }
                 }
             }
 
