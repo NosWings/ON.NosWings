@@ -106,7 +106,7 @@ namespace OpenNos.GameObject.Helpers
 
         public void GetJobRewards(ClientSession session)
         {
-            switch (session.Character.Level)
+            switch (session.Character.JobLevel)
             {
                 case 20:
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RECEIVE_SP"), 0));
