@@ -1717,4 +1717,7 @@
   <data name="QUEST_REWARD_PARSED" xml:space="preserve">
     <value>{0} quest rewards parsed.</value>
   </data>
+  <data name="RECEIVE_SP" xml:space="preserve">
+    <value>You received a new SP ! Congratulations !</value>
+  </data>
 </root>

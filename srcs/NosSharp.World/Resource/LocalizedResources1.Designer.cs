@@ -2491,15 +2491,6 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Mate died !  he will be back in 3 min.
-        /// </summary>
-        internal static string MATE_WILL_BE_BACK {
-            get {
-                return ResourceManager.GetString("MATE_WILL_BE_BACK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Maximum amount of gold reached!.
         /// </summary>
         internal static string MAX_GOLD {
@@ -3454,15 +3445,6 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Nosmate dead !  It will be revived in 3 min.
-        /// </summary>
-        internal static string PET_WILL_BE_BACK {
-            get {
-                return ResourceManager.GetString("PET_WILL_BE_BACK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Player {0} is in battle.
         /// </summary>
         internal static string PLAYER_IN_BATTLE {
@@ -3684,6 +3666,15 @@ namespace NosSharp.World.Resource {
         internal static string RATEGOLD_NOW {
             get {
                 return ResourceManager.GetString("RATEGOLD_NOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You received a new SP ! Congratulations !.
+        /// </summary>
+        internal static string RECEIVE_SP {
+            get {
+                return ResourceManager.GetString("RECEIVE_SP", resourceCulture);
             }
         }
         
@@ -4723,7 +4714,7 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Money: +{0}.
+        ///   Recherche une chaîne localisée semblable à {0} dead !  It will be revived in 3 min.
         /// </summary>
         internal static string WILL_BE_BACK {
             get {

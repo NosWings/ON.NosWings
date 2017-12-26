@@ -4355,6 +4355,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(GenerateStat());
                 Session.SendPacket(GenerateLevelUp());
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
+                RewardsHelper.Instance.GetJobRewards(Session);
                 LearnAdventurerSkill();
                 Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
                 Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
