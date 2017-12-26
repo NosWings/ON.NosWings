@@ -75,7 +75,7 @@ namespace OpenNos.GameObject.Map
 
         public int CurrentMp { get; set; }
 
-        public IDictionary<IBattleEntity, long> DamageList { get; private set; }
+        public ConcurrentDictionary<IBattleEntity, long> DamageList { get; private set; }
 
         public DateTime Death { get; set; }
 
@@ -194,7 +194,7 @@ namespace OpenNos.GameObject.Map
             CurrentMp = Monster.MaxMP;
             Monster.Skills.ForEach(s => Skills.Add(s));
             BattleEntity = new BattleEntity(this);
-            DamageList = new Dictionary<IBattleEntity, long>();
+            DamageList = new ConcurrentDictionary<IBattleEntity, long>();
             _random = new Random(MapMonsterId);
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
             IsPercentage = Monster.IsPercent;
@@ -467,7 +467,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            DamageList = new Dictionary<IBattleEntity, long>();
+            DamageList = new ConcurrentDictionary<IBattleEntity, long>();
             IsAlive = true;
             Target = null;
             CurrentHp = Monster.MaxHP;
@@ -546,7 +546,7 @@ namespace OpenNos.GameObject.Map
 
         public void GenerateRewards(IBattleEntity target)
         {
-            DamageList.Remove(target);
+            DamageList.TryRemove(target, out long value);
             RemoveTarget();
         }
 

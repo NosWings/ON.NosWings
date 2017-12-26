@@ -952,21 +952,7 @@ namespace OpenNos.GameObject.Battle
                 {
                     Entity.MapInstance?.Broadcast(monster.GenerateBoss());
                 }
-                if (monster.DamageList.ContainsKey(Entity))
-                {
-                    monster.DamageList[Entity] += damage;
-                }
-                else
-                {
-                    try
-                    {
-                        monster.DamageList.Add(Entity, damage);
-                    }
-                    catch
-                    {
-                        monster.DamageList[Entity] += damage;
-                    }
-                }
+                monster.DamageList[Entity] += damage;
             }
 
             if (!isBoss && skill != null)
