@@ -796,6 +796,15 @@ namespace OpenNos.GameObject.Battle
 
         public void TargetHit(IBattleEntity target, TargetHitType hitType, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false)
         {
+            if (!target.IsTargetable(Entity.SessionType(), isPvp) || (target.Faction == Entity.Faction && ServerManager.Instance.Act4Maps.Any(m => m == Entity.MapInstance)))
+            {
+                if (Session is Character cha)
+                {
+                    cha.Session.SendPacket($"cancel 2 {target.GetId()}");
+                }
+                return;
+            }
+
             MapInstance mapInstance = target.MapInstance;
             int hitmode = 0;
             bool onyxWings = false;
@@ -858,15 +867,6 @@ namespace OpenNos.GameObject.Battle
 
         private void TargetHit2(IBattleEntity target, TargetHitType hitType, Skill skill, int damage, int hitmode, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false, bool isRange = false)
         {
-            if (!target.IsTargetable(Entity.SessionType(), isPvp))
-            {
-                if (Session is Character cha)
-                {
-                    cha.Session.SendPacket($"cancel 2 {target.GetId()}");
-                }
-                return;
-            }
-
             target.GetDamage(damage, !(Session is MapMonster mon && mon.IsInvicible));
             string str = $"su {(byte)Entity.SessionType()} {Entity.GetId()} {(byte)target.SessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0}";
             switch (hitType)
