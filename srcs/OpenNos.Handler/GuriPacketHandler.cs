@@ -256,7 +256,7 @@ namespace OpenNos.Handler
                         break;
 
                     case 711: // Maps Teleporters 
-                        TeleporterDTO tp = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.Teleporters.Any(t => t?.MapId == guriPacket.Argument))?.Teleporters.FirstOrDefault(t => t?.Type == TeleporterType.TeleporterOnOtherMap);
+                        TeleporterDTO tp = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.Teleporters.Any(t => t?.TeleporterId == guriPacket.Argument))?.Teleporters.FirstOrDefault(t => t?.Type == TeleporterType.TeleportOnOtherMap);
                         if (tp == null)
                         {
                             return;

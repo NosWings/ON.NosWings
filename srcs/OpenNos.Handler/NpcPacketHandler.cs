@@ -861,7 +861,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                tp = npc.Teleporters?.FirstOrDefault(t => t?.Type == TeleporterType.TeleporterOnOtherMap);
+                tp = npc.Teleporters?.FirstOrDefault(t => t?.Type == TeleporterType.TeleportOnOtherMap);
                 if (tp != null)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 1, $"#guri^711^{tp.TeleporterId}"));
