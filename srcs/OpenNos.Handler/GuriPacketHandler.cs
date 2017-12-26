@@ -255,6 +255,15 @@ namespace OpenNos.Handler
                         Session.Character.TeleportOnMap((short) guriPacket.Argument, (short) guriPacket.User);
                         break;
 
+                    case 711: // Maps Teleporters 
+                        TeleporterDTO tp = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.Teleporters.Any(t => t?.MapId == guriPacket.Argument))?.Teleporters.FirstOrDefault(t => t?.Type == TeleporterType.TeleporterOnOtherMap);
+                        if (tp == null)
+                        {
+                            return;
+                        }
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                        break;
+
                     case 4999: //RollGeneratedItem for SpecialItem
                         if (guriPacket.Argument == 8023)
                         {

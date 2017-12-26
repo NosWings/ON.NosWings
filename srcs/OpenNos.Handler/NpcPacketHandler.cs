@@ -854,10 +854,17 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(t => t?.Type == TeleporterType.TeleporterOnMap);
+                TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(t => t?.Type == TeleporterType.TeleportOnMap);
                 if (tp != null)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 1, $"#guri^710^{tp.MapX}^{tp.MapY}^{npc.MapNpcId}"));
+                    return;
+                }
+
+                tp = npc.Teleporters?.FirstOrDefault(t => t?.Type == TeleporterType.TeleporterOnOtherMap);
+                if (tp != null)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 1, $"#guri^711^{tp.TeleporterId}"));
                     return;
                 }
 
