@@ -1382,10 +1382,6 @@ namespace OpenNos.GameObject
 
         public void GenerateDeath(IBattleEntity killer)
         {
-            if (Hp > 0)
-            {
-                return;
-            }
             Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(CharacterId, killer.GetSession() is Character character ? character.Session : null); });
         }
 
