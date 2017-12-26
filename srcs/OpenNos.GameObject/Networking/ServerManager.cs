@@ -385,7 +385,7 @@ namespace OpenNos.GameObject.Networking
                                 break;
                         }
                     }
-                    if (killer.IpAddress != session.IpAddress)
+                    if (killer?.IpAddress != session.IpAddress)
                     {
                         killer.Character.Act4Kill += 1;
                         session.Character.Act4Dead += 1;
