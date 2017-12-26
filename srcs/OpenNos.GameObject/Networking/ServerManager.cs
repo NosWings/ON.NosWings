@@ -370,6 +370,10 @@ namespace OpenNos.GameObject.Networking
             session.SendPacket(session.Character.GenerateCond());
             session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
             session.Character.LastDeath = DateTime.Now;
+            if (killer?.Character == null)
+            {
+                return;
+            }
             switch (session.CurrentMapInstance.MapInstanceType)
             {
                 case MapInstanceType.Act4Instance:
@@ -385,7 +389,7 @@ namespace OpenNos.GameObject.Networking
                                 break;
                         }
                     }
-                    if (killer?.IpAddress != session.IpAddress)
+                    if (killer.IpAddress != session.IpAddress)
                     {
                         killer.Character.Act4Kill += 1;
                         session.Character.Act4Dead += 1;
@@ -458,7 +462,6 @@ namespace OpenNos.GameObject.Networking
                         RespawnMapTypeDTO respawn = session.Character?.Respawn;
                         Instance.ChangeMap(session.Character.CharacterId, respawn.DefaultMapId);
                         killer.SendPacket($"cancel 2 {session.Character?.CharacterId}");
-                        return;
                     }
                     else
                     {
