@@ -689,6 +689,11 @@ namespace OpenNos.GameObject.Networking
             {
                 return;
             }
+            if (mapId == (short)SpecialMapIdType.Lobby)
+            {
+                TeleportToLobby(session);
+                return;
+            }
             ChangeMapInstance(id, session.Character.MapInstanceId, mapX, mapY);
         }
 
@@ -1790,6 +1795,10 @@ namespace OpenNos.GameObject.Networking
 
         public void TeleportToLobby(ClientSession session)
         {
+            if (session?.Character == null)
+            {
+                return;
+            }
             ChangeMapInstance(session.Character.CharacterId, LobbyMapInstance.MapInstanceId, RandomNumber(141, 147), RandomNumber(87, 94));
             session.Character.GenerateEff(23);
         }

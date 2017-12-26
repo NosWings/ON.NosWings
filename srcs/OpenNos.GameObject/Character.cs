@@ -379,9 +379,9 @@ namespace OpenNos.GameObject
             {
                 RespawnMapTypeDTO respawn = new RespawnMapTypeDTO
                 {
-                    DefaultX = 79,
-                    DefaultY = 116,
-                    DefaultMapId = 1,
+                    DefaultX = 145,
+                    DefaultY = 91,
+                    DefaultMapId = (short)SpecialMapIdType.Lobby,
                     RespawnMapTypeId = -1
                 };
 
