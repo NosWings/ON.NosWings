@@ -938,6 +938,7 @@ namespace OpenNos.GameObject.Networking
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(15, 0, session.Character.CharacterId));
                 }
                 session.Character.LoadSpeed();
+                session.SendPacket(session.Character.GenerateCond());
 
                 session.Character.IsChangingMapInstance = false;
                 session.SendPacket(session.Character.GenerateMinimapPosition());
