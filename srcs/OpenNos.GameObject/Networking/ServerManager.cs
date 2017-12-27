@@ -658,6 +658,11 @@ namespace OpenNos.GameObject.Networking
                     });
                     break;
 
+                case MapInstanceType.BattleRoyaleMapInstance:
+                    BattleRoyaleManager.Instance.Kick(session, killer);
+                    Instance.ReviveFirstPosition(session.Character.CharacterId);
+                    break;
+
                 default:
                     Instance.ReviveFirstPosition(session.Character.CharacterId);
                     break;
@@ -1580,7 +1585,7 @@ namespace OpenNos.GameObject.Networking
                     }
                 }
                 Logger.Log.Info($"[ACT4] Initialized");
-                BattleRoyaleManager.Instance.Initialize(Maps.FirstOrDefault(s => s.MapId == 247));
+                BattleRoyaleManager.Instance.Initialize(Maps.FirstOrDefault(s => s.MapId == (short)SpecialMapIdType.BattleRoyal));
                 LoadScriptedInstances();
             }
             catch (Exception ex)

@@ -610,6 +610,33 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à [BATTLE ROYALE] Registration are open !.
+        /// </summary>
+        internal static string BATTLE_ROYAL_OPEN {
+            get {
+                return ResourceManager.GetString("BATTLE_ROYAL_OPEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à [BATTLE ROYALE] Registration will be opened in {0} minutes..
+        /// </summary>
+        internal static string BATTLE_ROYAL_REGISTRATION {
+            get {
+                return ResourceManager.GetString("BATTLE_ROYAL_REGISTRATION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The Fight has been .
+        /// </summary>
+        internal static string BATTLE_ROYAL_STARTED {
+            get {
+                return ResourceManager.GetString("BATTLE_ROYAL_STARTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Bazaar Loaded!.
         /// </summary>
         internal static string BAZAR_LOADED {
@@ -795,6 +822,15 @@ namespace NosSharp.World.Resource {
         internal static string BOT_MESSAGE_5 {
             get {
                 return ResourceManager.GetString("BOT_MESSAGE_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} has been killed by {1}. | {2} players.
+        /// </summary>
+        internal static string BR_KILL {
+            get {
+                return ResourceManager.GetString("BR_KILL", resourceCulture);
             }
         }
         

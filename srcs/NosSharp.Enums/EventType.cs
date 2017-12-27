@@ -24,6 +24,7 @@ namespace NosSharp.Enums
         TALENTARENA,
         MASTERARENA,
         ICEBREAKER,
-        ACT4SHIP
+        ACT4SHIP,
+        BATTLEROYAL
     }
 }
