@@ -115,7 +115,7 @@ namespace OpenNos.GameObject.Map
 
         public IEnumerable<ToSummon> GenerateSummons(short vnum, short amount, bool move, ConcurrentBag<EventContainer> deathEvents, bool isBonusOrProtected = false, bool isHostile = true, bool isBossOrMate = false)
         {
-            List<ToSummon> summonParameters = new List<ToSummon>();
+            ConcurrentBag<ToSummon> summonParameters = new ConcurrentBag<ToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
