@@ -2891,7 +2891,7 @@ namespace OpenNos.GameObject
             return cpmax - cpused;
         }
 
-        public void GetDamage(int damage, bool canKill = true)
+        public void GetDamage(int damage, IBattleEntity entity, bool canKill = true)
         {
             if (Hp <= 0)
             {
@@ -2912,6 +2912,11 @@ namespace OpenNos.GameObject
             }
             Hp = Hp <= 0 ? !canKill ? 1 : 0 : Hp;
             Session.SendPacket(GenerateStat());
+            if (Hp <= 0)
+            {
+                GenerateDeath(entity);
+                entity.GenerateRewards(this);
+            }
         }
 
         public int GetDignityIco()

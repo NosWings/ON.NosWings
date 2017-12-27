@@ -516,12 +516,20 @@ namespace OpenNos.GameObject.Map
 
         public long GetId() => MapMonsterId;
 
-        public void GetDamage(int damage, bool canKill = true)
+        public void GetDamage(int damage, IBattleEntity entity, bool canKill = true)
         {
+            if (CurrentHp <= 0 || !IsAlive)
+            {
+                return;
+            }
             canKill = IsInvicible ? false : canKill; // Act4 Guardians
             CurrentHp -= damage;
             CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : CurrentHp;
             BattleEntity.OnHitEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
+            if (CurrentHp <= 0)
+            {
+                GenerateDeath(entity);
+            }
         }
 
         public void GenerateDeath(IBattleEntity killer = null)
@@ -542,6 +550,7 @@ namespace OpenNos.GameObject.Map
             MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + (IsBonus ? 1 : 0));
             MapInstance.InstanceBag.MonstersKilled++;
             BattleEntity.OnDeathEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
+            killer?.GenerateRewards(this);
         }
 
         public void GenerateRewards(IBattleEntity target)

@@ -829,7 +829,7 @@ namespace OpenNos.GameObject.Battle
                 onyx.Initialize(mapInstance);
                 mapInstance.AddMonster(onyx);
                 mapInstance.Broadcast(onyx.GenerateIn());
-                target.GetDamage(damage / 2, false);
+                target.GetDamage(damage / 2, Entity, false);
                 Observable.Timer(TimeSpan.FromMilliseconds(350)).Subscribe(o =>
                 {
                     mapInstance.Broadcast($"su {(byte)Entity.SessionType()} {onyxId} {(byte)target.SessionType()} {target.GetId()} -1 0 -1 {skill.Effect} -1 -1 1 92 {damage / 2} 0 0");
@@ -867,7 +867,7 @@ namespace OpenNos.GameObject.Battle
 
         private void TargetHit2(IBattleEntity target, TargetHitType hitType, Skill skill, int damage, int hitmode, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false, bool isRange = false)
         {
-            target.GetDamage(damage, !(Session is MapMonster mon && mon.IsInvicible));
+            target.GetDamage(damage, Entity, !(Session is MapMonster mon && mon.IsInvicible));
             string str = $"su {(byte)Entity.SessionType()} {Entity.GetId()} {(byte)target.SessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0}";
             switch (hitType)
             {
@@ -995,13 +995,6 @@ namespace OpenNos.GameObject.Battle
                             break;
                     }
                 }
-            }
-            
-
-            if (target.CurrentHp <= 0)
-            {
-                target.GenerateDeath(Entity);
-                Entity.GenerateRewards(target);
             }
 
             if (skill == null || (skill.Range <= 0 && skill.TargetRange <= 0) || isRange || !(Entity.GetSession() is MapMonster))

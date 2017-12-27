@@ -476,10 +476,19 @@ namespace OpenNos.GameObject.Map
             RemoveTarget();
         }
 
-        public void GetDamage(int damage, bool canKill = true)
+        public void GetDamage(int damage, IBattleEntity entity, bool canKill = true)
         {
+            if (CurrentHp <= 0)
+            {
+                return;
+            }
             CurrentHp -= damage;
             CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : CurrentHp;
+            if (CurrentHp <= 0)
+            {
+                GenerateDeath(entity);
+                entity.GenerateRewards(this);
+            }
 
         }
 

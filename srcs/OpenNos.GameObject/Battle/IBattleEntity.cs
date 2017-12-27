@@ -33,7 +33,7 @@ namespace OpenNos.GameObject.Battle
 
         SessionType SessionType();
 
-        void GetDamage(int damage, bool canKill = true);
+        void GetDamage(int damage, IBattleEntity entity, bool canKill = true);
 
         void GenerateDeath(IBattleEntity killer = null);
 
