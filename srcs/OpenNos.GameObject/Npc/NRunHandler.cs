@@ -241,6 +241,10 @@ namespace OpenNos.GameObject.Npc
                                 case 145:
                                     session.Character.SetRespawnPoint(145, 13, 110);
                                     break;
+
+                                case (short)SpecialMapIdType.Lobby:
+                                    session.Character.SetRespawnPoint((short)SpecialMapIdType.Lobby, 145, 91);
+                                    break;
                             }
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RESPAWNLOCATION_CHANGED"), 0));
                         }

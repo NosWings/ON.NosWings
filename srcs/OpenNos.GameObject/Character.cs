@@ -379,9 +379,9 @@ namespace OpenNos.GameObject
             {
                 RespawnMapTypeDTO respawn = new RespawnMapTypeDTO
                 {
-                    DefaultX = 79,
-                    DefaultY = 116,
-                    DefaultMapId = 1,
+                    DefaultX = 145,
+                    DefaultY = 91,
+                    DefaultMapId = (short)SpecialMapIdType.Lobby,
                     RespawnMapTypeId = -1
                 };
 
@@ -3517,8 +3517,11 @@ namespace OpenNos.GameObject
 
         public void LoadSpeed()
         {
-            // only load speed if you dont use custom speed
-            if (!IsVehicled && !IsCustomSpeed)
+            if (MapInstance == ServerManager.Instance.LobbyMapInstance)
+            {
+                Speed = ServerManager.Instance.LobbySpeed;
+            }
+            else if (!IsVehicled && !IsCustomSpeed) // only load speed if you dont use custom speed
             {
                 Speed = CharacterHelper.Instance.SpeedData[(byte) Class];
 

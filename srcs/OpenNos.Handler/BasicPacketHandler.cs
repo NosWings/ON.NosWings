@@ -754,6 +754,10 @@ namespace OpenNos.Handler
                 {
                     ServerManager.Instance.JoinMiniland(Session, Session);
                 }
+                else if (portal.DestinationMapId == (short) SpecialMapIdType.Lobby)
+                {
+                    ServerManager.Instance.TeleportToLobby(Session);
+                }
                 else
                 {
                     if (portal.DestinationX == -1 && portal.DestinationY == -1)
@@ -1258,7 +1262,14 @@ namespace OpenNos.Handler
             }
             else
             {
-                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                if (Session.Character.MapId == (short)SpecialMapIdType.Lobby)
+                {
+                    ServerManager.Instance.TeleportToLobby(Session);
+                }
+                else
+                {
+                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                }
             }
             Session.SendPacket(Session.Character.GenerateSki());
             Session.SendPacket($"fd {Session.Character.Reput} 0 {(int)Session.Character.Dignity} {Math.Abs(Session.Character.GetDignityIco())}");

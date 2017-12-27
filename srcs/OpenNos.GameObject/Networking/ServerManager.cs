@@ -228,6 +228,8 @@ namespace OpenNos.GameObject.Networking
 
         public MapInstance LobbyMapInstance { get; set; }
 
+        public byte LobbySpeed { get; set; }
+
         #endregion
 
         #region Methods
@@ -691,6 +693,11 @@ namespace OpenNos.GameObject.Networking
             {
                 return;
             }
+            if (mapId == (short)SpecialMapIdType.Lobby)
+            {
+                TeleportToLobby(session);
+                return;
+            }
             ChangeMapInstance(id, session.Character.MapInstanceId, mapX, mapY);
         }
 
@@ -734,7 +741,7 @@ namespace OpenNos.GameObject.Networking
                 }
                 // cleanup sending queue to avoid sending uneccessary packets to it
                 session.ClearLowPriorityQueue();
-
+                bool isLeavingLobby = session.Character.MapInstanceId == LobbyMapInstance.MapInstanceId;
                 session.Character.MapInstanceId = mapInstanceId;
                 if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                 {
@@ -922,6 +929,15 @@ namespace OpenNos.GameObject.Networking
                         }
                     });
                 }
+                if (mapInstanceId == LobbyMapInstance.MapInstanceId) // Zoom
+                {
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(15, 1, session.Character.CharacterId));
+                }
+                else if (isLeavingLobby)
+                {
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(15, 0, session.Character.CharacterId));
+                }
+                session.Character.LoadSpeed();
 
                 session.Character.IsChangingMapInstance = false;
                 session.SendPacket(session.Character.GenerateMinimapPosition());
@@ -1195,6 +1211,7 @@ namespace OpenNos.GameObject.Networking
             MaxHeroLevel = byte.Parse(ConfigurationManager.AppSettings["MaxHeroLevel"]);
             HeroicStartLevel = byte.Parse(ConfigurationManager.AppSettings["HeroicStartLevel"]);
             Act4MinChannels = byte.Parse(ConfigurationManager.AppSettings["ChannelsBeforeAct4"]);
+            LobbySpeed = byte.Parse(ConfigurationManager.AppSettings["LobbySpeed"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Act4RaidStart = DateTime.Now;
             Act4AngelStat = new Act4Stat();
@@ -1782,7 +1799,12 @@ namespace OpenNos.GameObject.Networking
 
         public void TeleportToLobby(ClientSession session)
         {
+            if (session?.Character == null)
+            {
+                return;
+            }
             ChangeMapInstance(session.Character.CharacterId, LobbyMapInstance.MapInstanceId, RandomNumber(141, 147), RandomNumber(87, 94));
+            session.Character.GenerateEff(23);
         }
 
         public void TeleportForward(ClientSession session, Guid guid, short x, short y)
