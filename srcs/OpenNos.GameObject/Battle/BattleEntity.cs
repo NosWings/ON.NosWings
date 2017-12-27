@@ -832,7 +832,7 @@ namespace OpenNos.GameObject.Battle
                 target.GetDamage(damage / 2, Entity, false);
                 Observable.Timer(TimeSpan.FromMilliseconds(350)).Subscribe(o =>
                 {
-                    mapInstance.Broadcast($"su {(byte)Entity.SessionType()} {onyxId} {(byte)target.SessionType()} {target.GetId()} -1 0 -1 {skill.Effect} -1 -1 1 92 {damage / 2} 0 0");
+                    mapInstance.Broadcast($"su 3 {onyxId} {(byte)target.SessionType()} {target.GetId()} -1 0 -1 {skill.Effect} -1 -1 1 {(int)(target.CurrentHp / (double)target.MaxHp * 100)} {damage / 2} 0 0");
                     mapInstance.RemoveMonster(onyx);
                     mapInstance.Broadcast(onyx.GenerateOut());
                 });
