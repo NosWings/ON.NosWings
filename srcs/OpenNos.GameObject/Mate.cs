@@ -346,7 +346,7 @@ namespace OpenNos.GameObject
             Owner.Session.SendPacket(GenerateScPacket());
         }
 
-        public void GetDamage(int damage, bool canKill = true)
+        public void GetDamage(int damage, IBattleEntity entity, bool canKill = true)
         {
             if (Hp <= 0)
             {
@@ -356,11 +356,12 @@ namespace OpenNos.GameObject
             Hp -= damage;
             if (Hp < 0)
             {
-                Hp = 0;
-            }
-            if (!canKill && Hp == 0)
-            {
-                Hp = 1;
+                Hp = !canKill ? 1 : 0;
+                if (canKill)
+                {
+                    GenerateDeath(entity);
+                    entity.GenerateRewards(this);
+                }
             }
         }
 

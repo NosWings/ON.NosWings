@@ -1382,10 +1382,6 @@ namespace OpenNos.GameObject
 
         public void GenerateDeath(IBattleEntity killer)
         {
-            if (Hp > 0)
-            {
-                return;
-            }
             Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(CharacterId, killer.GetSession() is Character character ? character.Session : null); });
         }
 
@@ -1799,7 +1795,8 @@ namespace OpenNos.GameObject
                 Random random = new Random(DateTime.Now.Millisecond & monsterToAttack.MapMonsterId);
 
                 // owner set
-                long? dropOwner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key.GetId() : (long?) null;
+                long? dropOwner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key.GetSession() is Mate mate ? mate.Owner.CharacterId : monsterToAttack.DamageList.First().Key.GetId() : (long?)null;
+
                 Group group = null;
                 if (dropOwner != null)
                 {
@@ -2895,7 +2892,7 @@ namespace OpenNos.GameObject
             return cpmax - cpused;
         }
 
-        public void GetDamage(int damage, bool canKill = true)
+        public void GetDamage(int damage, IBattleEntity entity, bool canKill = true)
         {
             if (Hp <= 0)
             {
@@ -2916,6 +2913,11 @@ namespace OpenNos.GameObject
             }
             Hp = Hp <= 0 ? !canKill ? 1 : 0 : Hp;
             Session.SendPacket(GenerateStat());
+            if (Hp <= 0)
+            {
+                GenerateDeath(entity);
+                entity.GenerateRewards(this);
+            }
         }
 
         public int GetDignityIco()
@@ -4358,6 +4360,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(GenerateStat());
                 Session.SendPacket(GenerateLevelUp());
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
+                RewardsHelper.Instance.GetJobRewards(Session);
                 LearnAdventurerSkill();
                 Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
                 Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);

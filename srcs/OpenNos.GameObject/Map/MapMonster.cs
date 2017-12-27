@@ -75,7 +75,7 @@ namespace OpenNos.GameObject.Map
 
         public int CurrentMp { get; set; }
 
-        public IDictionary<IBattleEntity, long> DamageList { get; private set; }
+        public ConcurrentDictionary<IBattleEntity, long> DamageList { get; private set; }
 
         public DateTime Death { get; set; }
 
@@ -194,7 +194,7 @@ namespace OpenNos.GameObject.Map
             CurrentMp = Monster.MaxMP;
             Monster.Skills.ForEach(s => Skills.Add(s));
             BattleEntity = new BattleEntity(this);
-            DamageList = new Dictionary<IBattleEntity, long>();
+            DamageList = new ConcurrentDictionary<IBattleEntity, long>();
             _random = new Random(MapMonsterId);
             _movetime = ServerManager.Instance.RandomNumber(400, 3200);
             IsPercentage = Monster.IsPercent;
@@ -369,7 +369,7 @@ namespace OpenNos.GameObject.Map
                 }
 
                 // check if target is in range & if monster has enough mp to use the skill
-                if (CurrentMp >= (npcMonsterSkill?.Skill.MpCost ?? CurrentMp) && Map.GetDistance(GetPos(), Target.GetPos()) <= (npcMonsterSkill?.Skill.Range + 1 ?? Monster.BasicRange))
+                if (CurrentMp >= (npcMonsterSkill?.Skill.MpCost ?? CurrentMp) && Map.GetDistance(GetPos(), Target.GetPos()) <= (npcMonsterSkill?.Skill.Range + 1 ?? Monster?.BasicRange))
                 {
                     TargetHit(npcMonsterSkill);
                     return;
@@ -467,7 +467,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            DamageList = new Dictionary<IBattleEntity, long>();
+            DamageList = new ConcurrentDictionary<IBattleEntity, long>();
             IsAlive = true;
             Target = null;
             CurrentHp = Monster.MaxHP;
@@ -516,19 +516,27 @@ namespace OpenNos.GameObject.Map
 
         public long GetId() => MapMonsterId;
 
-        public void GetDamage(int damage, bool canKill = true)
+        public void GetDamage(int damage, IBattleEntity entity, bool canKill = true)
         {
+            if (CurrentHp <= 0 || !IsAlive)
+            {
+                return;
+            }
             canKill = IsInvicible ? false : canKill; // Act4 Guardians
             CurrentHp -= damage;
             CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : CurrentHp;
             BattleEntity.OnHitEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
+            if (CurrentHp <= 0)
+            {
+                GenerateDeath(entity);
+            }
         }
 
         public void GenerateDeath(IBattleEntity killer = null)
         {
-            if (IsInvicible) // Act4 Guardians
+            if (!IsAlive || IsInvicible) // Act4 Guardians
             {
-                CurrentHp = 1;
+                CurrentHp = IsInvicible ? 1 : CurrentHp;
                 return;
             }
             IsAlive = false;
@@ -542,11 +550,12 @@ namespace OpenNos.GameObject.Map
             MapInstance.InstanceBag.Point += EventHelper.Instance.CalculateComboPoint(MapInstance.InstanceBag.Combo + (IsBonus ? 1 : 0));
             MapInstance.InstanceBag.MonstersKilled++;
             BattleEntity.OnDeathEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
+            killer?.GenerateRewards(this);
         }
 
         public void GenerateRewards(IBattleEntity target)
         {
-            DamageList.Remove(target);
+            DamageList.TryRemove(target, out long value);
             RemoveTarget();
         }
 

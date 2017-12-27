@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.GameObject.Event.ACT4;
+using OpenNos.GameObject.Event.BattleRoyale;
 using OpenNos.GameObject.Event.ICEBREAKER;
 using OpenNos.GameObject.Event.INSTANTBATTLE;
 using OpenNos.GameObject.Event.LOD;
@@ -85,6 +86,10 @@ namespace OpenNos.GameObject.Helpers
 
                         case EventType.ICEBREAKER:
                             IceBreaker.GenerateIceBreaker(useTimer);
+                            break;
+
+                        case EventType.BATTLEROYAL:
+                            //BattleRoyaleManager.Instance.Prepare(useTimer);
                             break;
                     }
                 });

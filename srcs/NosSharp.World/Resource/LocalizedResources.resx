@@ -1717,4 +1717,19 @@
   <data name="QUEST_REWARD_PARSED" xml:space="preserve">
     <value>{0} quest rewards parsed.</value>
   </data>
+  <data name="RECEIVE_SP" xml:space="preserve">
+    <value>You received a new SP ! Congratulations !</value>
+  </data>
+  <data name="BATTLE_ROYAL_OPEN" xml:space="preserve">
+    <value>[BATTLE ROYALE] Registration are open !</value>
+  </data>
+  <data name="BATTLE_ROYAL_REGISTRATION" xml:space="preserve">
+    <value>[BATTLE ROYALE] Registration will be opened in {0} minutes.</value>
+  </data>
+  <data name="BATTLE_ROYAL_STARTED" xml:space="preserve">
+    <value>The Fight has been </value>
+  </data>
+  <data name="BR_KILL" xml:space="preserve">
+    <value>{0} has been killed by {1}. | {2} players</value>
+  </data>
 </root>

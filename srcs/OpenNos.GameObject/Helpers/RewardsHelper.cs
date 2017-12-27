@@ -1,4 +1,6 @@
-﻿using OpenNos.GameObject.Networking;
+﻿using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -98,6 +100,28 @@ namespace OpenNos.GameObject.Helpers
                     session.Character.GiftAdd(1452, 5); // Béné
                     session.Character.GiftAdd(1363, 5); // parcho rouge
                     session.Character.GiftAdd(4262, 1); // Amu pari héroique
+                    break;
+            }
+        }
+
+        public void GetJobRewards(ClientSession session)
+        {
+            switch (session.Character.JobLevel)
+            {
+                case 20:
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RECEIVE_SP"), 0));
+                    switch (session.Character.Class)
+                    {
+                        case ClassType.Swordman:
+                            session.Character.GiftAdd(901, 1);
+                            break;
+                        case ClassType.Archer:
+                            session.Character.GiftAdd(903, 1);
+                            break;
+                        case ClassType.Magician:
+                            session.Character.GiftAdd(905, 1);
+                            break;
+                    }
                     break;
             }
         }
