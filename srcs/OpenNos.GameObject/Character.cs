@@ -1795,7 +1795,8 @@ namespace OpenNos.GameObject
                 Random random = new Random(DateTime.Now.Millisecond & monsterToAttack.MapMonsterId);
 
                 // owner set
-                long? dropOwner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key.GetId() : (long?) null;
+                long? dropOwner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key.GetSession() is Mate mate ? mate.Owner.CharacterId : monsterToAttack.DamageList.First().Key.GetId() : (long?)null;
+
                 Group group = null;
                 if (dropOwner != null)
                 {
