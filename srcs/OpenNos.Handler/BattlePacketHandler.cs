@@ -399,8 +399,13 @@ namespace OpenNos.Handler
                                             List<BuffType> buffsToDisable = new List<BuffType> { BuffType.Bad };
                                             target.BattleEntity.DisableBuffs(buffsToDisable, 4);
                                         }
-                                        ski.Skill.BCards.ToList().ForEach(s =>
+                                        foreach (BCard s in ski.Skill.BCards)
                                         {
+                                            if (s.Type != (short)BCardType.CardType.Buff)
+                                            {
+                                                s.ApplyBCards(Session.Character);
+                                                continue;
+                                            }
                                             switch (Session.CurrentMapInstance.MapInstanceType)
                                             {
                                                 case MapInstanceType.Act4Instance:
@@ -408,13 +413,13 @@ namespace OpenNos.Handler
                                                     switch (bf.Card?.BuffType)
                                                     {
                                                         case BuffType.Bad:
-                                                            s.ApplyBCards(target);
+                                                            s.ApplyBCards(target, Session.Character);
                                                             break;
                                                         case BuffType.Good:
                                                         case BuffType.Neutral:
                                                             if (target is Character character && Session.Character.Faction == character.Faction)
                                                             {
-                                                                s.ApplyBCards(target);
+                                                                s.ApplyBCards(target, Session.Character);
                                                             }
                                                             break;
                                                     }
@@ -424,14 +429,14 @@ namespace OpenNos.Handler
                                                     switch (b.Card?.BuffType)
                                                     {
                                                         case BuffType.Bad:
-                                                            s.ApplyBCards(target);
+                                                            s.ApplyBCards(target, Session.Character);
                                                             break;
                                                         case BuffType.Good:
                                                         case BuffType.Neutral:
                                                             if (target is Character character && Session.Character.Group?.GroupType == GroupType.Group &&
                                                                 Session.Character.Group.IsMemberOfGroup(character.CharacterId))
                                                             {
-                                                                s.ApplyBCards(target);
+                                                                s.ApplyBCards(target, Session.Character);
                                                             }
                                                             else
                                                             {
@@ -444,7 +449,7 @@ namespace OpenNos.Handler
                                                     s.ApplyBCards(target);
                                                     break;
                                             }
-                                        });
+                                        }
                                     }
                                 }
                                 break;
