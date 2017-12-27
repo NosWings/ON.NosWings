@@ -36,6 +36,10 @@ namespace OpenNos.Handler
         /// <param name="rdPacket"></param>
         public void RaidManage(RdPacket rdPacket)
         {
+            if (rdPacket == null)
+            {
+                return;
+            }
             Group grp;
             switch (rdPacket.Type)
             {
@@ -45,9 +49,13 @@ namespace OpenNos.Handler
                         return;
                     }
                     ClientSession target = ServerManager.Instance.GetSessionByCharacterId(rdPacket.CharacterId);
-                    if (rdPacket.Parameter == null && target?.Character?.Group == null && Session?.Character?.Group?.IsLeader(Session) == true)
+                    if (target == null)
                     {
-                        if (target?.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+                        return;
+                    }
+                    if (rdPacket.Parameter == null && target.Character?.Group == null && Session?.Character?.Group?.IsLeader(Session) == true)
+                    {
+                        if (target.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
                         {
                             return;
                         }
@@ -74,8 +82,9 @@ namespace OpenNos.Handler
                     grp = sender.Character?.Group;
                     Session.SendPacket(Session.Character.GenerateRaid(1, true));
                     Session.SendPacket(Session.Character.GenerateRaid(2, true));
+                    grp.LeaveGroup(sender);
 
-                    grp?.Characters?.ToList().ForEach(s =>
+                    foreach (ClientSession s in grp.Characters)
                     {
                         s.SendPacket(grp.GenerateRdlst());
                         s.SendPacket(grp.GeneraterRaidmbf(s.CurrentMapInstance));
@@ -84,7 +93,7 @@ namespace OpenNos.Handler
                         {
                             s.SendPacket(s.Character.GenerateRaid(2, false));
                         }
-                    });
+                    }
                     break;
                 case 3:
                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.RaidInstance)
@@ -151,6 +160,10 @@ namespace OpenNos.Handler
         /// <param name="rlPacket"></param>
         public void RaidListRegister(RlPacket rlPacket)
         {
+            if (rlPacket == null)
+            {
+                return;
+            }
             switch (rlPacket.Type)
             {
                 case 0:
@@ -304,7 +317,7 @@ namespace OpenNos.Handler
                         {
                             return;
                         }
-                        if (Session.Character.CharacterId <= 0) // Wtf ?
+                        if (Session.Character.CharacterId <= 0)
                         {
                             return;
                         }
