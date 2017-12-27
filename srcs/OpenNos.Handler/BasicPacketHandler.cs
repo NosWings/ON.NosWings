@@ -754,6 +754,10 @@ namespace OpenNos.Handler
                 {
                     ServerManager.Instance.JoinMiniland(Session, Session);
                 }
+                else if (portal.DestinationMapId == (short) SpecialMapIdType.Lobby)
+                {
+                    ServerManager.Instance.TeleportToLobby(Session);
+                }
                 else
                 {
                     if (portal.DestinationX == -1 && portal.DestinationY == -1)
