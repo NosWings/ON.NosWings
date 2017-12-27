@@ -31,7 +31,7 @@ namespace OpenNos.GameObject.Battle
             SkillBcards = new ConcurrentBag<BCard>();
             OnDeathEvents = new ConcurrentBag<EventContainer>();
             OnHitEvents = new ConcurrentBag<EventContainer>();
-            ObservableBag = new Dictionary<short, IDisposable>();
+            ObservableBag = new ConcurrentDictionary<short, IDisposable>();
 
             if (Session is Character character)
             {
@@ -81,7 +81,7 @@ namespace OpenNos.GameObject.Battle
 
         public ConcurrentBag<EventContainer> OnHitEvents { get; set; }
 
-        public Dictionary<short, IDisposable> ObservableBag { get; set; }
+        private ConcurrentDictionary<short, IDisposable> ObservableBag { get; set; }
 
         public object Session { get; set; }
 
@@ -190,7 +190,7 @@ namespace OpenNos.GameObject.Battle
                 value?.Dispose();
             }
 
-            ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds(indicator.StaticBuff ? indicator.RemainingTime * 1000 : indicator.RemainingTime * 100)).Subscribe(o =>
+            ObservableBag[indicator.Card.CardId] = Observable.Timer(TimeSpan.FromMilliseconds(indicator.RemainingTime * (indicator.StaticBuff ? 1000 : 100))).Subscribe(o =>
             {
                 RemoveBuff(indicator.Card.CardId);
                 if (indicator.Card.TimeoutBuff != 0 && ServerManager.Instance.RandomNumber() < indicator.Card.TimeoutBuffChance)
