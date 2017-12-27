@@ -393,7 +393,7 @@ namespace OpenNos.Handler
 
                         if (createNewGroup)
                         {
-                            Group group = new Group(GroupType.Group);
+                            var group = new Group(GroupType.Group);
                             group.JoinGroup(pjoinPacket.CharacterId);
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), targetSession.Character.Name)));
                             group.JoinGroup(Session.Character.CharacterId);

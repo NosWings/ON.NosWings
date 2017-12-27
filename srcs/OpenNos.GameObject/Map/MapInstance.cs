@@ -180,7 +180,10 @@ namespace OpenNos.GameObject.Map
 
         public List<Portal> Portals { get; }
 
-        public bool ShopAllowed { get; }
+        public bool ShopAllowed
+        {
+            get { return ShopAllowed || MapInstanceType == MapInstanceType.LobbyMapInstance; }
+        }
 
         public List<ScriptedInstance> ScriptedInstances { get; }
 
