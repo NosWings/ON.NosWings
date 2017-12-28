@@ -418,7 +418,7 @@ namespace OpenNos.GameObject.Helpers
                             }
                             if (evt.MapInstance.InstanceBag.EndState == 1 && evt.MapInstance.Monsters.Any(s => s.IsBoss && !s.IsAlive))
                             {
-                                foreach (ClientSession sess in grp.Characters.Where(s => s.CurrentMapInstance.Monsters.Any(e => e.IsBoss)))
+                                foreach (ClientSession sess in grp.Characters.Where(s => s.CurrentMapInstance?.Monsters.Any(e => e.IsBoss) == true))
                                 {
                                     // TODO REMOTE THAT FOR PUBLIC RELEASE
                                     if (grp.Characters.Count(s => s.IpAddress.Equals(sess.IpAddress)) > 2 || grp.Raid?.GiftItems == null)
