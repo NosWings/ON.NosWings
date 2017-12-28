@@ -1805,7 +1805,7 @@ namespace OpenNos.GameObject.Networking
                 return;
             }
             ChangeMapInstance(session.Character.CharacterId, LobbyMapInstance.MapInstanceId, RandomNumber(141, 147), RandomNumber(87, 94));
-            session.Character.GenerateEff(23);
+            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(23));
         }
 
         public void TeleportForward(ClientSession session, Guid guid, short x, short y)
