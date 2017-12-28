@@ -403,7 +403,7 @@ namespace OpenNos.Handler
                                         {
                                             if (s.Type != (short)BCardType.CardType.Buff)
                                             {
-                                                s.ApplyBCards(Session.Character);
+                                                s.ApplyBCards(target);
                                                 continue;
                                             }
                                             switch (Session.CurrentMapInstance.MapInstanceType)
