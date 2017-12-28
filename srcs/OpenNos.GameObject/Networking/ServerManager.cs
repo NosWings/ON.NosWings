@@ -932,7 +932,7 @@ namespace OpenNos.GameObject.Networking
                         }
                     });
                 }
-                if (mapInstanceId == LobbyMapInstance.MapInstanceId) // Zoom
+                if (session.Character.MapInstance == LobbyMapInstance) // Zoom
                 {
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(15, 1, session.Character.CharacterId));
                 }
