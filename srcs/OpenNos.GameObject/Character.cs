@@ -380,7 +380,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO
+                var respawn = new RespawnMapTypeDTO
                 {
                     DefaultX = 145,
                     DefaultY = 91,
@@ -427,7 +427,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+                var respawn = new RespawnMapTypeDTO();
                 if (!Session.HasCurrentMapInstance || !Session.CurrentMapInstance.Map.MapTypes.Any())
                 {
                     return respawn;
@@ -538,7 +538,7 @@ namespace OpenNos.GameObject
 
         public void AddQuest(long questId, bool isMain = false)
         {
-            CharacterQuest characterQuest = new CharacterQuest(questId, CharacterId);
+            var characterQuest = new CharacterQuest(questId, CharacterId);
             if (Quests.Any(q => q.QuestId == questId) || characterQuest.Quest == null || (isMain && Quests.Any(q => q.IsMainQuest)) || (Quests.Where(q => q.Quest.QuestType != (byte) QuestType.WinRaid).ToList().Count >= 5 && characterQuest.Quest.QuestType != (byte) QuestType.WinRaid && !isMain))
             {
                 return;
@@ -800,7 +800,7 @@ namespace OpenNos.GameObject
 
         public void AddRelation(long characterId, CharacterRelationType relation)
         {
-            CharacterRelationDTO addRelation = new CharacterRelationDTO
+            var addRelation = new CharacterRelationDTO
             {
                 CharacterId = CharacterId,
                 RelatedCharacterId = characterId,
@@ -1019,7 +1019,7 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateRaid(3, false));
                 }
 
-                WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
+                var amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                 if (amulet != null)
                 {
                     if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
@@ -1204,7 +1204,7 @@ namespace OpenNos.GameObject
 
         public Character DeepCopy()
         {
-            Character clonedCharacter = (Character)MemberwiseClone();
+            var clonedCharacter = (Character)MemberwiseClone();
             return clonedCharacter;
         }
 
@@ -1431,7 +1431,7 @@ namespace OpenNos.GameObject
         public string GenerateEq()
         {
             int color = (byte)HairColor;
-            WearableInstance head = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+            var head = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
 
             if (head != null && head.Item.IsColored)
             {
@@ -1476,7 +1476,7 @@ namespace OpenNos.GameObject
             }
             for (short i = 0; i < 15; i++)
             {
-                WearableInstance wearable = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
+                var wearable = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
                 if (wearable == null)
                 {
                     continue;
@@ -1773,7 +1773,7 @@ namespace OpenNos.GameObject
                 return
                     $"in 1 {(Authority == AuthorityType.Moderator ? $"[{Language.Instance.GetMessageFromKey("SUPPORT")}]" + name : name)} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte) AuthorityType.User : Authority < AuthorityType.GameMaster ? 0 : 2)} {(byte) Gender} {(byte) HairStyle} {color} {(byte) Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HpLoad() * 100)} {Math.Ceiling(Mp / MpLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group?.GroupType == GroupType.Group ? (long) Group?.GroupId : -1)} {0} {0} 0 {0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} {(foe ? -1 : Family?.FamilyId ?? -1)} {(foe ? name : Family?.Name ?? "-")} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} {faction} {(UseSp ? MorphUpgrade2 : 0)} {Level} {Family?.FamilyLevel ?? 0} {ArenaWinner} {(Authority == AuthorityType.Moderator ? 500 : Compliment)} {Size} {HeroLevel}";
             }
-            WearableInstance headWearable = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+            var headWearable = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
             if (headWearable?.Item.IsColored == true)
             {
                 color = headWearable.Design;
@@ -1795,7 +1795,7 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                Random random = new Random(DateTime.Now.Millisecond & monsterToAttack.MapMonsterId);
+                var random = new Random(DateTime.Now.Millisecond & monsterToAttack.MapMonsterId);
 
                 // owner set
                 long? dropOwner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key.GetSession() is Mate mate ? mate.Owner.CharacterId : monsterToAttack.DamageList.First().Key.GetId() : (long?)null;
@@ -2009,7 +2009,7 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                DropDTO drop2 = new DropDTO
+                var drop2 = new DropDTO
                 {
                     Amount = gold,
                     ItemVNum = 1046
@@ -2102,12 +2102,12 @@ namespace OpenNos.GameObject
             Miniland = ServerManager.Instance.GenerateMapInstance(20001, MapInstanceType.NormalInstance, new InstanceBag());
             foreach (MinilandObjectDTO obj in DaoFactory.MinilandObjectDao.LoadByCharacterId(CharacterId))
             {
-                MapDesignObject mapobj = (MapDesignObject)obj;
+                var mapobj = (MapDesignObject)obj;
                 if (mapobj.ItemInstanceId == null)
                 {
                     continue;
                 }
-                ItemInstance item = Inventory.LoadByItemInstance<ItemInstance>((Guid)mapobj.ItemInstanceId);
+                var item = Inventory.LoadByItemInstance<ItemInstance>((Guid)mapobj.ItemInstanceId);
                 if (item == null)
                 {
                     continue;
@@ -2825,7 +2825,7 @@ namespace OpenNos.GameObject
                 DistanceDefenceRate += Inventory.Armor.DistanceDefenceDodge + Inventory.Armor.Item.DistanceDefenceDodge;
             }
 
-            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            var fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (fairy != null)
             {
                 ElementRate += fairy.ElementRate + fairy.Item.ElementRate;
@@ -2833,7 +2833,7 @@ namespace OpenNos.GameObject
 
             for (short i = 1; i < 14; i++)
             {
-                WearableInstance item = Inventory?.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
+                var item = Inventory?.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
                 if (item == null)
                 {
                     continue;
@@ -3389,7 +3389,7 @@ namespace OpenNos.GameObject
             int i = 0;
             foreach (CharacterDTO characterDto in ServerManager.Instance.TopReputation)
             {
-                Character character = (Character)characterDto;
+                var character = (Character)characterDto;
                 i++;
                 if (character.CharacterId != CharacterId)
                 {
@@ -3480,7 +3480,7 @@ namespace OpenNos.GameObject
             {
                 inventory.CharacterId = CharacterId;
                 Inventory[inventory.Id] = (ItemInstance)inventory;
-                WearableInstance wearinstance = inventory as WearableInstance;
+                var wearinstance = inventory as WearableInstance;
                 wearinstance?.EquipmentOptions.Clear();
                 wearinstance?.EquipmentOptions.AddRange(DaoFactory.EquipmentOptionDao.GetOptionsByWearableInstanceId(wearinstance.Id));
             }
@@ -3886,7 +3886,7 @@ namespace OpenNos.GameObject
 
                 foreach (Buff.Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
                 {
-                    StaticBuffDTO bf = new StaticBuffDTO
+                    var bf = new StaticBuffDTO
                     {
                         CharacterId = CharacterId,
                         RemainingTime = (int)(buff.RemainingTime - (DateTime.Now - buff.Start).TotalSeconds),
@@ -3962,7 +3962,7 @@ namespace OpenNos.GameObject
             {
                 amount = 1;
             }
-            MailDTO mail = new MailDTO
+            var mail = new MailDTO
             {
                 AttachmentAmount = it.Type == InventoryType.Etc || it.Type == InventoryType.Main ? amount : (byte)1,
                 IsOpened = false,
@@ -4062,7 +4062,7 @@ namespace OpenNos.GameObject
                     {
                         return true;
                     }
-                    WearableInstance wearable = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
+                    var wearable = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
                     if (wearable != null)
                     {
                         if (wearable.Ammo > 0)
@@ -4169,7 +4169,7 @@ namespace OpenNos.GameObject
             }
             foreach (object suit in Enum.GetValues(typeof(EquipmentType)))
             {
-                WearableInstance item = Inventory.LoadBySlotAndType<WearableInstance>((byte)suit, InventoryType.Wear);
+                var item = Inventory.LoadBySlotAndType<WearableInstance>((byte)suit, InventoryType.Wear);
                 if (item == null || item.DurabilityPoint <= 0 || item.Item.EquipmentSlot == EquipmentType.Amulet)
                 {
                     continue;
@@ -4254,7 +4254,7 @@ namespace OpenNos.GameObject
             }
 
             GenerateLevelXpLevelUp();
-            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            var fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (fairy != null)
             {
                 if (fairy.ElementRate + fairy.Item.ElementRate < fairy.Item.MaxElementRate && Level <= monsterinfo.Level + 15 && Level >= monsterinfo.Level - 15)
@@ -4331,7 +4331,7 @@ namespace OpenNos.GameObject
         private void GenerateFairyXpLevelUp()
         {
             // TODO CLEANUP AND ADD FAIRY PROPERTY
-            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            var fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (fairy == null)
             {
                 return;
@@ -4622,7 +4622,7 @@ namespace OpenNos.GameObject
 
         public void AddStaticBuff(StaticBuffDTO staticBuff, bool isPermaBuff = false)
         {
-            Buff.Buff bf = new Buff.Buff(staticBuff.CardId, Session.Character.Level, isPermaBuff)
+            var bf = new Buff.Buff(staticBuff.CardId, Session.Character.Level, isPermaBuff)
             {
                 Start = DateTime.Now,
                 StaticBuff = true,
@@ -4687,7 +4687,7 @@ namespace OpenNos.GameObject
         public string GenerateTaP(byte tatype, bool showOponent)
         {
             List<ArenaTeamMember> arenateam = ServerManager.Instance.ArenaTeams.FirstOrDefault(s => s != null && s.Any(o => o != null && o.Session == Session))?.OrderBy(s => s.ArenaTeamType).ToList();
-            ArenaTeamType type = ArenaTeamType.ERENIA;
+            var type = ArenaTeamType.ERENIA;
             string groups = string.Empty;
             if (arenateam == null)
             {
@@ -4815,7 +4815,7 @@ namespace OpenNos.GameObject
             int life2 = 0;
             int call1 = 0;
             int call2 = 0;
-            ArenaTeamType atype = ArenaTeamType.ERENIA;
+            var atype = ArenaTeamType.ERENIA;
             if (tm == null)
             {
                 return $"ta_f 0 {victoriousteam} {(byte)atype} {score1} {life1} {call1} {score2} {life2} {call2}";
