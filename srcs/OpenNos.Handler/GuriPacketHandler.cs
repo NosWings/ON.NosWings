@@ -75,9 +75,9 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        InventoryType inventoryType = (InventoryType) guriPacket.Argument;
+                        var inventoryType = (InventoryType) guriPacket.Argument;
                         ItemInstance pearls = Session.Character.Inventory.FirstOrDefault(s => s.Value.ItemVNum == 1429).Value;
-                        WearableInstance shell = (WearableInstance) Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, inventoryType);
+                        var shell = (WearableInstance) Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, inventoryType);
 
                         if (pearls == null)
                         {
@@ -157,8 +157,8 @@ namespace OpenNos.Handler
                             return;
                         }
                         const int perfumeVnum = 1428;
-                        InventoryType perfumeInventoryType = (InventoryType) guriPacket.Argument;
-                        WearableInstance eq = (WearableInstance) Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, perfumeInventoryType);
+                        var perfumeInventoryType = (InventoryType) guriPacket.Argument;
+                        var eq = (WearableInstance) Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, perfumeInventoryType);
 
                         if (eq.BoundCharacterId == Session.Character.CharacterId)
                         {
@@ -207,7 +207,7 @@ namespace OpenNos.Handler
                         if (ServerManager.Instance.IceBreakerInWaiting && IceBreaker.Map.Sessions.Count() < IceBreaker.MaxAllowedPlayers)
                         {
                             ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, IceBreaker.Map.MapInstanceId);
-                            Group group = new Group(GroupType.IceBreaker);
+                            var group = new Group(GroupType.IceBreaker);
                             if (Session.Character.Group != null)
                             {
                                 foreach (var session in Session.Character.Group.Characters)
@@ -316,11 +316,6 @@ namespace OpenNos.Handler
                                     {
                                         if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                                         {
-                                            if (Session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseMapInstance)
-                                            {
-                                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
-                                                return;
-                                            }
                                             short mapy = session.Character.PositionY;
                                             short mapx = session.Character.PositionX;
                                             short mapId = session.Character.MapInstance.Map.MapId;
@@ -330,7 +325,7 @@ namespace OpenNos.Handler
                                         }
                                         else
                                         {
-                                            if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance && session.Character.Faction == Session.Character.Faction && session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance)
+                                            if (session.Character.Faction == Session.Character.Faction && session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance || session.Character.MapInstance.MapInstanceType == MapInstanceType.LobbyMapInstance)
                                             {
                                                 short mapy = session.Character.PositionY;
                                                 short mapx = session.Character.PositionX;
@@ -385,7 +380,7 @@ namespace OpenNos.Handler
                                                         return;
                                                     }
                                                 }
-                                                Random random = new Random();
+                                                var random = new Random();
                                                 double randomAmount = ServerManager.Instance.RandomNumber() * random.NextDouble();
                                                 DropDTO drop = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum);
                                                 if (drop != null)
@@ -629,98 +624,105 @@ namespace OpenNos.Handler
                                                 Session.SendPacket(Session.Character.GeneratePStashAll());
                                                 break;
                                             default:
-                                                if (guriPacket.Type == 208 && guriPacket.Argument == 0)
+                                                switch (guriPacket.Type)
                                                 {
-                                                    if (guriPacket.User != null && short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) &&
-                                                        short.TryParse(guriPacket.Value, out short mountSlot))
+                                                    case 208 when guriPacket.Argument == 0:
                                                     {
-                                                        ItemInstance mount = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(mountSlot, InventoryType.Main);
-                                                        BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
-                                                        if (mount != null && pearl != null)
+                                                        if (guriPacket.User != null && short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) &&
+                                                            short.TryParse(guriPacket.Value, out short mountSlot))
                                                         {
-                                                            pearl.HoldingVNum = mount.ItemVNum;
-                                                            Session.Character.Inventory.RemoveItemAmountFromInventory(1, mount.Id);
-                                                        }
-                                                    }
-                                                }
-                                                else if (guriPacket.Type == 209 && guriPacket.Argument == 0)
-                                                {
-                                                    if (guriPacket.User != null && short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) &&
-                                                        short.TryParse(guriPacket.Value, out short mountSlot))
-                                                    {
-                                                        WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(mountSlot, InventoryType.Equipment);
-                                                        BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
-                                                        if (fairy != null && pearl != null)
-                                                        {
-                                                            pearl.HoldingVNum = fairy.ItemVNum;
-                                                            pearl.ElementRate = fairy.ElementRate;
-                                                            Session.Character.Inventory.RemoveItemAmountFromInventory(1, fairy.Id);
-                                                        }
-                                                    }
-                                                }
-                                                else if (guriPacket.Type == 203 && guriPacket.Argument == 0)
-                                                {
-                                                    // SP points initialization
-                                                    int[] listPotionResetVNums = {1366, 1427, 5115, 9040};
-                                                    int vnumToUse = -1;
-                                                    foreach (int vnum in listPotionResetVNums)
-                                                    {
-                                                        if (Session.Character.Inventory.CountItem(vnum) > 0)
-                                                        {
-                                                            vnumToUse = vnum;
-                                                        }
-                                                    }
-                                                    if (vnumToUse != -1)
-                                                    {
-                                                        if (Session.Character.UseSp)
-                                                        {
-                                                            SpecialistInstance specialistInstance =
-                                                                Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
-                                                            if (specialistInstance != null)
+                                                            var mount = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(mountSlot, InventoryType.Main);
+                                                            var pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
+                                                            if (mount != null && pearl != null)
                                                             {
-                                                                specialistInstance.SlDamage = 0;
-                                                                specialistInstance.SlDefence = 0;
-                                                                specialistInstance.SlElement = 0;
-                                                                specialistInstance.SlHP = 0;
+                                                                pearl.HoldingVNum = mount.ItemVNum;
+                                                                Session.Character.Inventory.RemoveItemAmountFromInventory(1, mount.Id);
+                                                            }
+                                                        }
 
-                                                                specialistInstance.DamageMinimum = 0;
-                                                                specialistInstance.DamageMaximum = 0;
-                                                                specialistInstance.HitRate = 0;
-                                                                specialistInstance.CriticalLuckRate = 0;
-                                                                specialistInstance.CriticalRate = 0;
-                                                                specialistInstance.DefenceDodge = 0;
-                                                                specialistInstance.DistanceDefenceDodge = 0;
-                                                                specialistInstance.ElementRate = 0;
-                                                                specialistInstance.DarkResistance = 0;
-                                                                specialistInstance.LightResistance = 0;
-                                                                specialistInstance.FireResistance = 0;
-                                                                specialistInstance.WaterResistance = 0;
-                                                                specialistInstance.CriticalDodge = 0;
-                                                                specialistInstance.CloseDefence = 0;
-                                                                specialistInstance.DistanceDefence = 0;
-                                                                specialistInstance.MagicDefence = 0;
-                                                                specialistInstance.HP = 0;
-                                                                specialistInstance.MP = 0;
+                                                        break;
+                                                    }
+                                                    case 209 when guriPacket.Argument == 0:
+                                                    {
+                                                        if (guriPacket.User != null && short.TryParse(guriPacket.User.Value.ToString(), out short pearlSlot) &&
+                                                            short.TryParse(guriPacket.Value, out short mountSlot))
+                                                        {
+                                                            var fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(mountSlot, InventoryType.Equipment);
+                                                            var pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
+                                                            if (fairy != null && pearl != null)
+                                                            {
+                                                                pearl.HoldingVNum = fairy.ItemVNum;
+                                                                pearl.ElementRate = fairy.ElementRate;
+                                                                Session.Character.Inventory.RemoveItemAmountFromInventory(1, fairy.Id);
+                                                            }
+                                                        }
 
-                                                                Session.Character.Inventory.RemoveItemAmount(vnumToUse);
-                                                                Session.Character.Inventory.DeleteFromSlotAndType((byte) EquipmentType.Sp, InventoryType.Wear);
-                                                                Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (byte) EquipmentType.Sp);
-                                                                Session.SendPacket(Session.Character.GenerateCond());
-                                                                Session.SendPacket(specialistInstance.GenerateSlInfo());
-                                                                Session.SendPacket(Session.Character.GenerateLev());
-                                                                Session.SendPacket(Session.Character.GenerateStatChar());
-                                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_RESET"), 0));
+                                                        break;
+                                                    }
+                                                    case 203 when guriPacket.Argument == 0:
+                                                        // SP points initialization
+                                                        int[] listPotionResetVNums = {1366, 1427, 5115, 9040};
+                                                        int vnumToUse = -1;
+                                                        foreach (int vnum in listPotionResetVNums)
+                                                        {
+                                                            if (Session.Character.Inventory.CountItem(vnum) > 0)
+                                                            {
+                                                                vnumToUse = vnum;
+                                                            }
+                                                        }
+                                                        if (vnumToUse != -1)
+                                                        {
+                                                            if (Session.Character.UseSp)
+                                                            {
+                                                                var specialistInstance =
+                                                                    Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
+                                                                if (specialistInstance != null)
+                                                                {
+                                                                    specialistInstance.SlDamage = 0;
+                                                                    specialistInstance.SlDefence = 0;
+                                                                    specialistInstance.SlElement = 0;
+                                                                    specialistInstance.SlHP = 0;
+
+                                                                    specialistInstance.DamageMinimum = 0;
+                                                                    specialistInstance.DamageMaximum = 0;
+                                                                    specialistInstance.HitRate = 0;
+                                                                    specialistInstance.CriticalLuckRate = 0;
+                                                                    specialistInstance.CriticalRate = 0;
+                                                                    specialistInstance.DefenceDodge = 0;
+                                                                    specialistInstance.DistanceDefenceDodge = 0;
+                                                                    specialistInstance.ElementRate = 0;
+                                                                    specialistInstance.DarkResistance = 0;
+                                                                    specialistInstance.LightResistance = 0;
+                                                                    specialistInstance.FireResistance = 0;
+                                                                    specialistInstance.WaterResistance = 0;
+                                                                    specialistInstance.CriticalDodge = 0;
+                                                                    specialistInstance.CloseDefence = 0;
+                                                                    specialistInstance.DistanceDefence = 0;
+                                                                    specialistInstance.MagicDefence = 0;
+                                                                    specialistInstance.HP = 0;
+                                                                    specialistInstance.MP = 0;
+
+                                                                    Session.Character.Inventory.RemoveItemAmount(vnumToUse);
+                                                                    Session.Character.Inventory.DeleteFromSlotAndType((byte) EquipmentType.Sp, InventoryType.Wear);
+                                                                    Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (byte) EquipmentType.Sp);
+                                                                    Session.SendPacket(Session.Character.GenerateCond());
+                                                                    Session.SendPacket(specialistInstance.GenerateSlInfo());
+                                                                    Session.SendPacket(Session.Character.GenerateLev());
+                                                                    Session.SendPacket(Session.Character.GenerateStatChar());
+                                                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_RESET"), 0));
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORMATION_NEEDED"), 10));
                                                             }
                                                         }
                                                         else
                                                         {
-                                                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORMATION_NEEDED"), 10));
+                                                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POINTS"), 10));
                                                         }
-                                                    }
-                                                    else
-                                                    {
-                                                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POINTS"), 10));
-                                                    }
+
+                                                        break;
                                                 }
                                                 break;
                                         }

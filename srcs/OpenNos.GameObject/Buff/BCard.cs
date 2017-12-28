@@ -36,6 +36,7 @@ namespace OpenNos.GameObject.Buff
 
         public void ApplyBCards(IBattleEntity session, IBattleEntity caster = null)
         {
+            Mate mate;
             switch ((BCardType.CardType)Type)
             {
                 case BCardType.CardType.Buff:
@@ -159,13 +160,15 @@ namespace OpenNos.GameObject.Buff
                     break;
 
                 case BCardType.CardType.HealingBurningAndCasting:
-                    AdditionalTypes.HealingBurningAndCasting subtype = (AdditionalTypes.HealingBurningAndCasting) SubType;
+                    var subtype = (AdditionalTypes.HealingBurningAndCasting) SubType;
+                    Character sess;
                     switch (subtype)
                     {
                         case AdditionalTypes.HealingBurningAndCasting.RestoreHP:
                         case AdditionalTypes.HealingBurningAndCasting.RestoreHPWhenCasting:
-                            if (session.GetSession() is Character sess)
+                            if (session.GetSession() is Character)
                             {
+                                sess = (Character)session.GetSession();
                                 int heal = FirstData;
                                 bool change = false;
                                 if (IsLevelScaled)
@@ -197,6 +200,93 @@ namespace OpenNos.GameObject.Buff
                                 if (change)
                                 {
                                     sess.Session?.SendPacket(sess.GenerateStat());
+                                }
+                            }
+
+                            if (session.GetSession() is Mate)
+                            {
+                                mate = (Mate)session.GetSession();
+                                int heal = FirstData;
+                                if (IsLevelScaled)
+                                {
+                                    if (IsLevelDivided)
+                                    {
+                                        heal /= mate.Level;
+                                    }
+                                    else
+                                    {
+                                        heal *= mate.Level;
+                                    }
+                                }
+                                if (mate.Hp + heal < mate.HpLoad())
+                                {
+                                    mate.Hp += heal;
+                                }
+                                else
+                                {
+                                    mate.Hp = mate.HpLoad();
+                                }
+                            }
+
+                            break;
+                        case AdditionalTypes.HealingBurningAndCasting.RestoreMP:
+                            if (session.GetSession() is Character)
+                            {
+                                sess = (Character)session.GetSession();
+                                int heal = FirstData;
+                                bool change = false;
+                                if (IsLevelScaled)
+                                {
+                                    if (IsLevelDivided)
+                                    {
+                                        heal /= sess.Level;
+                                    }
+                                    else
+                                    {
+                                        heal *= sess.Level;
+                                    }
+                                }
+                                if (sess.Mp + heal < sess.MpLoad())
+                                {
+                                    sess.Mp += heal;
+                                    change = true;
+                                }
+                                else
+                                {
+                                    if (sess.Mp != (int)sess.MpLoad())
+                                    {
+                                        change = true;
+                                    }
+                                    sess.Mp = (int)sess.MpLoad();
+                                }
+                                if (change)
+                                {
+                                    sess.Session?.SendPacket(sess.GenerateStat());
+                                }
+                            }
+
+                            if (session.GetSession() is Mate)
+                            {
+                                mate = (Mate)session.GetSession();
+                                int heal = FirstData;
+                                if (IsLevelScaled)
+                                {
+                                    if (IsLevelDivided)
+                                    {
+                                        heal /= mate.Level;
+                                    }
+                                    else
+                                    {
+                                        heal *= mate.Level;
+                                    }
+                                }
+                                if (mate.Mp + heal < mate.MpLoad())
+                                {
+                                    mate.Mp += heal;
+                                }
+                                else
+                                {
+                                    mate.Mp = mate.MpLoad();
                                 }
                             }
                             break;
@@ -242,8 +332,8 @@ namespace OpenNos.GameObject.Buff
                                             }
                                             monsterToCapture.MapInstance.DespawnMonster(monsterToCapture);
                                             NpcMonster mateNpc = ServerManager.Instance.GetNpc(monsterToCapture.MonsterVNum);
-                                            Mate mate = new Mate(hunter, mateNpc, (byte)level, MateType.Pet);
-                                            hunter.Mates.Add(mate);
+                                            mate = new Mate(hunter, mateNpc, (byte)level, MateType.Pet);
+                                            hunter.Mates?.Add(mate);
                                             mate.RefreshStats();
                                             hunter.Session.SendPacket($"ctl 2 {mate.PetId} 3");
                                             hunter.MapInstance.Broadcast(mate.GenerateIn());
@@ -398,8 +488,7 @@ namespace OpenNos.GameObject.Buff
                         {
                             if (ServerManager.Instance.RandomNumber() < FirstData)
                             {
-                                Character character = (session as Character);
-                                if (character == null)
+                                if (!(session is Character character))
                                 {
                                     break;
                                 }
@@ -433,8 +522,7 @@ namespace OpenNos.GameObject.Buff
                         }
                         else
                         {
-                            Character character = (session as Character);
-                            if (character == null)
+                            if (!(session is Character character))
                             {
                                 break;
                             }
