@@ -33,11 +33,9 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private InstanceBag _instancebag = new InstanceBag();
+        private readonly InstanceBag _instancebag = new InstanceBag();
 
-        public Dictionary<int, MapInstance> Mapinstancedictionary = new Dictionary<int, MapInstance>();
-
-        private IDisposable _obs;
+        public Dictionary<int, MapInstance> MapInstanceDictionary = new Dictionary<int, MapInstance>();
 
         #endregion
 
@@ -88,7 +86,7 @@ namespace OpenNos.GameObject
         public void Dispose()
         {
             Thread.Sleep(10000);
-            Mapinstancedictionary.Values.ToList().ForEach(m => m.Dispose());
+            MapInstanceDictionary.Values.ToList().ForEach(m => m.Dispose());
         }
 
         public string GenerateMainInfo()
@@ -99,7 +97,7 @@ namespace OpenNos.GameObject
         public List<string> GenerateMinimap()
         {
             List<string> lst = new List<string> {"rsfm 0 0 4 12"};
-            Mapinstancedictionary.Values.ToList().ForEach(s => lst.Add(s.GenerateRsfn(true)));
+            MapInstanceDictionary.Values.ToList().ForEach(s => lst.Add(s.GenerateRsfn(true)));
             return lst;
         }
 
@@ -146,7 +144,7 @@ namespace OpenNos.GameObject
             GiftItems = new List<Gift>();
             Maps = new List<MapInstance>();
 
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             if (Script != null)
             {
                 doc.LoadXml(Script);
@@ -211,7 +209,7 @@ namespace OpenNos.GameObject
 
         public void LoadScript(MapInstanceType mapinstancetype)
         {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             if (Script == null)
             {
                 return;
@@ -238,42 +236,23 @@ namespace OpenNos.GameObject
                     byte.TryParse(variable?.Attributes["IndexY"]?.Value, out byte indexy);
                     newmap.MapIndexY = indexy;
 
-                    if (!Mapinstancedictionary.ContainsKey(int.Parse(variable?.Attributes["Map"].Value)))
+                    if (!MapInstanceDictionary.ContainsKey(int.Parse(variable?.Attributes["Map"].Value)))
                     {
-                        Mapinstancedictionary.Add(int.Parse(variable?.Attributes["Map"].Value), newmap);
+                        MapInstanceDictionary.Add(int.Parse(variable?.Attributes["Map"].Value), newmap);
                     }
                 }
             }
 
-            FirstMap = Mapinstancedictionary.Values.FirstOrDefault();
+            FirstMap = MapInstanceDictionary.Values.FirstOrDefault();
             Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(x =>
             {
                 if (FirstMap.InstanceBag.Lock)
                 {
                     return;
                 }
-                Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
+                MapInstanceDictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
                 Dispose();
             });
-            if (Type != ScriptedInstanceType.RaidAct4)
-            {
-                _obs = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(x =>
-                {
-                    if (_instancebag.Lives - _instancebag.DeadList.Count < 0)
-                    {
-                        Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)3)));
-                        Dispose();
-                        _obs.Dispose();
-                    }
-                    if (_instancebag.Clock.DeciSecondRemaining > 0)
-                    {
-                        return;
-                    }
-                    Mapinstancedictionary.Values.ToList().ForEach(m => EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
-                    Dispose();
-                    _obs.Dispose();
-                });
-            }
             GenerateEvent(instanceEvents, FirstMap);
         }
 
@@ -301,7 +280,7 @@ namespace OpenNos.GameObject
                 }
                 if (int.TryParse(mapevent.Attributes["ToMap"]?.Value, out int toMap))
                 {
-                    MapInstance destmap = Mapinstancedictionary.First(s => s.Key == toMap).Value;
+                    MapInstance destmap = MapInstanceDictionary.First(s => s.Key == toMap).Value;
                     if (!short.TryParse(mapevent?.Attributes["ToY"]?.Value, out toY) || !short.TryParse(mapevent?.Attributes["ToX"]?.Value, out toX))
                     {
                         if (destmap != null)
@@ -335,7 +314,7 @@ namespace OpenNos.GameObject
                 {
                     isHostile = true;
                 }
-                MapInstance mapinstance = Mapinstancedictionary.FirstOrDefault(s => s.Key == mapid).Value ?? parentmapinstance;
+                MapInstance mapinstance = MapInstanceDictionary.FirstOrDefault(s => s.Key == mapid).Value ?? parentmapinstance;
                 MapCell cell;
                 switch (mapevent.Name)
                 {
@@ -349,7 +328,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case "End":
-                        Mapinstancedictionary.Values.ToList().ForEach(m => evts.Add(new EventContainer(m, EventActionType.SCRIPTEND, byte.Parse(mapevent.Attributes?["Type"]?.Value ?? "0"))));
+                        MapInstanceDictionary.Values.ToList().ForEach(m => evts.Add(new EventContainer(m, EventActionType.SCRIPTEND, byte.Parse(mapevent.Attributes?["Type"]?.Value ?? "0"))));
                         break;
 
                     //register events
@@ -501,7 +480,7 @@ namespace OpenNos.GameObject
                                 positionY = cell.Y;
                             }
                         }
-                        MapButton button = new MapButton(
+                        var button = new MapButton(
                             int.Parse(mapevent?.Attributes["Id"].Value), positionX, positionY,
                             short.Parse(mapevent?.Attributes["VNumEnabled"].Value),
                             short.Parse(mapevent?.Attributes["VNumDisabled"].Value), new List<EventContainer>(), new List<EventContainer>(), new List<EventContainer>());
@@ -636,7 +615,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SpawnPortal":
-                        Portal portal = new Portal
+                        var portal = new Portal
                         {
                             PortalId = byte.Parse(mapevent?.Attributes["IdOnMap"].Value),
                             SourceX = positionX,
@@ -664,6 +643,27 @@ namespace OpenNos.GameObject
                 }
             }
             return evts;
+        }
+
+        public void End()
+        {
+            if (_instancebag.DeadList.Count > _instancebag.Lives)
+            {
+                foreach (MapInstance m in MapInstanceDictionary.Values)
+                {
+                    EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)3));
+                }
+                Dispose();
+            }
+            if (_instancebag.Clock.DeciSecondRemaining > 0)
+            {
+                return;
+            }
+            foreach (MapInstance m in MapInstanceDictionary.Values)
+            {
+                EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1));
+            }
+            Dispose();
         }
 
         #endregion

@@ -542,7 +542,7 @@ namespace OpenNos.GameObject.Networking
                         return;
                     }
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
-                        string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE"), session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count() + 1),
+                        string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE"), session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count + 1),
                         0));
                     session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(
                         $"#revival^1 #revival^1 {(session.Character.Level > 10 ? Language.Instance.GetMessageFromKey("ASK_REVIVE_TS_LOW_LEVEL") : Language.Instance.GetMessageFromKey("ASK_REVIVE_TS"))}"));
@@ -580,24 +580,23 @@ namespace OpenNos.GameObject.Networking
                     }
                     else
                     {
-                        List<long> save = session.CurrentMapInstance.InstanceBag.DeadList.ToList();
-                        if (session.CurrentMapInstance.InstanceBag.Lives - session.CurrentMapInstance.InstanceBag.DeadList.Count < 0)
+                        List<long> deadList = session.CurrentMapInstance.InstanceBag.DeadList.ToList();
+                        if (session.CurrentMapInstance.InstanceBag.DeadList.Count > session.CurrentMapInstance.InstanceBag.Lives)
                         {
                             session.Character.Hp = 1;
                             session.Character.Mp = 1;
+                            session.Character.Group?.Raid.End();
+                            return;
                         }
-                        if (2 - save.Count(s => s == session.Character.CharacterId) > 0)
+                        if (deadList.Count(s => s == session.Character.CharacterId) < 2)
                         {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"),
-                                2 - session.CurrentMapInstance.InstanceBag.DeadList.Count(s => s == session.Character.CharacterId))));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("YOU_HAVE_LIFE_RAID"), 2 - session.CurrentMapInstance.InstanceBag.DeadList.Count(s => s == session.Character.CharacterId))));
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("RAID_MEMBER_DEAD"), session.Character.Name)));
-
                             session.CurrentMapInstance.InstanceBag.DeadList.Add(session.Character.CharacterId);
                             if (session.Character?.Group?.Characters != null)
                             {
                                 foreach (ClientSession player in session.Character.Group?.Characters)
                                 {
-
                                     player?.SendPacket(player?.Character?.Group?.GeneraterRaidmbf(player?.CurrentMapInstance));
                                     player?.SendPacket(player?.Character?.Group?.GenerateRdlst());
                                 }

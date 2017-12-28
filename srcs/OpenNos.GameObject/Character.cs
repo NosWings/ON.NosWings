@@ -2205,8 +2205,7 @@ namespace OpenNos.GameObject
                 return $"pidx -1 1.{CharacterId}";
             }
             string str = $"pidx {Group.GroupId}";
-            return Enumerable.Where(Group.Characters, s => s.Character != null)
-                .Aggregate(str, (current, s) => current + $" {(Group.IsMemberOfGroup(CharacterId) ? 1 : 0)}.{s.Character.CharacterId} ");
+            return Group.Characters.Where(s => s.Character != null).Aggregate(str, (current, s) => current + $" {(Group.IsMemberOfGroup(CharacterId) ? 1 : 0)}.{s.Character.CharacterId} ");
         }
 
         public string GeneratePinit()

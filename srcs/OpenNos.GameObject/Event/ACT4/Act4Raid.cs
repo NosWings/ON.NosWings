@@ -59,7 +59,7 @@ namespace OpenNos.GameObject.Event.ACT4
 
             foreach (Family family in ServerManager.Instance.FamilyList.Where(f => f?.Act4Raid != null))
             {
-                family.Act4Raid.Mapinstancedictionary?.Values.ToList().ForEach(m => m?.Dispose());
+                family.Act4Raid.MapInstanceDictionary?.Values.ToList().ForEach(m => m?.Dispose());
                 family.Act4Raid = null;
             }
         }
