@@ -26,8 +26,11 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
+using AutoMapper;
 using NosSharp.Enums;
 using OpenNos.Core.Extensions;
+using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Helpers;
 using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Item.Instance;
 using static NosSharp.Enums.BCardType;
@@ -3738,6 +3741,21 @@ namespace OpenNos.GameObject
         {
             try
             {
+
+                /* TO FINISH FOR HIGH PERFORMANCES UPGRADE
+                 using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    DAL.EF.Entities.Account acc = context.Account.First(s => s.AccountId == AccountId);
+                    acc.BankMoney = Session.Account.BankMoney;
+                    acc.Authority = Session.Account.Authority;
+
+                    CharacterDTO characterDto = DeepCopy();
+                    DAL.EF.Entities.Character character = context.Character.FirstOrDefault(c => c.AccountId.Equals(characterDto.AccountId) && c.Slot.Equals(characterDto.Slot) && c.State.Equals((byte)CharacterState.Active));
+                    
+
+                    context.SaveChanges();
+                }
+                */
                 AccountDTO account = Session.Account;
                 DaoFactory.AccountDao.InsertOrUpdate(ref account);
 

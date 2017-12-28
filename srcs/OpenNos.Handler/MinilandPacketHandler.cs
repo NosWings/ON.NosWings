@@ -413,7 +413,14 @@ namespace OpenNos.Handler
 
                 case 2:
                     MinilandState state;
-                    Enum.TryParse(mlEditPacket.Parameters, out state);
+                    try
+                    {
+                        Enum.TryParse(mlEditPacket.Parameters, out state);
+                    }
+                    catch
+                    {
+                        return;
+                    }
 
                     switch (state)
                     {

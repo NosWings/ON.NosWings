@@ -42,7 +42,7 @@ namespace OpenNos.GameObject.Map
             Buttons = new List<MapButton>();
             XpRate = 1;
             DropRate = 1;
-            ShopAllowed = shopAllowed;
+            _isShopAllowed = shopAllowed;
             MapInstanceType = type;
             _isSleeping = true;
             LastUserShopId = 0;
@@ -77,6 +77,7 @@ namespace OpenNos.GameObject.Map
         private int _lastMapId;
 
         private readonly ConcurrentDictionary<long, MapMonster> _monsters;
+        private bool _isShopAllowed;
 
         private readonly ConcurrentDictionary<long, MapNpc> _npcs;
 
@@ -182,7 +183,7 @@ namespace OpenNos.GameObject.Map
 
         public bool ShopAllowed
         {
-            get { return ShopAllowed || MapInstanceType == MapInstanceType.LobbyMapInstance; }
+            get { return _isShopAllowed || MapInstanceType == MapInstanceType.LobbyMapInstance; }
         }
 
         public List<ScriptedInstance> ScriptedInstances { get; }
