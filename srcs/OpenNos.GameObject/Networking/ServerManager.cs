@@ -742,7 +742,11 @@ namespace OpenNos.GameObject.Networking
                 session.ClearLowPriorityQueue();
                 bool isLeavingLobby = session.Character.MapInstanceId == LobbyMapInstance.MapInstanceId;
                 session.Character.MapInstanceId = mapInstanceId;
-                if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                if (session.Character.MapInstance.Map.MapId == (short)SpecialMapIdType.Lobby && session.Character.MapInstance != LobbyMapInstance)
+                {
+                    session.Character.MapInstanceId = LobbyMapInstance.MapInstanceId;
+                }
+                if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || session.Character.MapInstance.MapInstanceType == MapInstanceType.LobbyMapInstance)
                 {
                     session.Character.MapId = session.Character.MapInstance.Map.MapId;
                     if (mapX != null && mapY != null)
