@@ -990,6 +990,10 @@ namespace OpenNos.GameObject.Battle
                             }
                             break;
 
+                        case CardType.MeditationSkill:
+                            bcard.ApplyBCards(Entity);
+                            break;
+
                         default:
                             bcard.ApplyBCards(target, Entity);
                             break;
