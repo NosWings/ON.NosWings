@@ -347,6 +347,7 @@ namespace OpenNos.GameObject.Map
                 {
                     Respawn();
                 }
+                return;
             }
 
             if (Target == null) // basic move
