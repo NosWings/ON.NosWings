@@ -608,9 +608,9 @@ namespace OpenNos.GameObject.Battle
             {
                 elementalBoost = 0;
             }
-
+            int resistance = targetResistance + bonusrez;
             elementalDamage = (int)(elementalDamage + (baseDamage + 100) * ((ElementRate + ElementRateSp) / 100D));
-            elementalDamage = (int)(elementalDamage / 100D * (100 - targetResistance) * elementalBoost);
+            elementalDamage = (int)(elementalDamage / 100D * (100 - (resistance > 100 ? 100 : resistance)) * elementalBoost);
 
             #endregion
 
