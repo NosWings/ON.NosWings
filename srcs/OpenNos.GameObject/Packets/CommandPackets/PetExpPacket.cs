@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
 
         public static string ReturnHelp()
         {
-            return "PetExp AMOUNT";
+            return "$PetExp AMOUNT";
         }
     }
 }
