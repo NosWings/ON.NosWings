@@ -2,6 +2,7 @@
 using OpenNos.Data;
 using OpenNos.GameObject;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NosSharp.Enums;
 using OpenNos.Core.Handling;
@@ -114,41 +115,24 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            NpcMonsterSkill mateSkill = null;
-            if (attacker.Monster.Skills.Count <= 0)
-            {
-                mateSkill = new NpcMonsterSkill();
-                mateSkill.SkillVNum = 200;
-            }
-            else
-            {
-                mateSkill = attacker.Monster.Skills.FirstOrDefault(x => x.Skill.CastId == suctlPacket.CastId);
-            }
             if (attacker.IsSitting)
             {
                 return;
             }
-            switch (suctlPacket.TargetType)
+            IEnumerable<NpcMonsterSkill> mateSkills = attacker.IsUsingSp ? attacker.SpSkills.ToList() : attacker.Monster.Skills;
+            if (mateSkills != null)
             {
-                case UserType.Monster:
-                    if (attacker.Hp > 0)
-                    {
-                        MapMonster target = Session?.CurrentMapInstance?.GetMonster(suctlPacket.TargetId);
-                        AttackMonster(attacker, mateSkill, target);
-                    }
-                    return;
-
-                case UserType.Npc:
-                    return;
-
-                case UserType.Player:
-                    return;
-
-                case UserType.Object:
-                    return;
-
-                default:
-                    return;
+                NpcMonsterSkill ski = mateSkills.FirstOrDefault(s => s.Skill?.CastId == suctlPacket.CastId);
+                switch (suctlPacket.TargetType)
+                {
+                    case UserType.Monster:
+                        if (attacker.Hp > 0)
+                        {
+                            MapMonster target = Session?.CurrentMapInstance?.GetMonster(suctlPacket.TargetId);
+                            AttackMonster(attacker, ski, target);
+                        }
+                        return;
+                }
             }
         }
 
@@ -217,6 +201,7 @@ namespace OpenNos.Handler
                 }
                 mate.IsUsingSp = true;
                 //TODO: update pet skills
+                mate.SpSkills = new NpcMonsterSkill[3];
                 Session.SendPacket(mate.GenerateCond());
                 Session.Character.MapInstance.Broadcast(mate.GenerateCMode(mate.SpInstance.Item.Morph));
                 Session.SendPacket(mate.GeneratePski());
