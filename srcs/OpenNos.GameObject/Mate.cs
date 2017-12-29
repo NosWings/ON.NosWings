@@ -156,7 +156,7 @@ namespace OpenNos.GameObject
 
         public short PositionY { get; set; }
 
-        public Skill[] SpSkills { get; set; }
+        public NpcMonsterSkill[] SpSkills { get; set; }
 
         public ConcurrentBag<BCard> SkillBcards { get; set; }
 
