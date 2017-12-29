@@ -347,7 +347,7 @@ namespace OpenNos.GameObject.Battle
 
             #endregion
 
-            upgrade -= target.DefenceUpgrade;
+            upgrade -= (short)(target.DefenceUpgrade + targetDefenseUpgrade);
 
             #region Detailed Calculation
 
