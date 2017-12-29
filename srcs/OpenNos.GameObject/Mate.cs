@@ -156,7 +156,7 @@ namespace OpenNos.GameObject
 
         public short PositionY { get; set; }
 
-        public Skill[] Skills { get; set; }
+        public Skill[] SpSkills { get; set; }
 
         public ConcurrentBag<BCard> SkillBcards { get; set; }
 
@@ -301,9 +301,9 @@ namespace OpenNos.GameObject
 
         public string GeneratePski()
         {
-            if (Skills?.Length >= 3)
+            if (SpSkills?.Length >= 3)
             {
-                return $"pski {Skills?[0].SkillVNum} {Skills?[1].SkillVNum} {Skills?[2].SkillVNum}";
+                return $"pski {SpSkills?[0].SkillVNum} {SpSkills?[1].SkillVNum} {SpSkills?[2].SkillVNum}";
             }
             return "pski";
         }

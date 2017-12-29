@@ -193,7 +193,7 @@ namespace OpenNos.Handler
                 if (mate.IsUsingSp)
                 {
                     mate.IsUsingSp = false;
-                    mate.Skills = null;
+                    mate.SpSkills = null;
                     Session.Character.MapInstance.Broadcast(mate.GenerateCMode(-1));
                     Session.SendPacket(mate.GenerateCond());
                     Session.SendPacket(mate.GeneratePski());
