@@ -118,6 +118,7 @@ namespace NosSharp.World
                 if (autoreboot)
                 {
                     AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+                    AppDomain.CurrentDomain.ProcessExit += ProcessExitHandler;
                 }
                 NativeMethods.SetConsoleCtrlHandler(_exitHandler, true);
             }
@@ -125,6 +126,7 @@ namespace NosSharp.World
             {
                 Logger.Log.Error("General Error", ex);
             }
+            
             portloop:
             try
             {
@@ -171,14 +173,24 @@ namespace NosSharp.World
             CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
             return false;
         }
-        
-        private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
-        {
-            ServerManager.Instance.InShutdown = true;
-            Logger.Log.Error((Exception)e.ExceptionObject);
-            ServerManager.Instance.SaveAll();
 
+        private static void ProcessExitHandler(object sender, EventArgs eventArgs)
+        {
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
+            ServerManager.Instance.InShutdown = true;
+            ServerManager.Instance.DisconnectAll();
+
+            Thread.Sleep(10000);
+            Process.GetCurrentProcess().CloseMainWindow();
+            Environment.Exit(84);
+        }
+        
+        private static void UnhandledExceptionHandler(object sender, EventArgs eventArgs)
+        {
+            ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
+            ServerManager.Instance.InShutdown = true;
+            ServerManager.Instance.DisconnectAll();
+
             Thread.Sleep(10000);
             CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
             Process.Start("NosSharp.World.exe");

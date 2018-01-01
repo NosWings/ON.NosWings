@@ -87,40 +87,42 @@ namespace OpenNos.GameObject.Networking
             Sessions.TryRemove(client.ClientId, out ClientSession session);
 
             // check if session hasnt been already removed
-            if (session != null)
+            if (session == null)
             {
-                session.IsDisposing = true;
-
-                if (IsWorldServer && session.HasSelectedCharacter)
-                {
-                    session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => session.CurrentMapInstance?.Broadcast(session, s.GenerateOut(), ReceiverType.AllExceptMe));
-                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
-                }
-
-                session.Destroy();
-
-                if (IsWorldServer)
-                {
-                    if (session.HasSelectedCharacter)
-                    {
-                        if (session.Character.Hp < 1)
-                        {
-                            session.Character.Hp = 1;
-                        }
-
-                        if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(session.Character.CharacterId)))
-                        {
-                            ServerManager.Instance.GroupLeave(session);
-                        }
-                        session.Character.LeaveTalentArena(true);
-                        session.Character.Save();
-                    }
-                }
-
-                client.Disconnect();
-                Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + client.ClientId);
-                // session = null;
+                return;
             }
+
+            session.IsDisposing = true;
+
+            if (IsWorldServer && session.HasSelectedCharacter)
+            {
+                session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => session.CurrentMapInstance?.Broadcast(session, s.GenerateOut(), ReceiverType.AllExceptMe));
+                session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+            }
+
+            session.Destroy();
+
+            if (IsWorldServer)
+            {
+                if (session.HasSelectedCharacter)
+                {
+                    if (session.Character.Hp < 1)
+                    {
+                        session.Character.Hp = 1;
+                    }
+
+                    if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(session.Character.CharacterId)))
+                    {
+                        ServerManager.Instance.GroupLeave(session);
+                    }
+                    session.Character.LeaveTalentArena(true);
+                    session.Character.Save();
+                }
+            }
+
+            client.Disconnect();
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + client.ClientId);
+            // session = null;
         }
 
         #endregion

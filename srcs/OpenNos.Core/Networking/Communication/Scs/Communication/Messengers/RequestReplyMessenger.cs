@@ -16,6 +16,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenNos.Core.Threading;
@@ -188,7 +189,21 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// <param name="message">message to send</param>
         /// <param name="priority">Message priority to send</param>
         /// <returns>Response message</returns>
-        public IScsMessage SendMessageAndWaitForResponse(IScsMessage message, byte priority) => SendMessageAndWaitForResponse(message, Timeout, priority);
+        public IScsMessage SendMessageAndWaitForResponse(IScsMessage message, byte priority)
+        {
+            IScsMessage tmp;
+            try
+            {
+                tmp = SendMessageAndWaitForResponse(message, Timeout, priority);
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(e);
+                return null;
+            }
+
+            return tmp;
+        } 
 
         /// <summary>
         /// Sends a message and waits a response for that message.

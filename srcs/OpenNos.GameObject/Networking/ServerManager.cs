@@ -966,7 +966,7 @@ namespace OpenNos.GameObject.Networking
         {
             foreach (ClientSession session in Sessions)
             {
-                session?.Disconnect();
+                session?.Destroy();
             }
         }
 
