@@ -303,7 +303,7 @@ namespace OpenNos.GameObject
         {
             if (SpSkills?.Length >= 3)
             {
-                return $"pski {SpSkills?[0].SkillVNum} {SpSkills?[1].SkillVNum} {SpSkills?[2].SkillVNum}";
+                return $"pski {SpSkills[0]?.SkillVNum} {SpSkills[1]?.SkillVNum} {SpSkills[2]?.SkillVNum}";
             }
             return "pski";
         }
