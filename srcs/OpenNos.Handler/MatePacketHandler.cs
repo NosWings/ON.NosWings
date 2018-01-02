@@ -122,7 +122,7 @@ namespace OpenNos.Handler
             IEnumerable<NpcMonsterSkill> mateSkills = attacker.IsUsingSp ? attacker.SpSkills.ToList() : attacker.Monster.Skills;
             if (mateSkills != null)
             {
-                NpcMonsterSkill ski = mateSkills.FirstOrDefault(s => s.Skill?.CastId == suctlPacket.CastId);
+                NpcMonsterSkill ski = mateSkills.FirstOrDefault(s => s?.Skill?.CastId == suctlPacket.CastId);
                 switch (suctlPacket.TargetType)
                 {
                     case UserType.Monster:
