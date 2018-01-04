@@ -311,7 +311,7 @@ namespace OpenNos.GameObject.Map
                 RemoveTarget();
                 return;
             }
-            if (!Path.Any())
+            if (!Path.Any() && Target.MapInstance != null)
             {
                 Path = BestFirstSearch.TracePath(new Node() { X = MapX, Y = MapY }, Target.GetBrushFire(), MapInstance.Map.Grid);
             }
