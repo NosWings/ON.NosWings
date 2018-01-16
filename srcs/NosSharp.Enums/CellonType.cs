@@ -17,8 +17,8 @@ namespace NosSharp.Enums
     public enum CellonType : byte
     {
         Hp,
-        HpRecovery,
         Mp,
+        HpRecovery,
         MpRecovery,
         MpConsumption,
         CriticalDamageDecrease
