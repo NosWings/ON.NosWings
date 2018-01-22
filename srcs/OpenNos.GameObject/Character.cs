@@ -757,7 +757,7 @@ namespace OpenNos.GameObject
         public string GenerateAct6()
         {
             return
-                $"act6 1 0 {ServerManager.Instance.Act6Zenas.Percentage * 0.1} {Convert.ToByte(ServerManager.Instance.Act6Zenas.IsRaidActive)} {ServerManager.Instance.Act6Zenas.CurrentTime} {ServerManager.Instance.Act6Zenas.TotalTime} {ServerManager.Instance.Act6Erenia.Percentage * 0.1} {Convert.ToByte(ServerManager.Instance.Act6Erenia.IsRaidActive)} {ServerManager.Instance.Act6Erenia.CurrentTime} {ServerManager.Instance.Act6Erenia.TotalTime}";
+                $"act6 1 0 {ServerManager.Instance.Act6Zenas.Percentage /10} {Convert.ToByte(ServerManager.Instance.Act6Zenas.Mode)} {ServerManager.Instance.Act6Zenas.CurrentTime} {ServerManager.Instance.Act6Zenas.TotalTime} {ServerManager.Instance.Act6Erenia.Percentage / 10} {Convert.ToByte(ServerManager.Instance.Act6Erenia.Mode)} {ServerManager.Instance.Act6Erenia.CurrentTime} {ServerManager.Instance.Act6Erenia.TotalTime}";
         }
 
         public string GenerateFc()
@@ -1895,12 +1895,13 @@ namespace OpenNos.GameObject
                                 ServerManager.Instance.Act4DemonStat.Percentage += 5;
                                 break;
                         }
+                        ServerManager.Instance.Act4Process();
                     }
                 }
                 #endregion
 
                 #region Act6Stats
-                if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232 && !ServerManager.Instance.Act6Zenas.IsRaidActive)
+                if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232 && ServerManager.Instance.Act6Zenas.Mode == 0)
                 {
                     ServerManager.Instance.Act6Zenas.Percentage++;
                     ServerManager.Instance.Act6Process();
@@ -1908,7 +1909,7 @@ namespace OpenNos.GameObject
                 if (monsterToAttack.MapInstance.Map.MapId >= 233 &&
                     monsterToAttack.MapInstance.Map.MapId <= 236 ||
                     monsterToAttack.MapInstance.Map.MapId == 2604 &&
-                    !ServerManager.Instance.Act6Erenia.IsRaidActive)
+                    ServerManager.Instance.Act6Erenia.Mode == 0)
                 {
                     ServerManager.Instance.Act6Erenia.Percentage++;
                     ServerManager.Instance.Act6Process();

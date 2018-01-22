@@ -36,8 +36,6 @@ namespace NosSharp.Master
             LoginServers = new List<IScsServiceClient>();
             ConnectedAccounts = new ConcurrentBag<AccountSession>();
             AuthentificatedClients = new List<long>();
-            Act4AngelStat = new Act4Stat();
-            Act4DemonStat = new Act4Stat();
         }
 
         #endregion
@@ -56,10 +54,6 @@ namespace NosSharp.Master
         public List<IScsServiceClient> LoginServers { get; set; }
 
         public List<WorldServer> WorldServers { get; set; }
-
-        public Act4Stat Act4AngelStat { get; set; }
-
-        public Act4Stat Act4DemonStat { get; set; }
 
         #endregion
     }

@@ -2,7 +2,7 @@
 
 namespace OpenNos.Master.Library.Data
 {
-    public class Act4Stat
+    public class PercentBar
     {
         private readonly DateTime _nextMonth;
 
@@ -12,7 +12,7 @@ namespace OpenNos.Master.Library.Data
 
         private DateTime _latestUpdate;
 
-        public Act4Stat()
+        public PercentBar()
         {
             DateTime olddate = DateTime.Now.AddMonths(1);
             _nextMonth = new DateTime(olddate.Year, olddate.Month, 1, 0, 0, 0, olddate.Kind);
@@ -35,20 +35,19 @@ namespace OpenNos.Master.Library.Data
             }
         }
 
-        public short CurrentTime
-        {
-            get { return Mode == 0 ? (short)0 : (short)(_latestUpdate.AddSeconds(_totalTime) - DateTime.Now).TotalSeconds; }
-        }
+        public short CurrentTime => Mode == 0 ? (short)0 : (short)(_latestUpdate.AddSeconds(_totalTime) - DateTime.Now).TotalSeconds;
 
         public short TotalTime
         {
-            get { return Mode == 0 ? (short)0 : _totalTime; }
+            get => Mode == 0 ? (short)0 : _totalTime;
             set
             {
                 _latestUpdate = DateTime.Now;
                 _totalTime = value;
             }
         }
+
+        public int KilledMonsters { get; set; }
 
         public bool IsMorcos { get; set; }
 

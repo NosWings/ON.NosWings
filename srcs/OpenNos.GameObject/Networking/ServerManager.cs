@@ -202,13 +202,13 @@ namespace OpenNos.GameObject.Networking
 
         public List<MapInstance> Act4Maps { get; set; }
 
-        public Act4Stat Act4AngelStat { get; set; }
+        public PercentBar Act4AngelStat { get; set; }
 
-        public Act4Stat Act4DemonStat { get; set; }
+        public PercentBar Act4DemonStat { get; set; }
 
-        public Act6Stats Act6Zenas { get; set; }
+        public PercentBar Act6Zenas { get; set; }
 
-        public Act6Stats Act6Erenia { get; set; }
+        public PercentBar Act6Erenia { get; set; }
 
         public DateTime Act4RaidStart { get; set; }
 
@@ -233,18 +233,6 @@ namespace OpenNos.GameObject.Networking
         #endregion
 
         #region Methods
-
-        public void SaveAct4()
-        {
-            CommunicationServiceClient.Instance.SaveAct4(Act4AngelStat, Act4DemonStat);
-            Logger.Log.Debug(Language.Instance.GetMessageFromKey("GLACERNON_SAVED"));
-        }
-
-        public void RestoreAct4()
-        {
-            Act4AngelStat = CommunicationServiceClient.Instance.RestoreAct4()[0];
-            Act4DemonStat = CommunicationServiceClient.Instance.RestoreAct4()[1];
-        }
 
         public void AddGroup(Group group)
         {
@@ -1218,10 +1206,10 @@ namespace OpenNos.GameObject.Networking
             LobbySpeed = byte.Parse(ConfigurationManager.AppSettings["LobbySpeed"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Act4RaidStart = DateTime.Now;
-            Act4AngelStat = new Act4Stat();
-            Act4DemonStat = new Act4Stat();
-            Act6Erenia = new Act6Stats();
-            Act6Zenas = new Act6Stats();
+            Act4AngelStat = new PercentBar();
+            Act4DemonStat = new PercentBar();
+            Act6Erenia = new PercentBar();
+            Act6Zenas = new PercentBar();
 
             OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DaoFactory.ItemDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
             ConcurrentDictionary<short, Item.Item> item = new ConcurrentDictionary<short, Item.Item>();
@@ -2068,29 +2056,30 @@ namespace OpenNos.GameObject.Networking
 
         public void Act6Process()
         {
-            if (Act6Zenas.Percentage >= 1000 && !Act6Zenas.IsRaidActive)
+            if (Act6Zenas.Percentage >= 1000 && Act6Zenas.Mode == 0)
             {
                 LoadAct6ScriptedInstance();
                 Act6Zenas.TotalTime = 3600;
-                Act6Zenas.IsRaidActive = true;
+                Act6Zenas.Mode = 1;
             }
-            else if (Act6Erenia.Percentage >= 1000 && !Act6Erenia.IsRaidActive)
+            else if (Act6Erenia.Percentage >= 1000 && Act6Erenia.Mode == 0)
             {
                 LoadAct6ScriptedInstance();
                 Act6Erenia.TotalTime = 3600;
-                Act6Erenia.IsRaidActive = true;
+                Act6Erenia.Mode = 1;
             }
-            if (Act6Erenia.CurrentTime <= 0 && Act6Erenia.IsRaidActive)
+
+            if (Act6Erenia.CurrentTime <= 0 && Act6Erenia.Mode != 0)
             {
                 Act6Erenia.KilledMonsters = 0;
                 Act6Erenia.Percentage = 0;
-                Act6Erenia.IsRaidActive = false;
+                Act6Erenia.Mode = 0;
             }
-            if (Act6Zenas.CurrentTime <= 0 && Act6Zenas.IsRaidActive)
+            if (Act6Zenas.CurrentTime <= 0 && Act6Zenas.Mode != 0)
             {
                 Act6Zenas.KilledMonsters = 0;
                 Act6Zenas.Percentage = 0;
-                Act6Zenas.IsRaidActive = false;
+                Act6Zenas.Mode = 0;
             }
             Parallel.ForEach(Sessions.Where(s => s?.Character != null && s.CurrentMapInstance?.Map.MapId >= 228 && s.CurrentMapInstance?.Map.MapId < 238 || s?.CurrentMapInstance?.Map.MapId == 2604), sess => sess.SendPacket(sess.Character.GenerateAct6()));
         }

@@ -27,6 +27,7 @@ using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
+using WearableInstance = OpenNos.GameObject.Item.Instance.WearableInstance;
 
 namespace OpenNos.GameObject.Npc
 {
@@ -79,6 +80,22 @@ namespace OpenNos.GameObject.Npc
                             case 3:
                                 session.Character.Inventory.AddNewToInventory(86, type: InventoryType.Wear);
                                 break;
+                        }
+
+                        foreach (var item  in session.Character.Inventory.Values.Where(i => i.Type == InventoryType.Wear && i.Item.EquipmentSlot != EquipmentType.Sp))
+                        {
+                            switch (item.Slot)
+                            {
+                                case (byte)EquipmentType.MainWeapon:
+                                    session.Character.Inventory.PrimaryWeapon = (WearableInstance)item;
+                                    break;
+                                case (byte)EquipmentType.SecondaryWeapon:
+                                    session.Character.Inventory.SecondaryWeapon = (WearableInstance)item;
+                                    break;
+                                case (byte)EquipmentType.Armor:
+                                    session.Character.Inventory.Armor = (WearableInstance)item;
+                                    break;
+                            }
                         }
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateEq());
                         session.SendPacket(session.Character.GenerateEquipment());

@@ -151,7 +151,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Act6Stats.cs" />
     <Compile Include="ArenaTeamMember.cs" />
     <Compile Include="ArenaMember.cs" />
     <Compile Include="Battle\BattleEntity.cs" />

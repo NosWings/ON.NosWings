@@ -36,18 +36,6 @@ namespace NosSharp.Master
     {
         #region Methods
 
-
-        public void SaveAct4(Act4Stat angelStats, Act4Stat demonStats)
-        {
-            MsManager.Instance.Act4AngelStat = angelStats;
-            MsManager.Instance.Act4DemonStat = demonStats;
-        }
-
-        public Act4Stat[] RestoreAct4()
-        {
-            return new[] {MsManager.Instance.Act4AngelStat, MsManager.Instance.Act4DemonStat};
-        }
-
         public bool Authenticate(string authKey)
         {
             if (string.IsNullOrWhiteSpace(authKey) || authKey != ConfigurationManager.AppSettings["MasterAuthKey"])

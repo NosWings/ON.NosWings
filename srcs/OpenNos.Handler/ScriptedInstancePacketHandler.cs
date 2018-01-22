@@ -286,7 +286,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
                 }
-                if (Session.Character.Group.Raid.Id == 24 && !ServerManager.Instance.Act6Erenia.IsRaidActive || Session.Character.Group.Raid.Id == 23 && !ServerManager.Instance.Act6Zenas.IsRaidActive)
+                if (Session.Character.Group.Raid.Id == 24 && ServerManager.Instance.Act6Erenia.Mode == 0 || Session.Character.Group.Raid.Id == 23 && ServerManager.Instance.Act6Zenas.Mode == 0)
                 {
                     Session.Character.Group.Characters.ToList().ForEach(s =>
                     {

@@ -641,7 +641,7 @@ namespace OpenNos.GameObject.Helpers
 
                 case EventActionType.STARTACT4RAID:
                     Tuple<byte, byte> raidParameters = (Tuple<byte, byte>)evt.Parameter;
-                    Act4Stat stat = raidParameters.Item2 == (byte) FactionType.Angel ? ServerManager.Instance.Act4AngelStat : ServerManager.Instance.Act4DemonStat;
+                    PercentBar stat = raidParameters.Item2 == (byte) FactionType.Angel ? ServerManager.Instance.Act4AngelStat : ServerManager.Instance.Act4DemonStat;
                     stat.Mode = 3;
                     stat.TotalTime = 3600;
                     Act4Raid.Instance.GenerateRaid(raidParameters.Item1, raidParameters.Item2);
