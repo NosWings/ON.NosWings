@@ -93,6 +93,8 @@ namespace OpenNos.GameObject.Networking
 
         private ConcurrentDictionary<int, List<TeleporterDTO>> _teleporters;
 
+        private ConcurrentBag<Recipe> _recipeLists;
+
 
         private bool _inRelationRefreshMode;
 
@@ -234,6 +236,25 @@ namespace OpenNos.GameObject.Networking
 
         #region Methods
 
+        public bool ItemHasRecipe(short itemVNum)
+        {
+            return _recipeLists.Any(r => r.ItemVNum == itemVNum);
+        }
+
+        public Recipe GetRecipeByItemVNum(short itemVNum)
+        {
+            return _recipeLists.FirstOrDefault(s => s.ItemVNum == itemVNum);
+        }
+
+        public List<Recipe> GetRecipesByItemVNum(short itemVNum)
+        {
+            List<Recipe> recipes = new List<Recipe>();
+            foreach (Recipe recipe in _recipeLists.Where(s => s.ProduceItemVNum == itemVNum))
+            {
+                recipes.Add(recipe);
+            }
+            return recipes;
+        }
         public void AddGroup(Group group)
         {
             _groups[group.GroupId] = group;
@@ -1360,7 +1381,14 @@ namespace OpenNos.GameObject.Networking
             // intialize recipes
             _recipes = new ConcurrentDictionary<int, List<Recipe>>();
             Parallel.ForEach(DaoFactory.RecipeDao.LoadAll().GroupBy(r => r.MapNpcId), recipeGrouping => { _recipes[recipeGrouping.Key] = recipeGrouping.Select(r => r as Recipe).ToList(); });
+
+            _recipeLists = new ConcurrentBag<Recipe>();
+            foreach (RecipeDTO recipe in DaoFactory.RecipeDao.LoadAll())
+            {
+                _recipeLists.Add((Recipe) recipe);
+            }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), _recipes.Sum(i => i.Value.Count)));
+
 
             // initialize shopitems
             _shopItems = new ConcurrentDictionary<int, List<ShopItemDTO>>();

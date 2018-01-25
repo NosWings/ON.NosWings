@@ -293,6 +293,8 @@ namespace OpenNos.GameObject
 
         public int LastMonsterId { get; set; }
 
+        public short LastUsedItem { get; set; }
+
         public Dictionary<short, DateTime> MeditationDictionary { get; set; }
 
         public ConcurrentBag<IDisposable> BuffObservables { get; internal set; }
@@ -900,7 +902,7 @@ namespace OpenNos.GameObject
 
         public void CheckHuntQuest()
         {
-            CharacterQuest quest = Quests.FirstOrDefault(q => q.Quest?.QuestType == (int)QuestType.Hunt && q.Quest?.TargetMap == MapInstance.Map.MapId && Math.Abs(PositionX - q.Quest?.TargetX ?? 0) < 2 && Math.Abs(PositionY - q.Quest?.TargetY ?? 0) < 2);
+            CharacterQuest quest = Quests?.FirstOrDefault(q => q?.Quest?.QuestType == (int)QuestType.Hunt && q.Quest?.TargetMap == MapInstance?.Map?.MapId && Math.Abs(PositionX - q.Quest?.TargetX ?? 0) < 2 && Math.Abs(PositionY - q.Quest?.TargetY ?? 0) < 2);
             if (quest == null)
             {
                 return;

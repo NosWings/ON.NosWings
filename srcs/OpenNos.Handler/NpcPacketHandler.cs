@@ -503,6 +503,7 @@ namespace OpenNos.Handler
         public void NpcRunFunction(NRunPacket packet)
         {
             Session.Character.LastNRunId = packet.NpcId;
+            Session.Character.LastUsedItem = 0;
             if (Session.Character.Hp > 0)
             {
                 NRunHandler.NRun(Session, packet);
@@ -522,17 +523,38 @@ namespace OpenNos.Handler
             short vNum = pdtsePacket.VNum;
             if (pdtsePacket.Type == 1)
             {
-                MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-                if (npc == null)
+                Recipe rec;
+                if (Session.Character.LastUsedItem == 0)
                 {
-                    return;
+                    MapNpc npc =
+                        Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
+                    if (npc == null)
+                    {
+                        return;
+                    }
+                    int distance = Map.GetDistance(Session.Character.GetPos(), npc.GetPos());
+                    if (npc.MapInstance != Session.CurrentMapInstance || distance > 5)
+                    {
+                        return;
+                    }
+
+                    rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == vNum);
                 }
-                int distance = Map.GetDistance(Session.Character.GetPos(), npc.GetPos());
-                if (npc.MapInstance != Session.CurrentMapInstance || distance > 5)
+                else
                 {
-                    return;
+                    if (!ServerManager.Instance.ItemHasRecipe(vNum))
+                    {
+                        // NO RECIPE WITH THIS VNUM
+                        return;
+                    }
+                    if (Session.Character.Inventory.CountItem(Session.Character.LastUsedItem) <= 0)
+                    {
+                        // NO SCROLL, PACKET HACKING
+                        return;
+                    }
+
+                    rec = ServerManager.Instance.GetRecipeByItemVNum(vNum);
                 }
-                Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == vNum);
                 if (rec == null || rec.Amount <= 0)
                 {
                     return;
@@ -544,17 +566,37 @@ namespace OpenNos.Handler
             }
             else
             {
-                MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-                if (npc == null)
+                Recipe rec;
+                if (Session.Character.LastUsedItem == 0)
                 {
-                    return;
+                    MapNpc npc =
+                        Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
+                    if (npc == null)
+                    {
+                        return;
+                    }
+                    int distance = Map.GetDistance(Session.Character.GetPos(), npc.GetPos());
+                    if (npc.MapInstance != Session.CurrentMapInstance || distance > 5)
+                    {
+                        return;
+                    }
+                    rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == vNum);
                 }
-                int distance = Map.GetDistance(Session.Character.GetPos(), npc.GetPos());
-                if (npc.MapInstance != Session.CurrentMapInstance || distance > 5)
+                else
                 {
-                    return;
+                    if (!ServerManager.Instance.ItemHasRecipe(vNum))
+                    {
+                        // NO RECIPE WITH THIS VNUM
+                        return;
+                    }
+                    if (Session.Character.Inventory.CountItem(Session.Character.LastUsedItem) <= 0)
+                    {
+                        // NO SCROLL, PACKET HACKING
+                        return;
+                    }
+
+                    rec = ServerManager.Instance.GetRecipeByItemVNum(vNum);
                 }
-                Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == vNum);
                 if (rec == null)
                 {
                     return;
@@ -585,6 +627,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                 }
+                Session.Character.LastUsedItem = 0;
                 Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, Session.Character.CharacterId, 1324));
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));

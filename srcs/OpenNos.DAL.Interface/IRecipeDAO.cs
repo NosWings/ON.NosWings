@@ -31,6 +31,8 @@ namespace OpenNos.DAL.Interface
 
         void Update(RecipeDTO recipe);
 
+        RecipeDTO LoadByItemVNum(short itemVNum);
+
         #endregion
     }
 }

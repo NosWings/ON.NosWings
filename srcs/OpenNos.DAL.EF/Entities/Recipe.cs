@@ -41,6 +41,8 @@ namespace OpenNos.DAL.EF.Entities
 
         public short RecipeId { get; set; }
 
+        public short ProduceItemVNum { get; set; }
+
         public virtual ICollection<RecipeItem> RecipeItem { get; set; }
 
         #endregion

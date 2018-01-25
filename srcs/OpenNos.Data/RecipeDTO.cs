@@ -28,6 +28,8 @@ namespace OpenNos.Data
 
         public short RecipeId { get; set; }
 
+        public short ProduceItemVNum { get; set; }
+
         #endregion
     }
 }

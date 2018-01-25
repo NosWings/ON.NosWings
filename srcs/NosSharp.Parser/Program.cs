@@ -106,6 +106,7 @@ namespace NosSharp.Parser
                     factory.ImportShopItems();
                     factory.ImportShopSkills();
                     factory.ImportRecipe();
+                    factory.ImportHardcodedItemRecipes();
                     factory.ImportQuests();
                 }
                 else
@@ -229,6 +230,12 @@ namespace NosSharp.Parser
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportRecipe();
+                    }
+                    Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_HARDCODED_RECIPES")} [Y/n]");
+                    key = Console.ReadKey(true);
+                    if (key.KeyChar != 'n')
+                    {
+                        factory.ImportHardcodedItemRecipes();
                     }
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_QUESTS")} [Y/n]");
                     key = System.Console.ReadKey(true);

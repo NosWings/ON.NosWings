@@ -19,6 +19,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
@@ -28,6 +29,32 @@ namespace OpenNos.DAL.EF
     public class RecipeDAO : MappingBaseDAO<Recipe, RecipeDTO>, IRecipeDAO
     {
         #region Methods
+
+        public RecipeDTO LoadByItemVNum(short itemVNum)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    RecipeDTO dto = new RecipeDTO();
+                    var info = context.Recipe.SingleOrDefault(s => s.ItemVNum.Equals(itemVNum));
+                    if (info == null)
+                    {
+                        return null;
+                    }
+                    dto.Amount = info.Amount;
+                    dto.ItemVNum = info.ItemVNum;
+                    dto.RecipeId = info.RecipeId;
+
+                    return dto;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
 
         public RecipeDTO Insert(RecipeDTO recipe)
         {
