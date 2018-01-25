@@ -2923,6 +2923,15 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You don&apos;t have enough gillion stone !.
+        /// </summary>
+        internal static string NO_GILLION {
+            get {
+                return ResourceManager.GetString("NO_GILLION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à No guri handler for: {0}.
         /// </summary>
         internal static string NO_HANDLER_GURI {

@@ -12,8 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Data;
+using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;
 
@@ -35,6 +37,47 @@ namespace OpenNos.GameObject.Item
         {
             switch (Effect)
             {
+                case 10:
+                    const short gillionVNum = 1013;
+                    const short cellaVNum = 1014;
+                    short[] cristalItems = {1028, 1029, 1031, 1032, 1033, 1034};
+                    short[] cellonItems = {1017, 1018, 1019};
+                    short[] soulGemItems = {1015, 1016};
+
+                    int extraItems = ServerManager.Instance.RandomNumber(0, 101);
+                    short receivedExtra = (short) ServerManager.Instance.RandomNumber(5, 11);
+
+                    if (session.Character.Inventory.CountItem(gillionVNum) <= 0)
+                    {
+                        // No Gillion                   
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_GILLION"), 11));
+                        return;
+                    }
+                    session.Character.GiftAdd(cellaVNum, (byte)receivedExtra);
+                    if (extraItems > 70)
+                    {
+                        switch ((RefinerType) EffectValue)
+                        {
+                            case RefinerType.SoulGem:
+                                receivedExtra =
+                                    soulGemItems[ServerManager.Instance.RandomNumber(0, soulGemItems.Length)];
+                                session.Character.GiftAdd(receivedExtra, 1);
+                                break;
+                            case  RefinerType.Cellon:
+                                receivedExtra =
+                                    cellonItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)];
+                                session.Character.GiftAdd(receivedExtra, 1);
+                                break;
+                            case RefinerType.Crystal:
+                                receivedExtra =
+                                    cristalItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)];
+                                session.Character.GiftAdd(receivedExtra, 1);
+                                break;
+                        }
+                    }
+                    session.Character.Inventory.RemoveItemAmount(gillionVNum);
+                    session.Character.Inventory.RemoveItemAmount(VNum);
+                    break;
                 default:
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;

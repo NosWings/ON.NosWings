@@ -1732,4 +1732,7 @@
   <data name="BR_KILL" xml:space="preserve">
     <value>{0} has been killed by {1}. | {2} players</value>
   </data>
+  <data name="NO_GILLION" xml:space="preserve">
+    <value>You don't have enough gillion stone !</value>
+  </data>
 </root>
