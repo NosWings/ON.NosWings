@@ -45,7 +45,6 @@ namespace OpenNos.GameObject.Item
                     short[] soulGemItems = {1015, 1016};
 
                     int extraItems = ServerManager.Instance.RandomNumber(0, 101);
-                    short receivedExtra = (short) ServerManager.Instance.RandomNumber(5, 11);
 
                     if (session.Character.Inventory.CountItem(gillionVNum) <= 0)
                     {
@@ -53,25 +52,19 @@ namespace OpenNos.GameObject.Item
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_GILLION"), 11));
                         return;
                     }
-                    session.Character.GiftAdd(cellaVNum, (byte)receivedExtra);
+                    session.Character.GiftAdd(cellaVNum, (byte) ServerManager.Instance.RandomNumber(5, 11));
                     if (extraItems > 70)
                     {
                         switch ((RefinerType) EffectValue)
                         {
                             case RefinerType.SoulGem:
-                                receivedExtra =
-                                    soulGemItems[ServerManager.Instance.RandomNumber(0, soulGemItems.Length)];
-                                session.Character.GiftAdd(receivedExtra, 1);
+                                session.Character.GiftAdd(soulGemItems[ServerManager.Instance.RandomNumber(0, soulGemItems.Length)], 1);
                                 break;
                             case  RefinerType.Cellon:
-                                receivedExtra =
-                                    cellonItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)];
-                                session.Character.GiftAdd(receivedExtra, 1);
+                                session.Character.GiftAdd(cellonItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)], 1);
                                 break;
                             case RefinerType.Crystal:
-                                receivedExtra =
-                                    cristalItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)];
-                                session.Character.GiftAdd(receivedExtra, 1);
+                                session.Character.GiftAdd(cristalItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)], 1);
                                 break;
                         }
                     }
