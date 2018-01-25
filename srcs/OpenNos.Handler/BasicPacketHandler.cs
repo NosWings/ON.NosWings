@@ -831,6 +831,10 @@ namespace OpenNos.Handler
         {
             switch (reqInfoPacket.Type)
             {
+                case 12:
+                    //For some reason, that seems to work for every Item ... Wtf Entwell
+                    Session.SendPacket("r_info 170 2");
+                    break;
                 case 6:
                     if (reqInfoPacket.MateVNum.HasValue)
                     {
@@ -966,7 +970,7 @@ namespace OpenNos.Handler
         /// <param name="sayPacket"></param>
         public void Say(SayPacket sayPacket)
         {
-            if (string.IsNullOrEmpty(sayPacket.Message) || Session.CurrentMapInstance == null || Session.CurrentMapInstance.IsMute && Session.Character?.Authority < AuthorityType.GameMaster)
+            if (string.IsNullOrEmpty(sayPacket.Message) || Session?.CurrentMapInstance == null || Session.CurrentMapInstance.IsMute && Session.Character?.Authority < AuthorityType.GameMaster)
             {
                 return;
             }
