@@ -280,19 +280,16 @@ namespace OpenNos.Handler
             {
                 return;
             }
+            if (Session.Character.MapId != Session.Character.Group?.Raid.MapId)
+            {
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg("WRONG_PORTAL", 0));
+                return;
+            }
             if (Session.Character.Group.CharacterCount > 4 || Session.Character.Authority >= AuthorityType.GameMaster)
             {
                 if (Session.Character.Group.Raid.FirstMap == null)
                 {
                     Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
-                }
-                if (Session.Character.Group.Raid.Id == 24 && ServerManager.Instance.Act6Erenia.Mode == 0 || Session.Character.Group.Raid.Id == 23 && ServerManager.Instance.Act6Zenas.Mode == 0)
-                {
-                    Session.Character.Group.Characters.ToList().ForEach(s =>
-                    {
-                        s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PERCENT_NOT_OVER"), 0));
-                    });
-                    return;
                 }
                 if (Session.Character.Group.Raid.FirstMap == null)
                 {

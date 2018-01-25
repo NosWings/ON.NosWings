@@ -2142,6 +2142,42 @@ namespace OpenNos.GameObject.Networking
                     ScriptedInstance si = (ScriptedInstance)scriptedInstanceDto;
                     si.LoadGlobals();
                     Raids.Add(si);
+                    Portal portal = new Portal
+                    {
+                        Type = (byte)PortalType.Raid,
+                        SourceMapId = si.MapId,
+                        SourceX = si.PositionX,
+                        SourceY = si.PositionY
+                    };
+                    if (Act6Erenia.Percentage >= 1000 && portal.SourceMapId == 236) 
+                    { 
+                        map.Value.Portals.Add(portal); 
+                        map.Value.Broadcast(portal.GenerateGp()); 
+                        Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o => 
+                        { 
+                            if (map.Value.Portals.Count <= 0) 
+                            { 
+                                return; 
+                            } 
+                            map.Value.Portals.Remove(portal); 
+                            map.Value.MapClear(); 
+                        }); 
+                    } 
+                    if (Act6Zenas.Percentage < 1000 || portal.SourceMapId != 232) 
+                    { 
+                        continue; 
+                    } 
+                    map.Value.Portals.Add(portal); 
+                    map.Value.Broadcast(portal.GenerateGp()); 
+                    Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o => 
+                    { 
+                        if (map.Value.Portals.Count <= 0) 
+                        { 
+                            return; 
+                        } 
+                        map.Value.Portals.Remove(portal); 
+                        map.Value.MapClear(); 
+                    });
                 }
             });
         }
