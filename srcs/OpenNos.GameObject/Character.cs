@@ -3475,7 +3475,7 @@ namespace OpenNos.GameObject
         public void LoadInventory()
         {
             IEnumerable<ItemInstanceDTO> inventories = DaoFactory.IteminstanceDao.LoadByCharacterId(CharacterId).Where(s => s.Type != InventoryType.FamilyWareHouse).ToList();
-            IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadByAccount(Session.Account.AccountId);
+            IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadAllCharactersByAccount(Session.Account.AccountId);
             inventories = characters.Where(s => s.CharacterId != CharacterId).Aggregate(inventories,
                 (current, character) => current.Concat(DaoFactory.IteminstanceDao.LoadByCharacterId(character.CharacterId).Where(s => s.Type == InventoryType.Warehouse).ToList()));
             Inventory = new Inventory(this);

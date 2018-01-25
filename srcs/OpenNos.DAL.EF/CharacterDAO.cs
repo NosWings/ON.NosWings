@@ -138,6 +138,14 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<CharacterDTO> LoadAllCharactersByAccount(long accountId)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                return context.Character.Where(c => c.AccountId.Equals(accountId)).OrderByDescending(c => c.Slot).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+            }
+        }
+
         public CharacterDTO LoadById(long characterId)
         {
             try

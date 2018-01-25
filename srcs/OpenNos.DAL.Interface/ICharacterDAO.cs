@@ -42,6 +42,8 @@ namespace OpenNos.DAL.Interface
 
         CharacterDTO LoadBySlot(long accountId, byte slot);
 
+        IEnumerable<CharacterDTO> LoadAllCharactersByAccount(long accountId);
+
         #endregion
     }
 }
