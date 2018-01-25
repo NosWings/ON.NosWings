@@ -55,51 +55,47 @@ namespace OpenNos.GameObject.Helpers
             switch (session.Character.Level)
             {
                 case 20:
-                    session.Character.GiftAdd(1010, 50); // Potion de guérison 1k / 1k
+                    session.Character.GiftAdd(1010, 50); // 1K/1K healing pots
                     break;
                 case 30:
-                    session.Character.GiftAdd(1011, 50); // Potions géantes 1k5 / 1k5
-                    session.Character.GiftAdd(1452, 1); // béné
+                    session.Character.GiftAdd(1011, 50); // 1K5/1K5 healing pots
+                    session.Character.GiftAdd(1452, 1); // ancelloan's blessing
                     break;
                 case 40:
-                    session.Character.GiftAdd(1011, 50); // potions géantes 1k5 / 1k5
-                    session.Character.GiftAdd(1452, 2); // Béné
-                    session.Character.GiftAdd(1363, 2); // parcho bleu
+                    session.Character.GiftAdd(1011, 50); // 1K5/1K5 healing pots
+                    session.Character.GiftAdd(1452, 2); // ancelloan's blessing
+                    session.Character.GiftAdd(1363, 2); // blue sp scroll
                     break;
                 case 50:
-                    session.Character.GiftAdd(1011, 50); // potions géantes 1k5 / 1k5
-                    session.Character.GiftAdd(1452, 2); // Béné
-                    session.Character.GiftAdd(1363, 2); // parcho bleu
-                    session.Character.GiftAdd(1218, 2); // parcho up stuff
+                    session.Character.GiftAdd(1011, 50); // 1K5/1K5 healing pots
+                    session.Character.GiftAdd(1452, 2); // Ancelloan's blessing
+                    session.Character.GiftAdd(1363, 2); // Blue sp scroll
+                    session.Character.GiftAdd(1218, 2); // equipment scroll
                     break;
                 case 60:
-                    session.Character.GiftAdd(1011, 75); // potions géantes 1k5 / 1k5
-                    session.Character.GiftAdd(1452, 3); // Béné
-                    session.Character.GiftAdd(1363, 2); // parcho bleu
-                    session.Character.GiftAdd(1218, 2); // parcho up stuff
+                    session.Character.GiftAdd(1011, 75); // 1K5/1K5 healing pots
+                    session.Character.GiftAdd(1452, 3); // Ancelloan's blessing
+                    session.Character.GiftAdd(1363, 2); // Blue sp scroll
+                    session.Character.GiftAdd(1218, 2); // Equipment scroll
                     break;
                 case 70:
-                    session.Character.GiftAdd(1244, 30); // TF
-                    session.Character.GiftAdd(1452, 4); // Béné
-                    session.Character.GiftAdd(1363, 3); // parcho bleu
-                    session.Character.GiftAdd(2282, 99);  // plume d'ange
+                    session.Character.GiftAdd(1244, 30); // Full pot
+                    session.Character.GiftAdd(1452, 4); // Ancelloan's blessing
+                    session.Character.GiftAdd(1363, 3); // Blue sp scroll
+                    session.Character.GiftAdd(2282, 99);  //  WOA
                     break;
                 case 80:
-                    session.Character.GiftAdd(1244, 60); // TF
-                    session.Character.GiftAdd(1452, 5); // Béné
-                    session.Character.GiftAdd(1363, 3); // parcho rouge
-                    session.Character.GiftAdd(282, 1); // Amu pari
+                    session.Character.GiftAdd(1244, 60); // Full pots
+                    session.Character.GiftAdd(1452, 5); // Ancelloan's blessing
+                    session.Character.GiftAdd(1364, 3); // red sp scroll
+                    session.Character.GiftAdd(282, 1); // betting amulet
                     break;
                 case 90:
-                    session.Character.GiftAdd(1244, 99); // TF
-                    session.Character.GiftAdd(1452, 5); // Béné
-                    session.Character.GiftAdd(1363, 5); // parcho rouge
-                    break;
-                case 150:
-                    session.Character.GiftAdd(1244, 99); // TF
-                    session.Character.GiftAdd(1452, 5); // Béné
-                    session.Character.GiftAdd(1363, 5); // parcho rouge
-                    session.Character.GiftAdd(4262, 1); // Amu pari héroique
+                    session.Character.GiftAdd(1244, 99); // Full pot
+                    session.Character.GiftAdd(1452, 5); // Ancelloan's blessing
+                    session.Character.GiftAdd(1364, 5); // red sp scroll
+                    session.Character.GiftAdd(282, 1); // betting amulet
+                    session.Character.GiftAdd(282, 1); // betting amulet
                     break;
             }
         }
