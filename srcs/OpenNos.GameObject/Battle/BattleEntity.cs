@@ -644,9 +644,15 @@ namespace OpenNos.GameObject.Battle
                 int[] weaponSoftDamage = charact.GetWeaponSoftDamage();
                 if (ServerManager.Instance.RandomNumber() < weaponSoftDamage[0])
                 {
+                    charact.MapInstance.Broadcast(charact.GenerateEff(15));
                     baseDamage += (int)(baseDamage * (1 + (weaponSoftDamage[1] / 100D)));
+                }
+
+                if (charact.HasBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability))
+                {
                     charact.MapInstance.Broadcast(charact.GenerateEff(15));
                 }
+
                 if (charact.ChargeValue > 0)
                 {
                     baseDamage += charact.ChargeValue;
@@ -764,7 +770,6 @@ namespace OpenNos.GameObject.Battle
             {
                 return;
             }
-
 
             if (indicator.StaticBuff)
             {
