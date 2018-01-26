@@ -605,7 +605,7 @@ namespace NosSharp.Parser
                 npctest.MapNpcId = short.Parse(currentPacket[3]);
                 if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
                 {
-                    npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
+                    npctest.Effect = (short)(npctest.NpcVNum == 453 /*Lod*/ ? 855 : effPacketsDictionary[npctest.MapNpcId]);
                 }
                 npctest.EffectDelay = 4750;
                 npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);

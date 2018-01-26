@@ -236,6 +236,11 @@ namespace OpenNos.GameObject.Networking
 
         #region Methods
 
+        public List<MapNpc> GetMapNpcsPerVNum(short vnum)
+        {
+            return _mapNpcs.ContainsKey(vnum) ? _mapNpcs[vnum] : null;
+        }
+
         public bool ItemHasRecipe(short itemVNum)
         {
             return _recipeLists.Any(r => r.ItemVNum == itemVNum);

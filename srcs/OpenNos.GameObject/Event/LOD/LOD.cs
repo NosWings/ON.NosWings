@@ -14,10 +14,12 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading;
 using NosSharp.Enums;
 using OpenNos.Core;
+using OpenNos.DAL.EF;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
@@ -36,6 +38,14 @@ namespace OpenNos.GameObject.Event.LOD
             EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
             LodThread lodThread = new LodThread();
             Observable.Timer(TimeSpan.FromMinutes(0)).Subscribe(x => lodThread.Run(lodtime * 60, hornTime * 60, hornRepawn * 60, hornStay * 60));
+            List<MapNpc> portalList = ServerManager.Instance.GetMapNpcsPerVNum(453);
+            if (portalList != null)
+            {
+                foreach (MapNpc npc in portalList)
+                {
+                    npc.EffectActivated = true;
+                }
+            }
         }
 
         #endregion
@@ -129,6 +139,14 @@ namespace OpenNos.GameObject.Event.LOD
 
         private void SpawnDh(MapInstance landOfDeath)
         {
+            List<MapNpc> portalList = ServerManager.Instance.GetMapNpcsPerVNum(453);
+            if (portalList != null)
+            {
+                foreach (MapNpc npc in portalList)
+                {
+                    npc.EffectActivated = false;
+                }
+            }
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SPAWNONLASTENTRY, 443));
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET, "df 2"));
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
