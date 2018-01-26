@@ -651,6 +651,9 @@ namespace OpenNos.GameObject.Battle
                 if (charact.HasBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability))
                 {
                     charact.MapInstance.Broadcast(charact.GenerateEff(15));
+                    baseDamage += (int) (baseDamage * (1 + GetBuff(CardType.IncreaseDamage,
+                                                           (byte) AdditionalTypes.IncreaseDamage
+                                                               .IncreasingPropability)[0] / 100D));
                 }
 
                 if (charact.ChargeValue > 0)
