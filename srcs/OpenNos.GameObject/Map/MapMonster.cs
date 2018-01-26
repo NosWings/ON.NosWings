@@ -337,6 +337,7 @@ namespace OpenNos.GameObject.Map
                 return;
             }
 
+            ShowEffect();
             if (!IsAlive) // Respawn
             {
                 if (ShouldRespawn == null || !ShouldRespawn.Value)
