@@ -267,7 +267,7 @@ namespace OpenNos.GameObject.Map
 
         public void ShowEffect()
         {
-            if (!((DateTime.Now - LastEffect).TotalSeconds >= EffectDelay))
+            if (!((DateTime.Now - LastEffect).TotalMilliseconds >= EffectDelay))
             {
                 return;
             }
