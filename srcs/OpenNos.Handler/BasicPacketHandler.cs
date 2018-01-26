@@ -765,7 +765,7 @@ namespace OpenNos.Handler
                         ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, portal.DestinationMapInstanceId);
                         return;
                     }
-                    if (portal.DestinationMapInstanceId == Session.CurrentMapInstance.MapInstanceId)
+                    if (Session.HasCurrentMapInstance && portal.DestinationMapInstanceId == Session.Character.MapInstanceId)
                     {
                         Session.Character.TeleportOnMap(portal.DestinationX, portal.DestinationY);
                         return;
