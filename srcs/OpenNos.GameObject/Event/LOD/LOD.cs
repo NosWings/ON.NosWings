@@ -100,6 +100,14 @@ namespace OpenNos.GameObject.Event.LOD
 
         private void DespawnDh(MapInstance landOfDeath)
         {
+            List<MapNpc> portalList = ServerManager.Instance.GetMapNpcsPerVNum(453);
+            if (portalList != null)
+            {
+                foreach (MapNpc npc in portalList)
+                {
+                    npc.EffectActivated = false;
+                }
+            }
             EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, false));
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.UNSPAWNMONSTERS, 443));
@@ -139,14 +147,6 @@ namespace OpenNos.GameObject.Event.LOD
 
         private void SpawnDh(MapInstance landOfDeath)
         {
-            List<MapNpc> portalList = ServerManager.Instance.GetMapNpcsPerVNum(453);
-            if (portalList != null)
-            {
-                foreach (MapNpc npc in portalList)
-                {
-                    npc.EffectActivated = false;
-                }
-            }
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SPAWNONLASTENTRY, 443));
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET, "df 2"));
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
