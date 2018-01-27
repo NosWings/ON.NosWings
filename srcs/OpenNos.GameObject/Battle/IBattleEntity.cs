@@ -47,7 +47,7 @@ namespace OpenNos.GameObject.Battle
 
         int[] GetBuff(BCardType.CardType type, byte subtype);
 
-        bool HasBuff(BCardType.CardType type, byte subtype);
+        bool HasBuff(BCardType.CardType type, byte subtype, bool removeWeaponEffects = false);
 
         bool HasBuff(BuffType type);
 

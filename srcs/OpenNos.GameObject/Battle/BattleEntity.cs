@@ -656,7 +656,7 @@ namespace OpenNos.GameObject.Battle
                     baseDamage += (int)(baseDamage * (1 + (weaponSoftDamage[1] / 100D)));
                 }
 
-                if (charact.HasBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability))
+                if (charact.HasBuff(CardType.IncreaseDamage, (byte)AdditionalTypes.IncreaseDamage.IncreasingPropability, true))
                 {
                     charact.MapInstance.Broadcast(charact.GenerateEff(15));
                     baseDamage += (int) (baseDamage * (1 + GetBuff(CardType.IncreaseDamage,
@@ -755,8 +755,15 @@ namespace OpenNos.GameObject.Battle
             return new[] { value1, value2 };
         }
 
-        public bool HasBuff(CardType type, byte subtype)
+        public bool HasBuff(CardType type, byte subtype, bool removeWeaponEffects = false)
         {
+            if (removeWeaponEffects)
+            {
+                return Buffs.Any(buff => buff.Card.BCards.Any(b =>
+                    b.Type == (byte) type && b.SubType == subtype &&
+                    (b.CastType != 1 ||
+                     b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now)));
+            }
             return Buffs.Any(buff => buff.Card.BCards.Any(b => b.Type == (byte)type && b.SubType == subtype && (b.CastType != 1 || b.CastType == 1 && buff.Start.AddMilliseconds(buff.Card.Delay * 100) < DateTime.Now))) ||
                    StaticBcards.Any(s => s.Type.Equals((byte)type) && s.SubType.Equals(subtype));
         }
