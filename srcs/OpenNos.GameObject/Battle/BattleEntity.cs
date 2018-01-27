@@ -838,7 +838,7 @@ namespace OpenNos.GameObject.Battle
                 short onyxX = (short)(charact.PositionX + 2);
                 short onyxY = (short)(charact.PositionY + 2);
                 int onyxId = mapInstance.GetNextId();
-                MapMonster onyx = new MapMonster
+                var onyx = new MapMonster
                 {
                     MonsterVNum = 2371,
                     MapX = onyxX,
