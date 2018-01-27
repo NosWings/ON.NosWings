@@ -121,6 +121,8 @@ namespace OpenNos.GameObject.Networking
 
         public int DropRate { get; set; }
 
+        public bool ReputOnMonsters { get; set; }
+
         public int QuestDropRate { get; set; }
 
         public bool EventInWaiting { get; set; }
@@ -1230,6 +1232,7 @@ namespace OpenNos.GameObject.Networking
             HeroicStartLevel = byte.Parse(ConfigurationManager.AppSettings["HeroicStartLevel"]);
             Act4MinChannels = byte.Parse(ConfigurationManager.AppSettings["ChannelsBeforeAct4"]);
             LobbySpeed = byte.Parse(ConfigurationManager.AppSettings["LobbySpeed"]);
+            ReputOnMonsters = bool.Parse(ConfigurationManager.AppSettings["ReputOnMonster"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Act4RaidStart = DateTime.Now;
             Act4AngelStat = new PercentBar();

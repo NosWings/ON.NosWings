@@ -1874,7 +1874,7 @@ namespace OpenNos.GameObject
                     }
                 }
                 // TODO ADD A CONFIGURATION FOR THAT
-                if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance)
+                if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.BaseMapInstance && ServerManager.Instance.ReputOnMonsters)
                 {
                     GetReput(monsterToAttack.Monster.Level / 3);
                 }
