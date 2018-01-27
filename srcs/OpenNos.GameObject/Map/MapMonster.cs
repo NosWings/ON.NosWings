@@ -59,11 +59,14 @@ namespace OpenNos.GameObject.Map
 
         public void AddBuff(Buff.Buff indicator) => BattleEntity.AddBuff(indicator);
 
-        public void RemoveBuff(short cardId) => BattleEntity.RemoveBuff(cardId);
+        public void RemoveBuff(short cardId, bool removePermaBuff) => BattleEntity.RemoveBuff(cardId, removePermaBuff);
+
+        public void RemoveBuff(short cardId) => RemoveBuff(cardId, false);
 
         public int[] GetBuff(CardType type, byte subtype) => BattleEntity.GetBuff(type, subtype);
 
         public bool HasBuff(CardType type, byte subtype) => BattleEntity.HasBuff(type, subtype);
+        public bool HasBuff(BuffType type) => BattleEntity.HasBuff(type);
 
         public ConcurrentBag<Buff.Buff> Buffs => BattleEntity.Buffs;
 

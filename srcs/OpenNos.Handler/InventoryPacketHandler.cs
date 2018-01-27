@@ -32,6 +32,7 @@ using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Packets.CommandPackets;
 using static NosSharp.Enums.BCardType;
 
 namespace OpenNos.Handler
@@ -887,7 +888,7 @@ namespace OpenNos.Handler
                             return;
                         }
                         Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-                        RemoveSP(inventory.ItemVNum);
+                        RemoveSp(inventory.ItemVNum);
                         break;
                     case (byte) EquipmentType.Sp when !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown:
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
@@ -951,9 +952,6 @@ namespace OpenNos.Handler
 
                     case EquipmentType.Sp:
                         mate.SpInstance = null;
-                        break;
-
-                    default:
                         break;
                 }
                 Session.SendPacket(mate.GenerateScPacket());
@@ -1133,7 +1131,7 @@ namespace OpenNos.Handler
                 if (Session.Character.UseSp)
                 {
                     Session.Character.LastSp = currentRunningSeconds;
-                    RemoveSP(specialistInstance.ItemVNum);
+                    RemoveSp(specialistInstance.ItemVNum);
                 }
                 else
                 {
@@ -1546,8 +1544,8 @@ namespace OpenNos.Handler
         /// </summary>
         private void ChangeSP()
         {
-            SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            var sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+            var fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (sp == null)
             {
                 return;
@@ -1669,10 +1667,16 @@ namespace OpenNos.Handler
         /// sp removal method
         /// </summary>
         /// <param name="vnum"></param>
-        private void RemoveSP(short vnum)
+        private void RemoveSp(short vnum)
         {
             if (Session == null || !Session.HasSession || Session.Character.IsVehicled)
             {
+                return;
+            }
+
+            if (Session.Character.HasBuff(BuffType.Bad))
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SP_NO_REMOVE_DEBUFFS"), 10));
                 return;
             }
             List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
@@ -1680,6 +1684,7 @@ namespace OpenNos.Handler
             Session.Character.BattleEntity.StaticBcards.RemoveWhere(s => !s.ItemVNum.Equals(vnum), out ConcurrentBag<BCard> eqBcards);
             Session.Character.BattleEntity.StaticBcards = eqBcards;
             Session.Character.UseSp = false;
+            Session.Character.SpInstance = null;
             Session.Character.LoadSpeed();
             Session.SendPacket(Session.Character.GenerateCond());
             Session.SendPacket(Session.Character.GenerateLev());

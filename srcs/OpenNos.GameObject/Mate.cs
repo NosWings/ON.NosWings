@@ -74,9 +74,18 @@ namespace OpenNos.GameObject
 
         public BattleEntity BattleEntity { get; set; }
 
+        public void RemoveBuff(short cardId, bool removePermaBuff = false)
+        {
+            throw new NotImplementedException();
+        }
+
         public int[] GetBuff(CardType type, byte subtype) => BattleEntity.GetBuff(type, subtype);
 
         public bool HasBuff(CardType type, byte subtype) => BattleEntity.HasBuff(type, subtype);
+        public bool HasBuff(BuffType type)
+        {
+            throw new NotImplementedException();
+        }
 
         public ConcurrentBag<Buff.Buff> Buffs => BattleEntity.Buffs;
 
@@ -581,6 +590,8 @@ namespace OpenNos.GameObject
         public Node[,] GetBrushFire() => BestFirstSearch.LoadBrushFire(new GridPos() { X = PositionX, Y = PositionY }, Owner.MapInstance.Map.Grid);
 
         public SessionType SessionType() => NosSharp.Enums.SessionType.MateAndNpc;
+
+        public void AddBuff(Buff.Buff indicator) => BattleEntity.AddBuff(indicator);
 
         public long GetId() => MateTransportId;
 

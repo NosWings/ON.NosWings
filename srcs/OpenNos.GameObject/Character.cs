@@ -91,6 +91,8 @@ namespace OpenNos.GameObject
 
         public bool HasBuff(CardType type, byte subtype) => BattleEntity.HasBuff(type, subtype);
 
+        public bool HasBuff(BuffType type) => BattleEntity.HasBuff(type);
+
         public ConcurrentBag<Buff.Buff> Buff => BattleEntity.Buffs;
 
         public void DisableBuffs(List<BuffType> types, int level = 100) => BattleEntity.DisableBuffs(types, level);
@@ -109,10 +111,7 @@ namespace OpenNos.GameObject
 
         public Node[,] BrushFire { get; set; }
 
-        public bool CanFight
-        {
-            get { return !IsSitting && ExchangeInfo == null; }
-        }
+        public bool CanFight => !IsSitting && ExchangeInfo == null;
 
         public List<CharacterRelationDTO> CharacterRelations
         {
@@ -522,8 +521,8 @@ namespace OpenNos.GameObject
 
         public int WaterResistance
         {
-            get { return BattleEntity.WaterResistance; }
-            set { BattleEntity.WaterResistance = value; }
+            get => BattleEntity.WaterResistance;
+            set => BattleEntity.WaterResistance = value;
         }
 
         public IDisposable Life { get; set; }

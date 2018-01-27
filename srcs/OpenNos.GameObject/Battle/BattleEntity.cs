@@ -214,6 +214,14 @@ namespace OpenNos.GameObject.Battle
             }
         }
 
+        public bool HasBuff(BuffType type)
+        {
+            lock(Buffs)
+            {
+                return Buffs.Any(s => s.Card.BuffType == type);
+            }
+        }
+
         public ushort GenerateDamage(IBattleEntity targetEntity, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
             BattleEntity target = targetEntity?.BattleEntity;

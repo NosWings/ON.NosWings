@@ -33,6 +33,30 @@ namespace OpenNos.GameObject.Battle
 
         SessionType SessionType();
 
+
+        /// BUFFS
+        ///  <summary>
+        ///  BUFFS
+        ///  </summary>
+        ///  <param name="type"></param>
+        /// <param name="indicator"></param>
+        /// <returns></returns>
+        void AddBuff(Buff.Buff indicator);
+
+        void RemoveBuff(short cardId, bool removePermaBuff = false);
+
+        int[] GetBuff(BCardType.CardType type, byte subtype);
+
+        bool HasBuff(BCardType.CardType type, byte subtype);
+
+        bool HasBuff(BuffType type);
+
+
+        /*
+         * DAMAGES
+         * 
+         */
+
         void GetDamage(int damage, IBattleEntity entity, bool canKill = true);
 
         void GenerateDeath(IBattleEntity killer = null);
