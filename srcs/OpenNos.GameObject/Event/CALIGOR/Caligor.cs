@@ -43,6 +43,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
             CaligorMapInstance =
                 ServerManager.Instance.GenerateMapInstance(154, MapInstanceType.CaligorInstance, new InstanceBag());
+            CaligorMapInstance.IsPvp = true;
 
             EntryMap = ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(153));
             ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 153)?.CreatePortal(new Portal
