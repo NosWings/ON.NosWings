@@ -153,6 +153,10 @@
   <ItemGroup>
     <Compile Include="ArenaTeamMember.cs" />
     <Compile Include="ArenaMember.cs" />
+    <Compile Include="Battle\Args\DeathArgs.cs" />
+    <Compile Include="Battle\Args\HitArgs.cs" />
+    <Compile Include="Battle\Args\KillArgs.cs" />
+    <Compile Include="Battle\Args\MoveArgs.cs" />
     <Compile Include="Battle\BattleEntity.cs" />
     <Compile Include="Battle\IBattleEntity.cs" />
     <Compile Include="Buff\Buff.cs" />
@@ -163,6 +167,7 @@
     <Compile Include="Event\ACT4\Act4Ship.cs" />
     <Compile Include="Event\ARENA\ArenaEvent.cs" />
     <Compile Include="Event\BattleRoyale\BattleRoyaleManager.cs" />
+    <Compile Include="Event\CALIGOR\Caligor.cs" />
     <Compile Include="Event\EventWave.cs" />
     <Compile Include="Event\ICEBREAKER\IceBreaker.cs" />
     <Compile Include="Helpers\CellonGeneratorHelper.cs" />
