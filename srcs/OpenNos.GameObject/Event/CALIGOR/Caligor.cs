@@ -46,6 +46,12 @@ namespace OpenNos.GameObject.Event.CALIGOR
             ServerManager.Instance.Act4Maps.Add(CaligorMapInstance);
 
             EntryMap = ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 153);
+
+            if (EntryMap == null)
+            {
+                return;
+            }
+
             EntryMap?.CreatePortal(new Portal
             {
                 SourceMapId = 153,
@@ -78,13 +84,14 @@ namespace OpenNos.GameObject.Event.CALIGOR
                 return;
             }
 
+            RaidBoss.IsBoss = true;
             RaidBoss?.BattleEntity.OnDeathEvents.Add(new EventContainer(CaligorMapInstance, EventActionType.SCRIPTEND, (byte)1));
 
             while (RaidTime > 0)
             {
+                RefreshState();
                 RaidTime -= 5;
                 Thread.Sleep(5000);
-                RefreshState();
             }
             EndRaid();
         }
