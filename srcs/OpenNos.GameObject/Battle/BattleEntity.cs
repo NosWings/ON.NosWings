@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using OpenNos.GameObject.Battle.Args;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Event.CALIGOR;
 
 namespace OpenNos.GameObject.Battle
 {
@@ -733,8 +734,20 @@ namespace OpenNos.GameObject.Battle
             #endregion
 
             SkillBcards.Clear();
-
-            return (ushort)(totalDamage > ushort.MaxValue ? ushort.MaxValue : totalDamage);
+            totalDamage = totalDamage > ushort.MaxValue ? ushort.MaxValue : totalDamage;
+            if (Session is Character charac && targetEntity is MapMonster cali && cali.MonsterVNum == 2305)
+            {
+                switch (charac.Faction)
+                {
+                    case FactionType.Angel:
+                        Caligor.AngelDamage += totalDamage + (onyxEffect ? totalDamage / 2 : 0);
+                        break;
+                    case FactionType.Demon:
+                        Caligor.DemonDamage += totalDamage + (onyxEffect ? totalDamage / 2 : 0);
+                        break;
+                }
+            }
+            return (ushort)totalDamage;
         }
 
         public int[] GetBuff(CardType type, byte subtype)

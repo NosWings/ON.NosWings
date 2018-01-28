@@ -13,7 +13,7 @@ using OpenNos.GameObject.Networking;
 namespace OpenNos.GameObject.Event.CALIGOR
 {
     public static class Caligor
-    { 
+    {
         #region Properties
 
         public static int AngelDamage { get; set; }
@@ -26,6 +26,10 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static MapMonster RaidBoss { get; set; }
 
+        public static short RaidTime { get; set; }
+
+        public static bool IsLocked { get; set; }
+
         #endregion
 
 
@@ -33,7 +37,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static void GenerateCaligor()
         {
-            short totalTime = 3600;
+            RaidTime = 3600;
 
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CALIGOR_REALM_OPEN"), 0));
 
@@ -41,7 +45,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
                 ServerManager.Instance.GenerateMapInstance(154, MapInstanceType.CaligorInstance, new InstanceBag());
 
             EntryMap = ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(153));
-            EntryMap.CreatePortal(new Portal
+            ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 153)?.CreatePortal(new Portal
             {
                 SourceMapId = 153,
                 SourceX = 70,
@@ -52,7 +56,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
                 DestinationMapInstanceId = CaligorMapInstance.MapInstanceId,
                 Type = -1
             });
-            EntryMap.CreatePortal(new Portal
+            ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 153)?.CreatePortal(new Portal
             {
                 SourceMapId = 153,
                 SourceX = 110,
@@ -69,41 +73,58 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
             if (RaidBoss == null)
             {
-                foreach (var character in CaligorMapInstance.Sessions)
-                {
-                    // Teleport everyone back to the raidmap
-                    ServerManager.Instance.ChangeMapInstance(character.Character.CharacterId, EntryMap.MapInstanceId, character.Character.MapX, character.Character.MapY);
-                }
+                TeleportPlayers();
                 EndRaid();
                 return;
             }
 
-            while (totalTime > 0)
+            RaidBoss?.BattleEntity.OnDeathEvents.Add(new EventContainer(CaligorMapInstance, EventActionType.SCRIPTEND, (byte)1));
+
+            while (RaidTime > 0)
             {
-                totalTime -= 5;
+                RaidTime -= 5;
                 Thread.Sleep(5000);
                 RefreshState();
             }
-
-            RaidBoss?.BattleEntity.OnDeathEvents.Add(new EventContainer(CaligorMapInstance, EventActionType.SCRIPTEND, (byte)1));
-
+            EndRaid();
         }
 
         public static void EndRaid()
         {
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CALIGOR_REALM_CLOSED"), 0));
+            TeleportPlayers();
+            ServerManager.Instance.StartedEvents.Remove(EventType.CALIGOR);
+            EventHelper.Instance.RunEvent(new EventContainer(CaligorMapInstance, EventActionType.DISPOSEMAP, null));
         }
 
         public static void LockEntry()
         {
-            /*
-             * When boss hp = 50%, remove portals
-             */
+            foreach (var portal in EntryMap.Portals.Where(p => p.DestinationMapInstanceId == CaligorMapInstance.MapInstanceId))
+            {
+                EntryMap.Portals.Remove(portal);
+                EntryMap.Broadcast(portal.GenerateGp());
+            }
+            IsLocked = true;
+            ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CALIGOR_REALM_LOCKED"), 0));
         }
 
         public static void RefreshState()
         {
+            CaligorMapInstance.Broadcast($"ch_dm {RaidBoss.MaxHp} {AngelDamage} {DemonDamage} {RaidTime}");
 
+            if (AngelDamage + DemonDamage > RaidBoss.MaxHp / 2 && !IsLocked)
+            {
+                LockEntry();
+            }
+        }
+
+        public static void TeleportPlayers()
+        {
+            foreach (var character in CaligorMapInstance.Sessions)
+            {
+                // Teleport everyone back to the raidmap
+                ServerManager.Instance.ChangeMapInstance(character.Character.CharacterId, EntryMap.MapInstanceId, character.Character.MapX, character.Character.MapY);
+            }
         }
 
         #endregion
