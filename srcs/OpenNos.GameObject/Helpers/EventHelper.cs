@@ -58,7 +58,7 @@ namespace OpenNos.GameObject.Helpers
         {
             if (!ServerManager.Instance.StartedEvents.Contains(type))
             {
-                Task.Factory.StartNew(() =>
+                Task.Factory.StartNew(async () =>
                 {
                     ServerManager.Instance.StartedEvents.Add(type);
                     switch (type)
@@ -94,7 +94,7 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case EventType.CALIGOR:
-                            Caligor.GenerateCaligor();
+                            await Caligor.GenerateCaligor();
                             break;
                     }
                 });

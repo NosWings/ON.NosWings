@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.GameObject.Helpers;
@@ -35,10 +36,9 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         #region Methods
 
-        public static void GenerateCaligor()
+        public static async Task GenerateCaligor()
         {
             RaidTime = 3600;
-
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CALIGOR_REALM_OPEN"), 0));
 
             CaligorMapInstance =
@@ -91,7 +91,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
             {
                 RefreshState();
                 RaidTime -= 5;
-                Thread.Sleep(5000);
+                await Task.Delay(5000);
             }
             EndRaid();
         }
