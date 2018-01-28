@@ -62,20 +62,20 @@ namespace OpenNos.GameObject.Event.CALIGOR
             });
             //TODO: Add the top map portal
 
-            RaidBoss = new MapMonster
+            RaidBoss = CaligorMapInstance.Monsters.FirstOrDefault(s => s.Monster.NpcMonsterVNum == 2305);
+
+            if (RaidBoss == null)
             {
-                MonsterVNum = 2305,
-                MapY = 86,
-                MapX = 61,
-                MapId = CaligorMapInstance.Map.MapId,
-                IsMoving = true,
-                MapMonsterId = CaligorMapInstance.GetNextId(),
-                ShouldRespawn = false
-            };
-            RaidBoss.Initialize(CaligorMapInstance);
-            RaidBoss.BattleEntity.OnDeathEvents.Add(new EventContainer(CaligorMapInstance, EventActionType.SCRIPTEND, 1));
-            CaligorMapInstance.AddMonster(RaidBoss);
-            CaligorMapInstance.Broadcast(RaidBoss.GenerateIn());
+                foreach (var character in CaligorMapInstance.Sessions)
+                {
+                    // Teleport everyone back to the raidmap
+                    ServerManager.Instance.ChangeMapInstance(character.Character.CharacterId, EntryMap.MapInstanceId, character.Character.MapX, character.Character.MapY);
+                }
+                EndRaid();
+                return;
+            }
+
+            RaidBoss?.BattleEntity.OnDeathEvents.Add(new EventContainer(CaligorMapInstance, EventActionType.SCRIPTEND, (byte)1));
 
         }
 
