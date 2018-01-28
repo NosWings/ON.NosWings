@@ -73,7 +73,6 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
             if (RaidBoss == null)
             {
-                TeleportPlayers();
                 EndRaid();
                 return;
             }
