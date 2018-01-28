@@ -43,7 +43,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
             CaligorMapInstance =
                 ServerManager.Instance.GenerateMapInstance(154, MapInstanceType.CaligorInstance, new InstanceBag());
-            CaligorMapInstance.IsPvp = true;
+            ServerManager.Instance.Act4Maps.Add(CaligorMapInstance);
 
             EntryMap = ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 153);
             EntryMap?.CreatePortal(new Portal
@@ -91,6 +91,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static void EndRaid()
         {
+            ServerManager.Instance.Act4Maps.Remove(CaligorMapInstance);
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CALIGOR_REALM_CLOSED"), 0));
             TeleportPlayers();
             ServerManager.Instance.StartedEvents.Remove(EventType.CALIGOR);
