@@ -489,6 +489,28 @@ namespace OpenNos.GameObject.Helpers
                                 grp.Raid.MapInstanceDictionary.Values.ToList().ForEach(m => m.Dispose());
                             });
                             break;
+                        case MapInstanceType.CaligorInstance:
+                            FactionType winningFaction = Caligor.AngelDamage > Caligor.DemonDamage ? FactionType.Angel : FactionType.Demon;
+
+                            foreach (var player in evt.MapInstance.Sessions)
+                            {
+                                if (player == null)
+                                {
+                                    continue;
+                                }
+
+                                if (Caligor.RaidTime > 2400)
+                                {
+                                    player.Character.GiftAdd(player.Character.Faction == winningFaction ? (short) 5960 : (short) 5961, 1);
+                                }
+                                else
+                                {
+                                    player.Character.GiftAdd(player.Character.Faction == winningFaction ? (short) 5961 : (short) 5958, 1);
+                                }
+                                player.Character.GiftAdd(5959, 1);
+                                player.Character.GenerateFamilyXp(500);
+                            }
+                            break;
                     }
                     break;
 
