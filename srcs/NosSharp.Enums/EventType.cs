@@ -25,6 +25,7 @@ namespace NosSharp.Enums
         MASTERARENA,
         ICEBREAKER,
         ACT4SHIP,
-        BATTLEROYAL
+        BATTLEROYAL,
+        CALIGOR
     }
 }

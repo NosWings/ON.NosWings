@@ -25,6 +25,7 @@ using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.GameObject.Event.ACT4;
 using OpenNos.GameObject.Event.BattleRoyale;
+using OpenNos.GameObject.Event.CALIGOR;
 using OpenNos.GameObject.Event.ICEBREAKER;
 using OpenNos.GameObject.Event.INSTANTBATTLE;
 using OpenNos.GameObject.Event.LOD;
@@ -90,6 +91,10 @@ namespace OpenNos.GameObject.Helpers
 
                         case EventType.BATTLEROYAL:
                             //BattleRoyaleManager.Instance.Prepare(useTimer);
+                            break;
+
+                        case EventType.CALIGOR:
+                            Caligor.GenerateCaligor();
                             break;
                     }
                 });
