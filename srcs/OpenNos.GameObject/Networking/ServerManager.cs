@@ -929,6 +929,15 @@ namespace OpenNos.GameObject.Networking
                         {
                             session.SendPacket(visibleSession.Character.GenerateIn());
                             session.SendPacket(visibleSession.Character.GenerateGidx());
+
+                            if (visibleSession.Character.HasShopOpened && visibleSession.HasCurrentMapInstance)
+                            {   
+                                KeyValuePair<long, MapShop> shop = visibleSession.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(visibleSession.Character.GetId()));
+        
+                                session.SendPacket(visibleSession.Character.GeneratePlayerFlag(shop.Key + 1));
+                                session.SendPacket(visibleSession.Character.GenerateShop(shop.Value.Name));
+                            }
+
                             if (!visibleSession.Character.IsVehicled)
                             {
                                 visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList().ForEach(mate =>
@@ -940,6 +949,15 @@ namespace OpenNos.GameObject.Networking
                         else
                         {
                             session.SendPacket(visibleSession.Character.GenerateIn(true));
+
+                            if (visibleSession.Character.HasShopOpened && visibleSession.HasCurrentMapInstance)
+                            {   
+                                KeyValuePair<long, MapShop> shop = visibleSession.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(visibleSession.Character.GetId()));
+        
+                                session.SendPacket(visibleSession.Character.GeneratePlayerFlag(shop.Key + 1));
+                                session.SendPacket(visibleSession.Character.GenerateShop(shop.Value.Name));
+                            }
+
                             if (!visibleSession.Character.IsVehicled)
                             {
                                 visibleSession.Character.Mates.Where(m => m.IsTeamMember && m.CharacterId != session.Character.CharacterId).ToList()

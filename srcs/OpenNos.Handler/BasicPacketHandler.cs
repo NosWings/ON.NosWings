@@ -1486,7 +1486,13 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
+
                 string characterName = whisperPacket.Message.Split(' ')[whisperPacket.Message.StartsWith("GM ") ? 1 : 0];
+                if (characterName == null)
+                {
+                    return;
+                }
+
                 string whPrefix = "[" + Language.Instance.GetMessageFromKey("SUPPORT") + "]";
                 if (characterName.StartsWith(whPrefix))
                 {
@@ -1506,10 +1512,7 @@ namespace OpenNos.Handler
                 message = message.Trim();
 
                 Session.SendPacket(Session.Character.GenerateSpk(message, 5));
-                if (characterName == null)
-                {
-                    return;
-                }
+                
                 CharacterDTO receiver = DaoFactory.CharacterDao?.LoadByName(characterName);
                 if (receiver == null)
                 {
