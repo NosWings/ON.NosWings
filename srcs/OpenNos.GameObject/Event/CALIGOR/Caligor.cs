@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.GameObject.Helpers;
@@ -12,7 +13,7 @@ using OpenNos.GameObject.Networking;
 namespace OpenNos.GameObject.Event.CALIGOR
 {
     public static class Caligor
-    {
+    { 
         #region Properties
 
         public static int AngelDamage { get; set; }
@@ -32,6 +33,8 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static void GenerateCaligor()
         {
+            short totalTime = 3600;
+
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CALIGOR_REALM_OPEN"), 0));
 
             CaligorMapInstance =
@@ -75,6 +78,13 @@ namespace OpenNos.GameObject.Event.CALIGOR
                 return;
             }
 
+            while (totalTime > 0)
+            {
+                totalTime -= 5;
+                Thread.Sleep(5000);
+                RefreshState();
+            }
+
             RaidBoss?.BattleEntity.OnDeathEvents.Add(new EventContainer(CaligorMapInstance, EventActionType.SCRIPTEND, (byte)1));
 
         }
@@ -89,6 +99,11 @@ namespace OpenNos.GameObject.Event.CALIGOR
             /*
              * When boss hp = 50%, remove portals
              */
+        }
+
+        public static void RefreshState()
+        {
+
         }
 
         #endregion

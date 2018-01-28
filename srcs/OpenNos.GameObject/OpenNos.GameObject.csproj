@@ -163,6 +163,7 @@
     <Compile Include="Event\ACT4\Act4Ship.cs" />
     <Compile Include="Event\ARENA\ArenaEvent.cs" />
     <Compile Include="Event\BattleRoyale\BattleRoyaleManager.cs" />
+    <Compile Include="Event\CALIGOR\Caligor.cs" />
     <Compile Include="Event\EventWave.cs" />
     <Compile Include="Event\ICEBREAKER\IceBreaker.cs" />
     <Compile Include="Helpers\CellonGeneratorHelper.cs" />
