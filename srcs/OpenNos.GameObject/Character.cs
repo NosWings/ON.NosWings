@@ -42,6 +42,7 @@ using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.PathFinder.PathFinder;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Battle;
+using OpenNos.GameObject.Battle.Args;
 
 namespace OpenNos.GameObject
 {
@@ -3030,6 +3031,16 @@ namespace OpenNos.GameObject
             }
             JobLevelXp += (int)(val * (1 + GetBuff(CardType.Item, (byte)AdditionalTypes.Item.EXPIncreased)[0] / 100D));
             GenerateJobXpLevelUp();
+        }
+
+        public void GetReputOnKill(object sender, KillArgs args)
+        {
+            switch (args.KilledEntity.SessionType())
+            {
+                case NosSharp.Enums.SessionType.Monster:
+                    GetReput(args.KilledEntity.BattleEntity.Level * ServerManager.Instance.ReputRate);
+                    break;
+            }
         }
 
         public void GetReput(long val)

@@ -13,6 +13,7 @@ using OpenNos.GameObject.Networking;
 using OpenNos.Data;
 using OpenNos.Core;
 using System.Collections.Generic;
+using OpenNos.GameObject.Battle.Args;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Event;
 
@@ -20,6 +21,11 @@ namespace OpenNos.GameObject.Battle
 {
     public class BattleEntity
     {
+        public event EventHandler<HitArgs> Hit;
+        public event EventHandler<KillArgs> Kill;
+        public event EventHandler<DeathArgs> Death;
+        public event EventHandler<MoveArgs> Move;
+
         #region instantiation
 
         public BattleEntity(IBattleEntity entity)
@@ -1036,5 +1042,25 @@ namespace OpenNos.GameObject.Battle
         }
 
         #endregion
+
+        public virtual void OnMove(MoveArgs args)
+        {
+            Move?.Invoke(this, args);
+        }
+
+        public virtual void OnDeath(DeathArgs args)
+        {
+            Death?.Invoke(this, args);
+        }
+
+        public virtual void OnKill(KillArgs args)
+        {
+            Kill?.Invoke(this, args);
+        }
+
+        public virtual void OnHit(HitArgs e)
+        {
+            Hit?.Invoke(this, e);
+        }
     }
 }

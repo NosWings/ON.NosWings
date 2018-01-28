@@ -441,7 +441,13 @@ namespace OpenNos.GameObject.Helpers
                                         sess.Character.GiftAdd(2320, 1); // RAID CERTIFICATE
                                         continue;
                                     }
-                                    foreach (Gift gift in grp.Raid?.GiftItems)
+
+                                    if (grp.Raid?.GiftItems == null)
+                                    {
+                                        continue;
+                                    }
+
+                                    foreach (Gift gift in grp.Raid.GiftItems)
                                     {
                                         sbyte rare = (sbyte)(gift.IsRandomRare ? ServerManager.Instance.RandomNumber(-2, 8) : 0);
 

@@ -61,10 +61,10 @@ namespace OpenNos.GameObject.Event.ICEBREAKER
 
         public static void MergeGroups(IEnumerable<Group> groups)
         {
-            Group newGroup = new Group(GroupType.IceBreaker);
-            foreach (var group in groups)
+            var newGroup = new Group(GroupType.IceBreaker);
+            foreach (Group group in groups)
             {
-                foreach (var character in group.Characters)
+                foreach (ClientSession character in group.Characters)
                 {
                     newGroup.Characters.Add(character);
                     group.Characters.ToList().Remove(character);
