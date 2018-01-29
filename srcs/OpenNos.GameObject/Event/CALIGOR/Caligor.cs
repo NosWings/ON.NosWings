@@ -137,19 +137,19 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static void EndRaid()
         {
+            RemovePortals();
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CALIGOR_REALM_CLOSED"), 0));
             TeleportPlayers();
             ServerManager.Instance.StartedEvents.Remove(EventType.CALIGOR);
-            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.CaligorMapInstance, EventActionType.DISPOSEMAP, null));
+            RaidBoss.ShouldRespawn = true;
+            RaidBoss.CurrentHp = 0;
+            RaidBoss.GenerateDeath();
+            RaidBoss.Monster.RespawnTime = 1;
         }
 
         public static void LockEntry()
         {
-            foreach (var portal in EntryMap.Portals.Where(p => p.DestinationMapInstanceId == ServerManager.Instance.CaligorMapInstance.MapInstanceId))
-            {
-                EntryMap.Portals.Remove(portal);
-                EntryMap.Broadcast(portal.GenerateGp());
-            }
+            RemovePortals();
             IsLocked = true;
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CALIGOR_REALM_LOCKED"), 0));
         }
@@ -170,6 +170,15 @@ namespace OpenNos.GameObject.Event.CALIGOR
             {
                 // Teleport everyone back to the raidmap
                 ServerManager.Instance.ChangeMapInstance(character.Character.CharacterId, EntryMap.MapInstanceId, character.Character.MapX, character.Character.MapY);
+            }
+        }
+
+        public static void RemovePortals()
+        {
+            foreach (var portal in EntryMap.Portals.Where(p => p.DestinationMapInstanceId == ServerManager.Instance.CaligorMapInstance.MapInstanceId))
+            {
+                EntryMap.Portals.Remove(portal);
+                EntryMap.Broadcast(portal.GenerateGp());
             }
         }
 
