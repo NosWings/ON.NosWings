@@ -28,6 +28,7 @@ using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Event.ACT6;
 using OpenNos.GameObject.Event.BattleRoyale;
 using OpenNos.GameObject.Event.CALIGOR;
 using OpenNos.GameObject.Helpers;
@@ -109,6 +110,8 @@ namespace OpenNos.GameObject.Networking
         }
 
         public ConcurrentBag<ScriptedInstance> Act4Raids { get; set; }
+
+        public ConcurrentBag<ScriptedInstance> Act6Raids { get; set; }
 
         public MapInstance ArenaInstance { get; private set; }
 
@@ -2153,13 +2156,13 @@ namespace OpenNos.GameObject.Networking
         {
             if (Act6Zenas.Percentage >= 1000 && Act6Zenas.Mode == 0)
             {
-                LoadAct6ScriptedInstance();
+                Act6Raid.GenerateRaid(FactionType.Angel);
                 Act6Zenas.TotalTime = 3600;
                 Act6Zenas.Mode = 1;
             }
             else if (Act6Erenia.Percentage >= 1000 && Act6Erenia.Mode == 0)
             {
-                LoadAct6ScriptedInstance();
+                Act6Raid.GenerateRaid(FactionType.Demon);
                 Act6Erenia.TotalTime = 3600;
                 Act6Erenia.Mode = 1;
             }
@@ -2227,61 +2230,12 @@ namespace OpenNos.GameObject.Networking
             FamilyList.AddRange(families.Select(s => s.Value));
         }
 
-        private void LoadAct6ScriptedInstance()
-        {
-            Raids = new ConcurrentBag<ScriptedInstance>();
-            Parallel.ForEach(Mapinstances, map =>
-            {
-                foreach (ScriptedInstanceDTO scriptedInstanceDto in DaoFactory.ScriptedInstanceDao.LoadByMap(map.Value.Map.MapId).ToList())
-                {
-                    ScriptedInstance si = (ScriptedInstance)scriptedInstanceDto;
-                    si.LoadGlobals();
-                    Raids.Add(si);
-                    Portal portal = new Portal
-                    {
-                        Type = (byte)PortalType.Raid,
-                        SourceMapId = si.MapId,
-                        SourceX = si.PositionX,
-                        SourceY = si.PositionY
-                    };
-                    if (Act6Erenia.Percentage >= 1000 && portal.SourceMapId == 236) 
-                    { 
-                        map.Value.Portals.Add(portal); 
-                        map.Value.Broadcast(portal.GenerateGp()); 
-                        Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o => 
-                        { 
-                            if (map.Value.Portals.Count <= 0) 
-                            { 
-                                return; 
-                            } 
-                            map.Value.Portals.Remove(portal); 
-                            map.Value.MapClear(); 
-                        }); 
-                    } 
-                    if (Act6Zenas.Percentage < 1000 || portal.SourceMapId != 232) 
-                    { 
-                        continue; 
-                    } 
-                    map.Value.Portals.Add(portal); 
-                    map.Value.Broadcast(portal.GenerateGp()); 
-                    Observable.Timer(TimeSpan.FromHours(1)).Subscribe(o => 
-                    { 
-                        if (map.Value.Portals.Count <= 0) 
-                        { 
-                            return; 
-                        } 
-                        map.Value.Portals.Remove(portal); 
-                        map.Value.MapClear(); 
-                    });
-                }
-            });
-        }
-
         private void LoadScriptedInstances()
         {
             Raids = new ConcurrentBag<ScriptedInstance>();
             TimeSpaces = new ConcurrentBag<ScriptedInstance>();
             Act4Raids = new ConcurrentBag<ScriptedInstance>();
+            Act6Raids = new ConcurrentBag<ScriptedInstance>();
             Parallel.ForEach(Mapinstances, map =>
             {
                 foreach (ScriptedInstanceDTO scriptedInstanceDto in DaoFactory.ScriptedInstanceDao.LoadByMap(map.Value.Map.MapId).ToList())
@@ -2309,6 +2263,10 @@ namespace OpenNos.GameObject.Networking
                         case ScriptedInstanceType.RaidAct4:
                             si.LoadGlobals();
                             Act4Raids.Add(si);
+                            break;
+                        case ScriptedInstanceType.RaidAct6:
+                            si.LoadGlobals();
+                            Act6Raids.Add(si);
                             break;
                     }
                 }

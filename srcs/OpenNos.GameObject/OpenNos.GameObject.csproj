@@ -165,6 +165,7 @@
     <Compile Include="CharacterQuest.cs" />
     <Compile Include="Event\ACT4\Act4Raid.cs" />
     <Compile Include="Event\ACT4\Act4Ship.cs" />
+    <Compile Include="Event\ACT6\Act6Raid.cs" />
     <Compile Include="Event\ARENA\ArenaEvent.cs" />
     <Compile Include="Event\BattleRoyale\BattleRoyaleManager.cs" />
     <Compile Include="Event\CALIGOR\Caligor.cs" />
