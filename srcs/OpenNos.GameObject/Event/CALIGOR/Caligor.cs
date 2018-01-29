@@ -21,8 +21,6 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static int DemonDamage { get; set; }
 
-        public static MapInstance CaligorMapInstance { get; set; }
-
         public static MapInstance EntryMap { get; set; }
 
         public static MapMonster RaidBoss { get; set; }
@@ -41,10 +39,6 @@ namespace OpenNos.GameObject.Event.CALIGOR
             RaidTime = 3600;
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CALIGOR_REALM_OPEN"), 0));
 
-            CaligorMapInstance =
-                ServerManager.Instance.GenerateMapInstance(154, MapInstanceType.CaligorInstance, new InstanceBag());
-            ServerManager.Instance.Act4Maps.Add(CaligorMapInstance);
-
             EntryMap = ServerManager.Instance.Act4Maps.FirstOrDefault(m => m.Map.MapId == 153);
 
             if (EntryMap == null)
@@ -60,7 +54,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
                 DestinationMapId = 0,
                 DestinationX = 70,
                 DestinationY = 159,
-                DestinationMapInstanceId = CaligorMapInstance.MapInstanceId,
+                DestinationMapInstanceId = ServerManager.Instance.CaligorMapInstance.MapInstanceId,
                 Type = -1
             });
             EntryMap?.CreatePortal(new Portal
@@ -71,12 +65,57 @@ namespace OpenNos.GameObject.Event.CALIGOR
                 DestinationMapId = 0,
                 DestinationX = 110,
                 DestinationY = 159,
-                DestinationMapInstanceId = CaligorMapInstance.MapInstanceId,
+                DestinationMapInstanceId = ServerManager.Instance.CaligorMapInstance.MapInstanceId,
                 Type = -1
             });
-            //TODO: Add the top map portal
+            EntryMap?.CreatePortal(new Portal()
+            {
+                SourceMapId = 153,
+                SourceX = 87,
+                SourceY = 24,
+                DestinationMapId = 0,
+                DestinationX = 87,
+                DestinationY = 24,
+                DestinationMapInstanceId = ServerManager.Instance.CaligorMapInstance.MapInstanceId,
+                Type = -1
+            });
 
-            RaidBoss = CaligorMapInstance.Monsters.FirstOrDefault(s => s.Monster.NpcMonsterVNum == 2305);
+
+            ServerManager.Instance.CaligorMapInstance?.CreatePortal(new Portal
+            {
+                SourceMapId = 154,
+                SourceX = 70,
+                SourceY = 159,
+                DestinationMapId = 0,
+                DestinationX = 70,
+                DestinationY = 159,
+                DestinationMapInstanceId = EntryMap.MapInstanceId,
+                Type = -1
+            });
+            ServerManager.Instance.CaligorMapInstance?.CreatePortal(new Portal
+            {
+                SourceMapId = 154,
+                SourceX = 110,
+                SourceY = 159,
+                DestinationMapId = 0,
+                DestinationX = 110,
+                DestinationY = 159,
+                DestinationMapInstanceId = EntryMap.MapInstanceId,
+                Type = -1
+            });
+            ServerManager.Instance.CaligorMapInstance?.CreatePortal(new Portal()
+            {
+                SourceMapId = 154,
+                SourceX = 87,
+                SourceY = 24,
+                DestinationMapId = 0,
+                DestinationX = 87,
+                DestinationY = 24,
+                DestinationMapInstanceId = EntryMap.MapInstanceId,
+                Type = -1
+            });
+
+            RaidBoss = ServerManager.Instance.CaligorMapInstance.Monsters.FirstOrDefault(s => s.Monster.NpcMonsterVNum == 2305);
 
             if (RaidBoss == null)
             {
@@ -85,7 +124,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
             }
 
             RaidBoss.IsBoss = true;
-            RaidBoss?.BattleEntity.OnDeathEvents.Add(new EventContainer(CaligorMapInstance, EventActionType.SCRIPTEND, (byte)1));
+            RaidBoss?.BattleEntity.OnDeathEvents.Add(new EventContainer(ServerManager.Instance.CaligorMapInstance, EventActionType.SCRIPTEND, 1));
 
             while (RaidTime > 0)
             {
@@ -98,16 +137,15 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static void EndRaid()
         {
-            ServerManager.Instance.Act4Maps.Remove(CaligorMapInstance);
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CALIGOR_REALM_CLOSED"), 0));
             TeleportPlayers();
             ServerManager.Instance.StartedEvents.Remove(EventType.CALIGOR);
-            EventHelper.Instance.RunEvent(new EventContainer(CaligorMapInstance, EventActionType.DISPOSEMAP, null));
+            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.CaligorMapInstance, EventActionType.DISPOSEMAP, null));
         }
 
         public static void LockEntry()
         {
-            foreach (var portal in EntryMap.Portals.Where(p => p.DestinationMapInstanceId == CaligorMapInstance.MapInstanceId))
+            foreach (var portal in EntryMap.Portals.Where(p => p.DestinationMapInstanceId == ServerManager.Instance.CaligorMapInstance.MapInstanceId))
             {
                 EntryMap.Portals.Remove(portal);
                 EntryMap.Broadcast(portal.GenerateGp());
@@ -118,7 +156,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static void RefreshState()
         {
-            CaligorMapInstance.Broadcast($"ch_dm {RaidBoss.MaxHp} {AngelDamage} {DemonDamage} {RaidTime}");
+            ServerManager.Instance.CaligorMapInstance.Broadcast($"ch_dm {RaidBoss.MaxHp} {AngelDamage} {DemonDamage} {RaidTime}");
 
             if (AngelDamage + DemonDamage > RaidBoss.MaxHp / 2 && !IsLocked)
             {
@@ -128,7 +166,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static void TeleportPlayers()
         {
-            foreach (var character in CaligorMapInstance.Sessions)
+            foreach (var character in ServerManager.Instance.CaligorMapInstance.Sessions)
             {
                 // Teleport everyone back to the raidmap
                 ServerManager.Instance.ChangeMapInstance(character.Character.CharacterId, EntryMap.MapInstanceId, character.Character.MapX, character.Character.MapY);

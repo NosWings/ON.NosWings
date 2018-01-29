@@ -29,6 +29,7 @@ using OpenNos.DAL;
 using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Event.BattleRoyale;
+using OpenNos.GameObject.Event.CALIGOR;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item;
 using OpenNos.GameObject.Item.Instance;
@@ -130,6 +131,8 @@ namespace OpenNos.GameObject.Networking
         public int FairyXpRate { get; set; }
 
         public MapInstance FamilyArenaInstance { get; private set; }
+
+        public MapInstance CaligorMapInstance { get; set; }
 
         public List<Family> FamilyList { get; set; }
 
@@ -283,8 +286,23 @@ namespace OpenNos.GameObject.Networking
             session.SendPacket(session.Character.GenerateCond());
             session.SendPackets(UserInterfaceHelper.Instance.GenerateVb());
             session.SendPacket("eff_ob -1 -1 0 4269");
-            switch (session.CurrentMapInstance.MapInstanceType)
+            switch (session.CurrentMapInstance?.MapInstanceType)
             {
+                case MapInstanceType.CaligorInstance:
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("RESPAWN_CALIGOR_ENTRY")));
+                    Observable.Timer(TimeSpan.FromMilliseconds(5000)).Subscribe(o =>
+                    {
+                        session.Character.Hp = (int)session.Character.HpLoad();
+                        session.Character.Mp = (int)session.Character.MpLoad();
+                        if (CaligorMapInstance != null)
+                        {
+                            Instance.ChangeMapInstance(session.Character.CharacterId, CaligorMapInstance.MapInstanceId, session.Character.Faction == FactionType.Angel ? 72 : 109, 159);
+                        }
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
+                        session.SendPacket(session.Character.GenerateStat());
+                    });
+                    break;
                 case MapInstanceType.Act4Instance:
                     if (Instance.Act4DemonStat.Mode == 0 && Instance.Act4AngelStat.Mode == 0)
                     {
@@ -509,6 +527,21 @@ namespace OpenNos.GameObject.Networking
             session.Character.LastDeath = DateTime.Now;
             switch (session.CurrentMapInstance.MapInstanceType)
             {
+                case MapInstanceType.CaligorInstance:
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("RESPAWN_CALIGOR_ENTRY")));
+                    Observable.Timer(TimeSpan.FromMilliseconds(5000)).Subscribe(o =>
+                    {
+                        session.Character.Hp = (int)session.Character.HpLoad();
+                        session.Character.Mp = (int)session.Character.MpLoad();
+                        if (CaligorMapInstance != null)
+                        {
+                            Instance.ChangeMapInstance(session.Character.CharacterId, CaligorMapInstance.MapInstanceId, session.Character.Faction == FactionType.Angel ? 72 : 109, 159);
+                        }
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
+                        session.SendPacket(session.Character.GenerateStat());
+                    });
+                    break;
                 case MapInstanceType.BaseMapInstance:
                     if (session.Character.Level > 20)
                     {
@@ -902,7 +935,7 @@ namespace OpenNos.GameObject.Networking
                 {
                     Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character != null && s != session), s =>
                     {
-                        if (session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance || session.Character.Faction == s.Character.Faction)
+                        if ((session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance && session.CurrentMapInstance.MapInstanceType != MapInstanceType.CaligorInstance) || session.Character.Faction == s.Character.Faction)
                         {
                             s.SendPacket(session.Character.GenerateIn());
                             s.SendPacket(session.Character.GenerateGidx());
@@ -925,7 +958,7 @@ namespace OpenNos.GameObject.Networking
                 {
                     Parallel.ForEach(session.CurrentMapInstance.Sessions.Where(s => s.Character?.InvisibleGm == false && s != session), visibleSession =>
                     {
-                        if (session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance || session.Character.Faction == visibleSession.Character.Faction)
+                        if ((session.CurrentMapInstance.MapInstanceType != MapInstanceType.Act4Instance && session.CurrentMapInstance.MapInstanceType != MapInstanceType.CaligorInstance) || session.Character.Faction == visibleSession.Character.Faction)
                         {
                             session.SendPacket(visibleSession.Character.GenerateIn());
                             session.SendPacket(visibleSession.Character.GenerateGidx());
@@ -1574,9 +1607,16 @@ namespace OpenNos.GameObject.Networking
                 if (DaoFactory.MapDao.LoadById(148) != null)
                 {
                     Logger.Log.Info("[ACT4] Demon Ship Loaded");
-                    Act4ShipDemon = GenerateMapInstance(148, MapInstanceType.ArenaInstance, null);
+                    Act4ShipDemon = GenerateMapInstance(148, MapInstanceType.ArenaInstance, new InstanceBag());
                     Logger.Log.Info("[ACT4] Angel Ship Loaded");
-                    Act4ShipAngel = GenerateMapInstance(148, MapInstanceType.NormalInstance, null);
+                    Act4ShipAngel = GenerateMapInstance(148, MapInstanceType.NormalInstance, new InstanceBag());
+                }
+
+                if (DaoFactory.MapDao.LoadById(154) != null)
+                {
+                    CaligorMapInstance = GenerateMapInstance(154, MapInstanceType.CaligorInstance, new InstanceBag());
+                    CaligorMapInstance.IsPvp = true;
+                    Logger.Log.Info("[ACT4] Caligor Map Loaded");
                 }
                 if (Act4Maps == null)
                 {
@@ -1643,6 +1683,7 @@ namespace OpenNos.GameObject.Networking
                         }
                     }
                 }
+                Act4Maps.Add(CaligorMapInstance);
                 Logger.Log.Info($"[ACT4] Initialized");
                 BattleRoyaleManager.Instance.Initialize(Maps.FirstOrDefault(s => s.MapId == (short)SpecialMapIdType.BattleRoyal));
                 LoadScriptedInstances();

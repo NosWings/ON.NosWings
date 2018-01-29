@@ -1765,7 +1765,7 @@ namespace OpenNos.GameObject
                 name = "!§$%&/()=?*+~#";
             }
             int faction = 0;
-            if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
+            if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance || Session.CurrentMapInstance.MapInstanceType == MapInstanceType.CaligorInstance)
             {
                 faction = (byte)Faction + 2;
             }
