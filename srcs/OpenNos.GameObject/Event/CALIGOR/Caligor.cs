@@ -170,6 +170,11 @@ namespace OpenNos.GameObject.Event.CALIGOR
             {
                 // Teleport everyone back to the raidmap
                 ServerManager.Instance.ChangeMapInstance(character.Character.CharacterId, EntryMap.MapInstanceId, character.Character.MapX, character.Character.MapY);
+                if (character.Character.MapInstance.Map.IsBlockedZone(character.Character.PositionX,
+                    character.Character.PositionY))
+                {
+                    ServerManager.Instance.TeleportOnRandomPlaceInMap(character, character.CurrentMapInstance.MapInstanceId, true);
+                }
             }
         }
 
