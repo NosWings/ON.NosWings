@@ -2913,7 +2913,7 @@ namespace OpenNos.GameObject
                     break;
 
                 default:
-                    Hp -= MapInstance.IsPvp ? damage / 2 : damage;
+                    Hp -= (MapInstance.IsPvp && MapInstance.MapInstanceType != MapInstanceType.CaligorInstance ? damage / 2 : damage);
                     break;
             }
             Hp = Hp <= 0 ? !canKill ? 1 : 0 : Hp;
