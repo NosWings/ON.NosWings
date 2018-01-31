@@ -59,6 +59,7 @@ namespace OpenNos.Handler
 
         public void Maintenance(MaintenancePacket packet)
         {
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, packet, Session.IpAddress);
             if (!double.TryParse(packet.TimeBeforeMaintenance, out double value))
             {
                 Logger.Log.Warn("No value");
@@ -97,6 +98,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void Act6Percent(Act6RaidPacket packet)
         {
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, packet, Session.IpAddress);
             if (string.IsNullOrEmpty(packet?.Name))
             {
                 Session.SendPacket(Session.Character.GenerateSay("$Act6Percent Name [Percent]", 11));
@@ -126,6 +128,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void Act4Percentage(Act4PercentagePacket packet)
         {
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, packet, Session.IpAddress);
             if (packet?.Faction == null || packet?.Percent == null)
             {
                 return;
@@ -153,6 +156,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void ManageBankAccount(BankCommandPacket packet)
         {
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, packet, Session.IpAddress);
             if (string.IsNullOrEmpty(packet?.Subcommand))
             {
                 Session.SendPacket(Session.Character.GenerateSay("========= KFCBANK - HELP =========", 11));
@@ -292,6 +296,7 @@ namespace OpenNos.Handler
         /// <param name="addQuestPacket"></param>
         public void AddQuest(AddQuestPacket addQuestPacket)
         {
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, addQuestPacket, Session.IpAddress);
             if (ServerManager.Instance.Quests.Any(q => q.QuestId == addQuestPacket.QuestId))
             {
                 Session.Character.AddQuest(addQuestPacket.QuestId, false);
@@ -369,6 +374,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay("Use : \"Archer\", \"Sword\" \"Mage\" or \"Mount\"", 10));
                     break;
             }
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, stuffPackPacket, Session.IpAddress);
         }
 
         /// <summary>
@@ -377,6 +383,7 @@ namespace OpenNos.Handler
         /// <param name="characterPacket"></param>
         public void CharacterUpdater(CharacterPacket characterPacket)
         {
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, characterPacket, Session.IpAddress);
             Logger.Debug("CharacterPacket Command", Session.Character.GenerateIdentity());
             if (characterPacket != null)
             {
@@ -642,6 +649,7 @@ namespace OpenNos.Handler
         {
             ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.MapInstanceId, Session.Character.PositionX, Session.Character.PositionY);
             Session.SendPacket(Session.Character.GenerateRevive());
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, move, Session.IpAddress);
         }
 
         public void Act4Connect(Act4ConnectPacket act4ConnectPacket)
