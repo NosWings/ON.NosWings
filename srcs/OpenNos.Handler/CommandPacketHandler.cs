@@ -83,6 +83,7 @@ namespace OpenNos.Handler
                         CommunicationServiceClient.Instance.SetMaintenanceState(true);
                         foreach (var session in ServerManager.Instance.Sessions.Where(s => s.Character.Authority < AuthorityType.GameMaster))
                         {
+                            session.Character.Save();
                             CommunicationServiceClient.Instance.KickSession(session.Account.AccountId, session.SessionId);
                         }
                     });
