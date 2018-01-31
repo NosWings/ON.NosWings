@@ -62,7 +62,6 @@ namespace OpenNos.Handler
             if (!double.TryParse(packet.TimeBeforeMaintenance, out double value))
             {
                 Logger.Log.Warn("No value");
-                return;
             }
 
             switch (packet.State)
@@ -76,6 +75,7 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.Shout(Language.Instance.GetMessageFromKey("MAINTENANCE_START"));
                         CommunicationServiceClient.Instance.SetMaintenanceState(true);
+                        return;
                     }
                     ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE_MINUTES"), value));
                     Observable.Timer(TimeSpan.FromMinutes(value)).Subscribe(o =>
