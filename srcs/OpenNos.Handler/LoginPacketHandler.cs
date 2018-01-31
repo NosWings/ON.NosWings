@@ -118,15 +118,11 @@ namespace OpenNos.Handler
                                     int newSessionId = SessionFactory.Instance.GenerateSessionId();
                                     Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
-                                    // TODO MAINTENANCE MODE (MASTER SERVER)
-                                    if (CommunicationServiceClient.Instance.GetMaintenanceState())
+                                    if (CommunicationServiceClient.Instance.GetMaintenanceState() && _session.Account.Authority <= AuthorityType.GameMaster)
                                     {
-                                        _session.SendPacket($"failc 2");
+                                        _session.SendPacket("failc 2");
                                         return;
                                     }
-                                    // IF MAINTENANCE 
-                                    // _session.SendPacket($"failc 2");
-                                    // inform communication service about new player from login server
                                     try
                                     {
                                         CommunicationServiceClient.Instance.RegisterAccountLogin(loadedAccount.AccountId, newSessionId, loadedAccount.Name);

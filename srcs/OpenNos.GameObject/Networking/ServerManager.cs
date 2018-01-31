@@ -1294,6 +1294,7 @@ namespace OpenNos.GameObject.Networking
             Act6Erenia = new PercentBar();
             Act6Zenas = new PercentBar();
 
+            CommunicationServiceClient.Instance.SetMaintenanceState(bool.Parse(ConfigurationManager.AppSettings["Maintenance"]));
             OrderablePartitioner<ItemDTO> itemPartitioner = Partitioner.Create(DaoFactory.ItemDao.LoadAll(), EnumerablePartitionerOptions.NoBuffering);
             ConcurrentDictionary<short, Item.Item> item = new ConcurrentDictionary<short, Item.Item>();
             Parallel.ForEach(itemPartitioner, itemDto =>
