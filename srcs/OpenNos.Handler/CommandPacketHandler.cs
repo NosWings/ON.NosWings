@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using NosSharp.Enums;
@@ -55,6 +56,39 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
+
+        public void Maintenance(MaintenancePacket packet)
+        {
+            if (!double.TryParse(packet.TimeBeforeMaintenance, out double value))
+            {
+                Logger.Log.Warn("No value");
+                return;
+            }
+
+            switch (packet.State)
+            {
+                case ServerState.Online:
+                    ServerManager.Instance.Shout(Language.Instance.GetMessageFromKey("MAINTENANCE_OVER"));
+                    CommunicationServiceClient.Instance.SetMaintenanceState(false);
+                    break;
+                case ServerState.Maintenance:
+                    if (packet.TimeBeforeMaintenance == null)
+                    {
+                        ServerManager.Instance.Shout(Language.Instance.GetMessageFromKey("MAINTENANCE_START"));
+                        CommunicationServiceClient.Instance.SetMaintenanceState(true);
+                    }
+                    ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE_MINUTES"), value));
+                    Observable.Timer(TimeSpan.FromMinutes(value)).Subscribe(o =>
+                    {
+                        CommunicationServiceClient.Instance.SetMaintenanceState(true);
+                        foreach (var session in ServerManager.Instance.Sessions.Where(s => s.Character.Authority < AuthorityType.GameMaster))
+                        {
+                            CommunicationServiceClient.Instance.KickSession(session.Account.AccountId, session.SessionId);
+                        }
+                    });
+                    break;
+            }
+        }
 
         /// <summary>
         /// $Act6Percent

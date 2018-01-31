@@ -154,6 +154,7 @@
     <Compile Include="QuestType.cs" />
     <Compile Include="RaidDesignType.cs" />
     <Compile Include="RefinerType.cs" />
+    <Compile Include="ServerState.cs" />
     <Compile Include="SessionType.cs" />
     <Compile Include="ShellOptionType.cs" />
     <Compile Include="StatsType.cs" />

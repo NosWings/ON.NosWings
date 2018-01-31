@@ -119,6 +119,11 @@ namespace OpenNos.Handler
                                     Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
                                     // TODO MAINTENANCE MODE (MASTER SERVER)
+                                    if (CommunicationServiceClient.Instance.GetMaintenanceState())
+                                    {
+                                        _session.SendPacket($"failc 2");
+                                        return;
+                                    }
                                     // IF MAINTENANCE 
                                     // _session.SendPacket($"failc 2");
                                     // inform communication service about new player from login server

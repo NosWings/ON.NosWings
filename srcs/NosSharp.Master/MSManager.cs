@@ -55,6 +55,8 @@ namespace NosSharp.Master
 
         public List<WorldServer> WorldServers { get; set; }
 
+        public bool MaintenanceState { get; set; }
+
         #endregion
     }
 }

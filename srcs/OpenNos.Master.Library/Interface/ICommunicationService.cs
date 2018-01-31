@@ -193,5 +193,9 @@ namespace OpenNos.Master.Library.Interface
         void SendMail(string worldGroup, MailDTO mail);
 
         bool ChangeAuthority(string worldGroup, string characterName, AuthorityType authority);
+
+        bool GetMaintenanceState();
+
+        void SetMaintenanceState(bool state);
     }
 }

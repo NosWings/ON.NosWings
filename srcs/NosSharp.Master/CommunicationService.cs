@@ -36,6 +36,16 @@ namespace NosSharp.Master
     {
         #region Methods
 
+        public bool GetMaintenanceState()
+        {
+            return MsManager.Instance.MaintenanceState;
+        }
+
+        public void SetMaintenanceState(bool state)
+        {
+            MsManager.Instance.MaintenanceState = state;
+        }
+
         public bool Authenticate(string authKey)
         {
             if (string.IsNullOrWhiteSpace(authKey) || authKey != ConfigurationManager.AppSettings["MasterAuthKey"])

@@ -85,6 +85,16 @@ namespace OpenNos.Master.Library.Client
 
         #region Methods
 
+        public bool GetMaintenanceState()
+        {
+            return _client.ServiceProxy.GetMaintenanceState();
+        }
+
+        public void SetMaintenanceState(bool state)
+        {
+            _client.ServiceProxy.SetMaintenanceState(state);
+        }
+
         public bool Authenticate(string authKey)
         {
             return _client.ServiceProxy.Authenticate(authKey);
