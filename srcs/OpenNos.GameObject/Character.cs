@@ -564,7 +564,7 @@ namespace OpenNos.GameObject
             }
             else if (characterQuest.Quest.IsDaily)
             {
-                if (DaoFactory.QuestLogDao.LoadByCharacterId(CharacterId).Any(s => s.QuestId == questId && s.LastDaily <= DateTime.Now.AddHours(24)))
+                if (DaoFactory.QuestLogDao.LoadByCharacterId(CharacterId).Any(s => s.QuestId == questId && s.LastDaily != null && s.LastDaily.Value.AddHours(24) <= DateTime.Now))
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("QUEST_ALREADY_DONE"), 0));
                     return;
