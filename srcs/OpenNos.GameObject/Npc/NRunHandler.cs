@@ -353,6 +353,34 @@ namespace OpenNos.GameObject.Npc
                     }
                     break;
 
+                case 65:
+                    if (npc == null)
+                    {
+                        return;
+                    }
+                    session.Character.AddQuest(5514);
+                    break;
+                case 66:
+                    if (npc == null)
+                    {
+                        return;
+                    }
+                    session.Character.AddQuest(5914);
+                    break;
+                case 67:
+                    if (npc == null)
+                    {
+                        return;
+                    }
+                    session.Character.AddQuest(5908);
+                    break;
+                case 68:
+                    if (npc == null)
+                    {
+                        return;
+                    }
+                    session.Character.AddQuest(5919);
+                    break;
                 case 132:
                     tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                     if (tp != null)
