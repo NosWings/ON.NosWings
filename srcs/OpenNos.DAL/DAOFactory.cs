@@ -55,6 +55,7 @@ namespace OpenNos.DAL
         private static IPenaltyLogDAO _penaltylogDao;
         private static IPortalDAO _portalDao;
         private static IQuestDAO _questDao;
+        private static IQuestLogDAO _questLogDao;
         private static IQuestRewardDAO _questRewardDao;
         private static IQuestObjectiveDAO _questObjectiveDao;
         private static IQuicklistEntryDAO _quicklistDao;
@@ -237,6 +238,11 @@ namespace OpenNos.DAL
         public static IQuestDAO QuestDao
         {
             get { return _questDao ?? (_questDao = new QuestDAO()); }
+        }
+
+        public static IQuestLogDAO QuestLogDao
+        {
+            get { return _questLogDao ?? (_questLogDao = new QuestLogDAO()); }
         }
 
         public static IQuestObjectiveDAO QuestObjectiveDao

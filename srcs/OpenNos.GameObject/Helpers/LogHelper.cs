@@ -41,6 +41,11 @@ namespace OpenNos.GameObject.Helpers
             DaoFactory.LogChatDao.InsertOrUpdate(ref log);
         }
 
+        public void InsertQuestLog(long characterId, string ipAddress)
+        {
+
+        }
+
         #region Singleton
 
         private static LogHelper _instance;

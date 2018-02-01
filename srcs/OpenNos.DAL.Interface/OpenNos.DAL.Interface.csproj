@@ -179,6 +179,7 @@
     <Compile Include="INpcMonsterSkillDAO.cs" />
     <Compile Include="IPenaltyLogDAO.cs" />
     <Compile Include="IQuestDAO.cs" />
+    <Compile Include="IQuestLogDAO.cs" />
     <Compile Include="IQuestObjectiveDAO.cs" />
     <Compile Include="IQuestRewardDAO.cs" />
     <Compile Include="IQuicklistEntryDAO.cs" />

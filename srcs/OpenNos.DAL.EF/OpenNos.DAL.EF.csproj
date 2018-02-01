@@ -182,6 +182,7 @@
     <Compile Include="Entities\LogPlayerAction.cs" />
     <Compile Include="Entities\LogVIP.cs" />
     <Compile Include="Entities\Quest.cs" />
+    <Compile Include="Entities\QuestLog.cs" />
     <Compile Include="Entities\QuestObjective.cs" />
     <Compile Include="Entities\QuestReward.cs" />
     <Compile Include="Entities\RollGeneratedItem.cs" />
@@ -379,7 +380,12 @@
     <Compile Include="Migrations\201801251326224_Aphrodite101.Designer.cs">
       <DependentUpon>201801251326224_Aphrodite101.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802010934152_Aphrodite102.cs" />
+    <Compile Include="Migrations\201802010934152_Aphrodite102.Designer.cs">
+      <DependentUpon>201802010934152_Aphrodite102.cs</DependentUpon>
+    </Compile>
     <Compile Include="QuestDAO.cs" />
+    <Compile Include="QuestLogDAO.cs" />
     <Compile Include="QuestObjectiveDAO.cs" />
     <Compile Include="QuestRewardDAO.cs" />
     <Compile Include="RollGeneratedItemDAO.cs" />
@@ -1030,6 +1036,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801251326224_Aphrodite101.resx">
       <DependentUpon>201801251326224_Aphrodite101.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802010934152_Aphrodite102.resx">
+      <DependentUpon>201802010934152_Aphrodite102.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
