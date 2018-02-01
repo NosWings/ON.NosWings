@@ -625,7 +625,7 @@ namespace OpenNos.GameObject
             {
                 qst.QuestNumber = qst.IsMainQuest
                     ? (short) 5
-                    : (qst.Quest.QuestType == (byte) QuestType.WinRaid ? b++ : a++);
+                    : (!qst.IsMainQuest && !qst.Quest.IsDaily ? b++ : a++);
             });
             return $"qstlist {Quests.Aggregate(string.Empty, (current, quest) => current + $" {quest.GetInfoPacket(quest.QuestId == newQuestId)}")}";
         }
