@@ -14,5 +14,7 @@ namespace OpenNos.Data
         public long QuestId { get; set; }
 
         public string IpAddress { get; set; }
+
+        public DateTime? LastDaily { get; set; }
     }
 }

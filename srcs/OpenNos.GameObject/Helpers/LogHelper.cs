@@ -4,6 +4,7 @@ using OpenNos.Core;
 using OpenNos.Core.Serializing;
 using OpenNos.Data;
 using OpenNos.DAL;
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject.Helpers
 {
