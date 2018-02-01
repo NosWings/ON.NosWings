@@ -13,7 +13,7 @@ namespace OpenNos.GameObject.Packets.ClientPackets
         public short Runner { get; set; }
 
         [PacketIndex(1)]
-        public byte Type { get; set; }
+        public short Type { get; set; }
 
         [PacketIndex(2)]
         public short Value { get; set; }

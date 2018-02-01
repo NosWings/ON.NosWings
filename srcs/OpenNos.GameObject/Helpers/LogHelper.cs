@@ -42,13 +42,14 @@ namespace OpenNos.GameObject.Helpers
             DaoFactory.LogChatDao.InsertOrUpdate(ref log);
         }
 
-        public void InsertQuestLog(long characterId, string ipAddress, long questId)
+        public void InsertQuestLog(long characterId, string ipAddress, long questId, DateTime lastDaily)
         {
             var log = new QuestLogDTO
             {
                 CharacterId = characterId,
                 IpAddress = ipAddress,
-                QuestId = questId
+                QuestId = questId,
+                LastDaily = lastDaily
             };
             DaoFactory.QuestLogDao.InsertOrUpdate(ref log);
         }

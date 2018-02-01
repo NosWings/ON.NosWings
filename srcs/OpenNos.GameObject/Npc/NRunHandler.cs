@@ -608,6 +608,13 @@ namespace OpenNos.GameObject.Npc
                     }
                     break;
 
+                case 3006:
+                    if (npc != null)
+                    {
+                        session.Character.AddQuest(packet.Type);
+                    }
+                    break;
+
                 case 5001:
                     if (npc != null)
                     {

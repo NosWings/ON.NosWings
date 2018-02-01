@@ -86,19 +86,14 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public QuestLogDTO LoadByCharacterId(long characterId)
+        public IEnumerable<QuestLogDTO> LoadByCharacterId(long characterId)
         {
-            try
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                foreach (var id in context.QuestLog.Where(c => c.CharacterId == characterId))
                 {
-                    return _mapper.Map<QuestLogDTO>(context.QuestLog.FirstOrDefault(i => i.CharacterId == characterId));
+                    yield return _mapper.Map<QuestLogDTO>(id);
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-                return null;
             }
         }
     }

@@ -15,6 +15,6 @@ namespace OpenNos.DAL.Interface
 
         QuestLogDTO LoadById(long id);
 
-        QuestLogDTO LoadByCharacterId(long id);
+        IEnumerable<QuestLogDTO> LoadByCharacterId(long id);
     }
 }

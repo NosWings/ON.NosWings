@@ -550,28 +550,25 @@ namespace OpenNos.GameObject
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_LOW_LVL"), 0));
                 return;
             }
-            // Remove Lvl max system because the max lvl on every main quest is 99 and the max lvl on the serv is 150.
-            /*if (characterQuest.Quest.LevelMax < Level)
+            if (ServerManager.Instance.MaxLevel == 99 && characterQuest.Quest.LevelMax < Level)
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_HIGH_LVL"), 0));
                 return;
-            }*/
-            if (characterQuest.Quest.IsDaily)
+            }
+            if (!characterQuest.Quest.IsDaily && !characterQuest.IsMainQuest)
             {
-                if(GeneralLogs.Any(s => s.LogType == "DailyQuest" && s.LogData == characterQuest.QuestId.ToString() && s.Timestamp.Date == DateTime.Today))
+                if (DaoFactory.QuestLogDao.LoadByCharacterId(CharacterId).Any(s => s.QuestId == questId))
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("QUEST_ALREADY_DONE"), 0));
+                }
+            }
+            else if (characterQuest.Quest.IsDaily)
+            {
+                if (DaoFactory.QuestLogDao.LoadByCharacterId(CharacterId).Any(s => s.QuestId == questId && s.LastDaily <= DateTime.Now.AddHours(24)))
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("QUEST_ALREADY_DONE"), 0));
                     return;
                 }
-                GeneralLogs.Add(new GeneralLogDTO
-                {
-                    AccountId = Session.Account.AccountId,
-                    CharacterId = CharacterId,
-                    IpAddress = Session.IpAddress,
-                    LogData = characterQuest.QuestId.ToString(),
-                    LogType = "DailyQuest",
-                    Timestamp = DateTime.Now
-                });
             }
             if (characterQuest.Quest.QuestType == (int)QuestType.TimesSpace && ServerManager.Instance.TimeSpaces.All(t => t.LevelMinimum != (characterQuest.Quest.QuestObjectives.FirstOrDefault()?.Data ?? -1))
                 || characterQuest.Quest.QuestType == (int)QuestType.Product || characterQuest.Quest.QuestType == (int)QuestType.Collect3
@@ -579,7 +576,7 @@ namespace OpenNos.GameObject
                 || characterQuest.Quest.QuestType == (int)QuestType.TargetReput || characterQuest.Quest.QuestType == (int)QuestType.Inspect || characterQuest.Quest.QuestType == (int)QuestType.Needed
                 || characterQuest.Quest.QuestType == (int)QuestType.Collect5 || QuestHelper.Instance.SkipQuests.Any(q => q == characterQuest.QuestId))
             {
-                AddQuest(characterQuest.Quest.NextQuestId == null ? -1 : (long) characterQuest.Quest.NextQuestId, isMain);
+                AddQuest(characterQuest.Quest.NextQuestId ?? -1, isMain);
                 return;
             }
             if (characterQuest.Quest.TargetMap != null)
@@ -617,6 +614,7 @@ namespace OpenNos.GameObject
             {
                 AddQuest((long)questToRemove.Quest.NextQuestId, questToRemove.IsMainQuest);
             }
+            LogHelper.Instance.InsertQuestLog(CharacterId, Session.IpAddress, questToRemove.Quest.QuestId, DateTime.Now);
         }
 
         public string GenerateQuestsPacket(long newQuestId = -1)
