@@ -2792,26 +2792,36 @@ namespace NosSharp.Parser
             // soo much -_-
         }
 
-        private void InsertRecipe(short itemVNum, short triggerVNum, byte amount = 1, short[] recipeItems = null)
+        private static void InsertRecipe(short itemVNum, short triggerVNum, byte amount = 1, short[] recipeItems = null)
         {
-                RecipeDTO recipe = new RecipeDTO
-                {
-                    ItemVNum = itemVNum,
-                    Amount = amount,
-                    ProduceItemVNum = triggerVNum
-                };
+            var recipe = new RecipeDTO
+            {
+                ItemVNum = itemVNum,
+                Amount = amount,
+                ProduceItemVNum = triggerVNum
+            };
+            if (DaoFactory.RecipeDao.LoadByItemVNum(recipe.ItemVNum) == null)
+            {
                 DaoFactory.RecipeDao.Insert(recipe);
-                recipe = DaoFactory.RecipeDao.LoadByItemVNum(itemVNum);
-                    for (int i = 0; i < recipeItems.Length; i += 2)
-                    {
-                        RecipeItemDTO recipeItem = new RecipeItemDTO
-                        {
-                            ItemVNum = recipeItems[i],
-                            Amount = recipeItems[i + 1],
-                            RecipeId = recipe.RecipeId
-                        };
-                        DaoFactory.RecipeItemDao.Insert(recipeItem);
-                    }
+            }
+            recipe = DaoFactory.RecipeDao.LoadByItemVNum(itemVNum);
+            if (recipeItems == null || recipe == null)
+            {
+                return;
+            }
+            for (int i = 0; i < recipeItems.Length; i += 2)
+            {
+                var recipeItem = new RecipeItemDTO
+                {
+                    ItemVNum = recipeItems[i],
+                    Amount = recipeItems[i + 1],
+                    RecipeId = recipe.RecipeId
+                };
+                if (DaoFactory.RecipeItemDao.LoadByRecipeAndItem(recipe.RecipeId, recipeItem.ItemVNum) == null)
+                {
+                    DaoFactory.RecipeItemDao.Insert(recipeItem);
+                }
+            }
         }
 
         public void ImportRecipe()
@@ -3490,54 +3500,93 @@ namespace NosSharp.Parser
                     }
                 }
             }
-            listtimespace.Add(new ScriptedInstanceDTO
+
+            var zenasRaid = new ScriptedInstanceDTO
             {
                 Name = "Zenas",
                 MapId = 232,
                 PositionX = 103,
                 PositionY = 125,
                 Type = ScriptedInstanceType.RaidAct6
-            });
-            listtimespace.Add(new ScriptedInstanceDTO
+            };
+
+            if (!bddlist.Concat(listtimespace).Any(s => s.MapId == zenasRaid.MapId && s.PositionX == zenasRaid.PositionX && s.PositionY == zenasRaid.PositionY))
+            {
+                listtimespace.Add(zenasRaid);
+            }
+
+            var ereniaRaid = new ScriptedInstanceDTO
             {
                 Name = "Erenia",
                 MapId = 236,
                 PositionX = 130,
                 PositionY = 117,
-                Type = ScriptedInstanceType.RaidAct6,
-            });
-            listtimespace.Add(new ScriptedInstanceDTO
+                Type = ScriptedInstanceType.RaidAct6
+            };
+
+            if (!bddlist.Concat(listtimespace).Any(s => s.MapId == ereniaRaid.MapId && s.PositionX == ereniaRaid.PositionX && s.PositionY == ereniaRaid.PositionY))
             {
+                listtimespace.Add(ereniaRaid);
+            }
+
+            var hatusRaid = new ScriptedInstanceDTO
+            {
+                Label = "Hatus",
                 Name = "Hatus",
                 MapId = 134,
                 PositionX = 53,
                 PositionY = 53,
                 Type = ScriptedInstanceType.RaidAct4
-            });
-            listtimespace.Add(new ScriptedInstanceDTO
+            };
+
+            if (bddlist.Concat(listtimespace).All(s => s.Label != hatusRaid.Label))
             {
+                listtimespace.Add(hatusRaid);
+            }
+
+            var beriosRaid = new ScriptedInstanceDTO
+            {
+                Label = "Berios",
                 Name = "Berios",
                 MapId = 134,
                 PositionX = 53,
                 PositionY = 53,
                 Type = ScriptedInstanceType.RaidAct4
-            });
-            listtimespace.Add(new ScriptedInstanceDTO
+            };
+
+            if (bddlist.Concat(listtimespace).All(s => s.Label != beriosRaid.Label))
             {
-                Name = "Calvina",
-                MapId = 134,
-                PositionX = 53,
-                PositionY = 53,
-                Type = ScriptedInstanceType.RaidAct4
-            });
-            listtimespace.Add(new ScriptedInstanceDTO
+                listtimespace.Add(beriosRaid);
+            }
+
+            var morcosRaid = new ScriptedInstanceDTO
             {
+                Label = "Morcos",
                 Name = "Morcos",
                 MapId = 134,
                 PositionX = 53,
                 PositionY = 53,
                 Type = ScriptedInstanceType.RaidAct4
-            });
+            };
+
+            if (bddlist.Concat(listtimespace).All(s => s.Label != morcosRaid.Label))
+            {
+                listtimespace.Add(morcosRaid);
+            }
+
+            var calvinaRaid = new ScriptedInstanceDTO
+            {
+                Label = "Calvina",
+                Name = "Calvina",
+                MapId = 134,
+                PositionX = 53,
+                PositionY = 53,
+                Type = ScriptedInstanceType.RaidAct4
+            };
+            if (bddlist.Concat(listtimespace).All(s => s.Label != calvinaRaid.Label))
+            {
+                listtimespace.Add(calvinaRaid);
+            }
             DaoFactory.ScriptedInstanceDao.Insert(listtimespace);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TIMESPACES_PARSED"), listtimespace.Count));
         }
