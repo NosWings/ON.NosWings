@@ -174,40 +174,19 @@ namespace NosSharp.Parser
                                     QuestType = int.Parse(currentLine[2]),
                                     InfoId = int.Parse(currentLine[1])
                                 };
-                                // Because Entwell are geniuses, all dailies have to be hardcoded.
                                 switch (quest.QuestId)
                                 {
                                     //TODO: Legendary Hunter quests will be markes ad daily, but should be in the "secondary" slot and be daily nevertheless
                                     case 6057: // John the adventurer
-                                        quest.IsDaily = true;
-                                        break;
                                     case 7519: // Legendary Hunter 1 time Kertos
-                                        quest.IsDaily = true;
-                                        break;
                                     case 7520: // Legendary Hunter 1 time Valakus
-                                        quest.IsDaily = true;
-                                        break;
                                     case 7521: // Legendary Hunter Grenigas
-                                        quest.IsDaily = true;
-                                        break;
                                     case 7522: // Legendary Hunter Draco
-                                        quest.IsDaily = true;
-                                        break;
                                     case 7523: // Legendary Hunter Glacerus
-                                        quest.IsDaily = true;
-                                        break;
                                     case 7524: // Legendary Hunter Laurena
-                                        quest.IsDaily = true;
-                                        break;
                                     case 5514: // Sherazade ice flower (n_run 65)
-                                        quest.IsDaily = true;
-                                        break;
                                     case 5919: // Akamur's military engineer (n_run 68)
-                                        quest.IsDaily = true;
-                                        break;
                                     case 5908: // John (n_run 67)
-                                        quest.IsDaily = true;
-                                        break;
                                     case 5914: // Alchemist (n_run 66)
                                         quest.IsDaily = true;
                                         break;
