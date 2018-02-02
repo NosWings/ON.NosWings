@@ -352,7 +352,24 @@ namespace OpenNos.GameObject.Npc
                         }
                     }
                     break;
-
+                case 61:
+                    if (session.Character.Inventory.CountItem(5917) <= 0 ||
+                        session.Character.Inventory.CountItem(5918) <= 0 || npc == null)
+                    {
+                        return;
+                    }
+                    session.Character.GiftAdd(5922, 1);
+                    session.Character.Inventory.RemoveItemAmount(5917);
+                    session.Character.Inventory.RemoveItemAmount(5918);
+                    break;
+                case 62:
+                    if (npc == null || session.Character.Inventory.CountItem(5919) <= 0)
+                    {
+                        return;
+                    }
+                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, 2536, 26, 31);
+                    session.Character.Inventory.RemoveItemAmount(5919);
+                    break;
                 case 65:
                     if (npc == null)
                     {
@@ -466,7 +483,13 @@ namespace OpenNos.GameObject.Npc
                         ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
                     }
                     break;
-
+                case 300:
+                    if (npc == null)
+                    {
+                        return;
+                    }
+                    session.Character.AddQuest(6040);
+                    break;
                 case 301:
                     tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                     if (tp != null)
