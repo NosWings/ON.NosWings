@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.DAL;
 using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject.Helpers
@@ -115,27 +116,13 @@ namespace OpenNos.GameObject.Helpers
         private void LoadHpData()
         {
             HpData = new int[256];
-            int baseHp = 138;
-            int hpBaseUp = 18;
+            int baseHp = 150;
+            int hpBaseUp = 40;
             for (int i = 0; i < HpData.Length; i++)
             {
                 HpData[i] = baseHp;
-                hpBaseUp++;
+                hpBaseUp += 5;
                 baseHp += hpBaseUp;
-
-                if (i == 37)
-                {
-                    baseHp = 1765;
-                    hpBaseUp = 65;
-                }
-                if (i < 41)
-                {
-                    continue;
-                }
-                if (((99 - i) % 8) == 0)
-                {
-                    hpBaseUp++;
-                }
             }
         }
 

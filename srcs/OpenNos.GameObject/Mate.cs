@@ -543,7 +543,7 @@ namespace OpenNos.GameObject
 
         public void AddTeamMember()
         {
-            if (Owner.Mates.Where(m => m.IsTeamMember && m.MateType == MateType).Count() >= 1)
+            if (Owner.Mates.Any(m => m.IsTeamMember && m.MateType == MateType))
             {
                 return;
             }

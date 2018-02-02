@@ -735,7 +735,7 @@ namespace OpenNos.GameObject.Battle
 
             SkillBcards.Clear();
             totalDamage = totalDamage > ushort.MaxValue ? ushort.MaxValue : totalDamage;
-            if (Session is Character charac && targetEntity is MapMonster cali && cali.MonsterVNum == 2305)
+            if (Session is Character charac && targetEntity is MapMonster cali && cali.MonsterVNum == 2305 && Caligor.IsRunning)
             {
                 switch (charac.Faction)
                 {
