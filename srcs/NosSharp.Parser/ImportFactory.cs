@@ -49,6 +49,12 @@ namespace NosSharp.Parser
 
         public static void ImportAccounts()
         {
+            if (DaoFactory.AccountDao.ContainsAccounts())
+            {
+                // If there are accounts in the database, there is no need to re add these 2 accounts.
+                // We definately don't want people to access the admin account.
+                return;
+            }
             AccountDTO acc1 = new AccountDTO
             {
                 AccountId = 1,

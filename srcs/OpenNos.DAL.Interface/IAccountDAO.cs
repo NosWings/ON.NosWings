@@ -32,6 +32,8 @@ namespace OpenNos.DAL.Interface
 
         AccountDTO LoadByName(string name);
 
+        bool ContainsAccounts();
+
         void WriteGeneralLog(long accountId, string ipAddress, long? characterId, GeneralLogType logType, string logData);
 
         #endregion

@@ -99,6 +99,26 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public bool ContainsAccounts()
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    if (context.Account.FirstOrDefault() != null)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                throw;
+            }
+        }
+
         public AccountDTO LoadById(long accountId)
         {
             try
