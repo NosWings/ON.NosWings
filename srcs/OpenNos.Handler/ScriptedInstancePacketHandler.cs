@@ -425,6 +425,18 @@ namespace OpenNos.Handler
                 }
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
             }
+            else if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
+            {
+                foreach (var s in Session.Character.Group.Characters)
+                {
+                    s.SendPacket(Session.Character.Group.GenerateRdlst());
+                }
+                Session.SendPacket(Session.Character.Group.GenerateRdlst());
+                Session.Character.Group?.LeaveGroup(Session);
+                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
+                Session.SendPacket(Session.Character.GenerateRaid(1, true));
+                Session.SendPacket(Session.Character.GenerateRaid(2, true));
+            }
         }
 
         #endregion
