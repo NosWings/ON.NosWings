@@ -51,7 +51,7 @@ namespace OpenNos.GameObject.Buff
                     {
                         chara.LastSpeedChange = DateTime.Now;
                         chara.LoadSpeed();
-                        chara?.Session.SendPacket(chara.GenerateCond());
+                        chara.Session.SendPacket(chara.GenerateCond());
                     }
                     break;
 
