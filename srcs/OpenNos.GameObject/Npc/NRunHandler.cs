@@ -669,6 +669,9 @@ namespace OpenNos.GameObject.Npc
                 case 5001:
                     if (npc != null)
                     {
+                        MapInstance ship = session.Character.Faction == FactionType.Angel
+                            ? ServerManager.Instance.Act4ShipAngel
+                            : ServerManager.Instance.Act4ShipDemon;
                         switch (session.Character.Faction)
                         {
                             case FactionType.Neutral:
@@ -680,8 +683,7 @@ namespace OpenNos.GameObject.Npc
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                             return;
                         }
-                        session.Character.Gold -= 3000;
-                        session.Character.ConnectAct4();
+                        ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, ship.MapInstanceId, ServerManager.Instance.RandomNumber(15, 25), ServerManager.Instance.RandomNumber(28, 33));
                     }
                     break;
 

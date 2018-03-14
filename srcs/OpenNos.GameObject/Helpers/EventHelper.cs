@@ -96,6 +96,11 @@ namespace OpenNos.GameObject.Helpers
                         case EventType.CALIGOR:
                             await Caligor.GenerateCaligor();
                             break;
+
+                        case EventType.ACT4SHIP:
+                            Act4Ship.GenerateAct4Ship(FactionType.Angel);
+                            Act4Ship.GenerateAct4Ship(FactionType.Demon);
+                            break;
                     }
                 });
             }

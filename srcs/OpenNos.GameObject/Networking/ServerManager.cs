@@ -2062,6 +2062,8 @@ namespace OpenNos.GameObject.Networking
                 });
             }
 
+            EventHelper.Instance.GenerateEvent(EventType.ACT4SHIP);
+
             CommunicationServiceClient.Instance.SessionKickedEvent += OnSessionKicked;
             CommunicationServiceClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
             CommunicationServiceClient.Instance.MailSent += OnMailSent;

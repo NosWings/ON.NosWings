@@ -24,11 +24,27 @@ using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject.Event.ACT4
 {
+    public class Act4Ship
+    {
+        public static void GenerateAct4Ship(FactionType faction)
+        {
+            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(145)), EventActionType.NPCSEFFECTCHANGESTATE,
+                true));
+            var shipThread = new Act4ShipTask();
+            var now = DateTime.Now;
+            var result = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0);
+
+            result = result.AddMinutes((now.Minute / 5 + 1) * 5);
+
+            Observable.Timer(result - now).Subscribe(x => shipThread.Run(faction));
+        }
+    }
+
     public class Act4ShipTask
     {
         #region Methods
 
-        public static void Run(FactionType faction)
+        public void Run(FactionType faction)
         {
             MapInstance map = faction == FactionType.Angel ? ServerManager.Instance.Act4ShipAngel : ServerManager.Instance.Act4ShipDemon;
             OpenShip();
@@ -69,6 +85,7 @@ namespace OpenNos.GameObject.Event.ACT4
         {
             foreach (ClientSession s in sessions)
             {
+                s.Character.Gold -= 3000;
                 switch (s.Character.Faction)
                 {
                     case FactionType.Neutral:
@@ -89,6 +106,7 @@ namespace OpenNos.GameObject.Event.ACT4
                 //todo: get act4 channel dynamically
                 if (!s.Character.ConnectAct4())
                 {
+                    s.Character.Gold += 3000;
                     ServerManager.Instance.ChangeMap(s.Character.CharacterId, 145, 51, 41);
                 }
             }
