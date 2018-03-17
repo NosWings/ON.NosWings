@@ -2269,6 +2269,7 @@ namespace OpenNos.GameObject.Networking
                             break;
                         case ScriptedInstanceType.RaidAct6:
                             si.LoadGlobals();
+                            Raids.Add(si);
                             Act6Raids.Add(si);
                             break;
                     }
