@@ -1735,4 +1735,7 @@
   <data name="NO_GILLION" xml:space="preserve">
     <value>You don't have enough gillion stone !</value>
   </data>
+  <data name="FXP_INCREASE" xml:space="preserve">
+    <value>Your family won {0} experience points.</value>
+  </data>
 </root>

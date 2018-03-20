@@ -396,7 +396,7 @@ namespace OpenNos.GameObject.Helpers
                                         // Raid has already been done in the last 24 hours
                                         cli.Character.Family.FamilyExperience += instance.Fxp / 5 / evt.MapInstance.Sessions.Count();
                                     }
-
+                                    cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("FXP_INCREASE"), instance.Fxp), 11));
                                     if (evt.MapInstance.Sessions.Count(s => s.IpAddress.Equals(cli.IpAddress)) > 2 || instance.GiftItems == null)
                                     {
                                         continue;
@@ -457,15 +457,8 @@ namespace OpenNos.GameObject.Helpers
                                     }
                                     sess.Character.Dignity = sess.Character.Dignity < 0 ? sess.Character.Dignity + 100 : 100;
 
-
                                     if (sess.Character.Level > grp.Raid.LevelMaximum)
                                     {
-                                        if (DaoFactory.RaidLogDao.LoadByCharacterId(sess.Character.CharacterId).Any(s =>
-                                            s.RaidId == grp.Raid.Id && s.Time.AddHours(24) <= DateTime.Now) && sess.Character.Family != null)
-                                        {
-                                            LogHelper.Instance.InsertRaidLog(sess.Character.CharacterId, grp.Raid.Id, DateTime.Now);
-                                            sess.Character.Family.FamilyExperience += grp.Raid.Fxp;
-                                        }
                                         sess.Character.GiftAdd(2320, 1); // RAID CERTIFICATE
                                         continue;
                                     }
@@ -484,6 +477,16 @@ namespace OpenNos.GameObject.Helpers
                                             sess.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                         }
                                     }
+
+                                    if (DaoFactory.RaidLogDao.LoadByCharacterId(sess.Character.CharacterId).Any(s =>
+                                            s.RaidId == grp.Raid.Id && s.Time.AddHours(24) >= DateTime.Now) || sess.Character.Family == null)
+                                    {
+                                        continue;
+                                    }
+
+                                    LogHelper.Instance.InsertRaidLog(sess.Character.CharacterId, grp.Raid.Id, DateTime.Now);
+                                    sess.Character.Family.FamilyExperience += grp.Raid.Fxp;
+                                    sess.SendPacket(sess.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("FXP_INCREASE"), grp.Raid.Fxp), 11));
                                 }
                                 // Remove monster when raid is over
                                 evt.MapInstance.Monsters.Where(s => !s.IsBoss).ToList().ForEach(m => evt.MapInstance.DespawnMonster(m));

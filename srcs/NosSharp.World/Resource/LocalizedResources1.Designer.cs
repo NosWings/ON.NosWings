@@ -1627,6 +1627,15 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Your family won {0} experience points..
+        /// </summary>
+        internal static string FXP_INCREASE {
+            get {
+                return ResourceManager.GetString("FXP_INCREASE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Right now, you can have more NosMate..
         /// </summary>
         internal static string GET_PET_PLACES {
