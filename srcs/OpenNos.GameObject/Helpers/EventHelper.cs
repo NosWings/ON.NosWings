@@ -23,6 +23,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core.Extensions;
+using OpenNos.DAL;
 using OpenNos.GameObject.Event.ACT4;
 using OpenNos.GameObject.Event.BattleRoyale;
 using OpenNos.GameObject.Event.CALIGOR;
@@ -383,11 +384,24 @@ namespace OpenNos.GameObject.Helpers
                                 Instance.RunEvent(new EventContainer(instance.FirstMap, EventActionType.REMOVEPORTAL, instance.FirstMap.Portals.FirstOrDefault(port => port.DestinationMapInstanceId == client.CurrentMapInstance.MapInstanceId)));
                                 Instance.ScheduleEvent(TimeSpan.FromSeconds(5), new EventContainer(evt.MapInstance, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("TELEPORTED_IN"), 10), 0)));
                                 foreach (ClientSession cli in evt.MapInstance.Sessions)
-                                {
+                                { 
+                                    if (DaoFactory.RaidLogDao.LoadByFamilyId(cli.Character.Family.FamilyId).Any(s =>
+                                            s.RaidId == instance.Id && s.Time.AddHours(24) <= DateTime.Now))
+                                    {
+                                        // Raid has not been done in the last 24 hours
+                                        cli.Character.Family.FamilyExperience += instance.Fxp / evt.MapInstance.Sessions.Count();
+                                    }
+                                    else
+                                    {
+                                        // Raid has already been done in the last 24 hours
+                                        cli.Character.Family.FamilyExperience += instance.Fxp / 5 / evt.MapInstance.Sessions.Count();
+                                    }
+
                                     if (evt.MapInstance.Sessions.Count(s => s.IpAddress.Equals(cli.IpAddress)) > 2 || instance.GiftItems == null)
                                     {
                                         continue;
                                     }
+
                                     foreach (Gift gift in instance.GiftItems)
                                     {
 
@@ -411,6 +425,8 @@ namespace OpenNos.GameObject.Helpers
                                     }
                                     cli.Character.IncrementQuests(QuestType.WinRaid, instance.Id);
                                 }
+                                LogHelper.Instance.InsertFamilyRaidLog(evt.MapInstance.Sessions.FirstOrDefault(s => s.Character.Family != null).Character.Family.FamilyId, instance.Id,
+                                    DateTime.Now);
 
                                 Observable.Timer(TimeSpan.FromSeconds(15)).Subscribe(s =>
                                 {
@@ -441,10 +457,15 @@ namespace OpenNos.GameObject.Helpers
                                     }
                                     sess.Character.Dignity = sess.Character.Dignity < 0 ? sess.Character.Dignity + 100 : 100;
 
+
                                     if (sess.Character.Level > grp.Raid.LevelMaximum)
                                     {
-                                        LogHelper.Instance.InsertRaidLog(sess.Character.CharacterId, grp.Raid.Id, DateTime.Now);
-                                        Logger.Log.Warn($"you received fxp : \nCid {sess.Character.CharacterId}\nRid : {grp.Raid.Id}\ndate : {DateTime.Now}");
+                                        if (DaoFactory.RaidLogDao.LoadByCharacterId(sess.Character.CharacterId).Any(s =>
+                                            s.RaidId == grp.Raid.Id && s.Time.AddHours(24) <= DateTime.Now) && sess.Character.Family != null)
+                                        {
+                                            LogHelper.Instance.InsertRaidLog(sess.Character.CharacterId, grp.Raid.Id, DateTime.Now);
+                                            sess.Character.Family.FamilyExperience += grp.Raid.Fxp;
+                                        }
                                         sess.Character.GiftAdd(2320, 1); // RAID CERTIFICATE
                                         continue;
                                     }

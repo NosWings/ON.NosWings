@@ -13,5 +13,7 @@ namespace OpenNos.DAL.Interface
         SaveResult InsertOrUpdate(ref RaidLogDTO raid);
 
         IEnumerable<RaidLogDTO> LoadByCharacterId(long characterId);
+
+        IEnumerable<RaidLogDTO> LoadByFamilyId(long familyId);
     }
 }

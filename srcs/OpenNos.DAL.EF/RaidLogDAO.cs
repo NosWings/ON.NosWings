@@ -73,7 +73,18 @@ namespace OpenNos.DAL.EF
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                foreach (var id in context.QuestLog.Where(c => c.CharacterId == characterId))
+                foreach (var id in context.RaidLog.Where(c => c.CharacterId == characterId))
+                {
+                    yield return _mapper.Map<RaidLogDTO>(id);
+                }
+            }
+        }
+
+        public IEnumerable<RaidLogDTO> LoadByFamilyId(long familyId)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                foreach (var id in context.RaidLog.Where(c => c.FamilyId == familyId))
                 {
                     yield return _mapper.Map<RaidLogDTO>(id);
                 }

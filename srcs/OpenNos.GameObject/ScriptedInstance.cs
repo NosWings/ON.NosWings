@@ -49,6 +49,8 @@ namespace OpenNos.GameObject
 
         public List<MapInstance> Maps { get; set; }
 
+        public int Fxp { get; set; }
+
         public long Gold { get; set; }
 
         public string Label { get; set; }
@@ -160,6 +162,9 @@ namespace OpenNos.GameObject
                 Gold = gold;
                 int.TryParse(def.SelectSingleNode("Reputation")?.Attributes["Value"].Value, out int reputation);
                 Reputation = reputation;
+
+                int.TryParse(def.SelectSingleNode("Fxp")?.Attributes["Value"].Value, out int fxp);
+                Fxp = fxp;
 
                 short.TryParse(def.SelectSingleNode("StartX")?.Attributes["Value"].Value, out short startx);
                 StartX = startx;
