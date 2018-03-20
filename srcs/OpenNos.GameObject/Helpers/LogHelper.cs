@@ -54,6 +54,17 @@ namespace OpenNos.GameObject.Helpers
             DaoFactory.QuestLogDao.InsertOrUpdate(ref log);
         }
 
+        public void InsertRaidLog(long characterId, long raidId, DateTime time)
+        {
+            var log = new RaidLogDTO
+            {
+                CharacterId = characterId,
+                RaidId = raidId,
+                Time = time
+            };
+            DaoFactory.RaidLogDao.InsertOrUpdate(ref log);
+        }
+
         #region Singleton
 
         private static LogHelper _instance;

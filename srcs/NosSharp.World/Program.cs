@@ -242,6 +242,7 @@ namespace NosSharp.World
             DaoFactory.RecipeItemDao.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
             DaoFactory.MinilandObjectDao.RegisterMapping(typeof(MinilandObjectDTO)).InitializeMapper();
             DaoFactory.MinilandObjectDao.RegisterMapping(typeof(MapDesignObject)).InitializeMapper();
+            DaoFactory.RaidLogDao.RegisterMapping(typeof(RaidLogDTO)).InitializeMapper();
             DaoFactory.RespawnDao.RegisterMapping(typeof(RespawnDTO)).InitializeMapper();
             DaoFactory.RespawnMapTypeDao.RegisterMapping(typeof(RespawnMapTypeDTO)).InitializeMapper();
             DaoFactory.ShopDao.RegisterMapping(typeof(Shop)).InitializeMapper();

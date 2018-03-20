@@ -160,6 +160,7 @@
     <Compile Include="QuestLogDTO.cs" />
     <Compile Include="QuestObjectiveDTO.cs" />
     <Compile Include="QuestRewardDTO.cs" />
+    <Compile Include="RaidLogDTO.cs" />
     <Compile Include="RollGeneratedItemDTO.cs" />
     <Compile Include="CardDTO.cs" />
     <Compile Include="EquipmentOptionDTO.cs" />

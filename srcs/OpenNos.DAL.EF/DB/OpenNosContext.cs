@@ -111,6 +111,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<QuicklistEntry> QuicklistEntry { get; set; }
 
+        public virtual DbSet<RaidLog> RaidLog { get; set; }
+
         public virtual DbSet<Recipe> Recipe { get; set; }
 
         public virtual DbSet<RecipeItem> RecipeItem { get; set; }

@@ -443,6 +443,8 @@ namespace OpenNos.GameObject.Helpers
 
                                     if (sess.Character.Level > grp.Raid.LevelMaximum)
                                     {
+                                        LogHelper.Instance.InsertRaidLog(sess.Character.CharacterId, grp.Raid.Id, DateTime.Now);
+                                        Logger.Log.Warn($"you received fxp : \nCid {sess.Character.CharacterId}\nRid : {grp.Raid.Id}\ndate : {DateTime.Now}");
                                         sess.Character.GiftAdd(2320, 1); // RAID CERTIFICATE
                                         continue;
                                     }

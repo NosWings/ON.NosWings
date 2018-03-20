@@ -59,6 +59,7 @@ namespace OpenNos.DAL
         private static IQuestRewardDAO _questRewardDao;
         private static IQuestObjectiveDAO _questObjectiveDao;
         private static IQuicklistEntryDAO _quicklistDao;
+        private static IRaidLogDAO _raidLogDao;
         private static IRecipeDAO _recipeDao;
         private static IRecipeItemDAO _recipeitemDao;
         private static IRespawnDAO _respawnDao;
@@ -258,6 +259,11 @@ namespace OpenNos.DAL
         public static IQuicklistEntryDAO QuicklistEntryDao
         {
             get { return _quicklistDao ?? (_quicklistDao = new QuicklistEntryDAO()); }
+        }
+
+        public static IRaidLogDAO RaidLogDao
+        {
+            get { return _raidLogDao ?? (_raidLogDao = new RaidLogDAO()); }
         }
 
         public static IRecipeDAO RecipeDao
