@@ -1738,4 +1738,7 @@
   <data name="FXP_INCREASE" xml:space="preserve">
     <value>Your family won {0} experience points.</value>
   </data>
+  <data name="RESTART" xml:space="preserve">
+    <value>The world will restart in {0} seconds</value>
+  </data>
 </root>

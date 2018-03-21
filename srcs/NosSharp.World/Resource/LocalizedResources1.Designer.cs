@@ -3832,6 +3832,15 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The world will restart in {0} seconds.
+        /// </summary>
+        internal static string RESTART {
+            get {
+                return ResourceManager.GetString("RESTART", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You&apos;ve restored some of your dignity!.
         /// </summary>
         internal static string RESTORE_DIGNITY {

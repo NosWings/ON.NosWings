@@ -200,6 +200,7 @@
     <Compile Include="Packets\ClientPackets\RInfoPacket.cs" />
     <Compile Include="Packets\CommandPackets\LobbyPacket.cs" />
     <Compile Include="Packets\CommandPackets\MaintenancePacket.cs" />
+    <Compile Include="Packets\CommandPackets\RestartPacket.cs" />
     <Compile Include="ToSummon.cs" />
     <Compile Include="Packets\ClientPackets\PslPacket.cs" />
     <Compile Include="Packets\ClientPackets\QtPacket.cs" />
