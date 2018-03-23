@@ -1566,6 +1566,14 @@ namespace OpenNos.GameObject.Networking
                 }
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPMONSTERS_LOADED"), monstercount));
 
+                if (DaoFactory.MapDao.LoadById(148) != null)
+                {
+                    Logger.Log.Info("[ACT4] Demon Ship Loaded");
+                    Act4ShipDemon = GenerateMapInstance(149, MapInstanceType.ArenaInstance, new InstanceBag());
+                    Logger.Log.Info("[ACT4] Angel Ship Loaded");
+                    Act4ShipAngel = GenerateMapInstance(149, MapInstanceType.NormalInstance, new InstanceBag());
+                }
+
                 StartedEvents = new List<EventType>();
                 LoadFamilies();
                 LaunchEvents();
@@ -1607,13 +1615,6 @@ namespace OpenNos.GameObject.Networking
                         SourceX = 38,
                         SourceY = 3
                     });
-                }
-                if (DaoFactory.MapDao.LoadById(148) != null)
-                {
-                    Logger.Log.Info("[ACT4] Demon Ship Loaded");
-                    Act4ShipDemon = GenerateMapInstance(148, MapInstanceType.ArenaInstance, new InstanceBag());
-                    Logger.Log.Info("[ACT4] Angel Ship Loaded");
-                    Act4ShipAngel = GenerateMapInstance(148, MapInstanceType.NormalInstance, new InstanceBag());
                 }
 
                 if (DaoFactory.MapDao.LoadById(154) != null)

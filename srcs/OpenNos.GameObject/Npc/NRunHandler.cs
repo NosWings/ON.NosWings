@@ -707,6 +707,14 @@ namespace OpenNos.GameObject.Npc
                     }
                     break;
 
+                case 5004:
+                    if (npc == null)
+                    {
+                        return;
+                    }
+                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, 145, 52, 41);
+                    break;
+
                 case 5011:
                     if (npc != null)
                     {

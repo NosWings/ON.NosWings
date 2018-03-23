@@ -26,25 +26,46 @@ namespace OpenNos.GameObject.Event.ACT4
 {
     public class Act4Ship
     {
+        public static void AddNpc(FactionType faction)
+        {
+            MapNpc leikaNpc = new MapNpc
+            {
+                NpcVNum = 540,
+                MapNpcId = faction == FactionType.Angel ? ServerManager.Instance.Act4ShipAngel.GetNextId() : ServerManager.Instance.Act4ShipDemon.GetNextId(),
+                Dialog = 433,
+                MapId = 149,
+                MapX = 31,
+                MapY = 28,
+                IsMoving = false,
+                Position = 3,
+                IsSitting = false
+            };
+
+            leikaNpc.Initialize(ServerManager.Instance.Act4ShipDemon);
+            leikaNpc.Initialize(ServerManager.Instance.Act4ShipAngel);
+            ServerManager.Instance.Act4ShipDemon.AddNpc(leikaNpc);
+            ServerManager.Instance.Act4ShipAngel.AddNpc(leikaNpc);
+        }
+
+        public static DateTime RoundUp(DateTime dt, TimeSpan d)
+        {
+            return new DateTime((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks);
+        }
+
         public static void GenerateAct4Ship(FactionType faction)
         {
-            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(145)), EventActionType.NPCSEFFECTCHANGESTATE,
-                true));
-            var shipThread = new Act4ShipTask();
-            var now = DateTime.Now;
-            var result = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0);
-
-            result = result.AddMinutes((now.Minute / 5 + 1) * 5);
-
-            Observable.Timer(result - now).Subscribe(x => shipThread.Run(faction));
+            AddNpc(faction);
+            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(145)), EventActionType.NPCSEFFECTCHANGESTATE, true));
+            DateTime result = RoundUp(DateTime.Now, TimeSpan.FromMinutes(5));
+            Observable.Timer(result - DateTime.Now).Subscribe(X => Act4ShipTask.Run(faction));
         }
     }
 
-    public class Act4ShipTask
+    public static class Act4ShipTask
     {
         #region Methods
 
-        public void Run(FactionType faction)
+        public static void Run(FactionType faction)
         {
             MapInstance map = faction == FactionType.Angel ? ServerManager.Instance.Act4ShipAngel : ServerManager.Instance.Act4ShipDemon;
             OpenShip();
