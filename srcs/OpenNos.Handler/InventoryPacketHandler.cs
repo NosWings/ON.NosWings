@@ -1680,6 +1680,7 @@ namespace OpenNos.Handler
                 return;
             }
             List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad, BuffType.Good, BuffType.Neutral};
+            CharacterHelper.Instance.RemoveSpecialistWingsBuff(Session);
             Session.Character.DisableBuffs(bufftodisable);
             Session.Character.BattleEntity.StaticBcards.RemoveWhere(s => !s.ItemVNum.Equals(vnum), out ConcurrentBag<BCard> eqBcards);
             Session.Character.BattleEntity.StaticBcards = eqBcards;

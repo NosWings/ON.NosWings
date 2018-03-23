@@ -111,23 +111,18 @@ namespace OpenNos.GameObject.Helpers
                     break;
                 case 7:
                     session.Character.AddBuff(new Buff.Buff(395, isPermaBuff: true));
-                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
                     break;
                 case 8:
                     session.Character.AddBuff(new Buff.Buff(396, isPermaBuff: true));
-                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
                     break;
                 case 9:
                     session.Character.AddBuff(new Buff.Buff(397, isPermaBuff: true));
-                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
                     break;
                 case 10:
                     session.Character.AddBuff(new Buff.Buff(398, isPermaBuff: true));
-                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
                     break;
                 case 11:
                     session.Character.AddBuff(new Buff.Buff(410, isPermaBuff: true));
-                    session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
                     break;
                 case 12:
                     session.Character.AddBuff(new Buff.Buff(411, isPermaBuff: true));
