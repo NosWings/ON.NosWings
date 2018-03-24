@@ -4,7 +4,7 @@ namespace OpenNos.Data
 {
     public class BCardDTO : MappingBaseDTO
     {
-        public short BCardId { get; set; }
+        public int BCardId { get; set; }
 
         public byte SubType { get; set; }
 

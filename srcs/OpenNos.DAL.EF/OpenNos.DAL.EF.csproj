@@ -397,6 +397,10 @@
     <Compile Include="Migrations\201803200603215_Aphrodite105.Designer.cs">
       <DependentUpon>201803200603215_Aphrodite105.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803241315028_Aphrodite106.cs" />
+    <Compile Include="Migrations\201803241315028_Aphrodite106.Designer.cs">
+      <DependentUpon>201803241315028_Aphrodite106.cs</DependentUpon>
+    </Compile>
     <Compile Include="QuestDAO.cs" />
     <Compile Include="QuestLogDAO.cs" />
     <Compile Include="QuestObjectiveDAO.cs" />
@@ -1062,6 +1066,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803200603215_Aphrodite105.resx">
       <DependentUpon>201803200603215_Aphrodite105.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803241315028_Aphrodite106.resx">
+      <DependentUpon>201803241315028_Aphrodite106.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -21,7 +21,7 @@ namespace OpenNos.DAL.EF.Entities
         #region Properties
 
         [Key]
-        public short BCardId { get; set; }
+        public int BCardId { get; set; }
 
         public byte SubType { get; set; }
 
