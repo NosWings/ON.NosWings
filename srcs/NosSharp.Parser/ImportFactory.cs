@@ -431,6 +431,7 @@ namespace NosSharp.Parser
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             CardDTO card = new CardDTO();
             List<BCardDTO> bcards = new List<BCardDTO>();
+            DaoFactory.BCardDao.Clean();
             string line;
             int counter = 0;
             bool itemAreaBegin = false;

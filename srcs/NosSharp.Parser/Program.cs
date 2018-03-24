@@ -88,6 +88,7 @@ namespace NosSharp.Parser
                 {
                     factory.ImportMaps();
                     factory.LoadMaps();
+                    factory.ImportCards();
                     factory.ImportRespawnMapType();
                     factory.ImportMapType();
                     factory.ImportMapTypeMap();
@@ -96,7 +97,6 @@ namespace NosSharp.Parser
                     factory.ImportScriptedInstances();
                     factory.ImportItems();
                     factory.ImportSkills();
-                    factory.ImportCards();
                     factory.ImportNpcMonsters();
                     factory.ImportNpcMonsterData();
                     factory.ImportMapNpcs();
