@@ -2802,7 +2802,7 @@ namespace NosSharp.Parser
                     Amount = recipeItems[i + 1],
                     RecipeId = recipe.RecipeId
                 };
-                if (DaoFactory.RecipeItemDao.LoadByRecipeAndItem(recipe.RecipeId, recipeItem.ItemVNum) == null)
+                if (!DaoFactory.RecipeItemDao.LoadByRecipeAndItem(recipe.RecipeId, recipeItem.ItemVNum).Any())
                 {
                     DaoFactory.RecipeItemDao.Insert(recipeItem);
                 }
