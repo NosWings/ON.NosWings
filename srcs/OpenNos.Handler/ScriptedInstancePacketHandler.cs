@@ -280,7 +280,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (Session.Character.MapId != Session.Character.Group?.Raid.MapId)
+            if (Session.Character.MapId != Session.Character.Group?.Raid.MapId && !ServerManager.Instance.SingleRaidPortal)
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg("WRONG_PORTAL", 0));
                 return;
@@ -290,6 +290,12 @@ namespace OpenNos.Handler
                 if (Session.Character.Group.Raid.FirstMap == null)
                 {
                     Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
+                }
+                if (Session.Character.Group.Raid.Id == 24 && ServerManager.Instance.Act6Erenia.Percentage < 100 ||
+                    Session.Character.Group.Raid.Id == 23 && ServerManager.Instance.Act6Zenas.Percentage < 100)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg("RAID_NOT_READY", 0));
+                    return;
                 }
                 if (Session.Character.Group.Raid.FirstMap == null)
                 {
