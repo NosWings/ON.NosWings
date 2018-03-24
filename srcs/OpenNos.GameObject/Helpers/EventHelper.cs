@@ -389,12 +389,12 @@ namespace OpenNos.GameObject.Helpers
                                             s.RaidId == instance.Id && s.Time.AddHours(24) <= DateTime.Now))
                                     {
                                         // Raid has not been done in the last 24 hours
-                                        cli.Character.Family.FamilyExperience += instance.Fxp / evt.MapInstance.Sessions.Count();
+                                        cli.Character.GenerateFamilyXp(instance.Fxp / evt.MapInstance.Sessions.Count());
                                     }
                                     else
                                     {
                                         // Raid has already been done in the last 24 hours
-                                        cli.Character.Family.FamilyExperience += instance.Fxp / 5 / evt.MapInstance.Sessions.Count();
+                                        cli.Character.GenerateFamilyXp(instance.Fxp / 5 / evt.MapInstance.Sessions.Count());
                                     }
                                     cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("FXP_INCREASE"), instance.Fxp), 11));
                                     if (evt.MapInstance.Sessions.Count(s => s.IpAddress.Equals(cli.IpAddress)) > 2 || instance.GiftItems == null)
@@ -485,7 +485,7 @@ namespace OpenNos.GameObject.Helpers
                                     }
 
                                     LogHelper.Instance.InsertRaidLog(sess.Character.CharacterId, grp.Raid.Id, DateTime.Now);
-                                    sess.Character.Family.FamilyExperience += grp.Raid.Fxp;
+                                    sess.Character.GenerateFamilyXp(grp.Raid.Fxp);
                                     sess.SendPacket(sess.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("FXP_INCREASE"), grp.Raid.Fxp), 11));
                                 }
                                 // Remove monster when raid is over
