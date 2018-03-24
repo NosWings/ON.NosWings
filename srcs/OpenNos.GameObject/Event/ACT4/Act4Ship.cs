@@ -13,9 +13,11 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.GameObject.Helpers;
@@ -56,8 +58,8 @@ namespace OpenNos.GameObject.Event.ACT4
         {
             AddNpc(faction);
             EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(145)), EventActionType.NPCSEFFECTCHANGESTATE, true));
-            DateTime result = RoundUp(DateTime.Now, TimeSpan.FromMinutes(5));
-            Observable.Timer(result - DateTime.Now).Subscribe(X => Act4ShipTask.Run(faction));
+            var result = RoundUp(DateTime.Now, TimeSpan.FromMinutes(5));
+            Observable.Timer(result - DateTime.Now).Subscribe(x => Act4ShipTask.Run(faction));
         }
     }
 
@@ -68,38 +70,28 @@ namespace OpenNos.GameObject.Event.ACT4
         public static void Run(FactionType faction)
         {
             MapInstance map = faction == FactionType.Angel ? ServerManager.Instance.Act4ShipAngel : ServerManager.Instance.Act4ShipDemon;
-            OpenShip();
-            Observable.Timer(TimeSpan.FromMinutes(1)).Subscribe(o =>
+            while (true)
             {
+                OpenShip();
+                Thread.Sleep(60 * 1000);
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_MINUTES"), 4), 0));
-            });
-            Observable.Timer(TimeSpan.FromMinutes(2)).Subscribe(o =>
-            {
+                Thread.Sleep(60 * 1000);
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_MINUTES"), 3), 0));
-            });
-            Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(o =>
-            {
+                Thread.Sleep(60 * 1000);
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_MINUTES"), 2), 0));
-            });
-            Observable.Timer(TimeSpan.FromMinutes(4)).Subscribe(o =>
-            {
+                Thread.Sleep(60 * 1000);
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHIP_MINUTE"), 0));
                 LockShip();
-            });
-            Observable.Timer(TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(30)).Subscribe(o =>
-            {
+                Thread.Sleep(30 * 1000);
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_SECONDS"), 30), 0));
-            });
-            Observable.Timer(TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(50)).Subscribe(o =>
-            {
+                Thread.Sleep(20 * 1000);
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SHIP_SECONDS"), 10), 0));
-            });
-            Observable.Timer(TimeSpan.FromMinutes(4) + TimeSpan.FromSeconds(55)).Subscribe(o =>
-            {
+                Thread.Sleep(10 * 1000);
                 map.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHIP_SETOFF"), 0));
-                List<ClientSession> sessions = map.Sessions.Where(s => s?.Character != null).ToList();
+                Thread.Sleep(3 * 1000);
+                var sessions = map.Sessions.Where(s => s?.Character != null).ToList();
                 TeleportPlayers(sessions);
-            });
+            }
         }
 
         private static void TeleportPlayers(IEnumerable<ClientSession> sessions)

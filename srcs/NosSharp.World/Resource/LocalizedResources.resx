@@ -1741,4 +1741,13 @@
   <data name="RESTART" xml:space="preserve">
     <value>The world will restart in {0} seconds</value>
   </data>
+  <data name="SHIP_MINUTES" xml:space="preserve">
+    <value>The ship will set off in {0} minutes !</value>
+  </data>
+  <data name="SHIP_SECONDS" xml:space="preserve">
+    <value>The ship will set off in {0} seconds ! </value>
+  </data>
+  <data name="SHIP_SETOFF" xml:space="preserve">
+    <value>Setting off !</value>
+  </data>
 </root>

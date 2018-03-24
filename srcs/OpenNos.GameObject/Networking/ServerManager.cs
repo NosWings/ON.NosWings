@@ -1566,7 +1566,7 @@ namespace OpenNos.GameObject.Networking
                 }
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPMONSTERS_LOADED"), monstercount));
 
-                if (DaoFactory.MapDao.LoadById(148) != null)
+                if (DaoFactory.MapDao.LoadById(149) != null)
                 {
                     Logger.Log.Info("[ACT4] Demon Ship Loaded");
                     Act4ShipDemon = GenerateMapInstance(149, MapInstanceType.ArenaInstance, new InstanceBag());

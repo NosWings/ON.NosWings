@@ -4075,6 +4075,33 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The ship will set off in {0} minutes !.
+        /// </summary>
+        internal static string SHIP_MINUTES {
+            get {
+                return ResourceManager.GetString("SHIP_MINUTES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The ship will set off in {0} seconds ! .
+        /// </summary>
+        internal static string SHIP_SECONDS {
+            get {
+                return ResourceManager.GetString("SHIP_SECONDS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Setting off !.
+        /// </summary>
+        internal static string SHIP_SETOFF {
+            get {
+                return ResourceManager.GetString("SHIP_SETOFF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Shop cannot be empty!.
         /// </summary>
         internal static string SHOP_EMPTY {
