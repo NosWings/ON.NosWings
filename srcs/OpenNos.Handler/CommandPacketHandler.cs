@@ -1964,6 +1964,8 @@ namespace OpenNos.Handler
         /// <param name="lobbyPacket"></param>
         public void Lobby(LobbyPacket lobbyPacket)
         {
+            // Disabled for now
+            return;
             ServerManager.Instance.TeleportToLobby(Session);
         }
 
