@@ -7,6 +7,7 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
+        void InsertOrUpdate(List<QuestDTO> quests);
         QuestDTO Insert(QuestDTO quest);
 
         void Insert(List<QuestDTO> quests);

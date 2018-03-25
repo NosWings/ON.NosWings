@@ -402,17 +402,16 @@ namespace NosSharp.Parser
                             case "END":
                                 if (DaoFactory.QuestDao.LoadById(quest.QuestId) == null)
                                 {
-                                    quest.IsDaily = true;
                                     questObjectives.AddRange(currentObjectives);
                                     rewards.AddRange(currentRewards);
-                                    quests.Add(quest);
                                     qstCounter++;
                                 }
+                                quests.Add(quest);
                                 break;
                         }
                     }
                 }
-                DaoFactory.QuestDao.Insert(quests);
+                DaoFactory.QuestDao.InsertOrUpdate(quests);
                 DaoFactory.QuestRewardDao.Insert(rewards);
                 DaoFactory.QuestObjectiveDao.Insert(questObjectives);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("QUEST_PARSED"), qstCounter));

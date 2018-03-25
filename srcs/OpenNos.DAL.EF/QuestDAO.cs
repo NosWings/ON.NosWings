@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using OpenNos.DAL.EF.DB;
 using System.Linq;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.Entities;
 
@@ -14,6 +15,35 @@ namespace OpenNos.DAL.EF
     public class QuestDAO : MappingBaseDAO<Quest, QuestDTO>, IQuestDAO
     {
         #region Methods
+
+        public void InsertOrUpdate(List<QuestDTO> quests)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    foreach (var q in quests)
+                    {
+                        if (context.Quest.Any(s => s.InfoId == q.InfoId))
+                        {
+                            Quest oldQuest = context.Quest.SingleOrDefault(s => s.InfoId == q.InfoId);
+                            // Update
+                            Update(oldQuest, q, context);
+                        }
+                        else
+                        {
+                            //insert
+                            Insert(q);
+                        }
+                    }
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
 
         public void Insert(List<QuestDTO> quests)
         {
@@ -35,6 +65,16 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
             }
+        }
+
+        public QuestDTO Update(Quest quest, QuestDTO newQuest, OpenNosContext context)
+        {
+            if (quest != null)
+            {
+                _mapper.Map(newQuest, quest);
+                context.SaveChanges();
+            }
+            return _mapper.Map<QuestDTO>(quest);
         }
 
         public QuestDTO Insert(QuestDTO quest)
