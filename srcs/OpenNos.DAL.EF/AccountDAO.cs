@@ -28,7 +28,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class AccountDAO : MappingBaseDAO<Account, AccountDTO>, IAccountDAO
+    public class AccountDAO : MappingBaseDao<Account, AccountDTO>, IAccountDAO
     {
         #region Methods
 

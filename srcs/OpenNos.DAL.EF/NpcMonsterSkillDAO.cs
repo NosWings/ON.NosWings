@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class NpcMonsterSkillDAO : MappingBaseDAO<NpcMonsterSkill, NpcMonsterSkillDTO>, INpcMonsterSkillDAO
+    public class NpcMonsterSkillDAO : MappingBaseDao<NpcMonsterSkill, NpcMonsterSkillDTO>, INpcMonsterSkillDAO
     {
         #region Methods
 

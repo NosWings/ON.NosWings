@@ -12,7 +12,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class QuestDAO : MappingBaseDAO<Quest, QuestDTO>, IQuestDAO
+    public class QuestDAO : MappingBaseDao<Quest, QuestDTO>, IQuestDAO
     {
         #region Methods
 

@@ -27,7 +27,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class FamilyCharacterDAO : MappingBaseDAO<FamilyCharacter, FamilyCharacterDTO>, IFamilyCharacterDAO
+    public class FamilyCharacterDAO : MappingBaseDao<FamilyCharacter, FamilyCharacterDTO>, IFamilyCharacterDAO
     {
         #region Methods
 

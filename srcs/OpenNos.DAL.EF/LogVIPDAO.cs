@@ -11,7 +11,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class LogVIPDAO : MappingBaseDAO<LogVip, LogVIPDTO>, ILogVIPDAO
+    public class LogVIPDAO : MappingBaseDao<LogVip, LogVIPDTO>, ILogVIPDAO
     {
 
         public SaveResult InsertOrUpdate(ref LogVIPDTO log)

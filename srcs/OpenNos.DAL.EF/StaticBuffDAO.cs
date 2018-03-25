@@ -26,7 +26,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class StaticBuffDAO : MappingBaseDAO<StaticBuff, StaticBuffDTO>, IStaticBuffDAO
+    public class StaticBuffDAO : MappingBaseDao<StaticBuff, StaticBuffDTO>, IStaticBuffDAO
     {
         #region Methods
 

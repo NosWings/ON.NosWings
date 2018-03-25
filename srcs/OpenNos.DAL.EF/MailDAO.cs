@@ -26,7 +26,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class MailDAO : MappingBaseDAO<Mail, MailDTO>, IMailDAO
+    public class MailDAO : MappingBaseDao<Mail, MailDTO>, IMailDAO
     {
         #region Methods
 

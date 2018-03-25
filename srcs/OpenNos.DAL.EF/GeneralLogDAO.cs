@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class GeneralLogDAO : MappingBaseDAO<GeneralLog, GeneralLogDTO>, IGeneralLogDAO
+    public class GeneralLogDAO : MappingBaseDao<GeneralLog, GeneralLogDTO>, IGeneralLogDAO
     {
         #region Methods
 

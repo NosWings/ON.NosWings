@@ -26,7 +26,7 @@ using OpenNos.DAL.EF.Base;
 
 namespace OpenNos.DAL.EF
 {
-    public class MateDAO : MappingBaseDAO<Mate, MateDTO>, IMateDAO
+    public class MateDAO : MappingBaseDao<Mate, MateDTO>, IMateDAO
     {
         #region Methods
 

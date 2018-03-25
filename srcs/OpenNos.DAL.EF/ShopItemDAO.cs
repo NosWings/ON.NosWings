@@ -26,7 +26,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class ShopItemDAO : MappingBaseDAO<ShopItem, ShopItemDTO>, IShopItemDAO
+    public class ShopItemDAO : MappingBaseDao<ShopItem, ShopItemDTO>, IShopItemDAO
     {
         #region Methods
 

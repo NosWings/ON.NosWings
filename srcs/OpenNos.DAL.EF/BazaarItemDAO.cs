@@ -27,7 +27,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class BazaarItemDAO : MappingBaseDAO<BazaarItem, BazaarItemDTO>, IBazaarItemDAO
+    public class BazaarItemDAO : MappingBaseDao<BazaarItem, BazaarItemDTO>, IBazaarItemDAO
     {
         #region Methods
 

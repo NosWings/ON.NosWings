@@ -13,6 +13,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
@@ -20,15 +21,18 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
+using AutoMapper;
 using log4net;
 using NosSharp.World.Resource;
 using OpenNos.Core;
 using OpenNos.Core.Serializing;
 using OpenNos.Data;
+using OpenNos.Data.Base;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Buff;
+using OpenNos.GameObject.Extensions;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
@@ -198,6 +202,11 @@ namespace NosSharp.World
 
         private static void RegisterMappings()
         {
+            DaoExtensions.RegisterMapping<OpenNos.DAL.EF.Entities.Account>(typeof(Account));
+            DaoExtensions.RegisterMapping<OpenNos.DAL.EF.Entities.Character>(typeof(Character));
+            DaoExtensions.RegisterMapping<OpenNos.DAL.EF.Entities.EquipmentOption>(typeof(EquipmentOptionDTO));
+
+
             // register mappings for items
             DaoFactory.IteminstanceDao.RegisterMapping(typeof(BoxInstance));
             DaoFactory.IteminstanceDao.RegisterMapping(typeof(SpecialistInstance));

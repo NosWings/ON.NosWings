@@ -12,7 +12,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class LogChatDAO : MappingBaseDAO<LogChat, LogChatDTO>, ILogChatDAO
+    public class LogChatDAO : MappingBaseDao<LogChat, LogChatDTO>, ILogChatDAO
     {
         public DeleteResult DeleteById(long logId)
         {

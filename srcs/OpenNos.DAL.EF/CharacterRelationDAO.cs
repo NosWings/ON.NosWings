@@ -26,7 +26,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class CharacterRelationDAO : MappingBaseDAO<CharacterRelation, CharacterRelationDTO>, ICharacterRelationDAO
+    public class CharacterRelationDAO : MappingBaseDao<CharacterRelation, CharacterRelationDTO>, ICharacterRelationDAO
     {
         #region Methods
 

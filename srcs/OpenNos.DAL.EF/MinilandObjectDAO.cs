@@ -26,7 +26,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class MinilandObjectDAO : MappingBaseDAO<MinilandObject, MinilandObjectDTO>, IMinilandObjectDAO
+    public class MinilandObjectDAO : MappingBaseDao<MinilandObject, MinilandObjectDTO>, IMinilandObjectDAO
     {
         #region Methods
 

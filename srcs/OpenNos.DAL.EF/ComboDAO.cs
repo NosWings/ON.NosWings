@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class ComboDAO : MappingBaseDAO<Combo, ComboDTO>, IComboDAO
+    public class ComboDAO : MappingBaseDao<Combo, ComboDTO>, IComboDAO
     {
         #region Methods
 

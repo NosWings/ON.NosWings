@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapDAO : MappingBaseDAO<Map, MapDTO>, IMapDAO
+    public class MapDAO : MappingBaseDao<Map, MapDTO>, IMapDAO
     {
         #region Methods
 

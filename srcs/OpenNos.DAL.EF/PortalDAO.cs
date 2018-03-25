@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class PortalDAO : MappingBaseDAO<Portal, PortalDTO>, IPortalDAO
+    public class PortalDAO : MappingBaseDao<Portal, PortalDTO>, IPortalDAO
     {
         #region Methods
 

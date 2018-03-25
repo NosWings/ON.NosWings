@@ -15,7 +15,7 @@ using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class QuestLogDAO : MappingBaseDAO<QuestLog, QuestLogDTO>, IQuestLogDAO
+    public class QuestLogDAO : MappingBaseDao<QuestLog, QuestLogDTO>, IQuestLogDAO
     {
         public SaveResult InsertOrUpdate(ref QuestLogDTO quest)
         {

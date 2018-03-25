@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class ScriptedInstanceDAO : MappingBaseDAO<ScriptedInstance, ScriptedInstanceDTO>, IScriptedInstanceDAO
+    public class ScriptedInstanceDAO : MappingBaseDao<ScriptedInstance, ScriptedInstanceDTO>, IScriptedInstanceDAO
     {
         #region Methods
 

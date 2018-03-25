@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class RecipeItemDAO : MappingBaseDAO<RecipeItem, RecipeItemDTO>, IRecipeItemDAO
+    public class RecipeItemDAO : MappingBaseDao<RecipeItem, RecipeItemDTO>, IRecipeItemDAO
     {
         #region Methods
 

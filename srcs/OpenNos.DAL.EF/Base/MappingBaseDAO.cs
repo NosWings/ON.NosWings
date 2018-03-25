@@ -7,7 +7,7 @@ using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF.Base
 {
-    public class MappingBaseDAO<TEntity, TDTO> : IMappingBaseDAO
+    public class MappingBaseDao<TEntity, TDTO> : IMappingBaseDAO
         where TDTO : MappingBaseDTO
     {
         #region Members
@@ -29,8 +29,7 @@ namespace OpenNos.DAL.EF.Base
                     cfg.CreateMap(typeof(TDTO), entry.Value);
 
                     // Entity -> GameObject
-                    cfg.CreateMap(entry.Value, typeof(TDTO))
-                        .AfterMap((src, dest) => ((MappingBaseDTO)dest).Initialize()).As(entry.Key);
+                    cfg.CreateMap(entry.Value, typeof(TDTO)).AfterMap((src, dest) => ((MappingBaseDTO)dest).Initialize()).As(entry.Key);
                 }
             });
 

@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class ShopSkillDAO : MappingBaseDAO<ShopSkill, ShopSkillDTO>, IShopSkillDAO
+    public class ShopSkillDAO : MappingBaseDao<ShopSkill, ShopSkillDTO>, IShopSkillDAO
     {
         #region Methods
 

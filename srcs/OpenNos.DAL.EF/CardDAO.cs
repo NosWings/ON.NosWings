@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class CardDAO : MappingBaseDAO<Card, CardDTO>, ICardDAO
+    public class CardDAO : MappingBaseDao<Card, CardDTO>, ICardDAO
     {
         #region Methods
 

@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class SkillDAO : MappingBaseDAO<Skill, SkillDTO>, ISkillDAO
+    public class SkillDAO : MappingBaseDao<Skill, SkillDTO>, ISkillDAO
     {
         #region Methods
 

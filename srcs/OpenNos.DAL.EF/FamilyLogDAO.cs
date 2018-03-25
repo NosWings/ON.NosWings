@@ -26,7 +26,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class FamilyLogDAO : MappingBaseDAO<FamilyLog, FamilyLogDTO>, IFamilyLogDAO
+    public class FamilyLogDAO : MappingBaseDao<FamilyLog, FamilyLogDTO>, IFamilyLogDAO
     {
         #region Methods
 

@@ -11,7 +11,7 @@ using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF.Base
 {
-    public abstract class SynchronizableBaseDAO<TEntity, TDTO> : MappingBaseDAO<TEntity, TDTO>, ISynchronizableBaseDAO<TDTO>
+    public abstract class SynchronizableBaseDAO<TEntity, TDTO> : MappingBaseDao<TEntity, TDTO>, ISynchronizableBaseDAO<TDTO>
         where TDTO : SynchronizableBaseDTO
         where TEntity : SynchronizableBaseEntity
     {

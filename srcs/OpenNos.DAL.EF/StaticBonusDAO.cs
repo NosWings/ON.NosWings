@@ -27,7 +27,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class StaticBonusDAO : MappingBaseDAO<StaticBonus, StaticBonusDTO>, IStaticBonusDAO
+    public class StaticBonusDAO : MappingBaseDao<StaticBonus, StaticBonusDTO>, IStaticBonusDAO
     {
 
         #region Methods

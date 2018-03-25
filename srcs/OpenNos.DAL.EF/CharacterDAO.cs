@@ -27,7 +27,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class CharacterDAO : MappingBaseDAO<Character, CharacterDTO>, ICharacterDAO
+    public class CharacterDAO : MappingBaseDao<Character, CharacterDTO>, ICharacterDAO
     {
         #region Methods
 
@@ -196,7 +196,7 @@ namespace OpenNos.DAL.EF
 
         private CharacterDTO Insert(CharacterDTO character, OpenNosContext context)
         {
-            Character entity = _mapper.Map<Character>(character);
+            var entity = _mapper.Map<Character>(character);
             context.Character.Add(entity);
             context.SaveChanges();
             return _mapper.Map<CharacterDTO>(entity);

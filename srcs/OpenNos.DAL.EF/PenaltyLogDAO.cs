@@ -26,7 +26,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class PenaltyLogDAO : MappingBaseDAO<PenaltyLog, PenaltyLogDTO>, IPenaltyLogDAO
+    public class PenaltyLogDAO : MappingBaseDao<PenaltyLog, PenaltyLogDTO>, IPenaltyLogDAO
     {
         #region Methods
 

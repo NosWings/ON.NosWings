@@ -12,7 +12,7 @@ using OpenNos.DAL.EF.Base;
 
 namespace OpenNos.DAL.EF
 {
-    public class LogCommandsDAO : MappingBaseDAO<LogCommands, LogCommandsDTO>, ILogCommandsDAO
+    public class LogCommandsDAO : MappingBaseDao<LogCommands, LogCommandsDTO>, ILogCommandsDAO
     {
         public DeleteResult DeleteById(long logId)
         {

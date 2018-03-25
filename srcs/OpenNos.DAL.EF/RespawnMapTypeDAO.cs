@@ -26,7 +26,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class RespawnMapTypeDAO : MappingBaseDAO<RespawnMapType, RespawnMapTypeDTO>, IRespawnMapTypeDAO
+    public class RespawnMapTypeDAO : MappingBaseDao<RespawnMapType, RespawnMapTypeDTO>, IRespawnMapTypeDAO
     {
         #region Methods
 

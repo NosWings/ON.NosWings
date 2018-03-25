@@ -11,7 +11,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class QuestRewardDAO : MappingBaseDAO<QuestReward, QuestRewardDTO>, IQuestRewardDAO
+    public class QuestRewardDAO : MappingBaseDao<QuestReward, QuestRewardDTO>, IQuestRewardDAO
     {
         #region Methods
 

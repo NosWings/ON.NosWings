@@ -14,7 +14,7 @@ using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class RaidLogDAO : MappingBaseDAO<RaidLog, RaidLogDTO>, IRaidLogDAO
+    public class RaidLogDAO : MappingBaseDao<RaidLog, RaidLogDTO>, IRaidLogDAO
     {
         public SaveResult InsertOrUpdate(ref RaidLogDTO raid)
         {

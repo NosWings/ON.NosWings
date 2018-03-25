@@ -25,7 +25,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class TeleporterDAO : MappingBaseDAO<Teleporter, TeleporterDTO>, ITeleporterDAO
+    public class TeleporterDAO : MappingBaseDao<Teleporter, TeleporterDTO>, ITeleporterDAO
     {
         #region Methods
 
