@@ -202,11 +202,11 @@ namespace OpenNos.GameObject.Event.BattleRoyale
             }
             else if (index < 10)
             {
-                session.Character.GetReput(15000);
+                session.Character.GetReput(15000, true);
             }
             else
             {
-                session.Character.GetReput(5000);
+                session.Character.GetReput(5000, true);
             }
         }
 

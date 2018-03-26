@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
                             break;
 
                         case QuestRewardType.Reput: // Reputation
-                            character.GetReput(reward.Amount);
+                            character.GetReput(reward.Amount, true);
                             str += $"{reward.RewardType} 0 0";
                             break;
 

@@ -639,7 +639,7 @@ namespace OpenNos.GameObject.Item
                     break;
 
                 case 69:
-                    session.Character.GetReput(ReputPrice);
+                    session.Character.GetReput(ReputPrice, true);
                     session.SendPacket(session.Character.GenerateFd());
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;

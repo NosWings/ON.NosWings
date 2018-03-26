@@ -337,7 +337,7 @@ namespace OpenNos.GameObject.Networking
                         else
                         {
                             session.Character.LoseReput(session.Character.Level * 50);
-                            killer.Character.GetReput(session.Character.Level * 50);
+                            killer.Character.GetReput(session.Character.Level * 50, true);
                             killer.SendPacket(session.Character.GenerateLev());
                         }
                     }

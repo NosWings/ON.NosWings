@@ -37,7 +37,7 @@ namespace OpenNos.GameObject.Event.MINILANDREFRESH
                 ClientSession session = ServerManager.Instance.GetSessionByCharacterId(chara.CharacterId);
                 if (session != null)
                 {
-                    session.Character.GetReput(2 * count);
+                    session.Character.GetReput(2 * count, true);
                     session.Character.MinilandPoint = 2000;
                 }
                 else if (CommunicationServiceClient.Instance.IsCharacterConnected(ServerManager.Instance.ServerGroup, chara.CharacterId))

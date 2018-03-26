@@ -3814,7 +3814,7 @@ namespace NosSharp.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Reputation has been increased..
+        ///   Recherche une chaîne localisée semblable à You won {0} points of reputation !.
         /// </summary>
         internal static string REPUT_INCREASE {
             get {

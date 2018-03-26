@@ -1316,7 +1316,7 @@
     <value>Total visits: {0}, Daily visits: {1}</value>
   </data>
   <data name="REPUT_INCREASE" xml:space="preserve">
-    <value>Reputation has been increased.</value>
+    <value>You won {0} points of reputation !</value>
   </data>
   <data name="WIN_MONEY" xml:space="preserve">
     <value>Money: +{0}</value>

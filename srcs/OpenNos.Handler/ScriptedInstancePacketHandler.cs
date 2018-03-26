@@ -186,7 +186,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Session.Character.GetReput(si.Reputation);
+            Session.Character.GetReput(si.Reputation, true);
 
             Session.Character.Gold = Session.Character.Gold + si.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : Session.Character.Gold + si.Gold;
             Session.SendPacket(Session.Character.GenerateGold());

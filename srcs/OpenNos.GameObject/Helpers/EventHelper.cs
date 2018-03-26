@@ -271,7 +271,7 @@ namespace OpenNos.GameObject.Helpers
                     evt.MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
                     Parallel.ForEach(evt.MapInstance.Sessions.Where(s => s.Character != null), cli =>
                     {
-                        cli.Character.GetReput(cli.Character.Level * 50);
+                        cli.Character.GetReput(cli.Character.Level * 50, true);
                         cli.Character.GetGold(cli.Character.Level * 1000);
                         cli.Character.SpAdditionPoint += cli.Character.Level * 100;
                         cli.Character.SpAdditionPoint = cli.Character.SpAdditionPoint > 1000000 ? 1000000 : cli.Character.SpAdditionPoint;
@@ -453,7 +453,7 @@ namespace OpenNos.GameObject.Helpers
                                     }
                                     if (grp.Raid.Reputation > 0 && sess.Character.Level > grp.Raid.LevelMinimum)
                                     {
-                                        sess.Character.GetReput(grp.Raid.Reputation);
+                                        sess.Character.GetReput(grp.Raid.Reputation, true);
                                     }
                                     sess.Character.Dignity = sess.Character.Dignity < 0 ? sess.Character.Dignity + 100 : 100;
 

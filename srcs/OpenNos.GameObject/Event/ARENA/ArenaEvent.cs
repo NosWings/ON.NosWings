@@ -517,7 +517,7 @@ namespace OpenNos.GameObject.Event.ARENA
             if (win)
             {
                 member.Session.Character.GetXp(RewardsHelper.Instance.ArenaXpReward(member.Session.Character.Level) / ServerManager.Instance.XpRate);
-                member.Session.Character.GetReput(500);
+                member.Session.Character.GetReput(500, true);
                 member.Session.Character.GiftAdd(2800, 1);
                 member.Session.Character.GetGold(member.Session.Character.Level * 1000);
                 member.Session.Character.TalentWin++;
@@ -525,7 +525,7 @@ namespace OpenNos.GameObject.Event.ARENA
             else
             {
                 member.Session.Character.GetXp(RewardsHelper.Instance.ArenaXpReward(member.Session.Character.Level) / 2 / ServerManager.Instance.XpRate);
-                member.Session.Character.GetReput(200);
+                member.Session.Character.GetReput(200, true);
                 member.Session.Character.GiftAdd(2801, 3);
                 member.Session.Character.GetGold(member.Session.Character.Level * 500);
                 member.Session.Character.TalentLose++;

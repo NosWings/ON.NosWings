@@ -3057,10 +3057,14 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void GetReput(long val)
+        public void GetReput(long val, bool enableMessage = false)
         {
             Reput += val * ServerManager.Instance.ReputRate;
             Session.SendPacket(GenerateFd());
+            if (!enableMessage)
+            {
+                return;
+            }
             Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val), 11));
         }
 
