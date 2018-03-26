@@ -13,6 +13,8 @@ namespace OpenNos.GameObject.Battle
 
         int CurrentHp { get; set; }
 
+        int DealtDamage { get; set; }
+
         int MaxHp { get; }
 
         MapInstance MapInstance { get; }

@@ -146,6 +146,8 @@ namespace OpenNos.GameObject
             set { BattleEntity.DarkResistance = value; }
         }
 
+        public int DealtDamage { get; set; }
+
         public int Defence
         {
             get { return BattleEntity.CloseDefence; }

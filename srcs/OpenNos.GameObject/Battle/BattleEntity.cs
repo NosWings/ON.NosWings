@@ -725,7 +725,12 @@ namespace OpenNos.GameObject.Battle
 
             #endregion
 
-            totalDamage = totalDamage > ushort.MaxValue ? ushort.MaxValue : totalDamage;
+            targetEntity.DealtDamage = totalDamage;
+
+            while (totalDamage > ushort.MaxValue)
+            {
+                totalDamage -= ushort.MaxValue;
+            }
 
             #region Onyx Wings
 
@@ -734,7 +739,6 @@ namespace OpenNos.GameObject.Battle
             #endregion
 
             SkillBcards.Clear();
-            totalDamage = totalDamage > ushort.MaxValue ? ushort.MaxValue : totalDamage;
             if (Session is Character charac && targetEntity is MapMonster cali && cali.MonsterVNum == 2305 && Caligor.IsRunning)
             {
                 switch (charac.Faction)
@@ -871,7 +875,7 @@ namespace OpenNos.GameObject.Battle
                 onyx.Initialize(mapInstance);
                 mapInstance.AddMonster(onyx);
                 mapInstance.Broadcast(onyx.GenerateIn());
-                target.GetDamage(damage / 2, Entity, false);
+                target.GetDamage(target.DealtDamage / 2, Entity, false);
                 Observable.Timer(TimeSpan.FromMilliseconds(350)).Subscribe(o =>
                 {
                     mapInstance.Broadcast($"su 3 {onyxId} 3 {target.GetId()} -1 0 -1 {skill.Effect} -1 -1 1 {(int)(target.CurrentHp / (double)target.MaxHp * 100)} {damage / 2} 0 0");
@@ -909,7 +913,7 @@ namespace OpenNos.GameObject.Battle
 
         private void TargetHit2(IBattleEntity target, TargetHitType hitType, Skill skill, int damage, int hitmode, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false, bool isRange = false)
         {
-            target.GetDamage(damage, Entity, !(Session is MapMonster mon && mon.IsInvicible));
+            target.GetDamage(target.DealtDamage, Entity, !(Session is MapMonster mon && mon.IsInvicible));
             string str = $"su {(byte)Entity.SessionType()} {Entity.GetId()} {(byte)target.SessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0}";
             switch (hitType)
             {

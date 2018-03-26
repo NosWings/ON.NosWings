@@ -79,6 +79,8 @@ namespace OpenNos.GameObject
             throw new NotImplementedException();
         }
 
+        public int DealtDamage { get; set; }
+
         public int[] GetBuff(CardType type, byte subtype) => BattleEntity.GetBuff(type, subtype);
 
         public bool HasBuff(CardType type, byte subtype, bool removeWeaponEffects = false) => BattleEntity.HasBuff(type, subtype, removeWeaponEffects);

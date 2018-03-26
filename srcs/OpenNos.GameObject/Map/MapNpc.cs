@@ -68,6 +68,8 @@ namespace OpenNos.GameObject.Map
 
         public FactionType Faction => FactionType.Neutral;
 
+        public int DealtDamage { get; set; }
+
         public bool ShouldRespawn { get; set; }
 
         public bool EffectActivated { get; set; }

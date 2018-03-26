@@ -74,6 +74,8 @@ namespace OpenNos.GameObject.Map
 
         #endregion
 
+        public int DealtDamage { get; set; }
+
         public int CurrentHp { get; set; }
 
         public int CurrentMp { get; set; }
@@ -527,7 +529,7 @@ namespace OpenNos.GameObject.Map
             {
                 return;
             }
-            canKill = IsInvicible ? false : canKill; // Act4 Guardians
+            canKill = !IsInvicible && canKill; // Act4 Guardians
             CurrentHp -= damage;
             CurrentHp = CurrentHp <= 0 ? !canKill ? 1 : 0 : CurrentHp;
             BattleEntity.OnHitEvents.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e, monster: this); });
