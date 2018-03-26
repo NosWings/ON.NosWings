@@ -1046,22 +1046,31 @@ namespace OpenNos.GameObject
                 Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
                 LastEffect = DateTime.Now;
             }
-
             if (MeditationDictionary.Count != 0)
             {
-                for (int a = 532; a < 535; a++)
+                if (MeditationDictionary.ContainsKey(534) && MeditationDictionary[534] < DateTime.Now)
                 {
-                    if (!MeditationDictionary.TryGetValue((short)a, out DateTime time) || time >= DateTime.Now)
-                    {
-                        continue;
-                    }
-
                     Session.SendPacket(GenerateEff(4344));
-                    AddBuff(new Buff.Buff(a, Level));
-                    RemoveBuff((short)(a == 532 ? 533 : a == 533 ? 532 : 534));
-                    RemoveBuff((short)(a == 532 ? 534 : a == 533 ? 534 : 532));
-                    MeditationDictionary.Remove((short)a);
-                    break;
+                    AddBuff(new Buff.Buff(534, Level));
+                    RemoveBuff(533);
+                    RemoveBuff(532);
+                    MeditationDictionary.Remove(534);
+                }
+                else if (MeditationDictionary.ContainsKey(533) && MeditationDictionary[533] < DateTime.Now)
+                {
+                    Session.SendPacket(GenerateEff(4343));
+                    AddBuff(new Buff.Buff(533, Level));
+                    RemoveBuff(532);
+                    RemoveBuff(534);
+                    MeditationDictionary.Remove(533);
+                }
+                else if (MeditationDictionary.ContainsKey(532) && MeditationDictionary[532] < DateTime.Now)
+                {
+                    Session.SendPacket(GenerateEff(4343));
+                    AddBuff(new Buff.Buff(532, Level));
+                    RemoveBuff(534);
+                    RemoveBuff(533);
+                    MeditationDictionary.Remove(532);
                 }
             }
 
