@@ -3270,11 +3270,11 @@ namespace OpenNos.Handler
         public void RestartPacket(RestartPacket packet)
         {
             ServerManager.Instance.SaveAll();
-            ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("RESTART"), 10));
+            ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("RESTART"), 30));
             ServerManager.Instance.InShutdown = true;
             ServerManager.Instance.DisconnectAll();
 
-            Thread.Sleep(10000);
+            Thread.Sleep(30000);
             CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
             Process.Start("NosSharp.World.exe");
             Environment.Exit(0);
