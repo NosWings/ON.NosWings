@@ -711,7 +711,15 @@ namespace OpenNos.Handler
                                     {
                                         Session.SendPackets(Session.Character.GenerateQuicklist());
                                     }
-                                    monsterToAttack.Monster.BCards.Where(s => s.CastType == 1).ToList().ForEach(s => s.ApplyBCards(monsterToAttack, Session.Character));
+                                    foreach (BCard s in ski.Skill.BCards)
+                                    {
+                                        Buff b = new Buff(s.SecondData);
+                                        if (b.Card?.BuffType == BuffType.Bad || b.Card?.BuffType == BuffType.Neutral)
+                                        {
+                                            s.ApplyBCards(monsterToAttack, Session.Character);
+                                        }
+                                    }
+                                    //monsterToAttack.Monster.BCards.Where(s => s.CastType == 1).ToList().ForEach(s => s.ApplyBCards(monsterToAttack, Session.Character));
                                     Session.SendPacket(Session.Character.GenerateStat());
                                     CharacterSkill characterSkillInfo = Session.Character.Skills.Select(s => s.Value).OrderBy(o => o.SkillVNum)
                                         .FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);

@@ -157,7 +157,6 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void ManageBankAccount(BankCommandPacket packet)
         {
-            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, packet, Session.IpAddress);
             if (string.IsNullOrEmpty(packet?.Subcommand))
             {
                 Session.SendPacket(Session.Character.GenerateSay("========= KFCBANK - HELP =========", 11));
@@ -289,6 +288,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay("==================================", 11));
                     break;
             }
+            LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, packet, Session.IpAddress);
         }
 
         /// <summary>
