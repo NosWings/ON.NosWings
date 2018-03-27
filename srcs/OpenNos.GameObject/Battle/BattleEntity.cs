@@ -388,6 +388,7 @@ namespace OpenNos.GameObject.Battle
                 {
                     if (ServerManager.Instance.RandomNumber() <= chance)
                     {
+                        targetEntity.DealtDamage = 0;
                         hitmode = 1;
                         SkillBcards.Clear();
                         return 0;

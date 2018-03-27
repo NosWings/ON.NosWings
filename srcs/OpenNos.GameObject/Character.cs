@@ -566,7 +566,7 @@ namespace OpenNos.GameObject
             {
                 if (DaoFactory.QuestLogDao.LoadByCharacterId(CharacterId).Any(s => s.QuestId == questId))
                 {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("QUEST_ALREADY_DONE"), 0));
+                    return;
                 }
             }
             else if (characterQuest.Quest.IsDaily)
@@ -602,6 +602,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
+            LogHelper.Instance.InsertQuestLog(CharacterId, Session.IpAddress, questToRemove.Quest.QuestId, DateTime.Now);
             if (questToRemove.Quest.TargetMap != null)
             {
                 Session.SendPacket(questToRemove.Quest.RemoveTargetPacket());
@@ -621,7 +622,6 @@ namespace OpenNos.GameObject
             {
                 AddQuest((long)questToRemove.Quest.NextQuestId, questToRemove.IsMainQuest);
             }
-            LogHelper.Instance.InsertQuestLog(CharacterId, Session.IpAddress, questToRemove.Quest.QuestId, DateTime.Now);
         }
 
         public string GenerateQuestsPacket(long newQuestId = -1)
