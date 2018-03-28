@@ -20,7 +20,7 @@ namespace OpenNos.Data.Interfaces
     {
         #region Properties
 
-        byte Amount { get; set; }
+        ushort Amount { get; set; }
 
         long? BoundCharacterId { get; set; }
 

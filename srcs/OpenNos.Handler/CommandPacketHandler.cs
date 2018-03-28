@@ -481,6 +481,9 @@ namespace OpenNos.Handler
                             case "Mage":
                                 session.Character.ChangeClass(ClassType.Magician);
                                 break;
+                            case "4":
+                                session.Character.ChangeClass(ClassType.Unknown);
+                                break;
                         }
 
                         break;

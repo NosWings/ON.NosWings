@@ -408,7 +408,7 @@ namespace OpenNos.GameObject.Map
             return MapDesignObjects.Select(mp => mp.GenerateEffect(false)).ToList();
         }
 
-        public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
+        public MapItem PutItem(InventoryType type, short slot, ushort amount, ref ItemInstance inv, ClientSession session)
         {
             Guid random2 = Guid.NewGuid();
             List<GridPos> possibilities = new List<GridPos>();

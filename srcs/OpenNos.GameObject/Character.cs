@@ -881,12 +881,10 @@ namespace OpenNos.GameObject
             Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = CharacterId };
 
             Session.SendPacket(GenerateSki());
-
             foreach (QuicklistEntryDTO quicklists in DaoFactory.QuicklistEntryDao.LoadByCharacterId(CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.Id == quicklists.Id)))
             {
                 DaoFactory.QuicklistEntryDao.Delete(quicklists.Id);
             }
-
             QuicklistEntries = new List<QuicklistEntryDTO>
             {
                 new QuicklistEntryDTO
@@ -4000,7 +3998,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SendGift(long id, short vnum, byte amount, sbyte rare, byte upgrade, bool isNosmall)
+        public void SendGift(long id, short vnum, ushort amount, sbyte rare, byte upgrade, bool isNosmall)
         {
             Item.Item it = ServerManager.Instance.GetItem(vnum);
 
@@ -4030,9 +4028,9 @@ namespace OpenNos.GameObject
             }
 
             // maximum size of the amount is 99
-            if (amount > 99)
+            if (amount > 999)
             {
-                amount = 99;
+                amount = 999;
             }
             if (amount == 0)
             {
