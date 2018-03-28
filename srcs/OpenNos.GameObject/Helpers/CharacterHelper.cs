@@ -764,7 +764,7 @@ namespace OpenNos.GameObject.Helpers
 
         private void LoadHpData()
         {
-            HpData = new int[4, 256];
+            HpData = new int[5, 256];
 
             // Adventurer HP
             for (int i = 1; i < HpData.GetLength(1); i++)
@@ -820,24 +820,46 @@ namespace OpenNos.GameObject.Helpers
                 }
                 HpData[(int) ClassType.Archer, i] = hp;
             }
+
+            // Archer HP
+            for (int i = 0; i < HpData.GetLength(1); i++)
+            {
+                int hp = 680;
+                int inc = 35;
+                int j = 16;
+                while (j <= i)
+                {
+                    hp += inc;
+                    ++inc;
+                    if ((j % 10) == 1 || (j % 10) == 5 || (j % 10) == 8)
+                    {
+                        hp += inc;
+                        ++inc;
+                    }
+                    ++j;
+                }
+                HpData[(int)ClassType.Unknown, i] = hp;
+            }
         }
 
         private void LoadHpHealth()
         {
-            HpHealth = new int[4];
+            HpHealth = new int[5];
             HpHealth[(int) ClassType.Archer] = 60;
             HpHealth[(int) ClassType.Adventurer] = 30;
             HpHealth[(int) ClassType.Swordman] = 90;
             HpHealth[(int) ClassType.Magician] = 30;
+            HpHealth[(int) ClassType.Unknown] = 80;
         }
 
         private void LoadHpHealthStand()
         {
-            HpHealthStand = new int[4];
+            HpHealthStand = new int[5];
             HpHealthStand[(int) ClassType.Archer] = 32;
             HpHealthStand[(int) ClassType.Adventurer] = 25;
             HpHealthStand[(int) ClassType.Swordman] = 26;
             HpHealthStand[(int) ClassType.Magician] = 20;
+            HpHealthStand[(int) ClassType.Unknown] = 20;
         }
 
         private void LoadJobXpData()
@@ -869,7 +891,7 @@ namespace OpenNos.GameObject.Helpers
 
         private void LoadMpData()
         {
-            MpData = new int[4, 257];
+            MpData = new int[5, 257];
 
             // ADVENTURER MP
             MpData[(int) ClassType.Adventurer, 0] = 60;
@@ -901,33 +923,42 @@ namespace OpenNos.GameObject.Helpers
             {
                 MpData[(int) ClassType.Magician, i] = 3 * MpData[(int) ClassType.Adventurer, i];
             }
+
+            // UNKNOWN CLASS
+            for (int i = 1; i < MpData.GetLength(1) - 1; i++)
+            {
+                MpData[(int)ClassType.Unknown, i] = MpData[(int)ClassType.Adventurer, i];
+            }
         }
 
         private void LoadMpHealth()
         {
-            MpHealth = new int[4];
+            MpHealth = new int[5];
             MpHealth[(int) ClassType.Adventurer] = 10;
             MpHealth[(int) ClassType.Swordman] = 30;
             MpHealth[(int) ClassType.Archer] = 50;
             MpHealth[(int) ClassType.Magician] = 80;
+            MpHealth[(int) ClassType.Unknown] = 80;
         }
 
         private void LoadMpHealthStand()
         {
-            MpHealthStand = new int[4];
+            MpHealthStand = new int[5];
             MpHealthStand[(int) ClassType.Adventurer] = 5;
             MpHealthStand[(int) ClassType.Swordman] = 16;
             MpHealthStand[(int) ClassType.Archer] = 28;
             MpHealthStand[(int) ClassType.Magician] = 40;
+            MpHealthStand[(int) ClassType.Unknown] = 50;
         }
 
         private void LoadSpeedData()
         {
-            SpeedData = new byte[4];
+            SpeedData = new byte[5];
             SpeedData[(int) ClassType.Adventurer] = 11;
             SpeedData[(int) ClassType.Swordman] = 11;
             SpeedData[(int) ClassType.Archer] = 12;
             SpeedData[(int) ClassType.Magician] = 10;
+            SpeedData[(int) ClassType.Unknown] = 59;
         }
 
         private void LoadSpxpData()
@@ -949,21 +980,21 @@ namespace OpenNos.GameObject.Helpers
         // TODO: Change or Verify
         private void LoadStats()
         {
-            _minHit = new int[4, 256];
-            _maxHit = new int[4, 256];
-            _hitRate = new int[4, 256];
-            _criticalHitRate = new int[4, 256];
-            _criticalHit = new int[4, 256];
-            _minDist = new int[4, 256];
-            _maxDist = new int[4, 256];
-            _distRate = new int[4, 256];
-            _criticalDistRate = new int[4, 256];
-            _criticalDist = new int[4, 256];
-            _hitDef = new int[4, 256];
-            _hitDodge = new int[4, 256];
-            _distDef = new int[4, 256];
-            _distDodge = new int[4, 256];
-            _magicalDef = new int[4, 256];
+            _minHit = new int[5, 256];
+            _maxHit = new int[5, 256];
+            _hitRate = new int[5, 256];
+            _criticalHitRate = new int[5, 256];
+            _criticalHit = new int[5, 256];
+            _minDist = new int[5, 256];
+            _maxDist = new int[5, 256];
+            _distRate = new int[5, 256];
+            _criticalDistRate = new int[5, 256];
+            _criticalDist = new int[5, 256];
+            _hitDef = new int[5, 256];
+            _hitDodge = new int[5, 256];
+            _distDef = new int[5, 256];
+            _distDodge = new int[5, 256];
+            _magicalDef = new int[5, 256];
 
             for (int i = 0; i < 256; i++)
             {
@@ -1041,6 +1072,26 @@ namespace OpenNos.GameObject.Helpers
                 _hitDodge[(int) ClassType.Archer, i] = 41 + i; // approx
                 _distDodge[(int) ClassType.Archer, i] = i + 2; // approx
                 _distDef[(int) ClassType.Archer, i] = i; // approx
+
+                // UNKNOWN
+                _criticalHitRate[(int)ClassType.Unknown, i] = 0; // sure
+                _criticalHit[(int)ClassType.Unknown, i] = 0; // sure
+                _criticalDistRate[(int)ClassType.Unknown, i] = 0; // sure
+                _criticalDist[(int)ClassType.Unknown, i] = 0; // sure
+
+                _minHit[(int)ClassType.Unknown, i] = 9 + i * 3; // approx
+                _maxHit[(int)ClassType.Unknown, i] = 9 + i * 3; // approx
+                _hitRate[(int)ClassType.Unknown, 1] = 41;
+                _hitRate[(int)ClassType.Unknown, i] = _hitRate[(int)ClassType.Archer, i] + add; // approx
+                _minDist[(int)ClassType.Unknown, i] = 2 * i; // approx
+                _maxDist[(int)ClassType.Unknown, i] = 2 * i; // approx
+
+                _distRate[(int)ClassType.Unknown, i] = 20 + 2 * i; // approx
+                _hitDef[(int)ClassType.Unknown, i] = i; // approx
+                _magicalDef[(int)ClassType.Unknown, i] = i + 2; // approx
+                _hitDodge[(int)ClassType.Unknown, i] = 41 + i; // approx
+                _distDodge[(int)ClassType.Unknown, i] = i + 2; // approx
+                _distDef[(int)ClassType.Unknown, i] = i; // approx
             }
         }
 
@@ -1101,6 +1152,7 @@ namespace OpenNos.GameObject.Helpers
             {
                 case ClassType.Adventurer:
                 case ClassType.Swordman:
+                case ClassType.Unknown:
                     return AttackType.Close;
 
                 case ClassType.Archer:

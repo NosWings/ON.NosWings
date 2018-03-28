@@ -35,7 +35,7 @@ namespace OpenNos.GameObject.Item.Instance
             _random = new Random();
         }
 
-        public ItemInstance(short vNum, byte amount)
+        public ItemInstance(short vNum, ushort amount)
         {
             ItemVNum = vNum;
             Amount = amount;

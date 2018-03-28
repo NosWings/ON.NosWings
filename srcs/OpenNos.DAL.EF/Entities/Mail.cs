@@ -22,7 +22,7 @@ namespace OpenNos.DAL.EF.Entities
     {
         #region Properties
 
-        public byte AttachmentAmount { get; set; }
+        public short AttachmentAmount { get; set; }
 
         public byte AttachmentRarity { get; set; }
 
