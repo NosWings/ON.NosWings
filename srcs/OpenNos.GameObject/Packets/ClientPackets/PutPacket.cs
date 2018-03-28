@@ -17,7 +17,7 @@ namespace OpenNos.GameObject.Packets.ClientPackets
         public byte Slot { get; set; }
 
         [PacketIndex(2)]
-        public byte Amount { get; set; }
+        public short Amount { get; set; }
 
         #endregion
     }

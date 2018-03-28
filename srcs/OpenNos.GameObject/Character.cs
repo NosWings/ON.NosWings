@@ -868,6 +868,7 @@ namespace OpenNos.GameObject
             Session.CurrentMapInstance?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
             Session.CurrentMapInstance?.Broadcast(GenerateEff(6), PositionX, PositionY);
             Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
+            Logger.Log.Warn("Gets to the loop");
             foreach (CharacterSkill skill in Skills.Select(s => s.Value))
             {
                 if (skill.SkillVNum >= 200)
@@ -876,17 +877,18 @@ namespace OpenNos.GameObject
                 }
             }
 
+            Logger.Log.Warn("Finish the loop");
             Skills[(short)(200 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Class), CharacterId = CharacterId };
             Skills[(short)(201 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)Class), CharacterId = CharacterId };
             Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = CharacterId };
 
             Session.SendPacket(GenerateSki());
-
+            Logger.Log.Warn("Skills added");
             foreach (QuicklistEntryDTO quicklists in DaoFactory.QuicklistEntryDao.LoadByCharacterId(CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.Id == quicklists.Id)))
             {
                 DaoFactory.QuicklistEntryDao.Delete(quicklists.Id);
             }
-
+            Logger.Log.Warn("Quicklist added");
             QuicklistEntries = new List<QuicklistEntryDTO>
             {
                 new QuicklistEntryDTO
@@ -903,6 +905,7 @@ namespace OpenNos.GameObject
             {
                 Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
             }
+            Logger.Log.Warn("Class Changed");
         }
 
         public void CheckHuntQuest()
@@ -4000,7 +4003,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SendGift(long id, short vnum, byte amount, sbyte rare, byte upgrade, bool isNosmall)
+        public void SendGift(long id, short vnum, ushort amount, sbyte rare, byte upgrade, bool isNosmall)
         {
             Item.Item it = ServerManager.Instance.GetItem(vnum);
 
@@ -4030,9 +4033,9 @@ namespace OpenNos.GameObject
             }
 
             // maximum size of the amount is 99
-            if (amount > 99)
+            if (amount > 999)
             {
-                amount = 99;
+                amount = 999;
             }
             if (amount == 0)
             {

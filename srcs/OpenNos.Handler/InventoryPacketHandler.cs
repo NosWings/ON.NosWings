@@ -226,7 +226,8 @@ namespace OpenNos.Handler
                 return;
             }
 
-            byte[] type = new byte[10], qty = new byte[10];
+            byte[] type = new byte[10];
+            ushort[] qty = new ushort[10];
             short[] slot = new short[10];
             string packetList = string.Empty;
 
@@ -246,7 +247,7 @@ namespace OpenNos.Handler
             {
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
-                byte.TryParse(packetsplit[j - 1], out qty[i]);
+                ushort.TryParse(packetsplit[j - 1], out qty[i]);
                 if ((InventoryType)type[i] == InventoryType.Bazaar)
                 {
                     CloseExchange(Session, targetSession);
@@ -649,7 +650,7 @@ namespace OpenNos.Handler
                     {
                         lock (Session.Character.Inventory)
                         {
-                            byte amount = mapItem.Amount;
+                            ushort amount = mapItem.Amount;
                             
                             ItemInstance inv = Session.Character.Inventory.AddToInventory(mapItemInstance).FirstOrDefault();
                             if (inv != null)
@@ -772,7 +773,7 @@ namespace OpenNos.Handler
                 }
 
                 // actually move the item from source to destination
-                Session.Character.Inventory.MoveItem(mviPacket.InventoryType, mviPacket.InventoryType, mviPacket.Slot, mviPacket.Amount, mviPacket.DestinationSlot, out ItemInstance previousInventory, out ItemInstance newInventory);
+                Session.Character.Inventory.MoveItem(mviPacket.InventoryType, mviPacket.InventoryType, mviPacket.Slot, (ushort)mviPacket.Amount, mviPacket.DestinationSlot, out ItemInstance previousInventory, out ItemInstance newInventory);
                 if (newInventory == null)
                 {
                     return;
@@ -796,11 +797,11 @@ namespace OpenNos.Handler
                 ItemInstance invitem = Session.Character.Inventory.LoadBySlotAndType(putPacket.Slot, putPacket.InventoryType);
                 if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade && putPacket.InventoryType != InventoryType.Bazaar)
                 {
-                    if (putPacket.Amount > 0 && putPacket.Amount < 100)
+                    if (putPacket.Amount > 0 && putPacket.Amount < 1000)
                     {
                         if (Session.Character.MapInstance.DroppedList.Count < 200 && Session.HasCurrentMapInstance)
                         {
-                            MapItem droppedItem = Session.CurrentMapInstance.PutItem(putPacket.InventoryType, putPacket.Slot, putPacket.Amount, ref invitem, Session);
+                            MapItem droppedItem = Session.CurrentMapInstance.PutItem(putPacket.InventoryType, putPacket.Slot, (ushort)putPacket.Amount, ref invitem, Session);
                             if (droppedItem == null)
                             {
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));

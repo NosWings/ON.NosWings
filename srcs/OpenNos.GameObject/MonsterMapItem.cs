@@ -26,7 +26,7 @@ namespace OpenNos.GameObject
         public MonsterMapItem(short x, short y, short itemVNum, int amount = 1, long ownerId = -1) : base(x, y)
         {
             ItemVNum = itemVNum;
-            if (amount < 100)
+            if (amount < 1000)
             {
                 Amount = (byte)amount;
             }
@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public sealed override byte Amount { get; set; }
+        public sealed override ushort Amount { get; set; }
 
         public int GoldAmount { get; private set; }
 
