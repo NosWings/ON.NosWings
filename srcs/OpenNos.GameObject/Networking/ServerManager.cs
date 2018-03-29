@@ -1668,7 +1668,7 @@ namespace OpenNos.GameObject.Networking
                         if (portal != null)
                         {
                             portal.SourceX = 140;
-                            portal.SourceY = 186;
+                            portal.SourceY = 11;
                         }
                     }
                     act4Map.IsPvp = true;
