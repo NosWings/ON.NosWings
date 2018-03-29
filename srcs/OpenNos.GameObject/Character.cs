@@ -2265,11 +2265,11 @@ namespace OpenNos.GameObject
 
         public IEnumerable<string> GenerateQuicklist()
         {
-            string[] pktQs = { "qslot 0", "qslot 1", "qslot 2" };
+            string[] pktQs = { "qslot 0", "qslot 1" };
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 30; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 2; j++)
                 {
                     QuicklistEntryDTO qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i && n.Morph == (UseSp ? Morph : 0));
                     pktQs[j] += $" {qi?.Type ?? 7}.{qi?.Slot ?? 7}.{qi?.Pos.ToString() ?? "-1"}";
