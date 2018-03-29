@@ -118,7 +118,7 @@ namespace OpenNos.Handler
                                     int newSessionId = SessionFactory.Instance.GenerateSessionId();
                                     Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
-                                    if (CommunicationServiceClient.Instance.GetMaintenanceState() && _session.Account.Authority <= AuthorityType.GameMaster)
+                                    if (CommunicationServiceClient.Instance.GetMaintenanceState() && _session?.Account?.Authority <= AuthorityType.GameMaster)
                                     {
                                         _session.SendPacket("failc 2");
                                         return;
