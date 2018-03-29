@@ -57,7 +57,7 @@ namespace OpenNos.GameObject.Npc
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("TOO_LOW_LVL"), 0));
                         return;
                     }
-                    if (packet.Type == (byte)session.Character.Class)
+                    if (packet.Type == (byte)session.Character.Class || packet.Type > 4)
                     {
                         return;
                     }
