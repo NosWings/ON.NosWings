@@ -3835,7 +3835,7 @@ namespace OpenNos.GameObject
                         // load and concat inventory with equipment
                         IEnumerable<ItemInstance> inventories = Inventory.Select(s => s.Value);
                         IEnumerable<Guid> currentlySavedInventoryIds = DaoFactory.IteminstanceDao.LoadSlotAndTypeByCharacterId(CharacterId);
-                        IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadByAccount(Session.Account.AccountId);
+                        IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadAllCharactersByAccount(Session.Account.AccountId);
                         currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId)
                             .Aggregate(currentlySavedInventoryIds,
                                 (current, characteraccount) => current.Concat(DaoFactory.IteminstanceDao.LoadByCharacterId(characteraccount.CharacterId).Where(s => s.Type == InventoryType.Warehouse)
