@@ -111,14 +111,7 @@ namespace OpenNos.DAL.EF.Base
         {
             Guid primaryKey = dto.Id;
             TEntity entity = context.Set<TEntity>().FirstOrDefault(c => c.Id == primaryKey);
-            if (entity == null)
-            {
-                dto = Insert(dto, context);
-            }
-            else
-            {
-                dto = Update(entity, dto, context);
-            }
+            dto = entity == null ? Insert(dto, context) : Update(entity, dto, context);
 
             return dto;
         }
@@ -133,7 +126,6 @@ namespace OpenNos.DAL.EF.Base
             if (entity != null)
             {
                 _mapper.Map(inventory, entity);
-                context.SaveChanges();
             }
 
             return _mapper.Map<TDTO>(entity);

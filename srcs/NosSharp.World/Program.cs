@@ -13,7 +13,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
@@ -21,13 +20,11 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
-using AutoMapper;
 using log4net;
-using NosSharp.World.Resource;
+using ON.NW.World.Resource;
 using OpenNos.Core;
 using OpenNos.Core.Serializing;
 using OpenNos.Data;
-using OpenNos.Data.Base;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.GameObject;
@@ -42,7 +39,7 @@ using OpenNos.Handler;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 
-namespace NosSharp.World
+namespace ON.NW.World
 {
     public class Program
     {
@@ -74,6 +71,18 @@ namespace NosSharp.World
 
         #region Methods
 
+        private static short _port;
+
+        private static void Welcome()
+        {
+            Console.Title = string.Format(LocalizedResources.WORLD_SERVER_CONSOLE_TITLE, 0, 0, 0, 0);
+            _port = Convert.ToInt16(ConfigurationManager.AppSettings["WorldPort"]);
+            const string text = "N# - World Server";
+            int offset = Console.WindowWidth / 2 + text.Length / 2;
+            string separator = new string('=', Console.WindowWidth);
+            Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
+        }
+
         public static void Main(string[] args)
         {
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
@@ -81,12 +90,6 @@ namespace NosSharp.World
             // initialize Loggers
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
 
-            Console.Title = string.Format(LocalizedResources.WORLD_SERVER_CONSOLE_TITLE, 0, 0, 0, 0);
-            short port = Convert.ToInt16(ConfigurationManager.AppSettings["WorldPort"]);
-            const string text = "N# - World Server";
-            int offset = Console.WindowWidth / 2 + text.Length / 2;
-            string separator = new string('=', Console.WindowWidth);
-            Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
 
             // initialize api
             if (CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]))
@@ -134,13 +137,13 @@ namespace NosSharp.World
             portloop:
             try
             {
-                NetworkManager<WorldEncryption> unused = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
+                NetworkManager<WorldEncryption> unused = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], _port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
             catch (SocketException ex)
             {
                 if (ex.ErrorCode == 10048)
                 {
-                    port++;
+                    _port++;
                     Logger.Log.Info("Port already in use! Incrementing...");
                     goto portloop;
                 }
@@ -150,13 +153,13 @@ namespace NosSharp.World
 
             ServerManager.Instance.ServerGroup = ConfigurationManager.AppSettings["ServerGroup"];
             int sessionLimit = Convert.ToInt32(ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ip, port, sessionLimit, ServerManager.Instance.ServerGroup));
+            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ip, _port, sessionLimit, ServerManager.Instance.ServerGroup));
 
             if (newChannelId.HasValue)
             {
                 ServerManager.Instance.ChannelId = newChannelId.Value;
                 ServerManager.Instance.IpAddress = ip;
-                ServerManager.Instance.Port = port;
+                ServerManager.Instance.Port = _port;
                 ServerManager.Instance.AccountLimit = sessionLimit;
                 Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             }

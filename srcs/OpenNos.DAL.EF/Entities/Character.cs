@@ -58,8 +58,7 @@ namespace OpenNos.DAL.EF.Entities
 
         public virtual ICollection<BazaarItem> BazaarItem { get; set; }
 
-        [MaxLength(255)]
-        public string Biography { get; set; }
+        [MaxLength(255)] public string Biography { get; set; }
 
         public bool BuffBlocked { get; set; }
 
@@ -70,6 +69,8 @@ namespace OpenNos.DAL.EF.Entities
         public virtual ICollection<CharacterRelation> CharacterRelation2 { get; set; }
 
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
+
+        public virtual ICollection<CharacterHome> CharacterHome { get; set; }
 
         public byte Class { get; set; }
 
@@ -145,8 +146,7 @@ namespace OpenNos.DAL.EF.Entities
 
         public bool MinilandInviteBlocked { get; set; }
 
-        [MaxLength(255)]
-        public string MinilandMessage { get; set; }
+        [MaxLength(255)] public string MinilandMessage { get; set; }
 
         public virtual ICollection<MinilandObject> MinilandObject { get; set; }
 
@@ -158,11 +158,9 @@ namespace OpenNos.DAL.EF.Entities
 
         public int Mp { get; set; }
 
-        [MaxLength(25)]
-        public string Prefix { get; set; }
+        [MaxLength(25)] public string Prefix { get; set; }
 
-        [MaxLength(255)]
-        public string Name { get; set; }
+        [MaxLength(255)] public string Name { get; set; }
 
         public bool QuickGetUp { get; set; }
 

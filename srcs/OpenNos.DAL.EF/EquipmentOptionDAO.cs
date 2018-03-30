@@ -45,6 +45,7 @@ namespace OpenNos.DAL.EF
                         return SaveResult.Inserted;
                     }
                     equipmentOption = Update(entity, equipmentOption, context);
+                    context.SaveChanges();
                     return SaveResult.Updated;
                 }
             }
@@ -77,31 +78,6 @@ namespace OpenNos.DAL.EF
             {
                 return DeleteResult.Error;
             }
-        }
-
-
-        protected override EquipmentOptionDTO Insert(EquipmentOptionDTO equipment, OpenNosContext context)
-        {
-            EquipmentOption entity = _mapper.Map<EquipmentOption>(equipment);
-            context.EquipmentOption.Add(entity);
-            context.SaveChanges();
-            return _mapper.Map<EquipmentOptionDTO>(entity);
-        }
-
-        protected override EquipmentOptionDTO Update(EquipmentOption entity, EquipmentOptionDTO equipment,
-            OpenNosContext context)
-        {
-            if (entity == null)
-            {
-                return _mapper.Map<EquipmentOptionDTO>(null);
-            }
-            entity.Level = equipment.Level;
-            entity.Type = equipment.Type;
-            entity.Value = equipment.Value;
-            entity.WearableInstanceId = equipment.WearableInstanceId;
-            context.Entry(entity).State = EntityState.Modified;
-            context.SaveChanges();
-            return _mapper.Map<EquipmentOptionDTO>(entity);
         }
 
         public IEnumerable<EquipmentOptionDTO> GetOptionsByWearableInstanceId(Guid wearableInstanceId)

@@ -167,9 +167,9 @@
       <Project>{D8C8A266-3D46-42C5-A492-28C75DB85BA8}</Project>
       <Name>OpenNos.DAL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
+    <ProjectReference Include="..\OpenNos.Data\ON.NW.DTOs.csproj">
       <Project>{F1071DED-3D92-4416-9B9C-8664441ADE64}</Project>
-      <Name>OpenNos.Data</Name>
+      <Name>ON.NW.DTOs</Name>
     </ProjectReference>
     <ProjectReference Include="..\NosSharp.Enums\NosSharp.Enums.csproj">
       <Project>{20ADDDDD-DAD9-44F3-9BEB-026C73090660}</Project>
