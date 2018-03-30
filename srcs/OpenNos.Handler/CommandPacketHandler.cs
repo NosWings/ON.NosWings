@@ -1622,28 +1622,35 @@ namespace OpenNos.Handler
             if (demotePacket != null)
             {
                 string name = demotePacket.CharacterName;
-                AccountDTO account = DaoFactory.AccountDao.LoadById(DaoFactory.CharacterDao.LoadByName(name).AccountId);
-                if (account != null && account.Authority > AuthorityType.User)
+                try
                 {
-                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, demotePacket, Session.IpAddress);
-                    account.Authority -= 1;
-                    DaoFactory.AccountDao.InsertOrUpdate(ref account);
-                    ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
-                    if (session != null)
+                    AccountDTO account = DaoFactory.AccountDao.LoadById(DaoFactory.CharacterDao.LoadByName(name).AccountId);
+                    if (account != null && account.Authority > AuthorityType.User)
                     {
-                        session.Account.Authority -= 1;
-                        session.Character.Authority -= 1;
-                        ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-                        DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
+                        LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, demotePacket, Session.IpAddress);
+                        account.Authority -= 1;
+                        DaoFactory.AccountDao.InsertOrUpdate(ref account);
+                        ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
+                        if (session != null)
+                        {
+                            session.Account.Authority -= 1;
+                            session.Character.Authority -= 1;
+                            ServerManager.Instance.ChangeMap(session.Character.CharacterId);
+                            DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
+                        }
+                        else
+                        {
+                            DaoFactory.AccountDao.WriteGeneralLog(account.AccountId, "127.0.0.1", null, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
+                        }
+
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
                     else
                     {
-                        DaoFactory.AccountDao.WriteGeneralLog(account.AccountId, "127.0.0.1", null, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                     }
-
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
-                else
+                catch (Exception e)
                 {
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                 }
@@ -2259,52 +2266,59 @@ namespace OpenNos.Handler
             if (promotePacket != null)
             {
                 string name = promotePacket.CharacterName;
-                CharacterDTO character = DaoFactory.CharacterDao.LoadByName(name);
-                if (character == null)
+                try
                 {
-                    return;
-                }
-
-                AccountDTO account = DaoFactory.AccountDao.LoadById(character.AccountId);
-                AuthorityType authority = AuthorityType.GameMaster;
-                switch (promotePacket.Authority)
-                {
-                    case "ADMIN":
-                        authority = AuthorityType.Administrator;
-                        break;
-                    case "SGM":
-                        authority = AuthorityType.SuperGameMaster;
-                        break;
-                    case "GM":
-                        authority = AuthorityType.GameMaster;
-                        break;
-                    case "WH":
-                        authority = AuthorityType.Moderator;
-                        break;
-                }
-
-                if (account != null && account.Authority >= AuthorityType.User && account.Authority < AuthorityType.GameMaster)
-                {
-                    LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, promotePacket, Session.IpAddress);
-                    account.Authority = authority;
-                    DaoFactory.AccountDao.InsertOrUpdate(ref account);
-                    ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
-                    if (session != null)
+                    CharacterDTO character = DaoFactory.CharacterDao.LoadByName(name);
+                    if (character == null)
                     {
-                        session.Account.Authority = authority;
-                        session.Character.Authority = authority;
-                        ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-                        DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion,
-                            $"by: {Session.Character.Name} to : {authority.ToString()}");
+                        return;
+                    }
+
+                    AccountDTO account = DaoFactory.AccountDao.LoadById(character.AccountId);
+                    AuthorityType authority = AuthorityType.GameMaster;
+                    switch (promotePacket.Authority)
+                    {
+                        case "ADMIN":
+                            authority = AuthorityType.Administrator;
+                            break;
+                        case "SGM":
+                            authority = AuthorityType.SuperGameMaster;
+                            break;
+                        case "GM":
+                            authority = AuthorityType.GameMaster;
+                            break;
+                        case "WH":
+                            authority = AuthorityType.Moderator;
+                            break;
+                    }
+
+                    if (account != null && account.Authority >= AuthorityType.User && account.Authority < AuthorityType.GameMaster)
+                    {
+                        LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, promotePacket, Session.IpAddress);
+                        account.Authority = authority;
+                        DaoFactory.AccountDao.InsertOrUpdate(ref account);
+                        ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
+                        if (session != null)
+                        {
+                            session.Account.Authority = authority;
+                            session.Character.Authority = authority;
+                            ServerManager.Instance.ChangeMap(session.Character.CharacterId);
+                            DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Promotion,
+                                $"by: {Session.Character.Name} to : {authority.ToString()}");
+                        }
+                        else
+                        {
+                            DaoFactory.AccountDao.WriteGeneralLog(account.AccountId, "127.0.0.1", null, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
+                        }
+
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
                     else
                     {
-                        DaoFactory.AccountDao.WriteGeneralLog(account.AccountId, "127.0.0.1", null, GeneralLogType.Promotion, $"by: {Session.Character.Name}");
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                     }
-
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
-                else
+                catch (Exception e)
                 {
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                 }
@@ -2355,6 +2369,8 @@ namespace OpenNos.Handler
                 if (monst.IsAlive)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, removeMobPacket, Session.IpAddress);
+                    monst.CurrentHp = 0;
+                    monst.GenerateDeath();
                     Session.CurrentMapInstance.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {6000} 3 0");
                     Session.SendPacket(Session.Character.GenerateSay(
                         string.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
