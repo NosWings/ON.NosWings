@@ -17,14 +17,12 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Service;
 using log4net;
 using Microsoft.Owin.Hosting;
 using OpenNos.Core;
-using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
@@ -35,16 +33,10 @@ using OpenNos.GameObject.Npc;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Interface;
 
-namespace NosSharp.Master
+namespace ON.NW.Master
 {
     internal class Program
     {
-        #region Members
-
-        private static ManualResetEvent _run = new ManualResetEvent(true);
-
-        #endregion
-
         #region Methods
 
         private static void Main(string[] args)
@@ -55,7 +47,7 @@ namespace NosSharp.Master
 
                 // initialize Logger
                 Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
-                
+
                 Console.Title = @"N# - Master Server";
                 string ipAddress = ConfigurationManager.AppSettings["MasterIP"];
                 int port = Convert.ToInt32(ConfigurationManager.AppSettings["MasterPort"]);
@@ -75,7 +67,8 @@ namespace NosSharp.Master
                     RegisterMappings();
 
                     // configure Services and Service Host
-                    IScsServiceApplication server = ScsServiceBuilder.CreateService(new ScsTcpEndPoint(ipAddress, port));
+                    IScsServiceApplication server =
+                        ScsServiceBuilder.CreateService(new ScsTcpEndPoint(ipAddress, port));
                     server.AddService<ICommunicationService, CommunicationService>(new CommunicationService());
                     server.ClientConnected += OnClientConnected;
                     server.ClientDisconnected += OnClientDisconnected;
@@ -85,10 +78,13 @@ namespace NosSharp.Master
                     // AUTO SESSION KICK
                     Observable.Interval(TimeSpan.FromMinutes(3)).Subscribe(x =>
                     {
-                        Parallel.ForEach(MsManager.Instance.ConnectedAccounts.Where(s => s.LastPulse.AddMinutes(3) <= DateTime.Now), connection =>
-                        {
-                            CommunicationServiceClient.Instance.KickSession(connection.AccountId, null);
-                        });
+                        Parallel.ForEach(
+                            MsManager.Instance.ConnectedAccounts.Where(s =>
+                                s.LastPulse.AddMinutes(3) <= DateTime.Now),
+                            connection =>
+                            {
+                                CommunicationServiceClient.Instance.KickSession(connection.AccountId, null);
+                            });
                     });
 
                     CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);

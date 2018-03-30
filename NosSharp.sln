@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ON.NW.Login", "srcs\NosShar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ON.NW.World", "srcs\NosSharp.World\ON.NW.World.csproj", "{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NosSharp.Parser", "srcs\NosSharp.Parser\NosSharp.Parser.csproj", "{C2D0CDB2-FDF9-4D33-A9C4-424E765F41C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ON.NW.Parser", "srcs\NosSharp.Parser\ON.NW.Parser.csproj", "{C2D0CDB2-FDF9-4D33-A9C4-424E765F41C6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{9A022DE0-2608-45D6-99DA-835CFFD4FC87}"
 EndProject
@@ -40,7 +40,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.Master.Library", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NosSharp.CLI", "srcs\NosSharp.CLI\NosSharp.CLI.csproj", "{1F90D3E4-6337-4753-9389-22CA4C688DB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NosSharp.Master", "srcs\NosSharp.Master\NosSharp.Master.csproj", "{9AA91BF5-88E7-4130-9F42-73AE206E2916}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ON.NW.Master", "srcs\NosSharp.Master\ON.NW.Master.csproj", "{9AA91BF5-88E7-4130-9F42-73AE206E2916}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{252F9358-822A-4989-A13A-67C11E1F7CB4}"
 EndProject

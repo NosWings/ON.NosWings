@@ -21,16 +21,14 @@ using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Service;
 using Newtonsoft.Json;
 using NosSharp.Enums;
-using NosSharp.Master.Controllers;
 using OpenNos.Core;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.DAL;
-using OpenNos.Master;
 using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
 
-namespace NosSharp.Master
+namespace ON.NW.Master
 {
     internal class CommunicationService : ScsService, ICommunicationService
     {

@@ -5,7 +5,7 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.DAL;
 
-namespace NosSharp.Master
+namespace ON.NW.Master
 {
     public class AuthorizationServerProvider : OAuthAuthorizationServerProvider
     {

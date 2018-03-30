@@ -6,7 +6,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 
-namespace NosSharp.Master
+namespace ON.NW.Master
 {
     public class Startup
     {

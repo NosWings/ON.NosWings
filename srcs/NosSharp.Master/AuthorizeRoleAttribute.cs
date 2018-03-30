@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web.Http;
 using NosSharp.Enums;
 
-namespace NosSharp.Master
+namespace ON.NW.Master
 {
     public class AuthorizeRoleAttribute : AuthorizeAttribute
     {

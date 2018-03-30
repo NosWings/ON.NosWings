@@ -68,7 +68,6 @@ namespace OpenNos.DAL.EF
 
                 cfg.CreateMap(typeof(ItemInstance), typeof(ItemInstanceDTO)).As(baseType);
 
-                Type itemInstanceType = typeof(ItemInstance);
                 foreach (KeyValuePair<Type, Type> entry in _mappings)
                 {
                     // GameObject -> Entity

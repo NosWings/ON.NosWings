@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Web.Http;
-using NosSharp.Master.Controllers.ControllersParameters;
+using ON.NW.Master.Controllers.ControllersParameters;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Master.Library.Client;
 
-namespace NosSharp.Master.Controllers
+namespace ON.NW.Master.Controllers
 {
     public class MailController : ApiController
     {

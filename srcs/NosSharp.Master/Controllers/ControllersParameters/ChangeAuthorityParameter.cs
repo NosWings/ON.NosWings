@@ -1,4 +1,4 @@
-﻿namespace NosSharp.Master.Controllers.ControllersParameters
+﻿namespace ON.NW.Master.Controllers.ControllersParameters
 {
 
     public class ChangeAuthorityParameter

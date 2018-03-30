@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Exe</OutputType>
-    <AssemblyName>NosSharp.Login</AssemblyName>
+    <AssemblyName>ON.NW.Login</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <WarningLevel>4</WarningLevel>
@@ -52,7 +52,7 @@
     <SlowCheetahTargets Condition=" '$(SlowCheetah_EnableImportFromNuGet)'=='true' and Exists('$(SlowCheetah_NuGetImportPath)') ">$(SlowCheetah_NuGetImportPath)</SlowCheetahTargets>
   </PropertyGroup>
   <PropertyGroup>
-    <RootNamespace>NosSharp.Login</RootNamespace>
+    <RootNamespace>ON.NW.Login</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>560EC2E0480BCE4C5C9A11BAD7B9C1B4DC409632</ManifestCertificateThumbprint>
@@ -97,7 +97,7 @@
     <StartupObject>NosSharp.Login.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>nossharp-logo.ico</ApplicationIcon>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -376,6 +376,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="favicon.ico" />
     <Content Include="nossharp-logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
