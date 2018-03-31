@@ -1046,29 +1046,21 @@ namespace OpenNos.GameObject
             }
             if (MeditationDictionary.Count != 0)
             {
-                if (MeditationDictionary.ContainsKey(534) && MeditationDictionary[534] < DateTime.Now)
+                for (short i = 532; i < 535; i++)
                 {
-                    Session.SendPacket(GenerateEff(4344));
-                    AddBuff(new Buff.Buff(534, Level));
-                    RemoveBuff(533);
-                    RemoveBuff(532);
-                    MeditationDictionary.Remove(534);
-                }
-                else if (MeditationDictionary.ContainsKey(533) && MeditationDictionary[533] < DateTime.Now)
-                {
-                    Session.SendPacket(GenerateEff(4343));
-                    AddBuff(new Buff.Buff(533, Level));
-                    RemoveBuff(532);
-                    RemoveBuff(534);
-                    MeditationDictionary.Remove(533);
-                }
-                else if (MeditationDictionary.ContainsKey(532) && MeditationDictionary[532] < DateTime.Now)
-                {
-                    Session.SendPacket(GenerateEff(4343));
-                    AddBuff(new Buff.Buff(532, Level));
-                    RemoveBuff(534);
-                    RemoveBuff(533);
-                    MeditationDictionary.Remove(532);
+                    if (MeditationDictionary.ContainsKey(i) && MeditationDictionary[i] < DateTime.Now)
+                    {
+                        Session.SendPacket(GenerateEff(i == 535 ? 4344 : 4343));
+                        RemoveBuff((short)(i == 532 ? 533 : i == 533 ? 532 : 534));
+                        RemoveBuff((short)(i == 532 ? 534 : i == 533 ? 534 : 532));
+                        if (i == 534)
+                        {
+                            RemoveBuff(532);
+                            RemoveBuff(533);
+                        }
+                        AddBuff(new Buff.Buff(i, Level));
+                        MeditationDictionary.Remove(i);
+                    }
                 }
             }
 
@@ -2273,11 +2265,11 @@ namespace OpenNos.GameObject
 
         public IEnumerable<string> GenerateQuicklist()
         {
-            string[] pktQs = { "qslot 0", "qslot 1", "qslot 2" };
+            string[] pktQs = { "qslot 0", "qslot 1" };
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 30; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 2; j++)
                 {
                     QuicklistEntryDTO qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i && n.Morph == (UseSp ? Morph : 0));
                     pktQs[j] += $" {qi?.Type ?? 7}.{qi?.Slot ?? 7}.{qi?.Pos.ToString() ?? "-1"}";
@@ -3843,7 +3835,7 @@ namespace OpenNos.GameObject
                         // load and concat inventory with equipment
                         IEnumerable<ItemInstance> inventories = Inventory.Select(s => s.Value);
                         IEnumerable<Guid> currentlySavedInventoryIds = DaoFactory.IteminstanceDao.LoadSlotAndTypeByCharacterId(CharacterId);
-                        IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadByAccount(Session.Account.AccountId);
+                        IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadAllCharactersByAccount(Session.Account.AccountId);
                         currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId)
                             .Aggregate(currentlySavedInventoryIds,
                                 (current, characteraccount) => current.Concat(DaoFactory.IteminstanceDao.LoadByCharacterId(characteraccount.CharacterId).Where(s => s.Type == InventoryType.Warehouse)
