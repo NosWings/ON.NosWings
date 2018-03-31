@@ -90,6 +90,8 @@ namespace ON.NW.World
             // initialize Loggers
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
 
+            Welcome();
+
 
             // initialize api
             if (CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]))
