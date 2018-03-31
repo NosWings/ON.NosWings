@@ -207,9 +207,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
+    <ProjectReference Include="..\OpenNos.Data\ON.NW.DTOs.csproj">
       <Project>{f1071ded-3d92-4416-9b9c-8664441ade64}</Project>
-      <Name>OpenNos.Data</Name>
+      <Name>ON.NW.DTOs</Name>
     </ProjectReference>
     <ProjectReference Include="..\NosSharp.Enums\NosSharp.Enums.csproj">
       <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>

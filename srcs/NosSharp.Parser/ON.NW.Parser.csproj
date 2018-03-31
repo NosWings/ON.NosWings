@@ -7,8 +7,8 @@
     <ProjectGuid>{C2D0CDB2-FDF9-4D33-A9C4-424E765F41C6}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NosSharp.Parser</RootNamespace>
-    <AssemblyName>NosSharp.Parser</AssemblyName>
+    <RootNamespace>ON.NW.Parser</RootNamespace>
+    <AssemblyName>ON.NW.Parser</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -44,7 +44,7 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>nossharp-logo.ico</ApplicationIcon>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>NosSharp.Parser.Program</StartupObject>
@@ -243,9 +243,9 @@
       <Project>{d8c8a266-3d46-42c5-a492-28c75db85ba8}</Project>
       <Name>OpenNos.DAL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
+    <ProjectReference Include="..\OpenNos.Data\ON.NW.DTOs.csproj">
       <Project>{f1071ded-3d92-4416-9b9c-8664441ade64}</Project>
-      <Name>OpenNos.Data</Name>
+      <Name>ON.NW.DTOs</Name>
     </ProjectReference>
     <ProjectReference Include="..\NosSharp.Enums\NosSharp.Enums.csproj">
       <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
@@ -285,6 +285,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="favicon.ico" />
     <Content Include="nossharp-logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

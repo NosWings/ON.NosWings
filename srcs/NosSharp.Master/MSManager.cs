@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using Hik.Communication.ScsServices.Service;
 using OpenNos.Master.Library.Data;
 
-namespace NosSharp.Master
+namespace ON.NW.Master
 {
     internal class MsManager
     {

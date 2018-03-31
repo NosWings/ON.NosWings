@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Text;
 using OpenNos.Core;
 
-namespace NosSharp.World
+namespace ON.NW.World
 {
     public class WorldEncryption : EncryptionBase
     {

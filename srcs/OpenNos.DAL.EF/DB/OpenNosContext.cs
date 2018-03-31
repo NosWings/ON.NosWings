@@ -135,6 +135,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
 
+        public virtual DbSet<CharacterHome> CharacterHome { get; set; }
+
         public virtual DbSet<StaticBuff> StaticBuff { get; set; }
 
         #endregion
@@ -145,6 +147,15 @@ namespace OpenNos.DAL.EF.DB
         {
             // remove automatic pluralization
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+            modelBuilder.Entity<Character>()
+                .HasMany(e => e.CharacterHome)
+                .WithRequired(e => e.Character)
+                .HasForeignKey(e => e.CharacterId);
+
+            modelBuilder.Entity<CharacterHome>()
+                .HasRequired(e => e.Character)
+                .WithMany(s => s.CharacterHome);
 
             // build TPH tables for inheritance
             modelBuilder.Entity<ItemInstance>()

@@ -6,7 +6,7 @@ using OpenNos.Core;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 
-namespace NosSharp.Master.Controllers
+namespace ON.NW.Master.Controllers
 {
     public class StatController : ApiController
     {
