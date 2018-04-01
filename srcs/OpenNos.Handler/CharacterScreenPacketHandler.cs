@@ -66,7 +66,7 @@ namespace OpenNos.Handler
             long accountId = Session.Account.AccountId;
             byte slot = characterCreatePacket.Slot;
             string characterName = characterCreatePacket.Name;
-            if (slot > 2 || DaoFactory.CharacterDao.LoadBySlot(accountId, slot) != null)
+            if (slot > 3 || DaoFactory.CharacterDao.LoadBySlot(accountId, slot) != null)
             {
                 return;
             }
@@ -80,7 +80,7 @@ namespace OpenNos.Handler
                 CharacterDTO character = DaoFactory.CharacterDao.LoadByName(characterName);
                 if (character == null || character.State == CharacterState.Inactive)
                 {
-                    if (characterCreatePacket.Slot > 2)
+                    if (characterCreatePacket.Slot > 3)
                     {
                         return;
                     }
