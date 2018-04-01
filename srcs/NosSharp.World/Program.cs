@@ -89,16 +89,16 @@ namespace ON.NW.World
         private static void CustomisationRegistration()
         {
             const string configPath = "./config/";
-            var baseCharacter = ConfigurationHelper.Load<BaseCharacter>(configPath + nameof(BaseCharacter), true);
+            var baseCharacter = ConfigurationHelper.Load<BaseCharacter>(configPath + nameof(BaseCharacter) + ".json", true);
             Logger.Log.Info("[CUSTOMIZER] BaseCharacter Loaded !");
             DependencyContainer.Instance.Register(baseCharacter);
-            var baseQuicklist = ConfigurationHelper.Load<BaseQuicklist>(configPath + nameof(BaseQuicklist), true);
+            var baseQuicklist = ConfigurationHelper.Load<BaseQuicklist>(configPath + nameof(BaseQuicklist) + ".json", true);
             Logger.Log.Info("[CUSTOMIZER] BaseQuicklist Loaded !");
             DependencyContainer.Instance.Register(baseQuicklist);
-            var baseInventory = ConfigurationHelper.Load<BaseInventory>(configPath + nameof(BaseInventory), true);
+            var baseInventory = ConfigurationHelper.Load<BaseInventory>(configPath + nameof(BaseInventory) + ".json", true);
             Logger.Log.Info("[CUSTOMIZER] BaseInventory Loaded !");
             DependencyContainer.Instance.Register(baseInventory);
-            var baseSkill = ConfigurationHelper.Load<BaseSkill>(configPath + nameof(BaseSkill), true);
+            var baseSkill = ConfigurationHelper.Load<BaseSkill>(configPath + nameof(BaseSkill) + ".json", true);
             Logger.Log.Info("[CUSTOMIZER] BaseSkill Loaded !");
             DependencyContainer.Instance.Register(baseSkill);
         }
