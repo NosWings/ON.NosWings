@@ -467,7 +467,11 @@ namespace OpenNos.GameObject.Npc
                     break;
 
                 case 150:
-                    if (session.Character?.Family == null || npc == null)
+                    if (npc == null || (!npc.EffectActivated && ServerManager.Instance.LodTimes) || session.Character.Level < ServerManager.Instance.MinLodLevel)
+                    {
+                        return;
+                    }
+                    if (session.Character?.Family == null)
                     {
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
                         break;

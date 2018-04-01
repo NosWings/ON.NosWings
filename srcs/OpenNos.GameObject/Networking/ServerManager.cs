@@ -129,6 +129,10 @@ namespace OpenNos.GameObject.Networking
 
         public bool SingleRaidPortal { get; set; }
 
+        public bool LodTimes { get; set; }
+
+        public byte MinLodLevel { get; set; }
+
         public int QuestDropRate { get; set; }
 
         public bool EventInWaiting { get; set; }
@@ -1290,6 +1294,8 @@ namespace OpenNos.GameObject.Networking
             LobbySpeed = byte.Parse(ConfigurationManager.AppSettings["LobbySpeed"]);
             ReputOnMonsters = bool.Parse(ConfigurationManager.AppSettings["ReputOnMonster"]);
             SingleRaidPortal = bool.Parse(ConfigurationManager.AppSettings["SingleRaidPortal"]);
+            LodTimes = bool.Parse(ConfigurationManager.AppSettings["LodTimes"]);
+            MinLodLevel = byte.Parse(ConfigurationManager.AppSettings["MinLodLevel"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Act4RaidStart = DateTime.Now;
             Act4AngelStat = new PercentBar();
