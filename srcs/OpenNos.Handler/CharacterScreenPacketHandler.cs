@@ -75,7 +75,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Regex rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B\u002E]*$");
+            var rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B\u002E]*$");
             if (rg.Matches(characterName).Count == 1)
             {
                 CharacterDTO character = DaoFactory.CharacterDao.LoadByName(characterName);
@@ -94,11 +94,10 @@ namespace OpenNos.Handler
                     newCharacter.Name = characterName;
                     newCharacter.Slot = slot;
                     newCharacter.State = CharacterState.Active;
-
-                    SaveResult insertResult = DaoFactory.CharacterDao.InsertOrUpdate(ref newCharacter);
+                    DaoFactory.CharacterDao.InsertOrUpdate(ref newCharacter);
 
                     // init quest
-                    CharacterQuestDTO firstQuest = new CharacterQuestDTO { CharacterId = newCharacter.CharacterId, QuestId = 1997, IsMainQuest = true };
+                    var firstQuest = new CharacterQuestDTO { CharacterId = newCharacter.CharacterId, QuestId = 1997, IsMainQuest = true };
                     DaoFactory.CharacterQuestDao.InsertOrUpdate(firstQuest);
 
                     // init skills
@@ -114,17 +113,18 @@ namespace OpenNos.Handler
                     var quicklist = DependencyContainer.Instance.Get<BaseQuicklist>();
                     foreach (QuicklistEntryDTO quicklistEntry in quicklist.Quicklist)
                     {
+                        quicklistEntry.CharacterId = newCharacter.CharacterId;
                         DaoFactory.QuicklistEntryDao.InsertOrUpdate(quicklistEntry);
                     }
 
                     // init inventory
-                    var startupInventory = new Inventory((Character) newCharacter);
-                    var inventory = DependencyContainer.Instance.Get<BaseInventory>();
-                    foreach (BaseInventory.StartupInventoryItem item in inventory.Items)
+                    var inventory = new Inventory((Character) newCharacter);
+                    var startupInventory = DependencyContainer.Instance.Get<BaseInventory>();
+                    foreach (BaseInventory.StartupInventoryItem item in startupInventory.Items)
                     {
-                        startupInventory.AddNewToInventory(item.Vnum, item.Quantity, item.InventoryType);
+                        inventory.AddNewToInventory(item.Vnum, item.Quantity, item.InventoryType);
                     }
-                    startupInventory.Select(s => s.Value).ToList().ForEach(i => DaoFactory.IteminstanceDao.InsertOrUpdate(i));
+                    inventory.Select(s => s.Value).ToList().ForEach(i => DaoFactory.IteminstanceDao.InsertOrUpdate(i));
 
                     LoadCharacters(characterCreatePacket.OriginalContent);
                 }
@@ -248,7 +248,7 @@ namespace OpenNos.Handler
                                     return;
                                 }
                             }
-                            Account accountobject = new Account
+                            var accountobject = new Account
                             {
                                 AccountId = account.AccountId,
                                 Name = account.Name,
@@ -310,7 +310,7 @@ namespace OpenNos.Handler
                     foreach (ItemInstanceDTO equipmentEntry in inventory)
                     {
                         // explicit load of iteminstance
-                        WearableInstance currentInstance = equipmentEntry as WearableInstance;
+                        var currentInstance = equipmentEntry as WearableInstance;
                         equipment[(short) currentInstance.Item.EquipmentSlot] = currentInstance;
                     }
                     string petlist = string.Empty;
@@ -380,13 +380,13 @@ namespace OpenNos.Handler
                 Session.Character.GenerateMiniland();
                 if (!DaoFactory.CharacterQuestDao.LoadByCharacterId(Session.Character.CharacterId).Any(s => s.IsMainQuest))
                 {
-                    CharacterQuestDTO firstQuest = new CharacterQuestDTO { CharacterId = Session.Character.CharacterId, QuestId = 1997, IsMainQuest = true };
+                    var firstQuest = new CharacterQuestDTO { CharacterId = Session.Character.CharacterId, QuestId = 1997, IsMainQuest = true };
                     DaoFactory.CharacterQuestDao.InsertOrUpdate(firstQuest);
                 }
                 DaoFactory.CharacterQuestDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(q => Session.Character.Quests.Add(q as CharacterQuest));
                 DaoFactory.MateDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
                 {
-                    Mate mate = (Mate)s;
+                    var mate = (Mate)s;
                     mate.Owner = Session.Character;
                     mate.GenerateMateTransportId();
                     mate.Monster = ServerManager.Instance.GetNpc(s.NpcMonsterVNum);
