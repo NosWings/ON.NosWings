@@ -28,7 +28,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenNos.Core.Extensions;
-using System.Reactive.Linq;
 using NosSharp.Enums;
 using OpenNos.Core.Handling;
 using OpenNos.Core.Serializing;

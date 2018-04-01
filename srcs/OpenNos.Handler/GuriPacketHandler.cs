@@ -7,7 +7,6 @@ using OpenNos.Core.Handling;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.GameObject;
-using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Event.ICEBREAKER;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item.Instance;

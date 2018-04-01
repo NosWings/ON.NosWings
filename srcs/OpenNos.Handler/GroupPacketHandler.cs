@@ -2,7 +2,6 @@
 using System.Linq;
 using NosSharp.Enums;
 using OpenNos.Core;
-using OpenNos.Core.Extensions;
 using OpenNos.Core.Handling;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;

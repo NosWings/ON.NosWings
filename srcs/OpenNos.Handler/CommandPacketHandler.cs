@@ -33,7 +33,6 @@ using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.CommandPackets;
-using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
 
@@ -76,7 +75,7 @@ namespace OpenNos.Handler
                     if (packet.TimeBeforeMaintenance == null)
                     {
                         ServerManager.Instance.Shout(Language.Instance.GetMessageFromKey("MAINTENANCE_START"));
-                        foreach (var session in ServerManager.Instance.Sessions.Where(s => s.Character.Authority < AuthorityType.GameMaster))
+                        foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character.Authority < AuthorityType.GameMaster))
                         {
                             session.Character.Save();
                             CommunicationServiceClient.Instance.KickSession(session.Account.AccountId, session.SessionId);
@@ -88,7 +87,7 @@ namespace OpenNos.Handler
                     Observable.Timer(TimeSpan.FromMinutes(value)).Subscribe(o =>
                     {
                         CommunicationServiceClient.Instance.SetMaintenanceState(true);
-                        foreach (var session in ServerManager.Instance.Sessions.Where(s => s.Character.Authority < AuthorityType.GameMaster))
+                        foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character.Authority < AuthorityType.GameMaster))
                         {
                             session.Character.Save();
                             CommunicationServiceClient.Instance.KickSession(session.Account.AccountId, session.SessionId);
@@ -710,7 +709,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                MapMonsterDTO monst = new MapMonsterDTO
+                var monst = new MapMonsterDTO
                 {
                     MonsterVNum = addMonsterPacket.MonsterVNum,
                     MapY = Session.Character.PositionY,
@@ -854,7 +853,7 @@ namespace OpenNos.Handler
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, banPacket, Session.IpAddress);
                     ServerManager.Instance.Kick(banPacket.CharacterName);
-                    PenaltyLogDTO log = new PenaltyLogDTO
+                    var log = new PenaltyLogDTO
                     {
                         AccountId = character.AccountId,
                         Reason = banPacket.Reason,
@@ -899,7 +898,7 @@ namespace OpenNos.Handler
                     session?.SendPacket(blockExpPacket.Duration == 1
                         ? UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), blockExpPacket.Reason))
                         : UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), blockExpPacket.Reason, blockExpPacket.Duration)));
-                    PenaltyLogDTO log = new PenaltyLogDTO
+                    var log = new PenaltyLogDTO
                     {
                         AccountId = character.AccountId,
                         Reason = blockExpPacket.Reason,
@@ -944,7 +943,7 @@ namespace OpenNos.Handler
                     session?.SendPacket(blockFExpPacket.Duration == 1
                         ? UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), blockFExpPacket.Reason))
                         : UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), blockFExpPacket.Reason, blockFExpPacket.Duration)));
-                    PenaltyLogDTO log = new PenaltyLogDTO
+                    var log = new PenaltyLogDTO
                     {
                         AccountId = character.AccountId,
                         Reason = blockFExpPacket.Reason,
@@ -1008,7 +1007,7 @@ namespace OpenNos.Handler
                     session?.SendPacket(blockRepPacket.Duration == 1
                         ? UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), blockRepPacket.Reason))
                         : UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), blockRepPacket.Reason, blockRepPacket.Duration)));
-                    PenaltyLogDTO log = new PenaltyLogDTO
+                    var log = new PenaltyLogDTO
                     {
                         AccountId = character.AccountId,
                         Reason = blockRepPacket.Reason,
@@ -1082,7 +1081,7 @@ namespace OpenNos.Handler
         /// <param name="changeFairyLevelPacket"></param>
         public void ChangeFairyLevel(ChangeFairyLevelPacket changeFairyLevelPacket)
         {
-            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            var fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (changeFairyLevelPacket != null)
             {
                 if (fairy != null)
@@ -1289,7 +1288,7 @@ namespace OpenNos.Handler
         {
             if (changeSpecialistLevelPacket != null)
             {
-                SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                var sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (sp != null && Session.Character.UseSp)
                 {
                     if (changeSpecialistLevelPacket.SpecialistLevel <= 255 && changeSpecialistLevelPacket.SpecialistLevel > 0)
@@ -1546,7 +1545,7 @@ namespace OpenNos.Handler
                     ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, rare: rare, upgrade: upgrade, design: design).FirstOrDefault();
                     if (inv != null)
                     {
-                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
+                        var wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
                         if (wearable != null)
                         {
                             switch (wearable.Item.EquipmentSlot)
@@ -1599,7 +1598,7 @@ namespace OpenNos.Handler
                 }
 
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, portalToPacket, Session.IpAddress);
-                Portal portal = new Portal
+                var portal = new Portal
                 {
                     SourceMapId = Session.Character.MapId,
                     SourceX = Session.Character.PositionX,
@@ -2280,7 +2279,7 @@ namespace OpenNos.Handler
                     }
 
                     AccountDTO account = DaoFactory.AccountDao.LoadById(character.AccountId);
-                    AuthorityType authority = AuthorityType.GameMaster;
+                    var authority = AuthorityType.GameMaster;
                     switch (promotePacket.Authority)
                     {
                         case "ADMIN":
@@ -2348,7 +2347,7 @@ namespace OpenNos.Handler
                 }
 
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, rarifyPacket, Session.IpAddress);
-                WearableInstance wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(rarifyPacket.Slot, 0);
+                var wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(rarifyPacket.Slot, 0);
                 wearableInstance?.RarifyItem(Session, rarifyPacket.Mode, rarifyPacket.Protection);
             }
             else
@@ -2673,7 +2672,7 @@ namespace OpenNos.Handler
                 }
 
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, summonPacket, Session.IpAddress);
-                Random random = new Random();
+                var random = new Random();
                 for (int i = 0; i < summonPacket.Amount; i++)
                 {
                     List<MapCell> possibilities = new List<MapCell>();
@@ -2701,7 +2700,7 @@ namespace OpenNos.Handler
                         continue;
                     }
 
-                    MapMonster monster = new MapMonster
+                    var monster = new MapMonster
                     {
                         MonsterVNum = summonPacket.NpcMonsterVNum,
                         MapY = Session.Character.PositionY,
@@ -2744,7 +2743,7 @@ namespace OpenNos.Handler
                 }
 
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, summonNpcPacket, Session.IpAddress);
-                Random random = new Random();
+                var random = new Random();
                 for (int i = 0; i < summonNpcPacket.Amount; i++)
                 {
                     List<MapCell> possibilities = new List<MapCell>();
@@ -2772,7 +2771,7 @@ namespace OpenNos.Handler
                         continue;
                     }
 
-                    MapNpc monster = new MapNpc
+                    var monster = new MapNpc
                     {
                         NpcVNum = summonNpcPacket.NpcMonsterVNum,
                         MapY = Session.Character.PositionY,
@@ -2858,7 +2857,7 @@ namespace OpenNos.Handler
         /// <param name="teleportToMePacket"></param>
         public void TeleportToMe(TeleportToMePacket teleportToMePacket)
         {
-            Random random = new Random();
+            var random = new Random();
             if (teleportToMePacket != null)
             {
                 if (teleportToMePacket.CharacterName == "*")
@@ -3031,7 +3030,7 @@ namespace OpenNos.Handler
                 }
 
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, upgradePacket, Session.IpAddress);
-                WearableInstance wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(upgradePacket.Slot, 0);
+                var wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(upgradePacket.Slot, 0);
                 wearableInstance?.UpgradeItem(Session, upgradePacket.Mode, upgradePacket.Protection, true);
             }
             else
@@ -3053,7 +3052,7 @@ namespace OpenNos.Handler
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, warningPacket, Session.IpAddress);
                 ClientSession session = ServerManager.Instance.GetSessionByCharacterName(characterName);
                 session?.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("WARNING"), warningPacket.Reason)));
-                PenaltyLogDTO log = new PenaltyLogDTO
+                var log = new PenaltyLogDTO
                 {
                     AccountId = character.AccountId,
                     Reason = warningPacket.Reason,
@@ -3101,7 +3100,7 @@ namespace OpenNos.Handler
         {
             if (wigColorPacket != null)
             {
-                WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+                var wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                 if (wig != null)
                 {
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, wigColorPacket, Session.IpAddress);
@@ -3180,7 +3179,7 @@ namespace OpenNos.Handler
                     level = 1;
                 }
 
-                Mate mate = new Mate(Session.Character, mateNpc, level, mateType);
+                var mate = new Mate(Session.Character, mateNpc, level, mateType);
                 Session.Character.AddPet(mate);
             }
             else
@@ -3207,7 +3206,7 @@ namespace OpenNos.Handler
                     session?.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
                 }
 
-                PenaltyLogDTO log = new PenaltyLogDTO
+                var log = new PenaltyLogDTO
                 {
                     AccountId = characterToMute.AccountId,
                     Reason = reason,

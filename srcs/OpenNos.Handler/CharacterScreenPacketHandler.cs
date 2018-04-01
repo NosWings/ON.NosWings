@@ -25,7 +25,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
 using NosSharp.Enums;
-using OpenNos.Core.Extensions;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;

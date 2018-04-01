@@ -24,7 +24,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using CloneExtensions;
 using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
@@ -32,7 +31,6 @@ using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
-using OpenNos.GameObject.Packets.CommandPackets;
 using static NosSharp.Enums.BCardType;
 
 namespace OpenNos.Handler

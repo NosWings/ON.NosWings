@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using NosSharp.Enums;
-using OpenNos.Core.Extensions;
 using OpenNos.Core.Handling;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;

@@ -37,7 +37,7 @@ namespace OpenNos.Core.Serializing
             try
             {
                 KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformation = GetSerializationInformation(packetType);
-                PacketDefinition deserializedPacket = (PacketDefinition)Activator.CreateInstance(packetType); // reflection is bad, improve?
+                var deserializedPacket = (PacketDefinition)Activator.CreateInstance(packetType); // reflection is bad, improve?
                 SetDeserializationInformations(deserializedPacket, packetContent, serializationInformation.Key.Item2);
                 deserializedPacket = Deserialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
                 return deserializedPacket;
@@ -150,33 +150,41 @@ namespace OpenNos.Core.Serializing
         {
             MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
 
-            if (matches.Count > 0)
+            if (matches.Count <= 0)
             {
-                foreach (KeyValuePair<PacketIndexAttribute, PropertyInfo> packetBasePropertyInfo in serializationInformation.Value)
+                return deserializedPacket;
+            }
+
+            foreach (KeyValuePair<PacketIndexAttribute, PropertyInfo> packetBasePropertyInfo in serializationInformation.Value)
+            {
+                int currentIndex = packetBasePropertyInfo.Key.Index + (includesKeepAliveIdentity ? 2 : 1); // adding 2 because we need to skip incrementing number and packet header
+
+                if (currentIndex < matches.Count)
                 {
-                    int currentIndex = packetBasePropertyInfo.Key.Index + (includesKeepAliveIdentity ? 2 : 1); // adding 2 because we need to skip incrementing number and packet header
-
-                    if (currentIndex < matches.Count)
+                    if (packetBasePropertyInfo.Key.SerializeToEnd)
                     {
-                        if (packetBasePropertyInfo.Key.SerializeToEnd)
-                        {
-                            // get the value to the end and stop deserialization
-                            string valueToEnd = packetContent.Substring(matches[currentIndex].Index, packetContent.Length - matches[currentIndex].Index);
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket,
-                                DeserializeValue(packetBasePropertyInfo.Value.PropertyType, valueToEnd, packetBasePropertyInfo.Key, matches, includesKeepAliveIdentity));
-                            break;
-                        }
-
-                        string currentValue = matches[currentIndex].Value;
-
-                        // set the value & convert currentValue
+                        // get the value to the end and stop deserialization
+                        string valueToEnd = packetContent.Substring(matches[currentIndex].Index, packetContent.Length - matches[currentIndex].Index);
                         packetBasePropertyInfo.Value.SetValue(deserializedPacket,
-                            DeserializeValue(packetBasePropertyInfo.Value.PropertyType, currentValue, packetBasePropertyInfo.Key, matches, includesKeepAliveIdentity));
-                    }
-                    else
-                    {
+                            DeserializeValue(packetBasePropertyInfo.Value.PropertyType, valueToEnd, packetBasePropertyInfo.Key, matches, includesKeepAliveIdentity));
                         break;
                     }
+
+
+                    string currentValue = matches[currentIndex].Value;
+
+                    if (packetBasePropertyInfo.Value.PropertyType == typeof(string) && string.IsNullOrEmpty(currentValue))
+                    {
+                        throw new NullReferenceException();
+                    }
+
+                    // set the value & convert currentValue
+                    packetBasePropertyInfo.Value.SetValue(deserializedPacket,
+                        DeserializeValue(packetBasePropertyInfo.Value.PropertyType, currentValue, packetBasePropertyInfo.Key, matches, includesKeepAliveIdentity));
+                }
+                else
+                {
+                    break;
                 }
             }
 

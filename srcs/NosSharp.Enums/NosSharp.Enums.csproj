@@ -146,6 +146,7 @@
     <Compile Include="Act4RaidType.cs" />
     <Compile Include="AttackType.cs" />
     <Compile Include="BazaarListType.cs" />
+    <Compile Include="CancelType.cs" />
     <Compile Include="ChatType.cs" />
     <Compile Include="FactionType.cs" />
     <Compile Include="FixedUpMode.cs" />

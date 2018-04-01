@@ -202,6 +202,11 @@
     <Compile Include="Packets\CommandPackets\LobbyPacket.cs" />
     <Compile Include="Packets\CommandPackets\MaintenancePacket.cs" />
     <Compile Include="Packets\CommandPackets\RestartPacket.cs" />
+    <Compile Include="Packets\HomePackets\HomePacket.cs" />
+    <Compile Include="Packets\HomePackets\SetHomePacket.cs" />
+    <Compile Include="Packets\HomePackets\UnsetHomePacket.cs" />
+    <Compile Include="Packets\ServerPackets\CancelPacket.cs" />
+    <Compile Include="Packets\ServerPackets\SrPacket.cs" />
     <Compile Include="ToSummon.cs" />
     <Compile Include="Packets\ClientPackets\PslPacket.cs" />
     <Compile Include="Packets\ClientPackets\QtPacket.cs" />

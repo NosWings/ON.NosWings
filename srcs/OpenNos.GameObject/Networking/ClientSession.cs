@@ -94,77 +94,39 @@ namespace OpenNos.GameObject.Networking
                 return _character;
             }
 
-            private set
-            {
-                _character = value;
-            }
+            private set => _character = value;
         }
 
-        public long ClientId
-        {
-            get { return _client.ClientId; }
-        }
+        public long ClientId => _client.ClientId;
 
         public MapInstance CurrentMapInstance { get; set; }
 
         public IDictionary<string, HandlerMethodReference> HandlerMethods
         {
-            get
-            {
-                return _handlerMethods ?? (_handlerMethods = new Dictionary<string, HandlerMethodReference>());
-            }
+            get => _handlerMethods ?? (_handlerMethods = new Dictionary<string, HandlerMethodReference>());
 
-            set
-            {
-                _handlerMethods = value;
-            }
+            set => _handlerMethods = value;
         }
-        public bool HasCurrentMapInstance
-        {
-            get { return CurrentMapInstance != null; }
-        }
+        public bool HasCurrentMapInstance => CurrentMapInstance != null;
 
         public bool HasSelectedCharacter { get; set; }
 
-        public bool HasSession
-        {
-            get { return _client != null; }
-        }
+        public bool HasSession => _client != null;
 
-        public string IpAddress
-        {
-            get { return _client.IpAddress.Contains("tcp://") ? _client.IpAddress.Replace("tcp://", "") : _client.IpAddress; }
-        }
+        public string IpAddress => _client.IpAddress.Contains("tcp://") ? _client.IpAddress.Replace("tcp://", "") : _client.IpAddress;
 
         public bool IsAuthenticated { get; set; }
 
-        public bool IsConnected
-        {
-            get { return _client.IsConnected; }
-        }
+        public bool IsConnected => _client.IsConnected;
 
         public bool IsDisposing
         {
-            get
-            {
-                return _client.IsDisposing;
-            }
+            get => _client.IsDisposing;
 
-            set
-            {
-                _client.IsDisposing = value;
-            }
+            set => _client.IsDisposing = value;
         }
-
-        public bool IsLocalhost
-        {
-            get { return IpAddress.Contains("127.0.0.1"); }
-        }
-
-        public bool IsOnMap
-        {
-            get { return CurrentMapInstance != null; }
-        }
+        
+        public bool IsOnMap => CurrentMapInstance != null;
 
         public int LastKeepAliveIdentity { get; set; }
 
@@ -231,11 +193,6 @@ namespace OpenNos.GameObject.Networking
         public void Disconnect()
         {
             _client.Disconnect();
-        }
-
-        public string GenerateIdentity()
-        {
-            return $"Account: {Account.Name}";
         }
 
         public void Initialize(EncryptionBase encryptor, Type packetHandler, bool isWorldServer)
@@ -350,7 +307,7 @@ namespace OpenNos.GameObject.Networking
             // iterate thru each type in the given assembly
             foreach (Type handlerType in handlerTypes)
             {
-                IPacketHandler handler = (IPacketHandler)Activator.CreateInstance(handlerType, this);
+                var handler = (IPacketHandler)Activator.CreateInstance(handlerType, this);
 
                 // include PacketDefinition
                 foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any() || x.GetParameters().FirstOrDefault()?.ParameterType.BaseType == typeof(PacketDefinition)))
@@ -360,7 +317,7 @@ namespace OpenNos.GameObject.Networking
                     // assume PacketDefinition based handler method
                     if (!packetAttributes.Any())
                     {
-                        HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, methodInfo.GetParameters().FirstOrDefault()?.ParameterType);
+                        var methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, methodInfo.GetParameters().FirstOrDefault()?.ParameterType);
                         HandlerMethods.Add(methodReference.Identification, methodReference);
                     }
                     else
@@ -368,7 +325,7 @@ namespace OpenNos.GameObject.Networking
                         // assume string based handler method
                         foreach (PacketAttribute packetAttribute in packetAttributes)
                         {
-                            HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, packetAttribute);
+                            var methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, packetAttribute);
                             HandlerMethods.Add(methodReference.Identification, methodReference);
                         }
                     }
