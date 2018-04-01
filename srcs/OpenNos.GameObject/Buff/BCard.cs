@@ -543,6 +543,17 @@ namespace OpenNos.GameObject.Buff
                     break;
 
                 case BCardType.CardType.FalconSkill:
+                    if (session is Character c)
+                    {
+                        switch (SubType)
+                        {
+                            case (byte)AdditionalTypes.FalconSkill.Hide:
+                                c.Invisible = true;
+                                c.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => c.Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
+                                c.Session.CurrentMapInstance?.Broadcast(c.GenerateInvisible());
+                                break;
+                        }
+                    }
                     break;
 
                 case BCardType.CardType.AbsorptionAndPowerSkill:

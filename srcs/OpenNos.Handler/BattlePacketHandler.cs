@@ -885,7 +885,7 @@ namespace OpenNos.Handler
                         Session.Character.LastSkillUse = DateTime.Now;
 
                         Session.CurrentMapInstance?.Broadcast($"bs 1 {Session.Character.CharacterId} {x} {y} {characterSkill.Skill.SkillVNum} {characterSkill.Skill.Cooldown} {characterSkill.Skill.AttackAnimation} {characterSkill.Skill.Effect} 0 0 1 1 0 0 0");
-
+                        characterSkill.Skill.BCards.ToList().ForEach(s => s.ApplyBCards(Session.Character));
                         IEnumerable<MapMonster> monstersInRange = Session.CurrentMapInstance?.GetListMonsterInRange(x, y, characterSkill.Skill.TargetRange).ToList();
                         if (monstersInRange != null)
                         {
@@ -893,6 +893,11 @@ namespace OpenNos.Handler
                             {
                                 Session.Character.BattleEntity.TargetHit(mon, TargetHitType.ZoneHit, characterSkill.Skill, mapX: x, mapY: y);
                             }
+                        }
+
+                        if (characterSkill.Skill.BCards.ToList().Any(s => s.Type == (byte)BCardType.CardType.FairyXPIncrease && s.SubType == (byte)AdditionalTypes.FairyXPIncrease.TeleportToLocation))
+                        {
+                            Session.Character.TeleportOnMap(x, y);
                         }
                         foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(x, y, characterSkill.Skill.TargetRange)))
                         {

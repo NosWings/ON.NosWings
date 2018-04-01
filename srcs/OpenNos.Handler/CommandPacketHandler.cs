@@ -76,6 +76,11 @@ namespace OpenNos.Handler
                     if (packet.TimeBeforeMaintenance == null)
                     {
                         ServerManager.Instance.Shout(Language.Instance.GetMessageFromKey("MAINTENANCE_START"));
+                        foreach (var session in ServerManager.Instance.Sessions.Where(s => s.Character.Authority < AuthorityType.GameMaster))
+                        {
+                            session.Character.Save();
+                            CommunicationServiceClient.Instance.KickSession(session.Account.AccountId, session.SessionId);
+                        }
                         CommunicationServiceClient.Instance.SetMaintenanceState(true);
                         return;
                     }

@@ -166,6 +166,10 @@ namespace OpenNos.GameObject.Battle
                 {
                     randomTime = character.BuffRandomTime = ServerManager.Instance.RandomNumber(50, 350);
                 }
+                else if (indicator.Card.CardId == 559)
+                {
+                    randomTime = 350;
+                }
                 else if (indicator.Card.CardId == 336)
                 {
                     randomTime = character.BuffRandomTime = ServerManager.Instance.RandomNumber(30, 70);
@@ -176,7 +180,7 @@ namespace OpenNos.GameObject.Battle
                 }
                 if (!indicator.StaticBuff)
                 {
-                    character.Session.SendPacket($"bf 1 {character.CharacterId} {(character.ChargeValue > 7000 ? 7000 : character.ChargeValue)}.{indicator.Card.CardId}.{indicator.Card.Duration} {Level}");
+                    character.Session.SendPacket($"bf 1 {character.CharacterId} {(character.ChargeValue > 7000 ? 7000 : character.ChargeValue)}.{indicator.Card.CardId}.{(indicator.Card.Duration == 0 ? randomTime : indicator.Card.Duration)} {Level}");
                     character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("UNDER_EFFECT"), indicator.Card.Name), 20));
                 }
             }
@@ -672,6 +676,15 @@ namespace OpenNos.GameObject.Battle
                                                                .IncreasingPropability)[0] / 100D));
                 }
 
+                // Falcon invisibility
+                if (charact.Buff.Any(s => s.Card.CardId == 559))
+                {
+                    RemoveBuff(559);
+                    charact.Invisible = true;
+                    charact.AddBuff(new Buff.Buff(560));
+
+                }
+
                 if (charact.ChargeValue > 0)
                 {
                     baseDamage += charact.ChargeValue;
@@ -831,7 +844,8 @@ namespace OpenNos.GameObject.Battle
                 character.Session.SendPacket(character.GenerateCond());
             }
 
-            if (!indicator.Card.BCards.Any(s => s.Type == (byte)CardType.SpecialActions && s.SubType.Equals((byte)AdditionalTypes.SpecialActions.Hide)))
+            if (!indicator.Card.BCards.Any(s => s.Type == (byte)CardType.SpecialActions && s.SubType.Equals((byte)AdditionalTypes.SpecialActions.Hide)) &&
+                indicator.Card.CardId != 560)
             {
                 return;
             }
