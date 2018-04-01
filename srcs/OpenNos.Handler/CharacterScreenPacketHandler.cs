@@ -25,6 +25,8 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
 using NosSharp.Enums;
+using ON.NW.Customisation.NewCharCustomisation;
+using OpenNos.Core.Utilities;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
@@ -83,77 +85,45 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    CharacterDTO newCharacter = new CharacterDTO
-                    {
-                        Class = (byte) ClassType.Adventurer,
-                        Gender = characterCreatePacket.Gender,
-                        HairColor = characterCreatePacket.HairColor,
-                        HairStyle = characterCreatePacket.HairStyle,
-                        Hp = 221,
-                        JobLevel = 20,
-                        Level = 15,
-                        MapId = 1,
-                        MapX = (short) ServerManager.Instance.RandomNumber(78, 81),
-                        MapY = (short) ServerManager.Instance.RandomNumber(109, 112),
-                        Mp = 221,
-                        MaxMateCount = 10,
-                        Gold = 15000,
-                        SpPoint = 10000,
-                        SpAdditionPoint = 0,
-                        Name = characterName,
-                        Slot = slot,
-                        AccountId = accountId,
-                        MinilandMessage = "Welcome",
-                        State = CharacterState.Active
-                    };
+
+                    CharacterDTO newCharacter = DependencyContainer.Instance.Get<BaseCharacter>().Character;
+                    newCharacter.AccountId = accountId;
+                    newCharacter.Gender = characterCreatePacket.Gender;
+                    newCharacter.HairColor = characterCreatePacket.HairColor;
+                    newCharacter.HairStyle = characterCreatePacket.HairStyle;
+                    newCharacter.Name = characterName;
+                    newCharacter.Slot = slot;
+                    newCharacter.State = CharacterState.Active;
 
                     SaveResult insertResult = DaoFactory.CharacterDao.InsertOrUpdate(ref newCharacter);
-                    CharacterQuestDTO firstQuest = new CharacterQuestDTO { CharacterId = newCharacter.CharacterId, QuestId = 1997, IsMainQuest = true };
-                    CharacterSkillDTO sk1 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 200};
-                    CharacterSkillDTO sk2 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 201};
-                    CharacterSkillDTO sk3 = new CharacterSkillDTO {CharacterId = newCharacter.CharacterId, SkillVNum = 209};
-                    QuicklistEntryDTO qlst1 = new QuicklistEntryDTO
-                    {
-                        CharacterId = newCharacter.CharacterId,
-                        Type = 1,
-                        Slot = 1,
-                        Pos = 1
-                    };
-                    QuicklistEntryDTO qlst2 = new QuicklistEntryDTO
-                    {
-                        CharacterId = newCharacter.CharacterId,
-                        Q2 = 1,
-                        Slot = 2
-                    };
-                    QuicklistEntryDTO qlst3 = new QuicklistEntryDTO
-                    {
-                        CharacterId = newCharacter.CharacterId,
-                        Q2 = 8,
-                        Type = 1,
-                        Slot = 1,
-                        Pos = 16
-                    };
-                    QuicklistEntryDTO qlst4 = new QuicklistEntryDTO
-                    {
-                        CharacterId = newCharacter.CharacterId,
-                        Q2 = 9,
-                        Type = 1,
-                        Slot = 3,
-                        Pos = 1
-                    };
-                    DaoFactory.CharacterQuestDao.InsertOrUpdate(firstQuest);
-                    DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst1);
-                    DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst2);
-                    DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst3);
-                    DaoFactory.QuicklistEntryDao.InsertOrUpdate(qlst4);
-                    DaoFactory.CharacterSkillDao.InsertOrUpdate(sk1);
-                    DaoFactory.CharacterSkillDao.InsertOrUpdate(sk2);
-                    DaoFactory.CharacterSkillDao.InsertOrUpdate(sk3);
 
-                    Inventory startupInventory = new Inventory((Character) newCharacter);
-                    startupInventory.AddNewToInventory(2024, 10, InventoryType.Etc);
-                    startupInventory.AddNewToInventory(2081, 1, InventoryType.Etc);
-                    startupInventory.AddNewToInventory(1907, 1, InventoryType.Main);
+                    // init quest
+                    CharacterQuestDTO firstQuest = new CharacterQuestDTO { CharacterId = newCharacter.CharacterId, QuestId = 1997, IsMainQuest = true };
+                    DaoFactory.CharacterQuestDao.InsertOrUpdate(firstQuest);
+
+                    // init skills
+                    var skills = DependencyContainer.Instance.Get<BaseSkill>();
+                    foreach (CharacterSkillDTO skill in skills.Skills)
+                    {
+                        skill.CharacterId = newCharacter.CharacterId;
+                        DaoFactory.CharacterSkillDao.InsertOrUpdate(skill);
+                    }
+
+
+                    // init quicklist
+                    var quicklist = DependencyContainer.Instance.Get<BaseQuicklist>();
+                    foreach (QuicklistEntryDTO quicklistEntry in quicklist.Quicklist)
+                    {
+                        DaoFactory.QuicklistEntryDao.InsertOrUpdate(quicklistEntry);
+                    }
+
+                    // init inventory
+                    var startupInventory = new Inventory((Character) newCharacter);
+                    var inventory = DependencyContainer.Instance.Get<BaseInventory>();
+                    foreach (BaseInventory.StartupInventoryItem item in inventory.Items)
+                    {
+                        startupInventory.AddNewToInventory(item.Vnum, item.Quantity, item.InventoryType);
+                    }
                     startupInventory.Select(s => s.Value).ToList().ForEach(i => DaoFactory.IteminstanceDao.InsertOrUpdate(i));
 
                     LoadCharacters(characterCreatePacket.OriginalContent);

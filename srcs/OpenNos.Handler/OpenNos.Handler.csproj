@@ -192,6 +192,10 @@
     <Compile Include="VipPacketHandler.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ON.NW.Customisation\ON.NW.Customisation.csproj">
+      <Project>{0cc3e723-3536-4cf3-9d4e-7dce418ed35e}</Project>
+      <Name>ON.NW.Customisation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
       <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
       <Name>OpenNos.Core</Name>

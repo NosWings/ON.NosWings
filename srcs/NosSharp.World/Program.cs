@@ -21,9 +21,12 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
 using log4net;
+using ON.NW.Customisation.Helpers;
+using ON.NW.Customisation.NewCharCustomisation;
 using ON.NW.World.Resource;
 using OpenNos.Core;
 using OpenNos.Core.Serializing;
+using OpenNos.Core.Utilities;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
@@ -83,15 +86,31 @@ namespace ON.NW.World
             Console.WriteLine(separator + string.Format("{0," + offset + "}\n", text) + separator);
         }
 
+        private static void CustomisationRegistration()
+        {
+            const string configPath = "./config/";
+            var baseCharacter = ConfigurationHelper.Load<BaseCharacter>(configPath + nameof(BaseCharacter), true);
+            Logger.Log.Info("[CUSTOMIZER] BaseCharacter Loaded !");
+            DependencyContainer.Instance.Register(baseCharacter);
+            var baseQuicklist = ConfigurationHelper.Load<BaseQuicklist>(configPath + nameof(BaseQuicklist), true);
+            Logger.Log.Info("[CUSTOMIZER] BaseQuicklist Loaded !");
+            DependencyContainer.Instance.Register(baseQuicklist);
+            var baseInventory = ConfigurationHelper.Load<BaseInventory>(configPath + nameof(BaseInventory), true);
+            Logger.Log.Info("[CUSTOMIZER] BaseInventory Loaded !");
+            DependencyContainer.Instance.Register(baseInventory);
+            var baseSkill = ConfigurationHelper.Load<BaseSkill>(configPath + nameof(BaseSkill), true);
+            Logger.Log.Info("[CUSTOMIZER] BaseSkill Loaded !");
+            DependencyContainer.Instance.Register(baseSkill);
+        }
+
         public static void Main(string[] args)
         {
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
             // initialize Loggers
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
-
             Welcome();
-
+            CustomisationRegistration();
 
             // initialize api
             if (CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]))
@@ -121,6 +140,7 @@ namespace ON.NW.World
             {
                 autoreboot = false;
             }
+
             try
             {
                 _exitHandler += ExitHandler;
@@ -129,17 +149,19 @@ namespace ON.NW.World
                     AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
                     AppDomain.CurrentDomain.ProcessExit += ProcessExitHandler;
                 }
+
                 NativeMethods.SetConsoleCtrlHandler(_exitHandler, true);
             }
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
             }
-            
+
             portloop:
             try
             {
-                NetworkManager<WorldEncryption> unused = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], _port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
+                NetworkManager<WorldEncryption> unused =
+                    new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], _port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
             catch (SocketException ex)
             {
@@ -149,13 +171,15 @@ namespace ON.NW.World
                     Logger.Log.Info("Port already in use! Incrementing...");
                     goto portloop;
                 }
+
                 Logger.Log.Error("General Error", ex);
                 Environment.Exit(1);
             }
 
             ServerManager.Instance.ServerGroup = ConfigurationManager.AppSettings["ServerGroup"];
             int sessionLimit = Convert.ToInt32(ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ip, _port, sessionLimit, ServerManager.Instance.ServerGroup));
+            int? newChannelId = CommunicationServiceClient.Instance.RegisterWorldServer(new SerializableWorldServer(ServerManager.Instance.WorldId, ip, _port, sessionLimit,
+                ServerManager.Instance.ServerGroup));
 
             if (newChannelId.HasValue)
             {
@@ -163,7 +187,8 @@ namespace ON.NW.World
                 ServerManager.Instance.IpAddress = ip;
                 ServerManager.Instance.Port = _port;
                 ServerManager.Instance.AccountLimit = sessionLimit;
-                Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
+                Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(),
+                    ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             }
             else
             {
@@ -193,7 +218,7 @@ namespace ON.NW.World
             Process.GetCurrentProcess().CloseMainWindow();
             Environment.Exit(84);
         }
-        
+
         private static void UnhandledExceptionHandler(object sender, EventArgs eventArgs)
         {
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
