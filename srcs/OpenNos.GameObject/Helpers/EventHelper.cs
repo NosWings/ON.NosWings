@@ -397,6 +397,7 @@ namespace OpenNos.GameObject.Helpers
                                         cli.Character.GenerateFamilyXp(instance.Fxp / 5 / evt.MapInstance.Sessions.Count());
                                     }
                                     cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("FXP_INCREASE"), instance.Fxp), 11));
+                                    cli.Character.IncrementQuests(QuestType.WinRaid, instance.Id);
                                     if (evt.MapInstance.Sessions.Count(s => s.IpAddress.Equals(cli.IpAddress)) > 2 || instance.GiftItems == null)
                                     {
                                         continue;
@@ -423,7 +424,6 @@ namespace OpenNos.GameObject.Helpers
                                             cli.Character.GiftAdd(gift.VNum, gift.Amount, gift.Design, rare: rare);
                                         }
                                     }
-                                    cli.Character.IncrementQuests(QuestType.WinRaid, instance.Id);
                                 }
                                 LogHelper.Instance.InsertFamilyRaidLog(evt.MapInstance.Sessions.FirstOrDefault(s => s.Character.Family != null).Character.Family.FamilyId, instance.Id,
                                     DateTime.Now);
