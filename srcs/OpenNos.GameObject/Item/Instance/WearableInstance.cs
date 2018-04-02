@@ -575,6 +575,10 @@ namespace OpenNos.GameObject.Item.Instance
                         case RarifyProtection.HeroicAmulet:
                         case RarifyProtection.RandomHeroicAmulet:
                             WearableInstance amulet = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                            if (amulet == null)
+                            {
+                                return;
+                            }
                             amulet.DurabilityPoint -= 1;
                             if (amulet.DurabilityPoint <= 0)
                             {
