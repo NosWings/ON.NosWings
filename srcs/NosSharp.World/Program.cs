@@ -227,7 +227,7 @@ namespace ON.NW.World
 
             Thread.Sleep(10000);
             CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
-            Process.Start("NosSharp.World.exe");
+            Process.Start("ON.NW.World.exe");
         }
 
         private static void RegisterMappings()

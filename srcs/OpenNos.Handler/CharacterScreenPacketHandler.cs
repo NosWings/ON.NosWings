@@ -102,29 +102,43 @@ namespace OpenNos.Handler
 
                     // init skills
                     var skills = DependencyContainer.Instance.Get<BaseSkill>();
-                    foreach (CharacterSkillDTO skill in skills.Skills)
+                    if (skills != null)
                     {
-                        skill.CharacterId = newCharacter.CharacterId;
-                        DaoFactory.CharacterSkillDao.InsertOrUpdate(skill);
+                        foreach (CharacterSkillDTO skill in skills.Skills)
+                        {
+                            skill.CharacterId = newCharacter.CharacterId;
+                            DaoFactory.CharacterSkillDao.InsertOrUpdate(skill);
+                        }
                     }
 
 
                     // init quicklist
                     var quicklist = DependencyContainer.Instance.Get<BaseQuicklist>();
-                    foreach (QuicklistEntryDTO quicklistEntry in quicklist.Quicklist)
+
+                    if (quicklist != null)
                     {
-                        quicklistEntry.CharacterId = newCharacter.CharacterId;
-                        DaoFactory.QuicklistEntryDao.InsertOrUpdate(quicklistEntry);
+                        foreach (QuicklistEntryDTO quicklistEntry in quicklist.Quicklist)
+                        {
+                            quicklistEntry.CharacterId = newCharacter.CharacterId;
+                            DaoFactory.QuicklistEntryDao.InsertOrUpdate(quicklistEntry);
+                        }
                     }
 
                     // init inventory
                     var inventory = new Inventory((Character) newCharacter);
                     var startupInventory = DependencyContainer.Instance.Get<BaseInventory>();
-                    foreach (BaseInventory.StartupInventoryItem item in startupInventory.Items)
+                    if (startupInventory != null)
                     {
-                        inventory.AddNewToInventory(item.Vnum, item.Quantity, item.InventoryType);
+                        foreach (BaseInventory.StartupInventoryItem item in startupInventory.Items)
+                        {
+                            inventory.AddNewToInventory(item.Vnum, item.Quantity, item.InventoryType);
+                        }
                     }
-                    inventory.Select(s => s.Value).ToList().ForEach(i => DaoFactory.IteminstanceDao.InsertOrUpdate(i));
+
+                    foreach (ItemInstance i in inventory.Select(s => s.Value))
+                    {
+                        DaoFactory.IteminstanceDao.InsertOrUpdate(i);
+                    }
 
                     LoadCharacters(characterCreatePacket.OriginalContent);
                 }
