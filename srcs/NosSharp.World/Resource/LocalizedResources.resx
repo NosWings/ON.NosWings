@@ -1750,4 +1750,7 @@
   <data name="SHIP_SETOFF" xml:space="preserve">
     <value>Setting off !</value>
   </data>
+  <data name="ARENA_KILL" xml:space="preserve">
+    <value>{0} has been killed by {1}.</value>
+  </data>
 </root>

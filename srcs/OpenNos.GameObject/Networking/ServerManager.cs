@@ -425,6 +425,7 @@ namespace OpenNos.GameObject.Networking
                 case MapInstanceType.ArenaInstance:
                     killer.Character.TalentWin += 1;
                     session.Character.TalentLose += 1;
+                    session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ARENA_KILL"), session.Character?.Name, killer.Character?.Name), 0));
                     goto default;
 
                 case MapInstanceType.TalentArenaMapInstance:
