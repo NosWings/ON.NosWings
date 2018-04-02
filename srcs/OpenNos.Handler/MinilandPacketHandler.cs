@@ -407,7 +407,7 @@ namespace OpenNos.Handler
             switch (mlEditPacket.Type)
             {
                 case 1:
-                    Session.SendPacket($"mlintro {mlEditPacket.Parameters.Replace(' ', '^')}");
+                    Session.SendPacket($"mlintro {mlEditPacket.Parameters?.Replace(' ', '^')}");
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("MINILAND_INFO_CHANGED")));
                     break;
 
