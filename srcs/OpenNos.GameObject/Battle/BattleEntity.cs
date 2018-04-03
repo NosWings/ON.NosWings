@@ -240,7 +240,7 @@ namespace OpenNos.GameObject.Battle
             {
                 return 0;
             }
-
+            
             #region Definitions
 
             // Percent Damage
@@ -680,9 +680,7 @@ namespace OpenNos.GameObject.Battle
                 if (charact.Buff.Any(s => s.Card.CardId == 559))
                 {
                     RemoveBuff(559);
-                    charact.Invisible = true;
                     charact.AddBuff(new Buff.Buff(560));
-
                 }
 
                 if (charact.ChargeValue > 0)
@@ -837,6 +835,12 @@ namespace OpenNos.GameObject.Battle
                 character.Session.SendPacket(character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_TERMINATED"), indicator.Card.Name), 20));
             }
 
+            // Fairy Booster
+            if (indicator.Card.CardId == 131)
+            {
+                character.Session.SendPacket(character.GeneratePairy());
+            }
+
             if (indicator.Card.BCards.Any(s => s.Type == (byte)CardType.Move))
             {
                 character.LoadSpeed();
@@ -845,7 +849,7 @@ namespace OpenNos.GameObject.Battle
             }
 
             if (!indicator.Card.BCards.Any(s => s.Type == (byte)CardType.SpecialActions && s.SubType.Equals((byte)AdditionalTypes.SpecialActions.Hide)) &&
-                indicator.Card.CardId != 560)
+                indicator.Card.CardId != 559 && indicator.Card.CardId != 560)
             {
                 return;
             }
@@ -890,7 +894,7 @@ namespace OpenNos.GameObject.Battle
                 onyx.Initialize(mapInstance);
                 mapInstance.AddMonster(onyx);
                 mapInstance.Broadcast(onyx.GenerateIn());
-                target.GetDamage(damage / 2, Entity, false);
+                target.GetDamage(target.DealtDamage / 2, Entity, false);
                 Observable.Timer(TimeSpan.FromMilliseconds(350)).Subscribe(o =>
                 {
                     mapInstance.Broadcast($"su 3 {onyxId} 3 {target.GetId()} -1 0 -1 {skill.Effect} -1 -1 1 {(int)(target.CurrentHp / (double)target.MaxHp * 100)} {damage / 2} 0 0");
@@ -901,7 +905,7 @@ namespace OpenNos.GameObject.Battle
 
             if (target.GetSession() is Character character)
             {
-                damage = (ushort)(character.HasGodMode ? 0 : damage);
+                target.DealtDamage = (ushort)(character.HasGodMode ? 0 : damage);
                 if (character.IsSitting)
                 {
                     character.IsSitting = false;
@@ -928,7 +932,7 @@ namespace OpenNos.GameObject.Battle
 
         private void TargetHit2(IBattleEntity target, TargetHitType hitType, Skill skill, int damage, int hitmode, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false, bool isPvp = false, bool isRange = false)
         {
-            target.GetDamage(damage, Entity, !(Session is MapMonster mon && mon.IsInvicible));
+            target.GetDamage(target.DealtDamage, Entity, !(Session is MapMonster mon && mon.IsInvicible));
             string str = $"su {(byte)Entity.SessionType()} {Entity.GetId()} {(byte)target.SessionType()} {target.GetId()} {skill?.SkillVNum ?? 0} {skill?.Cooldown ?? 0}";
             switch (hitType)
             {
