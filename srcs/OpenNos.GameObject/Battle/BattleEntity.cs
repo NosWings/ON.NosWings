@@ -905,6 +905,7 @@ namespace OpenNos.GameObject.Battle
 
             if (target.GetSession() is Character character)
             {
+                damage = (ushort)(character.HasGodMode ? 0 : damage);
                 target.DealtDamage = (ushort)(character.HasGodMode ? 0 : damage);
                 if (character.IsSitting)
                 {
