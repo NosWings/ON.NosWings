@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
+using log4net;
 using NosSharp.Enums;
 using ON.NW.Customisation.NewCharCustomisation;
 using OpenNos.Core.Utilities;
@@ -47,6 +48,7 @@ namespace OpenNos.Handler
 
         #region Properties
 
+        protected static readonly ILog Log = LogManager.GetLogger(typeof(CharacterScreenPacketHandler));
         private ClientSession Session { get; }
 
         #endregion
@@ -235,7 +237,7 @@ namespace OpenNos.Handler
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Error("MS Communication Failed.", ex);
+                    Log.Error("MS Communication Failed.", ex);
                     Session.Disconnect();
                     return;
                 }
@@ -249,7 +251,7 @@ namespace OpenNos.Handler
                             if (penalty != null)
                             {
                                 Session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, penalty.DateEnd.ToString("yyyy-MM-dd-HH:mm"))}");
-                                Logger.Log.Info($"[LOG] {account.Name} connected from {Session.IpAddress} while being banned");
+                                Log.Info($"{account.Name} connected from {Session.IpAddress} while being banned");
                                 Session.Disconnect();
                                 return;
                             }
@@ -277,21 +279,21 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            Logger.Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, invalid Password or SessionId.");
+                            Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, invalid Password or SessionId.");
                             Session.Disconnect();
                             return;
                         }
                     }
                     else
                     {
-                        Logger.Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, invalid AccountName.");
+                        Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, invalid AccountName.");
                         Session.Disconnect();
                         return;
                     }
                 }
                 else
                 {
-                    Logger.Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, login has not been registered or Account is already logged in.");
+                    Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, login has not been registered or Account is already logged in.");
                     Session.Disconnect();
                     return;
                 }
@@ -312,7 +314,7 @@ namespace OpenNos.Handler
             else
             {
                 IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadByAccount(Session.Account.AccountId);
-                Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.Account.Name);
+                Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.Account.Name);
 
                 // load characterlist packet for each character in CharacterDTO
                 Session.SendPacket("clist_start 0");
@@ -424,7 +426,7 @@ namespace OpenNos.Handler
             }
             catch (Exception ex)
             {
-                Logger.Log.Error("Select character failed.", ex);
+                Log.Error("Select character failed.", ex);
             }
         }
 

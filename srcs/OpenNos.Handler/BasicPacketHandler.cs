@@ -27,6 +27,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using OpenNos.Core.Extensions;
 using NosSharp.Enums;
 using OpenNos.Core.Handling;
@@ -51,6 +52,7 @@ namespace OpenNos.Handler
 
         #region Properties
 
+        protected static readonly ILog Log = LogManager.GetLogger(typeof(BasicPacketHandler));
         private ClientSession Session { get; }
 
         #endregion
@@ -306,10 +308,10 @@ namespace OpenNos.Handler
                     }
                     if (newInv.Rare != 0)
                     {
-                        WearableInstance wearable = newInv as WearableInstance;
+                        var wearable = newInv as WearableInstance;
                         wearable?.SetRarityPoint();
                     }
-                    GeneralLogDTO log = new GeneralLogDTO
+                    var log = new GeneralLogDTO
                     {
                         AccountId = Session.Account.AccountId,
                         CharacterId = Session.Character.CharacterId,
@@ -1055,9 +1057,9 @@ namespace OpenNos.Handler
                 if (receiver != null)
                 {
                     string[] datasplit = pstpacket.Data.Split(' ');
-                    WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+                    var headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                     byte color = headWearable != null && headWearable.Item.IsColored ? (byte)headWearable.Design : (byte)Session.Character.HairColor;
-                    MailDTO mailcopy = new MailDTO
+                    var mailcopy = new MailDTO
                     {
                         AttachmentAmount = 0,
                         IsOpened = false,
@@ -1074,7 +1076,7 @@ namespace OpenNos.Handler
                         EqPacket = Session.Character.GenerateEqListForPacket(),
                         SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)(Session.Character.Morph > short.MaxValue ? 0 : Session.Character.Morph)
                     };
-                    MailDTO mail = new MailDTO
+                    var mail = new MailDTO
                     {
                         AttachmentAmount = 0,
                         IsOpened = false,
@@ -1280,7 +1282,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateFd());
             Session.SendPacket("rage 0 250000");
             Session.SendPacket("rank_cool 0 0 18000");
-            SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(8, InventoryType.Wear);
+            var specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(8, InventoryType.Wear);
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
             if (medal != null)
             {
@@ -1545,7 +1547,7 @@ namespace OpenNos.Handler
             }
             catch (Exception e)
             {
-                Logger.Log.Error("Whisper failed.", e);
+                Log.Error("Whisper failed.", e);
             }
         }
 
