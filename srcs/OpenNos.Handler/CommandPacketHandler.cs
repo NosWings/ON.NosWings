@@ -3299,7 +3299,7 @@ namespace OpenNos.Handler
 
             Thread.Sleep(30000);
             CommunicationServiceClient.Instance.UnregisterWorldServer(ServerManager.Instance.WorldId);
-            Process.Start("NosSharp.World.exe");
+            Process.Start("ON.NW.World.exe");
             Environment.Exit(0);
         }
         #endregion
