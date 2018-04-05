@@ -711,6 +711,7 @@ namespace OpenNos.Handler
 
                 var monst = new MapMonsterDTO
                 {
+                    MapMonsterId = Session.Character.MapInstance.GetNextId(),
                     MonsterVNum = addMonsterPacket.MonsterVNum,
                     MapY = Session.Character.PositionY,
                     MapX = Session.Character.PositionX,
