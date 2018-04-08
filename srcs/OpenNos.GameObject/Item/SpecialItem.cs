@@ -505,6 +505,8 @@ namespace OpenNos.GameObject.Item
                         }
                         else
                         {
+                            CharacterHelper.Instance.RemoveSpecialistWingsBuff(session);
+                            CharacterHelper.Instance.AddSpecialistWingsBuff(session);
                             session.Character.SpInstance.Design = (byte)EffectValue;
                             session.Character.MorphUpgrade2 = EffectValue;
                             session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
