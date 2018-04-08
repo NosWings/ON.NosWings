@@ -824,6 +824,12 @@ namespace OpenNos.GameObject.Battle
                 return;
             }
 
+            // Fairy booster
+            if (indicator.Card.CardId == 131)
+            {
+                character.GeneratePairy();
+            }
+
             if (indicator.StaticBuff)
             {
                 character.Session.SendPacket($"vb {indicator.Card.CardId} 0 {indicator.Card.Duration}");
