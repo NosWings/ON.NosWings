@@ -1183,11 +1183,11 @@ namespace OpenNos.Handler
                 case 2:
 
                     // DragDrop / Reorder qset type to1 to2 from1 from2 vars -> q1 q2 data1 data2
-                    QuicklistEntryDTO qlFrom = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+                    QuicklistEntryDTO qlFrom = Session.Character.QuicklistEntries.FirstOrDefault(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
                     if (qlFrom != null)
                     {
-                        QuicklistEntryDTO qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+                        QuicklistEntryDTO qlTo = Session.Character.QuicklistEntries.FirstOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
                         qlFrom.Q1 = q1;
                         qlFrom.Q2 = q2;
