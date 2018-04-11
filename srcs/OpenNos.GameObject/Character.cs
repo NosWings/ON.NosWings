@@ -836,7 +836,7 @@ namespace OpenNos.GameObject
 
         public void ChangeClass(ClassType characterClass, bool isCommand = false)
         {
-            JobLevel = (byte)(isCommand ? JobLevel : 1);
+            JobLevel = (byte)(isCommand && characterClass != ClassType.Adventurer ? JobLevel : isCommand && characterClass == ClassType.Adventurer ? 20 : 1);
             JobLevelXp = 0;
             Session.SendPacket("npinfo 0");
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());

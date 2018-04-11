@@ -398,6 +398,11 @@ namespace OpenNos.Handler
                     session = ServerManager.Instance.GetSessionByCharacterName(characterPacket.Name);
                 }
 
+                if (session != null && session.Account.Authority > Session.Account.Authority)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WEAKEST_AUTHORITY"), characterPacket.Name), 0));
+                    return;
+                }
                 switch (characterPacket.Property)
                 {
                     case "-h":
@@ -631,24 +636,24 @@ namespace OpenNos.Handler
 
                     break;
                 case 3:
-                {
-                    session.Character.HeroLevel = level;
-                    session.Character.HeroXp = 0;
-                    Session.SendPacket(
-                        UserInterfaceHelper.Instance.GenerateMsg(
-                            Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
-                    session.SendPacket(session.Character.GenerateLev());
-                    session.SendPacket(session.Character.GenerateStatInfo());
-                    session.SendPacket(session.Character.GenerateStatChar());
-                    session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
-                        ReceiverType.AllExceptMe);
-                    session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
-                        ReceiverType.AllExceptMe);
-                    session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX,
-                        Session.Character.PositionY);
-                    session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198),
-                        Session.Character.PositionX, Session.Character.PositionY);
-                }
+                    {
+                        session.Character.HeroLevel = level;
+                        session.Character.HeroXp = 0;
+                        Session.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(
+                                Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
+                        session.SendPacket(session.Character.GenerateLev());
+                        session.SendPacket(session.Character.GenerateStatInfo());
+                        session.SendPacket(session.Character.GenerateStatChar());
+                        session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
+                            ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
+                            ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX,
+                            Session.Character.PositionY);
+                        session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198),
+                            Session.Character.PositionX, Session.Character.PositionY);
+                    }
                     break;
             }
         }
@@ -851,6 +856,12 @@ namespace OpenNos.Handler
                 CharacterDTO character = DaoFactory.CharacterDao.LoadByName(banPacket.CharacterName);
                 if (character != null)
                 {
+                    var targetAccount = DaoFactory.AccountDao.LoadById(character.AccountId);
+                    if (targetAccount != null && targetAccount.Authority > Session.Account.Authority)
+                    {
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WEAKEST_AUTHORITY"), character.Name), 0));
+                        return;
+                    }
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, banPacket, Session.IpAddress);
                     ServerManager.Instance.Kick(banPacket.CharacterName);
                     var log = new PenaltyLogDTO
@@ -2016,6 +2027,13 @@ namespace OpenNos.Handler
                 {
                     kickSessionPacket.AccountName = string.Empty;
                 }
+
+                var targetAccount = DaoFactory.AccountDao.LoadByName(kickSessionPacket.AccountName);
+                if (targetAccount != null && targetAccount.Authority > Session.Account.Authority)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WEAKEST_AUTHORITY"), ServerManager.Instance.Sessions.FirstOrDefault(s => s.Account.Name == kickSessionPacket.AccountName)?.Character.Name), 0));
+                    return;
+                }
                 ServerManager.Instance.Sessions.FirstOrDefault(s => s.Account.Name == kickSessionPacket.AccountName)?.Disconnect();
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, kickSessionPacket, Session.IpAddress);
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -2123,7 +2141,7 @@ namespace OpenNos.Handler
                 if (morphPacket.MorphId < 30 && morphPacket.MorphId > 0)
                 {
                     Session.Character.UseSp = true;
-                    Session.Character.SpInstance = Session.Character.Inventory?.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
+                    Session.Character.SpInstance = Session.Character.Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                     CharacterHelper.Instance.AddSpecialistWingsBuff(Session);
                     Session.Character.Morph = morphPacket.MorphId;
                     Session.Character.MorphUpgrade = morphPacket.Upgrade;
@@ -2191,6 +2209,12 @@ namespace OpenNos.Handler
                     mutePacket.Duration = 60;
                 }
 
+                var targetAccount = DaoFactory.AccountDao.LoadById(DaoFactory.CharacterDao.LoadByName(mutePacket.CharacterName).AccountId);
+                if (targetAccount != null && targetAccount.Authority > Session.Account.Authority)
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WEAKEST_AUTHORITY"), mutePacket.CharacterName), 0));
+                    return;
+                }
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, mutePacket, Session.IpAddress);
                 mutePacket.Reason = mutePacket.Reason?.Trim();
                 MuteMethod(mutePacket.CharacterName, mutePacket.Reason, mutePacket.Duration);
