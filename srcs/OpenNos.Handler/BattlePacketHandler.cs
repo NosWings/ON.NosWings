@@ -941,16 +941,26 @@ namespace OpenNos.Handler
 
                         Session.CurrentMapInstance?.Broadcast(
                             $"bs 1 {Session.Character.CharacterId} {x} {y} {characterSkill.Skill.SkillVNum} {characterSkill.Skill.Cooldown} {characterSkill.Skill.AttackAnimation} {characterSkill.Skill.Effect} 0 0 1 1 0 0 0");
-                        foreach (BCard bcard in characterSkill.Skill.BCards)
-                        {
-                            bcard.ApplyBCards(Session.Character);
-                        }
 
                         IEnumerable<MapMonster> monstersInRange = Session.CurrentMapInstance?.GetListMonsterInRange(x, y, characterSkill.Skill.TargetRange).ToList();
                         if (monstersInRange != null)
                         {
                             foreach (MapMonster mon in monstersInRange.Where(s => s.CurrentHp > 0))
                             {
+                                foreach (BCard bcard in characterSkill.Skill.BCards)
+                                {
+                                    var bf = new Buff(bcard.SecondData);
+                                    switch (bf.Card?.BuffType)
+                                    {
+                                        case BuffType.Bad:
+                                            bcard.ApplyBCards(mon, Session.Character);
+                                            break;
+                                        case BuffType.Good:
+                                        case BuffType.Neutral:
+                                            bcard.ApplyBCards(Session.Character, Session.Character);
+                                            break;
+                                    }
+                                }
                                 Session.Character.BattleEntity.TargetHit(mon, TargetHitType.ZoneHit, characterSkill.Skill, mapX: x, mapY: y);
                             }
                         }
