@@ -201,7 +201,7 @@ namespace OpenNos.Handler
 
                 //refill
                 case 6:
-                    if (packet.Point == null)
+                    if (packet.Point == null || packet.Point < 0)
                     {
                         return;
                     }

@@ -272,7 +272,7 @@ namespace OpenNos.GameObject.Npc
                     tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                     if (tp != null)
                     {
-                        if (session.Character.Gold >= 1000 * packet.Type)
+                        if (session.Character.Gold >= 1000 * packet.Type && packet.Type > 0)
                         {
                             session.Character.Gold -= 1000 * packet.Type;
                             session.SendPacket(session.Character.GenerateGold());
@@ -327,7 +327,7 @@ namespace OpenNos.GameObject.Npc
                     tp = npc?.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                     if (tp != null)
                     {
-                        if (session.Character.Gold >= 5000 * packet.Type)
+                        if (session.Character.Gold >= 5000 * packet.Type && packet.Type > 0)
                         {
                             session.Character.Gold -= 5000 * packet.Type;
                             ServerManager.Instance.ChangeMap(session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
