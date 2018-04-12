@@ -290,6 +290,11 @@ namespace OpenNos.GameObject.Npc
                 case 17:
                     double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                     double timeSpanSinceLastPortal = currentRunningSeconds - session.Character.LastPortal;
+                    if (packet.Type < 0)
+                    {
+                        // Packet hacking allowing duplication
+                        return;
+                    }
                     if (!(timeSpanSinceLastPortal >= 4) || !session.HasCurrentMapInstance || session.CurrentMapInstance.MapInstanceType == MapInstanceType.Act4Instance)
                     {
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
