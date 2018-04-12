@@ -798,7 +798,7 @@ namespace OpenNos.GameObject.Helpers
             // Magician HP
             for (int i = 0; i < HpData.GetLength(1); i++)
             {
-                HpData[(int) ClassType.Magician, i] = (int) ((i + 15) * (i + 15) + i + 15.0 - 465 + 550);
+                HpData[(int) ClassType.Magician, i] = (int)(((i + 15) * (i + 15) + i + 15.0) / 2.0 - 465 + 550);
             }
 
             // Archer HP

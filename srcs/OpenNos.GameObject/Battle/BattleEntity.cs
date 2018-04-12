@@ -756,10 +756,10 @@ namespace OpenNos.GameObject.Battle
                 switch (charac.Faction)
                 {
                     case FactionType.Angel:
-                        Caligor.AngelDamage += totalDamage + (onyxEffect ? totalDamage / 2 : 0);
+                        Caligor.AngelDamage += targetEntity.DealtDamage + (onyxEffect ? targetEntity.DealtDamage / 2 : 0);
                         break;
                     case FactionType.Demon:
-                        Caligor.DemonDamage += totalDamage + (onyxEffect ? totalDamage / 2 : 0);
+                        Caligor.DemonDamage += targetEntity.DealtDamage + (onyxEffect ? targetEntity.DealtDamage / 2 : 0);
                         break;
                 }
             }
