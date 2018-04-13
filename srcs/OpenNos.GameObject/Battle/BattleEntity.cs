@@ -661,6 +661,20 @@ namespace OpenNos.GameObject.Battle
 
             if (Session is Character charact)
             {
+                WearableInstance weapon = charact.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.MainWeapon, InventoryType.Wear);
+                foreach (BCard bcard in weapon.Item.BCards)
+                {
+                    Buff.Buff b = new Buff.Buff(bcard.SecondData);
+                    switch (b.Card?.BuffType)
+                    {
+                        case BuffType.Good:
+                            bcard.ApplyBCards(charact);
+                            break;
+                        case BuffType.Bad:
+                            bcard.ApplyBCards(targetEntity, charact);
+                            break;
+                    }
+                }
                 int[] weaponSoftDamage = charact.GetWeaponSoftDamage();
                 if (ServerManager.Instance.RandomNumber() < weaponSoftDamage[0])
                 {
