@@ -14,12 +14,15 @@ namespace OpenNos.GameObject.Event.ACT6
     public static class Act6Raid
     {
         #region Properties
+
         public static ScriptedInstance RaidInstance;
 
         public static MapInstance EntryMap;
+
         #endregion
 
         #region Methods
+
         public static void GenerateRaid(FactionType raidType)
         {
             RaidInstance =
@@ -40,14 +43,15 @@ namespace OpenNos.GameObject.Event.ACT6
                 return;
             }
 
-           EntryMap.CreatePortal(new Portal
-           {
-               Type = (byte)PortalType.Raid,
-               SourceMapId = RaidInstance.MapId,
-               SourceX = RaidInstance.PositionX,
-               SourceY = RaidInstance.PositionY
-           }, 3600, true);
+            EntryMap.CreatePortal(new Portal
+            {
+                Type = (byte) PortalType.Raid,
+                SourceMapId = RaidInstance.MapId,
+                SourceX = RaidInstance.PositionX,
+                SourceY = RaidInstance.PositionY
+            }, 3600, true);
         }
+
         #endregion
     }
 }

@@ -38,8 +38,10 @@ namespace OpenNos.GameObject.Item
         #endregion
 
         #region Properties
+
         public List<BCard> BCards { get; set; }
         public List<RollGeneratedItemDTO> RollGeneratedItems { get; set; }
+
         #endregion
 
         #region Methods
@@ -118,12 +120,13 @@ namespace OpenNos.GameObject.Item
             WaterElement = item.WaterElement;
             WaterResistance = item.WaterResistance;
             BCards = new List<BCard>();
-            DaoFactory.BCardDao.LoadByItemVNum(item.VNum).ToList().ForEach(o => BCards.Add((BCard)o));
+            DaoFactory.BCardDao.LoadByItemVNum(item.VNum).ToList().ForEach(o => BCards.Add((BCard) o));
             RollGeneratedItems = DaoFactory.RollGeneratedItemDao.LoadByItemVNum(item.VNum).ToList();
         }
 
         //TODO: Convert to PacketDefinition
-        public abstract void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null);
+        public abstract void Use(ClientSession session, ref ItemInstance inv, byte option = 0,
+            string[] packetsplit = null);
 
         #endregion
     }

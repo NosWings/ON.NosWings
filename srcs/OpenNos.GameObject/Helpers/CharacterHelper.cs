@@ -103,6 +103,7 @@ namespace OpenNos.GameObject.Helpers
             {
                 return;
             }
+
             RemoveSpecialistWingsBuff(session);
             switch (session.Character.SpInstance.Design)
             {
@@ -182,6 +183,7 @@ namespace OpenNos.GameObject.Helpers
                     {
                         penalty = 1f;
                     }
+
                     break;
             }
 
@@ -233,6 +235,7 @@ namespace OpenNos.GameObject.Helpers
                     {
                         penalty = 1f;
                     }
+
                     break;
             }
 
@@ -245,6 +248,7 @@ namespace OpenNos.GameObject.Helpers
             {
                 return elementRate * elementRate + 50;
             }
+
             return elementRate * elementRate * 3 + 50;
         }
 
@@ -384,10 +388,12 @@ namespace OpenNos.GameObject.Helpers
                     p = rarity * 2;
                     break;
             }
+
             return p * (lvl / 5 + 1);
         }
 
-        [SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
+        [SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted",
+            Justification = "Easier to read")]
         public int SlPoint(short spPoint, short mode)
         {
             try
@@ -436,6 +442,7 @@ namespace OpenNos.GameObject.Helpers
                         {
                             point = 99 + (spPoint - 400) / 10;
                         }
+
                         break;
 
                     case 2:
@@ -467,6 +474,7 @@ namespace OpenNos.GameObject.Helpers
                         {
                             point = 80 + (spPoint - 270) / 7;
                         }
+
                         break;
 
                     case 1:
@@ -506,6 +514,7 @@ namespace OpenNos.GameObject.Helpers
                         {
                             point = 99 + (spPoint - 400) / 10;
                         }
+
                         break;
 
                     case 3:
@@ -541,8 +550,10 @@ namespace OpenNos.GameObject.Helpers
                         {
                             point = 90 + (spPoint - 330) / 8;
                         }
+
                         break;
                 }
+
                 return point;
             }
             catch
@@ -558,6 +569,7 @@ namespace OpenNos.GameObject.Helpers
             {
                 point = 0;
             }
+
             switch (upgrade)
             {
                 case 1:
@@ -790,15 +802,17 @@ namespace OpenNos.GameObject.Helpers
                         hp += inc;
                         inc += 4;
                     }
+
                     ++j;
                 }
+
                 HpData[(int) ClassType.Swordman, i] = hp;
             }
 
             // Magician HP
             for (int i = 0; i < HpData.GetLength(1); i++)
             {
-                HpData[(int) ClassType.Magician, i] = (int)(((i + 15) * (i + 15) + i + 15.0) / 2.0 - 465 + 550);
+                HpData[(int) ClassType.Magician, i] = (int) (((i + 15) * (i + 15) + i + 15.0) / 2.0 - 465 + 550);
             }
 
             // Archer HP
@@ -816,8 +830,10 @@ namespace OpenNos.GameObject.Helpers
                         hp += inc;
                         ++inc;
                     }
+
                     ++j;
                 }
+
                 HpData[(int) ClassType.Archer, i] = hp;
             }
 
@@ -836,9 +852,11 @@ namespace OpenNos.GameObject.Helpers
                         hp += inc;
                         ++inc;
                     }
+
                     ++j;
                 }
-                HpData[(int)ClassType.Unknown, i] = hp;
+
+                HpData[(int) ClassType.Unknown, i] = hp;
             }
         }
 
@@ -881,10 +899,12 @@ namespace OpenNos.GameObject.Helpers
                 {
                     var2 = 4500;
                 }
+
                 if (i > 40)
                 {
                     var2 = 15000;
                 }
+
                 SecondJobXpData[i] = SecondJobXpData[i - 1] + var2;
             }
         }
@@ -927,7 +947,7 @@ namespace OpenNos.GameObject.Helpers
             // UNKNOWN CLASS
             for (int i = 1; i < MpData.GetLength(1) - 1; i++)
             {
-                MpData[(int)ClassType.Unknown, i] = MpData[(int)ClassType.Adventurer, i];
+                MpData[(int) ClassType.Unknown, i] = MpData[(int) ClassType.Adventurer, i];
             }
         }
 
@@ -971,6 +991,7 @@ namespace OpenNos.GameObject.Helpers
             {
                 SpxpData[i] = SpxpData[i - 1] + 10000;
             }
+
             for (int i = 20; i < SpxpData.Length; i++)
             {
                 SpxpData[i] = SpxpData[i - 1] + 6 * (3 * i * (i + 1) + 1);
@@ -1048,8 +1069,10 @@ namespace OpenNos.GameObject.Helpers
                 _hitDodge[(int) ClassType.Magician, i] = 24 + i; // approx
                 _distDodge[(int) ClassType.Magician, i] = 14 + i; // approx
 
-                _minHit[(int) ClassType.Magician, i] = 2 * i + 9; // approx Numbers n such that n^2 is of form x^ 2 + 40y ^ 2 with positive x,y.
-                _maxHit[(int) ClassType.Magician, i] = 2 * i + 9; // approx Numbers n such that n^2 is of form x^2+40y^2 with positive x,y.
+                _minHit[(int) ClassType.Magician, i] =
+                    2 * i + 9; // approx Numbers n such that n^2 is of form x^ 2 + 40y ^ 2 with positive x,y.
+                _maxHit[(int) ClassType.Magician, i] =
+                    2 * i + 9; // approx Numbers n such that n^2 is of form x^2+40y^2 with positive x,y.
                 _distDef[(int) ClassType.Magician, i] = 20 + i; // approx
 
                 // ARCHER
@@ -1074,24 +1097,24 @@ namespace OpenNos.GameObject.Helpers
                 _distDef[(int) ClassType.Archer, i] = i; // approx
 
                 // UNKNOWN
-                _criticalHitRate[(int)ClassType.Unknown, i] = 0; // sure
-                _criticalHit[(int)ClassType.Unknown, i] = 0; // sure
-                _criticalDistRate[(int)ClassType.Unknown, i] = 0; // sure
-                _criticalDist[(int)ClassType.Unknown, i] = 0; // sure
+                _criticalHitRate[(int) ClassType.Unknown, i] = 0; // sure
+                _criticalHit[(int) ClassType.Unknown, i] = 0; // sure
+                _criticalDistRate[(int) ClassType.Unknown, i] = 0; // sure
+                _criticalDist[(int) ClassType.Unknown, i] = 0; // sure
 
-                _minHit[(int)ClassType.Unknown, i] = 9 + i * 3; // approx
-                _maxHit[(int)ClassType.Unknown, i] = 9 + i * 3; // approx
-                _hitRate[(int)ClassType.Unknown, 1] = 41;
-                _hitRate[(int)ClassType.Unknown, i] = _hitRate[(int)ClassType.Archer, i] + add; // approx
-                _minDist[(int)ClassType.Unknown, i] = 2 * i; // approx
-                _maxDist[(int)ClassType.Unknown, i] = 2 * i; // approx
+                _minHit[(int) ClassType.Unknown, i] = 9 + i * 3; // approx
+                _maxHit[(int) ClassType.Unknown, i] = 9 + i * 3; // approx
+                _hitRate[(int) ClassType.Unknown, 1] = 41;
+                _hitRate[(int) ClassType.Unknown, i] = _hitRate[(int) ClassType.Archer, i] + add; // approx
+                _minDist[(int) ClassType.Unknown, i] = 2 * i; // approx
+                _maxDist[(int) ClassType.Unknown, i] = 2 * i; // approx
 
-                _distRate[(int)ClassType.Unknown, i] = 20 + 2 * i; // approx
-                _hitDef[(int)ClassType.Unknown, i] = i; // approx
-                _magicalDef[(int)ClassType.Unknown, i] = i + 2; // approx
-                _hitDodge[(int)ClassType.Unknown, i] = 41 + i; // approx
-                _distDodge[(int)ClassType.Unknown, i] = i + 2; // approx
-                _distDef[(int)ClassType.Unknown, i] = i; // approx
+                _distRate[(int) ClassType.Unknown, i] = 20 + 2 * i; // approx
+                _hitDef[(int) ClassType.Unknown, i] = i; // approx
+                _magicalDef[(int) ClassType.Unknown, i] = i + 2; // approx
+                _hitDodge[(int) ClassType.Unknown, i] = 41 + i; // approx
+                _distDodge[(int) ClassType.Unknown, i] = i + 2; // approx
+                _distDef[(int) ClassType.Unknown, i] = i; // approx
             }
         }
 
@@ -1108,6 +1131,7 @@ namespace OpenNos.GameObject.Helpers
             {
                 v[i] = v[i - 1] + 420 + 120 * (i - 1);
             }
+
             for (int i = 1; i < XpData.Length; i++)
             {
                 if (i < 79)
@@ -1124,12 +1148,15 @@ namespace OpenNos.GameObject.Helpers
                     {
                         var = 70 / 3d;
                     }
+
                     XpData[i] = Convert.ToInt64(XpData[i - 1] + var * v[i - 1]);
                 }
+
                 if (i < 79)
                 {
                     continue;
                 }
+
                 switch (i)
                 {
                     case 79:
@@ -1142,6 +1169,7 @@ namespace OpenNos.GameObject.Helpers
                         var = 13000;
                         break;
                 }
+
                 XpData[i] = Convert.ToInt64(XpData[i - 1] + var * (i + 2) * (i + 2));
             }
         }
@@ -1161,8 +1189,10 @@ namespace OpenNos.GameObject.Helpers
                 case ClassType.Magician:
                     return AttackType.Magical;
             }
+
             return AttackType.Close;
         }
+
         #endregion
 
 

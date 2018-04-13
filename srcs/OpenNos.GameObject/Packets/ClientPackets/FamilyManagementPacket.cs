@@ -11,11 +11,9 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public FamilyAuthority FamilyAuthorityType { get; set; }
+        [PacketIndex(0)] public FamilyAuthority FamilyAuthorityType { get; set; }
 
-        [PacketIndex(1)]
-        public long TargetId { get; set; }
+        [PacketIndex(1)] public long TargetId { get; set; }
 
         #endregion
     }

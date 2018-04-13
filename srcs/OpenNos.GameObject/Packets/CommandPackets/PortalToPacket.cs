@@ -10,17 +10,13 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public short DestinationMapId { get; set; }
+        [PacketIndex(0)] public short DestinationMapId { get; set; }
 
-        [PacketIndex(1)]
-        public short DestinationX { get; set; }
+        [PacketIndex(1)] public short DestinationX { get; set; }
 
-        [PacketIndex(2)]
-        public short DestinationY { get; set; }
+        [PacketIndex(2)] public short DestinationY { get; set; }
 
-        [PacketIndex(3)]
-        public PortalType? PortalType { get; set; }
+        [PacketIndex(3)] public PortalType? PortalType { get; set; }
 
         public static string ReturnHelp()
         {

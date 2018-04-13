@@ -8,8 +8,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public string Name { get; set; }
+        [PacketIndex(0)] public string Name { get; set; }
 
         public override string ToString()
         {

@@ -37,13 +37,15 @@ namespace OpenNos.GameObject.Buff
         public void ApplyBCards(IBattleEntity session, IBattleEntity caster = null)
         {
             Mate mate;
-            switch ((BCardType.CardType)Type)
+            switch ((BCardType.CardType) Type)
             {
                 case BCardType.CardType.Buff:
                     if (ServerManager.Instance.RandomNumber() < FirstData)
                     {
-                        session?.BattleEntity.AddBuff(new Buff(SecondData, caster?.BattleEntity.Level ?? session.BattleEntity.Level));
+                        session?.BattleEntity.AddBuff(new Buff(SecondData,
+                            caster?.BattleEntity.Level ?? session.BattleEntity.Level));
                     }
+
                     break;
 
                 case BCardType.CardType.Move:
@@ -53,50 +55,66 @@ namespace OpenNos.GameObject.Buff
                         chara.LoadSpeed();
                         chara.Session.SendPacket(chara.GenerateCond());
                     }
+
                     break;
 
                 case BCardType.CardType.Summons:
-                    NpcMonster npcMonster = session.GetSession() is MapMonster mob ? mob.Monster : session.GetSession() is MapNpc npc ? npc.Npc : null;
+                    NpcMonster npcMonster = session.GetSession() is MapMonster mob ? mob.Monster :
+                        session.GetSession() is MapNpc npc ? npc.Npc : null;
                     ConcurrentBag<ToSummon> summonParameters = new ConcurrentBag<ToSummon>();
 
-                    switch ((AdditionalTypes.Summons)SubType)
+                    switch ((AdditionalTypes.Summons) SubType)
                     {
                         case AdditionalTypes.Summons.Summons:
                             for (int i = 0; i < FirstData; i++)
                             {
                                 MapCell cell = session.GetPos();
-                                cell.Y += (short)ServerManager.Instance.RandomNumber(-3, 3);
-                                cell.X += (short)ServerManager.Instance.RandomNumber(-3, 3);
-                                summonParameters.Add(new ToSummon((short)SecondData, cell, null, true, (byte)Math.Abs(ThirdData)));
+                                cell.Y += (short) ServerManager.Instance.RandomNumber(-3, 3);
+                                cell.X += (short) ServerManager.Instance.RandomNumber(-3, 3);
+                                summonParameters.Add(new ToSummon((short) SecondData, cell, null, true,
+                                    (byte) Math.Abs(ThirdData)));
                             }
-                            EventHelper.Instance.RunEvent(new EventContainer(session.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
+
+                            EventHelper.Instance.RunEvent(new EventContainer(session.MapInstance,
+                                EventActionType.SPAWNMONSTERS, summonParameters));
                             break;
 
                         case AdditionalTypes.Summons.SummonTrainingDummy:
-                            if (npcMonster != null && session.BattleEntity.OnHitEvents.All(s => s?.EventActionType != EventActionType.SPAWNMONSTERS))
+                            if (npcMonster != null && session.BattleEntity.OnHitEvents.All(s =>
+                                    s?.EventActionType != EventActionType.SPAWNMONSTERS))
                             {
-                                summonParameters.Add(new ToSummon((short)SecondData, session.GetPos(), null, true, (byte)Math.Abs(ThirdData)));
-                                session.BattleEntity.OnHitEvents.Add(new EventContainer(session.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
+                                summonParameters.Add(new ToSummon((short) SecondData, session.GetPos(), null, true,
+                                    (byte) Math.Abs(ThirdData)));
+                                session.BattleEntity.OnHitEvents.Add(new EventContainer(session.MapInstance,
+                                    EventActionType.SPAWNMONSTERS, summonParameters));
                             }
+
                             break;
 
                         case AdditionalTypes.Summons.SummonUponDeathChance:
                         case AdditionalTypes.Summons.SummonUponDeath:
-                            if (npcMonster != null && session.BattleEntity.OnDeathEvents.All(s => s?.EventActionType != EventActionType.SPAWNMONSTERS))
+                            if (npcMonster != null &&
+                                session.BattleEntity.OnDeathEvents.All(s =>
+                                    s?.EventActionType != EventActionType.SPAWNMONSTERS))
                             {
                                 for (int i = 0; i < FirstData; i++)
                                 {
                                     MapCell cell = session.GetPos();
-                                    cell.Y += (short)i;
-                                    summonParameters.Add(new ToSummon((short)SecondData, cell, null, true, (byte)Math.Abs(ThirdData)));
+                                    cell.Y += (short) i;
+                                    summonParameters.Add(new ToSummon((short) SecondData, cell, null, true,
+                                        (byte) Math.Abs(ThirdData)));
                                 }
-                                session.BattleEntity.OnDeathEvents.Add(new EventContainer(session.MapInstance, EventActionType.SPAWNMONSTERS, summonParameters));
+
+                                session.BattleEntity.OnDeathEvents.Add(new EventContainer(session.MapInstance,
+                                    EventActionType.SPAWNMONSTERS, summonParameters));
                             }
+
                             break;
 
                         default:
                             break;
                     }
+
                     break;
 
                 case BCardType.CardType.SpecialAttack:
@@ -168,7 +186,7 @@ namespace OpenNos.GameObject.Buff
                         case AdditionalTypes.HealingBurningAndCasting.RestoreHPWhenCasting:
                             if (session.GetSession() is Character)
                             {
-                                sess = (Character)session.GetSession();
+                                sess = (Character) session.GetSession();
                                 int heal = FirstData;
                                 bool change = false;
                                 if (IsLevelScaled)
@@ -182,6 +200,7 @@ namespace OpenNos.GameObject.Buff
                                         heal *= sess.Level;
                                     }
                                 }
+
                                 if (sess.Hp + heal < sess.HpLoad())
                                 {
                                     sess.Hp += heal;
@@ -190,13 +209,16 @@ namespace OpenNos.GameObject.Buff
                                 }
                                 else
                                 {
-                                    if (sess.Hp != (int)sess.HpLoad())
+                                    if (sess.Hp != (int) sess.HpLoad())
                                     {
-                                        sess.Session?.CurrentMapInstance?.Broadcast(sess.GenerateRc((int)(sess.HpLoad() - sess.Hp)));
+                                        sess.Session?.CurrentMapInstance?.Broadcast(
+                                            sess.GenerateRc((int) (sess.HpLoad() - sess.Hp)));
                                         change = true;
                                     }
-                                    sess.Hp = (int)sess.HpLoad();
+
+                                    sess.Hp = (int) sess.HpLoad();
                                 }
+
                                 if (change)
                                 {
                                     sess.Session?.SendPacket(sess.GenerateStat());
@@ -205,7 +227,7 @@ namespace OpenNos.GameObject.Buff
 
                             if (session.GetSession() is Mate)
                             {
-                                mate = (Mate)session.GetSession();
+                                mate = (Mate) session.GetSession();
                                 int heal = FirstData;
                                 if (IsLevelScaled)
                                 {
@@ -218,6 +240,7 @@ namespace OpenNos.GameObject.Buff
                                         heal *= mate.Level;
                                     }
                                 }
+
                                 if (mate.Hp + heal < mate.HpLoad())
                                 {
                                     mate.Hp += heal;
@@ -232,7 +255,7 @@ namespace OpenNos.GameObject.Buff
                         case AdditionalTypes.HealingBurningAndCasting.RestoreMP:
                             if (session.GetSession() is Character)
                             {
-                                sess = (Character)session.GetSession();
+                                sess = (Character) session.GetSession();
                                 int heal = FirstData;
                                 bool change = false;
                                 if (IsLevelScaled)
@@ -246,6 +269,7 @@ namespace OpenNos.GameObject.Buff
                                         heal *= sess.Level;
                                     }
                                 }
+
                                 if (sess.Mp + heal < sess.MpLoad())
                                 {
                                     sess.Mp += heal;
@@ -253,12 +277,14 @@ namespace OpenNos.GameObject.Buff
                                 }
                                 else
                                 {
-                                    if (sess.Mp != (int)sess.MpLoad())
+                                    if (sess.Mp != (int) sess.MpLoad())
                                     {
                                         change = true;
                                     }
-                                    sess.Mp = (int)sess.MpLoad();
+
+                                    sess.Mp = (int) sess.MpLoad();
                                 }
+
                                 if (change)
                                 {
                                     sess.Session?.SendPacket(sess.GenerateStat());
@@ -267,7 +293,7 @@ namespace OpenNos.GameObject.Buff
 
                             if (session.GetSession() is Mate)
                             {
-                                mate = (Mate)session.GetSession();
+                                mate = (Mate) session.GetSession();
                                 int heal = FirstData;
                                 if (IsLevelScaled)
                                 {
@@ -280,6 +306,7 @@ namespace OpenNos.GameObject.Buff
                                         heal *= mate.Level;
                                     }
                                 }
+
                                 if (mate.Mp + heal < mate.MpLoad())
                                 {
                                     mate.Mp += heal;
@@ -289,8 +316,10 @@ namespace OpenNos.GameObject.Buff
                                     mate.Mp = mate.MpLoad();
                                 }
                             }
+
                             break;
                     }
+
                     break;
 
                 case BCardType.CardType.HPMP:
@@ -305,7 +334,9 @@ namespace OpenNos.GameObject.Buff
                 case BCardType.CardType.Capture:
                     if (session is MapMonster monsterToCapture && caster is Character hunter)
                     {
-                        if (monsterToCapture.Monster.RaceType == 1 && (hunter.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance || hunter.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
+                        if (monsterToCapture.Monster.RaceType == 1 &&
+                            (hunter.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance ||
+                             hunter.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
                         {
                             if (monsterToCapture.Monster.Level < hunter.Level)
                             {
@@ -314,30 +345,43 @@ namespace OpenNos.GameObject.Buff
                                     if (hunter.MaxMateCount > hunter.Mates.Count())
                                     {
                                         // Algo  
-                                        int capturerate = 100 - (monsterToCapture.CurrentHp / monsterToCapture.Monster.MaxHP + 1) / 2;
+                                        int capturerate =
+                                            100 - (monsterToCapture.CurrentHp / monsterToCapture.Monster.MaxHP + 1) / 2;
                                         if (ServerManager.Instance.RandomNumber() <= capturerate)
                                         {
-                                            if (hunter.Quests.Any(q => q.Quest.QuestType == (int)QuestType.Capture1 && q.Quest.QuestObjectives.Any(d => d.Data == monsterToCapture.MonsterVNum)))
+                                            if (hunter.Quests.Any(q =>
+                                                q.Quest.QuestType == (int) QuestType.Capture1 &&
+                                                q.Quest.QuestObjectives.Any(d =>
+                                                    d.Data == monsterToCapture.MonsterVNum)))
                                             {
-                                                hunter.IncrementQuests(QuestType.Capture1, monsterToCapture.MonsterVNum);
+                                                hunter.IncrementQuests(QuestType.Capture1,
+                                                    monsterToCapture.MonsterVNum);
                                                 return;
                                             }
+
                                             hunter.IncrementQuests(QuestType.Capture2, monsterToCapture.MonsterVNum);
-                                            int level = monsterToCapture.Monster.Level - 15 < 1 ? 1 : monsterToCapture.Monster.Level - 15;
-                                            Mate currentmate = hunter.Mates?.FirstOrDefault(m => m.IsTeamMember && m.MateType == MateType.Pet);
+                                            int level = monsterToCapture.Monster.Level - 15 < 1
+                                                ? 1
+                                                : monsterToCapture.Monster.Level - 15;
+                                            Mate currentmate = hunter.Mates?.FirstOrDefault(m =>
+                                                m.IsTeamMember && m.MateType == MateType.Pet);
                                             if (currentmate != null)
                                             {
                                                 currentmate.RemoveTeamMember(); // remove current pet
                                                 hunter.MapInstance.Broadcast(currentmate.GenerateOut());
                                             }
+
                                             monsterToCapture.MapInstance.DespawnMonster(monsterToCapture);
-                                            NpcMonster mateNpc = ServerManager.Instance.GetNpc(monsterToCapture.MonsterVNum);
-                                            mate = new Mate(hunter, mateNpc, (byte)level, MateType.Pet);
+                                            NpcMonster mateNpc =
+                                                ServerManager.Instance.GetNpc(monsterToCapture.MonsterVNum);
+                                            mate = new Mate(hunter, mateNpc, (byte) level, MateType.Pet);
                                             hunter.Mates?.Add(mate);
                                             mate.RefreshStats();
                                             hunter.Session.SendPacket($"ctl 2 {mate.PetId} 3");
                                             hunter.MapInstance.Broadcast(mate.GenerateIn());
-                                            hunter.Session.SendPacket(hunter.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 0));
+                                            hunter.Session.SendPacket(hunter.GenerateSay(
+                                                string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"),
+                                                    mate.Name), 0));
                                             hunter.Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                                             hunter.Session.SendPackets(hunter.GenerateScP());
                                             hunter.Session.SendPackets(hunter.GenerateScN());
@@ -346,16 +390,39 @@ namespace OpenNos.GameObject.Buff
                                                 .OrderBy(s => s.MateType)
                                                 .Select(s => s.GeneratePst()));
                                         }
-                                        else { hunter.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CAPTURE_FAILED"), 0)); }
+                                        else
+                                        {
+                                            hunter.Session.SendPacket(
+                                                UserInterfaceHelper.Instance.GenerateMsg(
+                                                    Language.Instance.GetMessageFromKey("CAPTURE_FAILED"), 0));
+                                        }
                                     }
-                                    else { hunter.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_MATES_COUNT"), 0)); }
+                                    else
+                                    {
+                                        hunter.Session.SendPacket(
+                                            UserInterfaceHelper.Instance.GenerateMsg(
+                                                Language.Instance.GetMessageFromKey("MAX_MATES_COUNT"), 0));
+                                    }
                                 }
-                                else { hunter.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("monsterToCapture_MUST_BE_LOW_HP"), 0)); }
+                                else
+                                {
+                                    hunter.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                        Language.Instance.GetMessageFromKey("monsterToCapture_MUST_BE_LOW_HP"), 0));
+                                }
                             }
-                            else { hunter.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("monsterToCapture_LVL_MUST_BE_LESS"), 0)); }
+                            else
+                            {
+                                hunter.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                    Language.Instance.GetMessageFromKey("monsterToCapture_LVL_MUST_BE_LESS"), 0));
+                            }
                         }
-                        else { hunter.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("monsterToCapture_CANNOT_BE_CAPTURED"), 0)); }
+                        else
+                        {
+                            hunter.Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                Language.Instance.GetMessageFromKey("monsterToCapture_CANNOT_BE_CAPTURED"), 0));
+                        }
                     }
+
                     break;
 
                 case BCardType.CardType.SpecialDamageAndExplosions:
@@ -397,10 +464,12 @@ namespace OpenNos.GameObject.Buff
                         if (SubType.Equals((byte) AdditionalTypes.SpecialActions.Hide))
                         {
                             charact.Invisible = true;
-                            charact.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => charact.Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
+                            charact.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
+                                charact.Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
                             charact.Session.CurrentMapInstance?.Broadcast(charact.GenerateInvisible());
                         }
                     }
+
                     break;
 
                 case BCardType.CardType.Mode:
@@ -492,6 +561,7 @@ namespace OpenNos.GameObject.Buff
                                 {
                                     break;
                                 }
+
                                 if (SkillVNum.HasValue)
                                 {
                                     character.LastSkillCombo = DateTime.Now;
@@ -505,6 +575,7 @@ namespace OpenNos.GameObject.Buff
                                             character.Session.SendPacket(
                                                 $"qset {qe.Q1} {qe.Q2} {qe.Type}.{qe.Slot}.{newSkill.CastId}.0");
                                         }
+
                                         character.Session.SendPacket($"mslot {newSkill.CastId} -1");
                                     });
 
@@ -526,20 +597,22 @@ namespace OpenNos.GameObject.Buff
                             {
                                 break;
                             }
+
                             switch (SubType)
                             {
                                 case 21:
-                                    character.MeditationDictionary[(short)SecondData] = DateTime.Now.AddSeconds(4);
+                                    character.MeditationDictionary[(short) SecondData] = DateTime.Now.AddSeconds(4);
                                     break;
                                 case 31:
-                                    character.MeditationDictionary[(short)SecondData] = DateTime.Now.AddSeconds(8);
+                                    character.MeditationDictionary[(short) SecondData] = DateTime.Now.AddSeconds(8);
                                     break;
                                 case 41:
-                                    character.MeditationDictionary[(short)SecondData] = DateTime.Now.AddSeconds(12);
+                                    character.MeditationDictionary[(short) SecondData] = DateTime.Now.AddSeconds(12);
                                     break;
                             }
                         }
                     }
+
                     break;
 
                 case BCardType.CardType.FalconSkill:
@@ -547,13 +620,15 @@ namespace OpenNos.GameObject.Buff
                     {
                         switch (SubType)
                         {
-                            case (byte)AdditionalTypes.FalconSkill.Hide:
+                            case (byte) AdditionalTypes.FalconSkill.Hide:
                                 c.Invisible = true;
-                                c.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => c.Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
+                                c.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
+                                    c.Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
                                 c.Session.CurrentMapInstance?.Broadcast(c.GenerateInvisible());
                                 break;
                         }
                     }
+
                     break;
 
                 case BCardType.CardType.AbsorptionAndPowerSkill:

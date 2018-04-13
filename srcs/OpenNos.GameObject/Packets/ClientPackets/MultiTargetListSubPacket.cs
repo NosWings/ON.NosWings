@@ -7,10 +7,8 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     [PacketHeader("multi_target_list_sub_packet")] // header will be ignored for serializing just sub list packets
     public class MultiTargetListSubPacket : PacketDefinition
     {
-        [PacketIndex(0)]
-        public int SkillCastId { get; set; }
+        [PacketIndex(0)] public int SkillCastId { get; set; }
 
-        [PacketIndex(1)]
-        public int TargetId { get; set; }
+        [PacketIndex(1)] public int TargetId { get; set; }
     }
 }

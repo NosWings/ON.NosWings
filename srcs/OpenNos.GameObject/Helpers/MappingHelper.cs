@@ -34,6 +34,7 @@ namespace OpenNos.GameObject.Helpers
         };
 
         #endregion
+
         #region Singleton
 
         private static MappingHelper _instance;

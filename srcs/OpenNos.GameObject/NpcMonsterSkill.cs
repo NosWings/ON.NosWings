@@ -30,17 +30,11 @@ namespace OpenNos.GameObject
 
         public short Hit { get; set; }
 
-        public DateTime LastSkillUse
-        {
-            get; set;
-        }
+        public DateTime LastSkillUse { get; set; }
 
         public Skill Skill
         {
-            get
-            {
-                return _skill ?? (_skill = ServerManager.Instance.GetSkill(SkillVNum));
-            }
+            get { return _skill ?? (_skill = ServerManager.Instance.GetSkill(SkillVNum)); }
         }
 
         #endregion

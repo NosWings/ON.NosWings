@@ -10,11 +10,9 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public string AccountName { get; set; }
+        [PacketIndex(0)] public string AccountName { get; set; }
 
-        [PacketIndex(1)]
-        public long? SessionId { get; set; }
+        [PacketIndex(1)] public long? SessionId { get; set; }
 
         public static string ReturnHelp()
         {

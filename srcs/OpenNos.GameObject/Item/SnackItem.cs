@@ -45,6 +45,7 @@ namespace OpenNos.GameObject.Item
             {
                 Thread.Sleep(1800);
             }
+
             session.Character.SnackHp -= item.Hp / 5;
             session.Character.SnackMp -= item.Mp / 5;
             session.Character.SnackAmount--;
@@ -58,20 +59,26 @@ namespace OpenNos.GameObject.Item
                 {
                     return;
                 }
+
                 session.Character.Hp += session.Character.SnackHp;
                 session.Character.Mp += session.Character.SnackMp;
                 if (session.Character.Mp > session.Character.MpLoad())
                 {
-                    session.Character.Mp = (int)session.Character.MpLoad();
+                    session.Character.Mp = (int) session.Character.MpLoad();
                 }
+
                 if (session.Character.Hp > session.Character.HpLoad())
                 {
-                    session.Character.Hp = (int)session.Character.HpLoad();
+                    session.Character.Hp = (int) session.Character.HpLoad();
                 }
-                if (session.Character.Hp < session.Character.HpLoad() || session.Character.Mp < session.Character.MpLoad())
+
+                if (session.Character.Hp < session.Character.HpLoad() ||
+                    session.Character.Mp < session.Character.MpLoad())
                 {
-                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp));
+                    session.CurrentMapInstance?.Broadcast(session,
+                        session.Character.GenerateRc(session.Character.SnackHp));
                 }
+
                 if (session.IsConnected)
                 {
                     session.SendPacket(session.Character.GenerateStat());
@@ -80,16 +87,19 @@ namespace OpenNos.GameObject.Item
                 {
                     return;
                 }
+
                 Thread.Sleep(1800);
             }
         }
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0,
+            string[] packetsplit = null)
         {
             if ((DateTime.Now - session.Character.LastPotion).TotalMilliseconds < 750)
             {
                 return;
             }
+
             session.Character.LastPotion = DateTime.Now;
             Item item = inv.Item;
             switch (Effect)
@@ -99,6 +109,7 @@ namespace OpenNos.GameObject.Item
                     {
                         return;
                     }
+
                     int amount = session.Character.SnackAmount;
                     if (amount < 5)
                     {
@@ -112,11 +123,13 @@ namespace OpenNos.GameObject.Item
                             ? session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1)
                             : session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
                     }
+
                     if (amount == 0)
                     {
                         Thread workerThread2 = new Thread(() => Sync(session, item));
                         workerThread2.Start();
                     }
+
                     break;
             }
         }

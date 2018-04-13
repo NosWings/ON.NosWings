@@ -113,11 +113,13 @@ namespace OpenNos.GameObject.Helpers
                 {
                     continue;
                 }
+
                 result.Value = new Random().Next(list.ElementAt(i).Min, list.ElementAt(i).Max);
                 result.Level = (byte) itemEffectValue;
                 result.Type = (byte) i;
                 return result;
             }
+
             return null;
         }
 

@@ -5,7 +5,6 @@ namespace OpenNos.GameObject.Map
 {
     public class ZoneEvent
     {
-
         #region Properties
 
         public short X { get; set; }
@@ -24,7 +23,7 @@ namespace OpenNos.GameObject.Map
 
         public bool InZone(short positionX, short positionY)
         {
-            return positionX <= X + Range && positionX >= X - Range && positionY <= Y + Range && positionY >= Y - Range ;
+            return positionX <= X + Range && positionX >= X - Range && positionY <= Y + Range && positionY >= Y - Range;
         }
 
         #endregion

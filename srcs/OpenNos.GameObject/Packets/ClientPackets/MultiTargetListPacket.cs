@@ -10,8 +10,7 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public byte TargetsAmount { get; set; }
+        [PacketIndex(0)] public byte TargetsAmount { get; set; }
 
         [PacketIndex(1, RemoveSeparator = true)]
         public List<MultiTargetListSubPacket> Targets { get; set; }

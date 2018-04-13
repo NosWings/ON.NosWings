@@ -38,7 +38,8 @@ namespace OpenNos.GameObject.Item
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0,
+            string[] packetsplit = null)
         {
             switch (Effect)
             {
@@ -49,30 +50,38 @@ namespace OpenNos.GameObject.Item
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(EffectValue));
                         if (MappingHelper.Instance.GuriItemEffects.ContainsKey(EffectValue))
                         {
-                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(19, 1, session.Character.CharacterId, MappingHelper.Instance.GuriItemEffects[EffectValue]), session.Character.MapX, session.Character.MapY);
+                            session.CurrentMapInstance?.Broadcast(
+                                UserInterfaceHelper.Instance.GenerateGuri(19, 1, session.Character.CharacterId,
+                                    MappingHelper.Instance.GuriItemEffects[EffectValue]), session.Character.MapX,
+                                session.Character.MapY);
                         }
+
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
+
                     // APPLY SHELL ON EQUIPMENT
                     if (inv.Item.ItemType == ItemType.Shell)
                     {
                         if (!((WearableInstance) inv).EquipmentOptions.Any())
                         {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_MUST_BE_IDENTIFIED"), 0));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                Language.Instance.GetMessageFromKey("SHELL_MUST_BE_IDENTIFIED"), 0));
                             return;
                         }
+
                         if (packetsplit == null)
                         {
                             return;
                         }
-                        
+
                         if (packetsplit.Length < 9)
                         {
                             // MODIFIED PACKET
                             return;
                         }
 
-                        if (!short.TryParse(packetsplit[9], out short eqSlot) || !Enum.TryParse(packetsplit[8], out InventoryType eqType))
+                        if (!short.TryParse(packetsplit[9], out short eqSlot) ||
+                            !Enum.TryParse(packetsplit[8], out InventoryType eqType))
                         {
                             return;
                         }
@@ -81,27 +90,35 @@ namespace OpenNos.GameObject.Item
                         {
                             return;
                         }
-         
-                        WearableInstance shell = (WearableInstance)inv;
-                        WearableInstance eq = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
+
+                        WearableInstance shell = (WearableInstance) inv;
+                        WearableInstance eq =
+                            session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
 
                         if (eq == null)
                         {
                             // PACKET MODIFIED
                             return;
                         }
+
                         if (eq.Item.ItemType != ItemType.Armor && shell.Item.ItemSubType == 1)
                         {
                             // ARMOR SHELL ONLY APPLY ON ARMORS
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_FOR_ARMOR_ONLY"), 0));
+                            session.SendPacket(
+                                UserInterfaceHelper.Instance.GenerateMsg(
+                                    Language.Instance.GetMessageFromKey("SHELL_FOR_ARMOR_ONLY"), 0));
                             return;
                         }
+
                         if (eq.Item.ItemType != ItemType.Weapon && shell.Item.ItemSubType == 0)
                         {
                             // WEAPON SHELL ONLY APPLY ON WEAPONS
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_FOR_WEAPON_ONLY"), 0));
+                            session.SendPacket(
+                                UserInterfaceHelper.Instance.GenerateMsg(
+                                    Language.Instance.GetMessageFromKey("SHELL_FOR_WEAPON_ONLY"), 0));
                             return;
                         }
+
                         switch (requestType)
                         {
                             case 0:
@@ -115,22 +132,28 @@ namespace OpenNos.GameObject.Item
                                     // SHELL NOT IDENTIFIED
                                     return;
                                 }
+
                                 if (eq.BoundCharacterId != session.Character.CharacterId && eq.BoundCharacterId != null)
                                 {
                                     // NEED TO PERFUME STUFF BEFORE CHANGING SHELL
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_PARFUM_TO_CHANGE_SHELL"), 0));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                        Language.Instance.GetMessageFromKey("NEED_PARFUM_TO_CHANGE_SHELL"), 0));
                                     return;
                                 }
+
                                 if (eq.Rare < shell.Rare)
                                 {
                                     // RARITY TOO HIGH ON SHELL
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_RARITY_TOO_HIGH"), 0));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                        Language.Instance.GetMessageFromKey("SHELL_RARITY_TOO_HIGH"), 0));
                                     return;
                                 }
+
                                 if (eq.Item.LevelMinimum < shell.Upgrade)
                                 {
                                     // SHELL LEVEL TOO HIGH
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_LEVEL_TOO_HIGH"), 0));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                        Language.Instance.GetMessageFromKey("SHELL_LEVEL_TOO_HIGH"), 0));
                                     return;
                                 }
 
@@ -139,11 +162,14 @@ namespace OpenNos.GameObject.Item
                                     if (new Random().Next(100) >= 50)
                                     {
                                         // BREAK BECAUSE DIDN'T USE MAGIC ERASER
-                                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_BROKEN"), 0));
+                                        session.SendPacket(
+                                            UserInterfaceHelper.Instance.GenerateMsg(
+                                                Language.Instance.GetMessageFromKey("SHELL_BROKEN"), 0));
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, shell.Id);
                                         return;
                                     }
                                 }
+
                                 if (eq.EquipmentOptions == null)
                                 {
                                     eq.EquipmentOptions = new List<EquipmentOptionDTO>();
@@ -152,8 +178,12 @@ namespace OpenNos.GameObject.Item
                                 eq.EquipmentOptions.Clear();
                                 foreach (EquipmentOptionDTO i in shell.EquipmentOptions)
                                 {
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHELL_OPTION_SET"), 0));
+                                    session.SendPacket(
+                                        UserInterfaceHelper.Instance.GenerateGuri(17, 1,
+                                            session.Character.CharacterId));
+                                    session.SendPacket(
+                                        UserInterfaceHelper.Instance.GenerateMsg(
+                                            Language.Instance.GetMessageFromKey("SHELL_OPTION_SET"), 0));
                                     eq.EquipmentOptions.Add(i);
                                 }
 
@@ -163,16 +193,22 @@ namespace OpenNos.GameObject.Item
                                 break;
                         }
                     }
+
                     break;
 
                 //respawn objects
                 case 1:
                     if (session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseMapInstance)
                     {
-                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
+                        session.SendPacket(
+                            session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
                         return;
                     }
-                    if (packetsplit != null && int.TryParse(packetsplit[2], out var type) && int.TryParse(packetsplit[3], out var secondaryType) && int.TryParse(packetsplit[4], out var inventoryType) && int.TryParse(packetsplit[5], out var slot))
+
+                    if (packetsplit != null && int.TryParse(packetsplit[2], out var type) &&
+                        int.TryParse(packetsplit[3], out var secondaryType) &&
+                        int.TryParse(packetsplit[4], out var inventoryType) &&
+                        int.TryParse(packetsplit[5], out var slot))
                     {
                         int packetType;
                         switch (EffectValue)
@@ -180,7 +216,8 @@ namespace OpenNos.GameObject.Item
                             case 0:
                                 if (option == 0)
                                 {
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1 #u_i^{type}^{secondaryType}^{inventoryType}^{slot}^2 {Language.Instance.GetMessageFromKey("WANT_TO_SAVE_POSITION")}"));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(
+                                        $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1 #u_i^{type}^{secondaryType}^{inventoryType}^{slot}^2 {Language.Instance.GetMessageFromKey("WANT_TO_SAVE_POSITION")}"));
                                 }
                                 else
                                 {
@@ -189,34 +226,52 @@ namespace OpenNos.GameObject.Item
                                         switch (packetType)
                                         {
                                             case 1:
-                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^3"));
+                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7,
+                                                    $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^3"));
                                                 break;
 
                                             case 2:
-                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^4"));
+                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7,
+                                                    $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^4"));
                                                 break;
 
                                             case 3:
-                                                session.Character.SetReturnPoint(session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                                                session.Character.SetReturnPoint(session.Character.MapId,
+                                                    session.Character.MapX, session.Character.MapY);
                                                 RespawnMapTypeDTO respawn = session.Character.Respawn;
-                                                if (respawn.DefaultX != 0 && respawn.DefaultY != 0 && respawn.DefaultMapId != 0)
+                                                if (respawn.DefaultX != 0 && respawn.DefaultY != 0 &&
+                                                    respawn.DefaultMapId != 0)
                                                 {
-                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, respawn.DefaultMapId, (short)(respawn.DefaultX + ServerManager.Instance.RandomNumber(-5, 5)), (short)(respawn.DefaultY + ServerManager.Instance.RandomNumber(-5, 5)));
+                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId,
+                                                        respawn.DefaultMapId,
+                                                        (short) (respawn.DefaultX +
+                                                                 ServerManager.Instance.RandomNumber(-5, 5)),
+                                                        (short) (respawn.DefaultY +
+                                                                 ServerManager.Instance.RandomNumber(-5, 5)));
                                                 }
+
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                                 break;
 
                                             case 4:
                                                 RespawnMapTypeDTO respawnObj = session.Character.Respawn;
-                                                if (respawnObj.DefaultX != 0 && respawnObj.DefaultY != 0 && respawnObj.DefaultMapId != 0)
+                                                if (respawnObj.DefaultX != 0 && respawnObj.DefaultY != 0 &&
+                                                    respawnObj.DefaultMapId != 0)
                                                 {
-                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, respawnObj.DefaultMapId, (short)(respawnObj.DefaultX + ServerManager.Instance.RandomNumber(-5, 5)), (short)(respawnObj.DefaultY + ServerManager.Instance.RandomNumber(-5, 5)));
+                                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId,
+                                                        respawnObj.DefaultMapId,
+                                                        (short) (respawnObj.DefaultX +
+                                                                 ServerManager.Instance.RandomNumber(-5, 5)),
+                                                        (short) (respawnObj.DefaultY +
+                                                                 ServerManager.Instance.RandomNumber(-5, 5)));
                                                 }
+
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                                 break;
                                         }
                                     }
                                 }
+
                                 break;
 
                             case 1:
@@ -226,40 +281,52 @@ namespace OpenNos.GameObject.Item
                                     switch (packetType)
                                     {
                                         case 0:
-                                            if (respawn.DefaultX != 0 && respawn.DefaultY != 0 && respawn.DefaultMapId != 0)
+                                            if (respawn.DefaultX != 0 && respawn.DefaultY != 0 &&
+                                                respawn.DefaultMapId != 0)
                                             {
-                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateRp(respawn.DefaultMapId, respawn.DefaultX, respawn.DefaultY, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1"));
+                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateRp(
+                                                    respawn.DefaultMapId, respawn.DefaultX, respawn.DefaultY,
+                                                    $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1"));
                                             }
+
                                             break;
 
                                         case 1:
-                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^2"));
+                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7,
+                                                $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^2"));
                                             break;
 
                                         case 2:
-                                            if (respawn.DefaultX != 0 && respawn.DefaultY != 0 && respawn.DefaultMapId != 0)
+                                            if (respawn.DefaultX != 0 && respawn.DefaultY != 0 &&
+                                                respawn.DefaultMapId != 0)
                                             {
-                                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, respawn.DefaultMapId, respawn.DefaultX, respawn.DefaultY);
+                                                ServerManager.Instance.ChangeMap(session.Character.CharacterId,
+                                                    respawn.DefaultMapId, respawn.DefaultX, respawn.DefaultY);
                                             }
+
                                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                             break;
                                     }
                                 }
+
                                 break;
 
                             case 2:
                                 if (option == 0)
                                 {
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1"));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7,
+                                        $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1"));
                                 }
                                 else
                                 {
                                     ServerManager.Instance.JoinMiniland(session, session);
                                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                 }
+
                                 break;
                         }
                     }
+
                     break;
 
                 // dyes or waxes
@@ -271,54 +338,71 @@ namespace OpenNos.GameObject.Item
                         {
                             if (EffectValue == 99)
                             {
-                                byte nextValue = (byte)ServerManager.Instance.RandomNumber(0, 127);
-                                session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), nextValue) ? (HairColorType)nextValue : 0;
+                                byte nextValue = (byte) ServerManager.Instance.RandomNumber(0, 127);
+                                session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), nextValue)
+                                    ? (HairColorType) nextValue
+                                    : 0;
                             }
                             else
                             {
-                                session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), (byte)EffectValue) ? (HairColorType)EffectValue : 0;
+                                session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), (byte) EffectValue)
+                                    ? (HairColorType) EffectValue
+                                    : 0;
                             }
                         }
                         else
                         {
-                            if (session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
+                            if (session.Character.Class == (byte) ClassType.Adventurer && EffectValue > 1)
                             {
-                                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
+                                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                    Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
                                 return;
                             }
-                            session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), (byte)EffectValue) ? (HairStyleType)EffectValue : 0;
+
+                            session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), (byte) EffectValue)
+                                ? (HairStyleType) EffectValue
+                                : 0;
                         }
+
                         session.SendPacket(session.Character.GenerateEq());
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn());
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx());
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
+
                     break;
 
                 // dignity restoration
                 case 14:
-                    if ((EffectValue == 100 || EffectValue == 200) && session.Character.Dignity < 100 && !session.Character.IsVehicled)
+                    if ((EffectValue == 100 || EffectValue == 200) && session.Character.Dignity < 100 &&
+                        !session.Character.IsVehicled)
                     {
                         session.Character.Dignity += EffectValue;
                         if (session.Character.Dignity > 100)
                         {
                             session.Character.Dignity = 100;
                         }
+
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff(49 - (byte)session.Character.Faction));
-                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                        session.SendPacket(session.Character.GenerateEff(49 - (byte) session.Character.Faction));
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(),
+                            ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(),
+                            ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     else if (EffectValue == 2000 && session.Character.Dignity < 100 && !session.Character.IsVehicled)
                     {
                         session.Character.Dignity = 100;
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff(49 - (byte)session.Character.Faction));
-                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                        session.SendPacket(session.Character.GenerateEff(49 - (byte) session.Character.Faction));
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(),
+                            ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(),
+                            ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
+
                     break;
 
                 // speakers
@@ -327,9 +411,11 @@ namespace OpenNos.GameObject.Item
                     {
                         if (option == 0)
                         {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 3, session.Character.CharacterId, 1));
+                            session.SendPacket(
+                                UserInterfaceHelper.Instance.GenerateGuri(10, 3, session.Character.CharacterId, 1));
                         }
                     }
+
                     break;
 
                 // bubbles
@@ -338,19 +424,23 @@ namespace OpenNos.GameObject.Item
                     {
                         if (option == 0)
                         {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 4, session.Character.CharacterId, 1));
+                            session.SendPacket(
+                                UserInterfaceHelper.Instance.GenerateGuri(10, 4, session.Character.CharacterId, 1));
                         }
                     }
+
                     break;
 
                 // wigs
                 case 30:
                     if (!session.Character.IsVehicled)
                     {
-                        WearableInstance wig = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+                        WearableInstance wig =
+                            session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Hat,
+                                InventoryType.Wear);
                         if (wig != null)
                         {
-                            wig.Design = (byte)ServerManager.Instance.RandomNumber(0, 15);
+                            wig.Design = (byte) ServerManager.Instance.RandomNumber(0, 15);
                             session.SendPacket(session.Character.GenerateEq());
                             session.SendPacket(session.Character.GenerateEquipment());
                             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn());
@@ -359,21 +449,31 @@ namespace OpenNos.GameObject.Item
                         }
                         else
                         {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
+                            session.SendPacket(
+                                UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"),
+                                    0));
                         }
                     }
+
                     break;
 
                 //Raid stone
                 case 300:
-                    if (session.Character.Group != null && session.Character.Group.GroupType != GroupType.Group && session.Character.Group.IsLeader(session) && session.CurrentMapInstance.Portals.Any(s => s.Type == (short)PortalType.Raid))
+                    if (session.Character.Group != null && session.Character.Group.GroupType != GroupType.Group &&
+                        session.Character.Group.IsLeader(session) &&
+                        session.CurrentMapInstance.Portals.Any(s => s.Type == (short) PortalType.Raid))
                     {
-                        Parallel.ForEach(session.Character.Group.Characters.Where(s => s.Character.Group?.GroupId == session.Character.Group?.GroupId), sess =>
-                        {
-                            ServerManager.Instance.TeleportOnRandomPlaceInMap(sess, session.CurrentMapInstance.MapInstanceId);
-                        });
+                        Parallel.ForEach(
+                            session.Character.Group.Characters.Where(s =>
+                                s.Character.Group?.GroupId == session.Character.Group?.GroupId),
+                            sess =>
+                            {
+                                ServerManager.Instance.TeleportOnRandomPlaceInMap(sess,
+                                    session.CurrentMapInstance.MapInstanceId);
+                            });
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
+
                     break;
 
                 default:

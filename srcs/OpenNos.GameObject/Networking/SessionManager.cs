@@ -60,10 +60,12 @@ namespace OpenNos.GameObject.Networking
             {
                 return;
             }
+
             if (Sessions.TryAdd(customClient.ClientId, session))
             {
                 return;
             }
+
             Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
             customClient.Disconnect();
             Sessions.TryRemove(customClient.ClientId, out session);
@@ -96,8 +98,10 @@ namespace OpenNos.GameObject.Networking
 
             if (IsWorldServer && session.HasSelectedCharacter)
             {
-                session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => session.CurrentMapInstance?.Broadcast(session, s.GenerateOut(), ReceiverType.AllExceptMe));
-                session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
+                    session.CurrentMapInstance?.Broadcast(session, s.GenerateOut(), ReceiverType.AllExceptMe));
+                session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(),
+                    ReceiverType.AllExceptMe);
             }
 
             session.Destroy();
@@ -115,6 +119,7 @@ namespace OpenNos.GameObject.Networking
                     {
                         ServerManager.Instance.GroupLeave(session);
                     }
+
                     session.Character.LeaveTalentArena(true);
                     session.Character.Save();
                 }

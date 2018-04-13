@@ -9,14 +9,11 @@ namespace OpenNos.GameObject.Packets.ServerPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public byte EffectType { get; set; }
+        [PacketIndex(0)] public byte EffectType { get; set; }
 
-        [PacketIndex(1)]
-        public long CharacterId { get; set; }
+        [PacketIndex(1)] public long CharacterId { get; set; }
 
-        [PacketIndex(2)]
-        public int Id { get; set; }
+        [PacketIndex(2)] public int Id { get; set; }
 
         #endregion
     }

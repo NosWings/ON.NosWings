@@ -10,11 +10,9 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public short MonsterVNum { get; set; }
+        [PacketIndex(0)] public short MonsterVNum { get; set; }
 
-        [PacketIndex(1)]
-        public byte Level { get; set; }
+        [PacketIndex(1)] public byte Level { get; set; }
 
         #endregion
 

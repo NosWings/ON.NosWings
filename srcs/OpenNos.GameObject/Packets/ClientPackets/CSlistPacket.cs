@@ -9,12 +9,10 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public byte Index { get; set; }
+        [PacketIndex(0)] public byte Index { get; set; }
 
 
-        [PacketIndex(1)]
-        public byte Filter { get; set; }
+        [PacketIndex(1)] public byte Filter { get; set; }
 
         #endregion
     }

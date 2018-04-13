@@ -10,14 +10,11 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public short NpcMonsterVNum { get; set; }
+        [PacketIndex(0)] public short NpcMonsterVNum { get; set; }
 
-        [PacketIndex(1)]
-        public byte Amount { get; set; }
+        [PacketIndex(1)] public byte Amount { get; set; }
 
-        [PacketIndex(2)]
-        public bool IsMoving { get; set; }
+        [PacketIndex(2)] public bool IsMoving { get; set; }
 
         public static string ReturnHelp()
         {

@@ -8,11 +8,9 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public string Name { get; set; }
+        [PacketIndex(0)] public string Name { get; set; }
 
-        [PacketIndex(1)]
-        public byte? Percent { get; set; }
+        [PacketIndex(1)] public byte? Percent { get; set; }
 
         public override string ToString()
         {

@@ -48,6 +48,7 @@ namespace OpenNos.GameObject
                 {
                     _destinationMapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(DestinationMapId);
                 }
+
                 return _destinationMapInstanceId;
             }
             set { _destinationMapInstanceId = value; }
@@ -63,6 +64,7 @@ namespace OpenNos.GameObject
                 {
                     _sourceMapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(SourceMapId);
                 }
+
                 return _sourceMapInstanceId;
             }
             set { _sourceMapInstanceId = value; }
@@ -74,7 +76,8 @@ namespace OpenNos.GameObject
 
         public string GenerateGp()
         {
-            return $"gp {SourceX} {SourceY} {ServerManager.Instance.GetMapInstance(DestinationMapInstanceId)?.Map.MapId ?? 0} {Type} {PortalId} {(IsDisabled ? 1 : 0)}";
+            return
+                $"gp {SourceX} {SourceY} {ServerManager.Instance.GetMapInstance(DestinationMapInstanceId)?.Map.MapId ?? 0} {Type} {PortalId} {(IsDisabled ? 1 : 0)}";
         }
 
         #endregion

@@ -61,10 +61,12 @@ namespace OpenNos.GameObject.Helpers
         public void AddPetBuff(ClientSession session, Mate mate)
         {
             int cardId = -1;
-            if (MateBuffs.TryGetValue(mate.NpcMonsterVNum, out cardId) && session.Character.Buff.All(b => b.Card.CardId != cardId))
+            if (MateBuffs.TryGetValue(mate.NpcMonsterVNum, out cardId) &&
+                session.Character.Buff.All(b => b.Card.CardId != cardId))
             {
                 session.Character.AddBuff(new Buff.Buff(cardId, isPermaBuff: true));
             }
+
             foreach (NpcMonsterSkill skill in mate.Monster.Skills.Where(sk => PetSkills.Contains(sk.SkillVNum)))
             {
                 session.SendPacket(session.Character.GeneratePetskill(skill.SkillVNum));
@@ -73,10 +75,12 @@ namespace OpenNos.GameObject.Helpers
 
         public void RemovePetBuffs(ClientSession session)
         {
-            foreach (Buff.Buff mateBuff in session.Character.BattleEntity.Buffs.Where(b => MateBuffs.Values.Any(v => v == b.Card.CardId)))
+            foreach (Buff.Buff mateBuff in session.Character.BattleEntity.Buffs.Where(b =>
+                MateBuffs.Values.Any(v => v == b.Card.CardId)))
             {
                 session.Character.RemoveBuff(mateBuff.Card.CardId, true);
             }
+
             session.SendPacket(session.Character.GeneratePetskill());
         }
 
@@ -96,7 +100,7 @@ namespace OpenNos.GameObject.Helpers
             for (int i = 1; i < Concentrate.GetLength(1); i++)
             {
                 Concentrate[0, i] = baseConcentrate;
-                baseConcentrate += (short)(i % 5 == 2 ? 5 : baseUp);
+                baseConcentrate += (short) (i % 5 == 2 ? 5 : baseUp);
             }
 
             baseConcentrate = 70;
@@ -142,7 +146,7 @@ namespace OpenNos.GameObject.Helpers
             for (int i = 1; i < MinDamageData.GetLength(1); i++)
             {
                 MinDamageData[0, i] = baseDamage;
-                baseDamage += (short)(i % 5 == 0 ? 5 : baseUp);
+                baseDamage += (short) (i % 5 == 0 ? 5 : baseUp);
             }
 
             baseDamage = 23;
@@ -153,8 +157,8 @@ namespace OpenNos.GameObject.Helpers
             for (int i = 1; i < MinDamageData.GetLength(1); i++)
             {
                 MinDamageData[1, i] = baseDamage;
-                baseDamage += (short)(i % 5 == 0 ? 5 : baseUp);
-                baseDamage += (short)(i % 2 == 0 ? 1 : 0);
+                baseDamage += (short) (i % 5 == 0 ? 5 : baseUp);
+                baseDamage += (short) (i % 2 == 0 ? 1 : 0);
             }
         }
 
@@ -170,7 +174,7 @@ namespace OpenNos.GameObject.Helpers
             for (int i = 1; i < MaxDamageData.GetLength(1); i++)
             {
                 MaxDamageData[0, i] = baseDamage;
-                baseDamage += (short)(i % 5 == 0 ? 5 : baseUp);
+                baseDamage += (short) (i % 5 == 0 ? 5 : baseUp);
             }
 
             MaxDamageData[1, 0] = baseDamage;
@@ -181,7 +185,7 @@ namespace OpenNos.GameObject.Helpers
             for (int i = 1; i < MaxDamageData.GetLength(1); i++)
             {
                 MaxDamageData[1, i] = baseDamage;
-                baseDamage += (short)(i % 5 == 0 ? 5 : baseUp);
+                baseDamage += (short) (i % 5 == 0 ? 5 : baseUp);
             }
         }
 
@@ -242,6 +246,7 @@ namespace OpenNos.GameObject.Helpers
                     PrimaryMpData[i] += PrimaryMpData[i - 1] + baseUp * 2;
                     continue;
                 }
+
                 if (!isStable)
                 {
                     baseUp++;
@@ -276,6 +281,7 @@ namespace OpenNos.GameObject.Helpers
                         count = 0;
                     }
                 }
+
                 PrimaryMpData[i] = PrimaryMpData[i - (i % 10 == 2 ? 2 : 1)] + baseUp;
             }
         }
@@ -330,6 +336,7 @@ namespace OpenNos.GameObject.Helpers
             {
                 v[i] = v[i - 1] + 420 + 120 * (i - 1);
             }
+
             for (int i = 1; i < XpData.Length; i++)
             {
                 if (i < 79)
@@ -346,12 +353,15 @@ namespace OpenNos.GameObject.Helpers
                             var = 70 / 3d;
                             break;
                     }
+
                     XpData[i] = Convert.ToInt64(XpData[i - 1] + var * v[i - 1]);
                 }
+
                 if (i < 79)
                 {
                     continue;
                 }
+
                 switch (i)
                 {
                     case 79:
@@ -364,6 +374,7 @@ namespace OpenNos.GameObject.Helpers
                         var = 13000;
                         break;
                 }
+
                 XpData[i] = Convert.ToInt64(XpData[i - 1] + var * (i + 2) * (i + 2));
             }
         }

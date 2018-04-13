@@ -8,11 +8,9 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public string FactionType { get; set; }
+        [PacketIndex(0)] public string FactionType { get; set; }
 
-        [PacketIndex(1)]
-        public string RaidType { get; set; }
+        [PacketIndex(1)] public string RaidType { get; set; }
 
         public override string ToString()
         {

@@ -10,11 +10,9 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public string CharacterName { get; set; }
+        [PacketIndex(0)] public string CharacterName { get; set; }
 
-        [PacketIndex(1)]
-        public int Duration { get; set; }
+        [PacketIndex(1)] public int Duration { get; set; }
 
         [PacketIndex(2, SerializeToEnd = true)]
         public string Reason { get; set; }

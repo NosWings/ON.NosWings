@@ -20,7 +20,8 @@ namespace OpenNos.GameObject.Networking
     {
         #region Instantiation
 
-        public BroadcastPacket(ClientSession session, string packet, ReceiverType receiver, string someonesCharacterName = "", long someonesCharacterId = -1, int xCoordinate = 0, int yCoordinate = 0)
+        public BroadcastPacket(ClientSession session, string packet, ReceiverType receiver,
+            string someonesCharacterName = "", long someonesCharacterId = -1, int xCoordinate = 0, int yCoordinate = 0)
         {
             Sender = session;
             Packet = packet;

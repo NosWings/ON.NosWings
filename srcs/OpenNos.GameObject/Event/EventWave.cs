@@ -22,6 +22,7 @@ namespace OpenNos.GameObject.Event
         #region Methods
 
         #endregion
+
         public byte Delay { get; private set; }
         public byte Offset { get; set; }
         public DateTime LastStart { get; set; }

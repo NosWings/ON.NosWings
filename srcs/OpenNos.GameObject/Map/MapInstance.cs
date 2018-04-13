@@ -120,7 +120,8 @@ namespace OpenNos.GameObject.Map
         {
             get
             {
-                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(20) >= DateTime.Now || Sessions.Any())
+                if (!_isSleepingRequest || _isSleeping || LastUnregister.AddSeconds(20) >= DateTime.Now ||
+                    Sessions.Any())
                 {
                     return _isSleeping;
                 }
@@ -240,14 +241,14 @@ namespace OpenNos.GameObject.Map
                 {
                     for (short y = -1; y < 2; y++)
                     {
-                        possibilities.Add(new MapCell { X = x, Y = y });
+                        possibilities.Add(new MapCell {X = x, Y = y});
                     }
                 }
 
                 foreach (MapCell possibilitie in possibilities.OrderBy(s => ServerManager.Instance.RandomNumber()))
                 {
-                    localMapX = (short)(mapX + possibilitie.X);
-                    localMapY = (short)(mapY + possibilitie.Y);
+                    localMapX = (short) (mapX + possibilitie.X);
+                    localMapY = (short) (mapY + possibilitie.Y);
                     if (!Map.IsBlockedZone(localMapX, localMapY))
                     {
                         break;
@@ -279,7 +280,12 @@ namespace OpenNos.GameObject.Map
 
         private IEnumerable<string> GenerateNpcShopOnMap()
         {
-            return (from npc in Npcs where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
+            return (from npc in Npcs
+                    where npc.Shop != null
+                    select
+                        $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}"
+                )
+                .ToList();
         }
 
         private IEnumerable<string> GeneratePlayerShopOnMap()
@@ -289,7 +295,9 @@ namespace OpenNos.GameObject.Map
 
         public string GenerateRsfn(bool isInit = false)
         {
-            return MapInstanceType == MapInstanceType.TimeSpaceInstance ? $"rsfn {MapIndexX} {MapIndexY} {(isInit ? 1 : (Monsters.Where(s => s.IsAlive).ToList().Count == 0 ? 0 : 1))}" : string.Empty;
+            return MapInstanceType == MapInstanceType.TimeSpaceInstance
+                ? $"rsfn {MapIndexX} {MapIndexY} {(isInit ? 1 : (Monsters.Where(s => s.IsAlive).ToList().Count == 0 ? 0 : 1))}"
+                : string.Empty;
         }
 
         private IEnumerable<string> GenerateUserShops()
@@ -306,7 +314,8 @@ namespace OpenNos.GameObject.Map
         {
             List<string> packets = new List<string>();
             Portals.ForEach(s => packets.Add(s.GenerateGp()));
-            ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList().ForEach(s => packets.Add(s.GenerateWp()));
+            ScriptedInstances.Where(s => s.Type == ScriptedInstanceType.TimeSpace).ToList()
+                .ForEach(s => packets.Add(s.GenerateWp()));
             Monsters.ForEach(s =>
             {
                 packets.Add(s.GenerateIn());
@@ -337,7 +346,8 @@ namespace OpenNos.GameObject.Map
 
         public void LoadMonsters()
         {
-            OrderablePartitioner<MapMonsterDTO> partitioner = Partitioner.Create(DaoFactory.MapMonsterDao.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<MapMonsterDTO> partitioner =
+                Partitioner.Create(DaoFactory.MapMonsterDao.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, monster =>
             {
                 if (!(monster is MapMonster mapMonster))
@@ -353,7 +363,8 @@ namespace OpenNos.GameObject.Map
 
         public void LoadNpcs()
         {
-            OrderablePartitioner<MapNpcDTO> partitioner = Partitioner.Create(DaoFactory.MapNpcDao.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<MapNpcDTO> partitioner =
+                Partitioner.Create(DaoFactory.MapNpcDao.LoadFromMap(Map.MapId), EnumerablePartitionerOptions.None);
             Parallel.ForEach(partitioner, npc =>
             {
                 if (!(npc is MapNpc mapNpc))
@@ -369,7 +380,8 @@ namespace OpenNos.GameObject.Map
 
         public void LoadPortals()
         {
-            OrderablePartitioner<PortalDTO> partitioner = Partitioner.Create(DaoFactory.PortalDao.LoadByMap(Map.MapId), EnumerablePartitionerOptions.None);
+            OrderablePartitioner<PortalDTO> partitioner = Partitioner.Create(DaoFactory.PortalDao.LoadByMap(Map.MapId),
+                EnumerablePartitionerOptions.None);
             ConcurrentDictionary<int, Portal> portalList = new ConcurrentDictionary<int, Portal>();
             Parallel.ForEach(partitioner, portal =>
             {
@@ -408,7 +420,8 @@ namespace OpenNos.GameObject.Map
             return MapDesignObjects.Select(mp => mp.GenerateEffect(false)).ToList();
         }
 
-        public MapItem PutItem(InventoryType type, short slot, ushort amount, ref ItemInstance inv, ClientSession session)
+        public MapItem PutItem(InventoryType type, short slot, ushort amount, ref ItemInstance inv,
+            ClientSession session)
         {
             Guid random2 = Guid.NewGuid();
             List<GridPos> possibilities = new List<GridPos>();
@@ -417,7 +430,7 @@ namespace OpenNos.GameObject.Map
             {
                 for (short y = -2; y < 3; y++)
                 {
-                    possibilities.Add(new GridPos { X = x, Y = y });
+                    possibilities.Add(new GridPos {X = x, Y = y});
                 }
             }
 
@@ -426,8 +439,8 @@ namespace OpenNos.GameObject.Map
             bool niceSpot = false;
             foreach (GridPos possibility in possibilities.OrderBy(s => _random.Next()))
             {
-                mapX = (short)(session.Character.PositionX + possibility.X);
-                mapY = (short)(session.Character.PositionY + possibility.Y);
+                mapX = (short) (session.Character.PositionX + possibility.X);
+                mapY = (short) (session.Character.PositionY + possibility.Y);
                 if (Map.IsBlockedZone(mapX, mapY))
                 {
                     continue;
@@ -460,7 +473,8 @@ namespace OpenNos.GameObject.Map
         {
             try
             {
-                List<MapItem> dropsToRemove = DroppedList.Select(s => s.Value).Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
+                List<MapItem> dropsToRemove = DroppedList.Select(s => s.Value)
+                    .Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
 
                 Parallel.ForEach(dropsToRemove, drop =>
                 {
@@ -522,7 +536,12 @@ namespace OpenNos.GameObject.Map
             IEnumerable<ClientSession> clientSessions = cl as IList<ClientSession> ?? cl.ToList();
             for (int i = clientSessions.Count() - 1; i >= 0; i--)
             {
-                if (Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = clientSessions.ElementAt(i).Character.PositionX, Y = clientSessions.ElementAt(i).Character.PositionY }) <=
+                if (Map.GetDistance(new MapCell {X = mapX, Y = mapY},
+                        new MapCell
+                        {
+                            X = clientSessions.ElementAt(i).Character.PositionX,
+                            Y = clientSessions.ElementAt(i).Character.PositionY
+                        }) <=
                     distance + 1)
                 {
                     characters.Add(clientSessions.ElementAt(i).Character);
@@ -562,8 +581,8 @@ namespace OpenNos.GameObject.Map
             for (int i = 0; i < parameter.Item3; i++)
             {
                 positionRandomizer:
-                short destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
-                short destY = (short)(originY + ServerManager.Instance.RandomNumber(-10, 10));
+                short destX = (short) (originX + ServerManager.Instance.RandomNumber(-10, 10));
+                short destY = (short) (originY + ServerManager.Instance.RandomNumber(-10, 10));
                 if (Map.IsBlockedZone(destX, destY))
                 {
                     goto positionRandomizer;
@@ -592,7 +611,7 @@ namespace OpenNos.GameObject.Map
                         s.Events.ToList().ForEach(e => EventHelper.Instance.RunEvent(e));
                     }
 
-                    s.Offset = s.Offset > 0 ? (byte)(s.Offset - 1) : (byte)0;
+                    s.Offset = s.Offset > 0 ? (byte) (s.Offset - 1) : (byte) 0;
                     s.LastStart = DateTime.Now;
                 });
                 try
@@ -696,9 +715,11 @@ namespace OpenNos.GameObject.Map
             _monsters.Select(s => s.Value).ToList().ForEach(monster => monster.Life?.Dispose());
             _npcs.Select(s => s.Value).ToList().ForEach(npc => npc.Life.Dispose());
 
-            foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceId == MapInstanceId))
+            foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s =>
+                s.Character != null && s.Character.MapInstanceId == MapInstanceId))
             {
-                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId,
+                    session.Character.MapX, session.Character.MapY);
             }
         }
 

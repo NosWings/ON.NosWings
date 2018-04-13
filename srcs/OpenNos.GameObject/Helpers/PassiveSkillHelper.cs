@@ -18,37 +18,37 @@ namespace OpenNos.GameObject.Helpers
                         bcards.Add(new BCard
                         {
                             FirstData = skill.Skill.UpgradeSkill,
-                            Type = (byte)BCardType.CardType.MaxHPMP,
-                            SubType = (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased,
+                            Type = (byte) BCardType.CardType.MaxHPMP,
+                            SubType = (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased,
                         });
                         break;
                     case 5:
                         bcards.Add(new BCard
                         {
                             FirstData = skill.Skill.UpgradeSkill,
-                            Type = (byte)BCardType.CardType.MaxHPMP,
-                            SubType = (byte)AdditionalTypes.MaxHPMP.MaximumMPIncreased,
+                            Type = (byte) BCardType.CardType.MaxHPMP,
+                            SubType = (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased,
                         });
                         break;
                     case 8:
                         bcards.Add(new BCard
                         {
                             FirstData = skill.Skill.UpgradeSkill,
-                            Type = (byte)BCardType.CardType.Recovery,
-                            SubType = (byte)AdditionalTypes.Recovery.HPRecoveryIncreased,
+                            Type = (byte) BCardType.CardType.Recovery,
+                            SubType = (byte) AdditionalTypes.Recovery.HPRecoveryIncreased,
                         });
                         break;
                     case 9:
                         bcards.Add(new BCard
                         {
                             FirstData = skill.Skill.UpgradeSkill,
-                            Type = (byte)BCardType.CardType.Recovery,
-                            SubType = (byte)AdditionalTypes.Recovery.MPRecoveryIncreased,
+                            Type = (byte) BCardType.CardType.Recovery,
+                            SubType = (byte) AdditionalTypes.Recovery.MPRecoveryIncreased,
                         });
                         break;
                 }
-
             }
+
             return bcards;
         }
 

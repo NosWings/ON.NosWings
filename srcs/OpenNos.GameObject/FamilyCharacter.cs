@@ -35,6 +35,7 @@ namespace OpenNos.GameObject
                 {
                     _character = DaoFactory.CharacterDao.LoadById(CharacterId);
                 }
+
                 return _character;
             }
         }

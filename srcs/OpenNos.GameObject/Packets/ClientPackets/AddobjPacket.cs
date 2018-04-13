@@ -9,13 +9,10 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
+        [PacketIndex(0)] public short Slot { get; set; }
+        [PacketIndex(1)] public short PositionX { get; set; }
+        [PacketIndex(2)] public short PositionY { get; set; }
 
-        [PacketIndex(0)]
-        public short Slot { get; set; }
-        [PacketIndex(1)]
-        public short PositionX { get; set; }
-        [PacketIndex(2)]
-        public short PositionY { get; set; }
         #endregion
     }
 }

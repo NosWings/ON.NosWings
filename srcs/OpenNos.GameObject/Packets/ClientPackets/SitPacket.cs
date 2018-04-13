@@ -10,8 +10,7 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public byte Ammout { get; set; }
+        [PacketIndex(0)] public byte Ammout { get; set; }
 
         [PacketIndex(1, RemoveSeparator = true)]
         public List<SitSubPacket> Users { get; set; }

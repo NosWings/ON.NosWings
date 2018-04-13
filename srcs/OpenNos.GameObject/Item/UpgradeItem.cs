@@ -29,7 +29,8 @@ namespace OpenNos.GameObject.Item
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0,
+            string[] packetsplit = null)
         {
             if (Effect == 0)
             {
@@ -40,7 +41,9 @@ namespace OpenNos.GameObject.Item
                         session.Character.IsSitting = false;
                         session.SendPacket(session.Character.GenerateRest());
                     }
-                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(12, 1, session.Character.CharacterId, EffectValue));
+
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(12, 1, session.Character.CharacterId,
+                        EffectValue));
                 }
                 else if (EffectValue == 0)
                 {
@@ -48,54 +51,75 @@ namespace OpenNos.GameObject.Item
                     {
                         return;
                     }
-                    if (!byte.TryParse(packetsplit[8], out byte typeEquip) || !short.TryParse(packetsplit[9], out short slotEquip))
+
+                    if (!byte.TryParse(packetsplit[8], out byte typeEquip) ||
+                        !short.TryParse(packetsplit[9], out short slotEquip))
                     {
                         return;
                     }
+
                     if (session.Character.IsSitting)
                     {
                         session.Character.IsSitting = false;
                         session.SendPacket(session.Character.GenerateRest());
                     }
+
                     if (option != 0)
                     {
                         bool isUsed = false;
                         switch (inv.ItemVNum)
                         {
                             case 1219:
-                                WearableInstance equip = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slotEquip, (InventoryType)typeEquip);
+                                WearableInstance equip =
+                                    session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slotEquip,
+                                        (InventoryType) typeEquip);
                                 if (equip != null && equip.IsFixed)
                                 {
                                     equip.IsFixed = false;
                                     session.SendPacket(session.Character.GenerateEff(3003));
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId, slotEquip));
-                                    session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1,
+                                        session.Character.CharacterId, slotEquip));
+                                    session.SendPacket(
+                                        session.Character.GenerateSay(
+                                            Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
                                     isUsed = true;
                                 }
+
                                 break;
 
                             case 1365:
                             case 9039:
-                                SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slotEquip, (InventoryType)typeEquip);
+                                SpecialistInstance specialist =
+                                    session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slotEquip,
+                                        (InventoryType) typeEquip);
                                 if (specialist != null && specialist.Rare == -2)
                                 {
                                     specialist.Rare = 0;
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
-                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(13, 1, session.Character.CharacterId, 1));
+                                    session.SendPacket(
+                                        UserInterfaceHelper.Instance.GenerateMsg(
+                                            Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
+                                    session.SendPacket(
+                                        UserInterfaceHelper.Instance.GenerateGuri(13, 1, session.Character.CharacterId,
+                                            1));
                                     session.Character.SpPoint = 10000;
                                     if (session.Character.SpPoint > 10000)
                                     {
                                         session.Character.SpPoint = 10000;
                                     }
+
                                     session.SendPacket(session.Character.GenerateSpPoint());
                                     session.SendPacket(specialist.GenerateInventoryAdd());
                                     isUsed = true;
                                 }
+
                                 break;
                         }
+
                         if (!isUsed)
                         {
-                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_NOT_FIXED"), 11));
+                            session.SendPacket(
+                                session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_NOT_FIXED"),
+                                    11));
                         }
                         else
                         {
@@ -104,7 +128,8 @@ namespace OpenNos.GameObject.Item
                     }
                     else
                     {
-                        session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^0^1^{typeEquip}^{slotEquip} {Language.Instance.GetMessageFromKey("QNA_ITEM")}");
+                        session.SendPacket(
+                            $"qna #u_i^1^{session.Character.CharacterId}^{(byte) inv.Type}^{inv.Slot}^0^1^{typeEquip}^{slotEquip} {Language.Instance.GetMessageFromKey("QNA_ITEM")}");
                     }
                 }
             }

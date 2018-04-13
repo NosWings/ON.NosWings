@@ -21,10 +21,11 @@ namespace OpenNos.GameObject.Helpers
             public short Y { get; }
         }
 
-        public Dictionary<string, Action<ClientSession, VipCommandPacket>> TeleportDictionary = new Dictionary<string, Action<ClientSession, VipCommandPacket>>
-        {
-            { "Teleport", Teleport},
-        };
+        public Dictionary<string, Action<ClientSession, VipCommandPacket>> TeleportDictionary =
+            new Dictionary<string, Action<ClientSession, VipCommandPacket>>
+            {
+                {"Teleport", Teleport},
+            };
 
         private static void Teleport(ClientSession session, VipCommandPacket packet)
         {

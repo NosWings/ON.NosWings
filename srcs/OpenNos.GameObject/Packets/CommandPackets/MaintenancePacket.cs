@@ -8,11 +8,9 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public string TimeBeforeMaintenance { get; set; }
+        [PacketIndex(0)] public string TimeBeforeMaintenance { get; set; }
 
-        [PacketIndex(1)]
-        public ServerState State { get; set; }
+        [PacketIndex(1)] public ServerState State { get; set; }
 
         public override string ToString()
         {

@@ -10,23 +10,17 @@ namespace OpenNos.GameObject.Packets.ServerPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public byte ObjectType { get; set; }
+        [PacketIndex(0)] public byte ObjectType { get; set; }
 
-        [PacketIndex(1)]
-        public long ObjectId { get; set; }
+        [PacketIndex(1)] public long ObjectId { get; set; }
 
-        [PacketIndex(2)]
-        public byte Inventory { get; set; }
+        [PacketIndex(2)] public byte Inventory { get; set; }
 
-        [PacketIndex(3)]
-        public byte InventorySlot { get; set; }
+        [PacketIndex(3)] public byte InventorySlot { get; set; }
 
-        [PacketIndex(4)]
-        public byte Unknown { get; set; }
+        [PacketIndex(4)] public byte Unknown { get; set; }
 
-        [PacketIndex(5)]
-        public byte Unknown1 { get; set; }
+        [PacketIndex(5)] public byte Unknown1 { get; set; }
 
         #endregion
     }

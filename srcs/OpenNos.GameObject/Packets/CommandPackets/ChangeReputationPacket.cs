@@ -10,8 +10,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public long Reputation { get; set; }
+        [PacketIndex(0)] public long Reputation { get; set; }
 
         public static string ReturnHelp()
         {

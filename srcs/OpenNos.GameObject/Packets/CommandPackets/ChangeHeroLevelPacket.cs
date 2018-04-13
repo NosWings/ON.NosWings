@@ -10,8 +10,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public byte HeroLevel { get; set; }
+        [PacketIndex(0)] public byte HeroLevel { get; set; }
 
         public static string ReturnHelp()
         {

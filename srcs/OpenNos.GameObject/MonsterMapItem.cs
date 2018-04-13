@@ -28,8 +28,9 @@ namespace OpenNos.GameObject
             ItemVNum = itemVNum;
             if (amount < 1000)
             {
-                Amount = (byte)amount;
+                Amount = (byte) amount;
             }
+
             GoldAmount = amount;
             OwnerId = ownerId;
         }
@@ -56,16 +57,19 @@ namespace OpenNos.GameObject
             {
                 ItemInstance = Inventory.InstantiateItemInstance(ItemVNum, OwnerId.Value, Amount);
             }
+
             return ItemInstance;
         }
 
         public void Rarify(ClientSession session)
         {
             ItemInstance instance = GetItemInstance();
-            if (instance.Item.Type != InventoryType.Equipment || (instance.Item.ItemType != ItemType.Weapon && instance.Item.ItemType != ItemType.Armor))
+            if (instance.Item.Type != InventoryType.Equipment ||
+                (instance.Item.ItemType != ItemType.Weapon && instance.Item.ItemType != ItemType.Armor))
             {
                 return;
             }
+
             if (instance is WearableInstance wearableInstance)
             {
                 wearableInstance?.RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);

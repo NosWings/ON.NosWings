@@ -9,11 +9,9 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public short MapType { get; set; }
+        [PacketIndex(0)] public short MapType { get; set; }
 
-        [PacketIndex(1)]
-        public byte Amount { get; set; }
+        [PacketIndex(1)] public byte Amount { get; set; }
 
         [PacketIndex(2, SerializeToEnd = true)]
         public string PacketEnd { get; set; }
@@ -27,6 +25,7 @@ namespace OpenNos.GameObject.Packets.ClientPackets
         public byte Option { get; set; }
 
          */
+
         #endregion
     }
 }

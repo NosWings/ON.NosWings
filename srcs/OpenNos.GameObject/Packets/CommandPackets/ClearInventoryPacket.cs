@@ -10,8 +10,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public InventoryType InventoryType { get; set; }
+        [PacketIndex(0)] public InventoryType InventoryType { get; set; }
 
         public static string ReturnHelp()
         {

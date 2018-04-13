@@ -10,11 +10,9 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public EventType EventType { get; set; }
+        [PacketIndex(0)] public EventType EventType { get; set; }
 
-        [PacketIndex(1)]
-        public int? UseTimer { get; set; }
+        [PacketIndex(1)] public int? UseTimer { get; set; }
 
         public static string ReturnHelp()
         {

@@ -7,8 +7,7 @@ namespace OpenNos.GameObject.Packets.ServerPackets
     [PacketHeader("eq")]
     public class EqPacket : PacketDefinition
     {
-        [PacketIndex(0)]
-        public long Id { get; set; }
+        [PacketIndex(0)] public long Id { get; set; }
     }
 
     [PacketHeader("eqsub")]

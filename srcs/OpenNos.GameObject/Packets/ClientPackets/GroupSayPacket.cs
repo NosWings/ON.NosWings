@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Packets.ClientPackets
 
         [PacketIndex(0, SerializeToEnd = true)]
         public string Message { get; set; }
-        
+
         #endregion
     }
 }

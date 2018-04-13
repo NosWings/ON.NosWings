@@ -36,13 +36,15 @@ namespace OpenNos.GameObject.Networking
 
         #region Instantiation
 
-        public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor, bool isWorldServer) : base(packetHandler, isWorldServer)
+        public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor,
+            bool isWorldServer) : base(packetHandler, isWorldServer)
         {
-            _encryptor = (TEncryptorT)Activator.CreateInstance(typeof(TEncryptorT));
+            _encryptor = (TEncryptorT) Activator.CreateInstance(typeof(TEncryptorT));
 
             if (fallbackEncryptor != null)
             {
-                _fallbackEncryptor = (EncryptionBase)Activator.CreateInstance(fallbackEncryptor); // reflection, TODO: optimize.
+                _fallbackEncryptor =
+                    (EncryptionBase) Activator.CreateInstance(fallbackEncryptor); // reflection, TODO: optimize.
             }
 
             _server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
@@ -64,10 +66,7 @@ namespace OpenNos.GameObject.Networking
 
         private IDictionary<string, DateTime> ConnectionLog
         {
-            get
-            {
-                return _connectionLog ?? (_connectionLog = new Dictionary<string, DateTime>());
-            }
+            get { return _connectionLog ?? (_connectionLog = new Dictionary<string, DateTime>()); }
         }
 
         #endregion
@@ -104,9 +103,12 @@ namespace OpenNos.GameObject.Networking
             {
                 return true;
             }
+
             if (ConnectionLog.Any())
             {
-                foreach (KeyValuePair<string, DateTime> item in ConnectionLog.Where(cl => cl.Key.Contains(client.IpAddress.Split(':')[1]) && (DateTime.Now - cl.Value).TotalSeconds > 3).ToList())
+                foreach (KeyValuePair<string, DateTime> item in ConnectionLog.Where(cl =>
+                        cl.Key.Contains(client.IpAddress.Split(':')[1]) && (DateTime.Now - cl.Value).TotalSeconds > 3)
+                    .ToList())
                 {
                     ConnectionLog.Remove(item.Key);
                 }
@@ -116,6 +118,7 @@ namespace OpenNos.GameObject.Networking
             {
                 return false;
             }
+
             ConnectionLog.Add(client.IpAddress, DateTime.Now);
             return true;
         }

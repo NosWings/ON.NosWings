@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
 
         public short VNum { get; set; }
 
-        public bool IsRandomRare { get;  set; }
+        public bool IsRandomRare { get; set; }
 
         #endregion
     }

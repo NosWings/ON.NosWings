@@ -32,36 +32,21 @@ namespace OpenNos.GameObject
 
         public override ushort Amount
         {
-            get
-            {
-                return ItemInstance.Amount;
-            }
+            get { return ItemInstance.Amount; }
 
-            set
-            {
-                ItemInstance.Amount = Amount;
-            }
+            set { ItemInstance.Amount = Amount; }
         }
 
         public override short ItemVNum
         {
-            get
-            {
-                return ItemInstance.ItemVNum;
-            }
+            get { return ItemInstance.ItemVNum; }
 
-            set
-            {
-                ItemInstance.ItemVNum = value;
-            }
+            set { ItemInstance.ItemVNum = value; }
         }
 
         public override long TransportId
         {
-            get
-            {
-                return base.TransportId;
-            }
+            get { return base.TransportId; }
 
             set
             {

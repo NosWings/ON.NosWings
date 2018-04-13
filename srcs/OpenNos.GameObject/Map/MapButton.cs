@@ -8,7 +8,9 @@ namespace OpenNos.GameObject.Map
     {
         #region Instantiation
 
-        public MapButton(int id, short positionX, short positionY, short enabledVNum, short disabledVNum, List<EventContainer> disableEvents, List<EventContainer> enableEvents, List<EventContainer> firstEnableEvents)
+        public MapButton(int id, short positionX, short positionY, short enabledVNum, short disabledVNum,
+            List<EventContainer> disableEvents, List<EventContainer> enableEvents,
+            List<EventContainer> firstEnableEvents)
         {
             MapButtonId = id;
             PositionX = positionX;

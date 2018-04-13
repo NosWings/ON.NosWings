@@ -46,6 +46,5 @@ namespace OpenNos.GameObject.Buff
         public bool IsPermaBuff { get; set; }
 
         #endregion
-
     }
 }

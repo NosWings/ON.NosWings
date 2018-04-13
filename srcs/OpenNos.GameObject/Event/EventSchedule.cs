@@ -31,6 +31,7 @@ namespace OpenNos.GameObject.Event
             {
                 list.Add(GetSchedule(aSchedule));
             }
+
             return list;
         }
 
@@ -40,11 +41,12 @@ namespace OpenNos.GameObject.Event
             {
                 Schedule result = new Schedule
                 {
-                    Event = (EventType)Enum.Parse(typeof(EventType), str.Attributes["event"].Value),
+                    Event = (EventType) Enum.Parse(typeof(EventType), str.Attributes["event"].Value),
                     Time = TimeSpan.Parse(str.Attributes["time"].Value)
                 };
                 return result;
             }
+
             return null;
         }
 

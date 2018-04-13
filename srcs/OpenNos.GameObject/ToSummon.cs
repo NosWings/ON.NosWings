@@ -26,7 +26,8 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public ToSummon(short vnum, MapCell spawnCell, IBattleEntity target, bool move, byte summonChance = 100, bool isTarget = false, bool isBonusOrProtected = false, bool isHostile = true, bool isBossOrMate = false)
+        public ToSummon(short vnum, MapCell spawnCell, IBattleEntity target, bool move, byte summonChance = 100,
+            bool isTarget = false, bool isBonusOrProtected = false, bool isHostile = true, bool isBossOrMate = false)
         {
             VNum = vnum;
             SpawnCell = spawnCell;
@@ -36,7 +37,7 @@ namespace OpenNos.GameObject
             IsBonusOrProtected = isBonusOrProtected;
             IsBossOrMate = isBossOrMate;
             IsHostile = isHostile;
-            SummonChance = (byte)(summonChance == 0 ? 100 : summonChance);
+            SummonChance = (byte) (summonChance == 0 ? 100 : summonChance);
             DeathEvents = new ConcurrentBag<EventContainer>();
             NoticingEvents = new ConcurrentBag<EventContainer>();
         }

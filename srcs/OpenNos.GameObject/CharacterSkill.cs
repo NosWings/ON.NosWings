@@ -49,10 +49,7 @@ namespace OpenNos.GameObject
 
         public short Hit { get; set; }
 
-        public DateTime LastUse
-        {
-            get; set;
-        }
+        public DateTime LastUse { get; set; }
 
         public Skill Skill
         {

@@ -22,7 +22,9 @@ namespace OpenNos.GameObject.Event.ACT4
 
             if (raid == null || lobby == null)
             {
-                Logger.Log.Error(raid == null ? $"Act4 raids is missing - type : {type}" : "There is no map in Act4Maps with MapId == 134");
+                Logger.Log.Error(raid == null
+                    ? $"Act4 raids is missing - type : {type}"
+                    : "There is no map in Act4Maps with MapId == 134");
                 return;
             }
 
@@ -32,13 +34,15 @@ namespace OpenNos.GameObject.Event.ACT4
                 SourceMapId = 134,
                 SourceX = 139,
                 SourceY = 100,
-                Type = (short)(9 + faction)
+                Type = (short) (9 + faction)
             }, 3600, true);
 
             foreach (MapInstance map in ServerManager.Instance.Act4Maps)
             {
-                map.Sessions.Where(s => s?.Character?.Faction == (FactionType)faction).ToList().ForEach(s =>
-                    s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"), ((Act4RaidType)type).ToString()), 0)));
+                map.Sessions.Where(s => s?.Character?.Faction == (FactionType) faction).ToList().ForEach(s =>
+                    s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                        string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"),
+                            ((Act4RaidType) type).ToString()), 0)));
             }
 
             lock (ServerManager.Instance.FamilyList)
@@ -51,6 +55,7 @@ namespace OpenNos.GameObject.Event.ACT4
                     {
                         continue;
                     }
+
                     family.Act4Raid.FirstMap.InstanceBag.Lock = true;
                 }
             }

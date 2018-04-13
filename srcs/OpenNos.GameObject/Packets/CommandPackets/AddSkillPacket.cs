@@ -10,8 +10,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public short SkillVnum { get; set; }
+        [PacketIndex(0)] public short SkillVnum { get; set; }
 
         public static string ReturnHelp()
         {

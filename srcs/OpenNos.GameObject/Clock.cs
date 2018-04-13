@@ -17,10 +17,7 @@ namespace OpenNos.GameObject
             Type = type;
             DeciSecondRemaining = 1;
             TickObservable = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(
-            x =>
-            {
-                Tick();
-            });
+                x => { Tick(); });
         }
 
         #endregion
@@ -63,10 +60,7 @@ namespace OpenNos.GameObject
         public void StopClock()
         {
             Enabled = false;
-            StopEvents.ForEach(e =>
-            {
-                EventHelper.Instance.RunEvent(e);
-            });
+            StopEvents.ForEach(e => { EventHelper.Instance.RunEvent(e); });
             StopEvents.RemoveAll(s => s != null);
         }
 
@@ -80,10 +74,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    TimeoutEvents.ForEach(ev =>
-                    {
-                        EventHelper.Instance.RunEvent(ev);
-                    });
+                    TimeoutEvents.ForEach(ev => { EventHelper.Instance.RunEvent(ev); });
                     TimeoutEvents.RemoveAll(s => s != null);
                 }
             }

@@ -33,7 +33,8 @@ namespace OpenNos.GameObject.Item
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0,
+            string[] packetsplit = null)
         {
             switch (Effect)
             {
@@ -42,7 +43,8 @@ namespace OpenNos.GameObject.Item
                     session.Character.LastUsedItem = VNum;
                     session.SendPacket("wopen 28 0");
                     List<Recipe> recipeList = ServerManager.Instance.GetRecipesByItemVNum(VNum);
-                    string list = recipeList.Where(s => s.Amount > 0).Aggregate("m_list 2", (current, s) => current + $" {s.ItemVNum}");
+                    string list = recipeList.Where(s => s.Amount > 0)
+                        .Aggregate("m_list 2", (current, s) => current + $" {s.ItemVNum}");
                     session.SendPacket(list + (EffectValue <= 110 && EffectValue >= 108 ? " 999" : string.Empty));
                     break;
                 default:

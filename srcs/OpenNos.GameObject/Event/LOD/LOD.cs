@@ -35,9 +35,12 @@ namespace OpenNos.GameObject.Event.LOD
             const int hornTime = 30;
             const int hornRepawn = 4;
             const int hornStay = 1;
-            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
+            EventHelper.Instance.RunEvent(new EventContainer(
+                ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)),
+                EventActionType.NPCSEFFECTCHANGESTATE, true));
             LodThread lodThread = new LodThread();
-            Observable.Timer(TimeSpan.FromMinutes(0)).Subscribe(x => lodThread.Run(lodtime * 60, hornTime * 60, hornRepawn * 60, hornStay * 60));
+            Observable.Timer(TimeSpan.FromMinutes(0)).Subscribe(x =>
+                lodThread.Run(lodtime * 60, hornTime * 60, hornRepawn * 60, hornStay * 60));
             List<MapNpc> portalList = ServerManager.Instance.GetMapNpcsPerVNum(453);
             if (portalList != null)
             {
@@ -73,11 +76,14 @@ namespace OpenNos.GameObject.Event.LOD
                         {
                             continue;
                         }
-                        EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CHANGEXPRATE, 3));
-                        EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CHANGEDROPRATE, 3));
+
+                        EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CHANGEXPRATE,
+                            3));
+                        EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath,
+                            EventActionType.CHANGEDROPRATE, 3));
                         SpawnDh(fam.LandOfDeath);
                     }
-                }        
+                }
                 else if (lodTime == hornTime - hornRespawn * dhspawns - hornStay)
                 {
                     SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
@@ -87,6 +93,7 @@ namespace OpenNos.GameObject.Event.LOD
                         {
                             continue;
                         }
+
                         DespawnDh(fam.LandOfDeath);
                         dhspawns++;
                     }
@@ -95,6 +102,7 @@ namespace OpenNos.GameObject.Event.LOD
                 lodTime -= interval;
                 Thread.Sleep(interval * 1000);
             }
+
             EndLod();
         }
 
@@ -108,8 +116,12 @@ namespace OpenNos.GameObject.Event.LOD
                     npc.EffectActivated = false;
                 }
             }
-            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, false));
-            EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
+
+            EventHelper.Instance.RunEvent(new EventContainer(
+                ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)),
+                EventActionType.NPCSEFFECTCHANGESTATE, false));
+            EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET,
+                UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.UNSPAWNMONSTERS, 443));
         }
 
@@ -122,9 +134,11 @@ namespace OpenNos.GameObject.Event.LOD
                 {
                     continue;
                 }
+
                 EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.DISPOSEMAP, null));
                 fam.LandOfDeath = null;
             }
+
             ServerManager.Instance.StartedEvents.Remove(EventType.LOD);
             ServerManager.Instance.StartedEvents.Remove(EventType.LODDH);
         }
@@ -136,11 +150,15 @@ namespace OpenNos.GameObject.Event.LOD
             {
                 if (fam.LandOfDeath == null)
                 {
-                    fam.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
+                    fam.LandOfDeath =
+                        ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
                 }
-                EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CLOCK, remaining * 10));
+
+                EventHelper.Instance.RunEvent(
+                    new EventContainer(fam.LandOfDeath, EventActionType.CLOCK, remaining * 10));
                 EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.STARTCLOCK,
-                    new Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>(new ConcurrentBag<EventContainer>(),
+                    new Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>(
+                        new ConcurrentBag<EventContainer>(),
                         new ConcurrentBag<EventContainer>())));
             }
         }
@@ -149,7 +167,8 @@ namespace OpenNos.GameObject.Event.LOD
         {
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SPAWNONLASTENTRY, 443));
             EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET, "df 2"));
-            EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
+            EventHelper.Instance.RunEvent(new EventContainer(landOfDeath, EventActionType.SENDPACKET,
+                UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
         }
 
         #endregion

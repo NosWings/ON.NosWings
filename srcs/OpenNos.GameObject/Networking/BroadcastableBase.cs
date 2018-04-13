@@ -34,7 +34,7 @@ namespace OpenNos.GameObject.Networking
         /// </summary>
         private readonly ConcurrentDictionary<long, ClientSession> _sessions;
 
-        internal readonly ConcurrentDictionary<Tuple<SessionType,long>, IBattleEntity> _battleEntities;
+        internal readonly ConcurrentDictionary<Tuple<SessionType, long>, IBattleEntity> _battleEntities;
 
         private bool _disposed;
 
@@ -57,7 +57,8 @@ namespace OpenNos.GameObject.Networking
         {
             get
             {
-                return _sessions.Select(s => s.Value).Where(s => s.HasSelectedCharacter && !s.IsDisposing && s.IsConnected);
+                return _sessions.Select(s => s.Value)
+                    .Where(s => s.HasSelectedCharacter && !s.IsDisposing && s.IsConnected);
             }
         }
 
@@ -74,7 +75,8 @@ namespace OpenNos.GameObject.Networking
 
         public void Broadcast(string packet, int xRangeCoordinate, int yRangeCoordinate)
         {
-            Broadcast(new BroadcastPacket(null, packet, ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate));
+            Broadcast(new BroadcastPacket(null, packet, ReceiverType.AllInRange, xCoordinate: xRangeCoordinate,
+                yCoordinate: yRangeCoordinate));
         }
 
         public void Broadcast(PacketDefinition packet)
@@ -84,10 +86,12 @@ namespace OpenNos.GameObject.Networking
 
         public void Broadcast(PacketDefinition packet, int xRangeCoordinate, int yRangeCoordinate)
         {
-            Broadcast(new BroadcastPacket(null, PacketFactory.Serialize(packet), ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate));
+            Broadcast(new BroadcastPacket(null, PacketFactory.Serialize(packet), ReceiverType.AllInRange,
+                xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate));
         }
 
-        public void Broadcast(ClientSession client, PacketDefinition packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        public void Broadcast(ClientSession client, PacketDefinition packet, ReceiverType receiver = ReceiverType.All,
+            string characterName = "", long characterId = -1)
         {
             Broadcast(client, PacketFactory.Serialize(packet), receiver, characterName, characterId);
         }
@@ -104,7 +108,8 @@ namespace OpenNos.GameObject.Networking
             }
         }
 
-        public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All,
+            string characterName = "", long characterId = -1)
         {
             try
             {
@@ -132,7 +137,8 @@ namespace OpenNos.GameObject.Networking
 
         public Mate GetMateByMateTransportId(long mateTransportId)
         {
-            return (Mate)_battleEntities.Values.FirstOrDefault(b => b is Mate m && m.MateTransportId == mateTransportId).GetSession();
+            return (Mate) _battleEntities.Values
+                .FirstOrDefault(b => b is Mate m && m.MateTransportId == mateTransportId).GetSession();
         }
 
         public void RegisterSession(ClientSession session)
@@ -141,18 +147,24 @@ namespace OpenNos.GameObject.Networking
             {
                 return;
             }
+
             session.RegisterTime = DateTime.Now;
 
             // Create a ChatClient and store it in a collection
             _sessions[session.Character.CharacterId] = session;
-            _battleEntities[new Tuple<SessionType, long>(SessionType.Character, session.Character.CharacterId)] = session.Character;
-            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities[new Tuple<SessionType, long>(m.SessionType(), m.GetId())] = m);
+            _battleEntities[new Tuple<SessionType, long>(SessionType.Character, session.Character.CharacterId)] =
+                session.Character;
+            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m =>
+                _battleEntities[new Tuple<SessionType, long>(m.SessionType(), m.GetId())] = m);
 
             if (session.HasCurrentMapInstance)
             {
                 session.CurrentMapInstance.IsSleeping = false;
             }
-            Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
+
+            Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"),
+                ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(),
+                ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
         }
 
         public void UnregisterSession(long characterId)
@@ -162,14 +174,22 @@ namespace OpenNos.GameObject.Networking
             {
                 return;
             }
+
             if (session.HasCurrentMapInstance && _sessions.Count == 0)
             {
                 session.CurrentMapInstance.IsSleeping = true;
             }
-            _battleEntities.TryRemove(new Tuple<SessionType, long>(SessionType.Character, session.Character.CharacterId), out IBattleEntity character);
-            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => _battleEntities.TryRemove(new Tuple<SessionType, long>(m.SessionType(), m.GetId()), out IBattleEntity mate));
 
-            Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"), ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(), ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
+            _battleEntities.TryRemove(
+                new Tuple<SessionType, long>(SessionType.Character, session.Character.CharacterId),
+                out IBattleEntity character);
+            session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m =>
+                _battleEntities.TryRemove(new Tuple<SessionType, long>(m.SessionType(), m.GetId()),
+                    out IBattleEntity mate));
+
+            Console.Title = string.Format(Language.Instance.GetMessageFromKey("WORLD_SERVER_CONSOLE_TITLE"),
+                ServerManager.Instance.ChannelId, ServerManager.Instance.Sessions.Count(),
+                ServerManager.Instance.IpAddress, ServerManager.Instance.Port);
             LastUnregister = DateTime.Now;
         }
 
@@ -179,6 +199,7 @@ namespace OpenNos.GameObject.Networking
             {
                 return;
             }
+
             switch (sentPacket.Receiver)
             {
                 case ReceiverType.All: // send packet to everyone
@@ -190,6 +211,7 @@ namespace OpenNos.GameObject.Networking
                             {
                                 continue;
                             }
+
                             if (sentPacket.Sender != null)
                             {
                                 if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
@@ -211,6 +233,7 @@ namespace OpenNos.GameObject.Networking
                             {
                                 return;
                             }
+
                             if (sentPacket.Sender != null)
                             {
                                 if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
@@ -224,28 +247,33 @@ namespace OpenNos.GameObject.Networking
                             }
                         });
                     }
+
                     break;
                 case ReceiverType.AllExceptMeAct4:
                     if (sentPacket.Sender == null)
                     {
                         return;
                     }
+
                     foreach (ClientSession session in Sessions.Where(s =>
-                        s.SessionId != sentPacket.Sender.SessionId && s.Character.Faction == sentPacket.Sender.Character.Faction && s.HasSelectedCharacter))
+                        s.SessionId != sentPacket.Sender.SessionId &&
+                        s.Character.Faction == sentPacket.Sender.Character.Faction && s.HasSelectedCharacter))
                     {
                         session.SendPacket(sentPacket.Packet);
                     }
+
                     break;
                 case ReceiverType.AllExceptMe: // send to everyone except the sender
                     if (sentPacket.Packet.StartsWith("out"))
                     {
-
-                        foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId))
+                        foreach (ClientSession session in Sessions.Where(
+                            s => s.SessionId != sentPacket.Sender.SessionId))
                         {
                             if (!session.HasSelectedCharacter)
                             {
                                 continue;
                             }
+
                             if (sentPacket.Sender != null)
                             {
                                 if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
@@ -267,6 +295,7 @@ namespace OpenNos.GameObject.Networking
                             {
                                 return;
                             }
+
                             if (sentPacket.Sender != null)
                             {
                                 if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
@@ -280,14 +309,19 @@ namespace OpenNos.GameObject.Networking
                             }
                         });
                     }
+
                     break;
                 case ReceiverType.AllExceptGroup:
-                    foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId && (s.Character?.Group == null || s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId)))
+                    foreach (ClientSession session in Sessions.Where(s =>
+                        s.SessionId != sentPacket.Sender.SessionId &&
+                        (s.Character?.Group == null ||
+                         s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId)))
                     {
                         if (!session.HasSelectedCharacter)
                         {
                             continue;
                         }
+
                         if (sentPacket.Sender != null)
                         {
                             if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
@@ -300,46 +334,57 @@ namespace OpenNos.GameObject.Networking
                             session.SendPacket(sentPacket.Packet);
                         }
                     }
+
                     break;
                 case ReceiverType.AllInRange: // send to everyone which is in a range of 50x50
                     if (sentPacket.XCoordinate != 0 && sentPacket.YCoordinate != 0)
                     {
-                        Parallel.ForEach(Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)), session =>
-                        {
-                            if (!session.HasSelectedCharacter)
+                        Parallel.ForEach(
+                            Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)),
+                            session =>
                             {
-                                return;
-                            }
-                            if (sentPacket.Sender != null)
-                            {
-                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
+                                if (!session.HasSelectedCharacter)
+                                {
+                                    return;
+                                }
+
+                                if (sentPacket.Sender != null)
+                                {
+                                    if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId)
+                                    )
+                                    {
+                                        session.SendPacket(sentPacket.Packet);
+                                    }
+                                }
+                                else
                                 {
                                     session.SendPacket(sentPacket.Packet);
                                 }
-                            }
-                            else
-                            {
-                                session.SendPacket(sentPacket.Packet);
-                            }
-                        });
+                            });
                     }
+
                     break;
 
                 case ReceiverType.OnlySomeone:
                     if (sentPacket.SomeonesCharacterId > 0 || !string.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
                     {
-                        ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
+                        ClientSession targetSession = Sessions.SingleOrDefault(s =>
+                            s.Character.CharacterId == sentPacket.SomeonesCharacterId ||
+                            s.Character.Name == sentPacket.SomeonesCharacterName);
                         if (targetSession != null && targetSession.HasSelectedCharacter)
                         {
                             if (sentPacket.Sender != null)
                             {
-                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(targetSession.Character.CharacterId))
+                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(targetSession.Character
+                                    .CharacterId))
                                 {
                                     targetSession.SendPacket(sentPacket.Packet);
                                 }
                                 else
                                 {
-                                    sentPacket.Sender.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                                    sentPacket.Sender.SendPacket(
+                                        UserInterfaceHelper.Instance.GenerateInfo(
+                                            Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
                                 }
                             }
                             else
@@ -348,6 +393,7 @@ namespace OpenNos.GameObject.Networking
                             }
                         }
                     }
+
                     break;
 
                 case ReceiverType.AllNoEmoBlocked:
@@ -357,6 +403,7 @@ namespace OpenNos.GameObject.Networking
                         {
                             return;
                         }
+
                         if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
                         {
                             session.SendPacket(sentPacket.Packet);
@@ -371,6 +418,7 @@ namespace OpenNos.GameObject.Networking
                         {
                             return;
                         }
+
                         if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
                         {
                             session.SendPacket(sentPacket.Packet);
@@ -379,17 +427,17 @@ namespace OpenNos.GameObject.Networking
                     break;
 
                 case ReceiverType.Group:
-                    Parallel.ForEach(Sessions.Where(s => s.Character?.Group != null && sentPacket.Sender?.Character?.Group != null && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId), session =>
-                    {
-                        session.SendPacket(sentPacket.Packet);
-                    });
+                    Parallel.ForEach(
+                        Sessions.Where(s =>
+                            s.Character?.Group != null && sentPacket.Sender?.Character?.Group != null &&
+                            s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId),
+                        session => { session.SendPacket(sentPacket.Packet); });
                     break;
 
                 case ReceiverType.Unknown:
                     break;
             }
         }
-
 
         #endregion
     }

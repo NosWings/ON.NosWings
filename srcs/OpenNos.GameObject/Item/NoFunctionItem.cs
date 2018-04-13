@@ -33,7 +33,8 @@ namespace OpenNos.GameObject.Item
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0,
+            string[] packetsplit = null)
         {
             switch (Effect)
             {
@@ -49,25 +50,31 @@ namespace OpenNos.GameObject.Item
                     if (session.Character.Inventory.CountItem(gillionVNum) <= 0)
                     {
                         // No Gillion                   
-                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_GILLION"), 11));
+                        session.SendPacket(
+                            session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_GILLION"), 11));
                         return;
                     }
+
                     session.Character.GiftAdd(cellaVNum, (byte) ServerManager.Instance.RandomNumber(5, 11));
                     if (extraItems > 70)
                     {
                         switch ((RefinerType) EffectValue)
                         {
                             case RefinerType.SoulGem:
-                                session.Character.GiftAdd(soulGemItems[ServerManager.Instance.RandomNumber(0, soulGemItems.Length)], 1);
+                                session.Character.GiftAdd(
+                                    soulGemItems[ServerManager.Instance.RandomNumber(0, soulGemItems.Length)], 1);
                                 break;
-                            case  RefinerType.Cellon:
-                                session.Character.GiftAdd(cellonItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)], 1);
+                            case RefinerType.Cellon:
+                                session.Character.GiftAdd(
+                                    cellonItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)], 1);
                                 break;
                             case RefinerType.Crystal:
-                                session.Character.GiftAdd(cristalItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)], 1);
+                                session.Character.GiftAdd(
+                                    cristalItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)], 1);
                                 break;
                         }
                     }
+
                     session.Character.Inventory.RemoveItemAmount(gillionVNum);
                     session.Character.Inventory.RemoveItemAmount(VNum);
                     break;

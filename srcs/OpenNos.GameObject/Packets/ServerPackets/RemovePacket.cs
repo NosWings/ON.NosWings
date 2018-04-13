@@ -10,11 +10,9 @@ namespace OpenNos.GameObject.Packets.ServerPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public byte EquipSlot { get; set; }
+        [PacketIndex(0)] public byte EquipSlot { get; set; }
 
-        [PacketIndex(1)]
-        public long MateId { get; set; }
+        [PacketIndex(1)] public long MateId { get; set; }
 
         #endregion
     }

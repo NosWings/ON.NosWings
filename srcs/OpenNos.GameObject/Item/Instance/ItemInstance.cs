@@ -57,10 +57,7 @@ namespace OpenNos.GameObject.Item.Instance
 
         public Item Item
         {
-            get
-            {
-                return _item ?? (_item = ServerManager.Instance.GetItem(ItemVNum));
-            }
+            get { return _item ?? (_item = ServerManager.Instance.GetItem(ItemVNum)); }
         }
 
         public ClientSession CharacterSession
@@ -77,7 +74,7 @@ namespace OpenNos.GameObject.Item.Instance
 
         public ItemInstance DeepCopy()
         {
-            return (ItemInstance)MemberwiseClone();
+            return (ItemInstance) MemberwiseClone();
         }
 
         public string GenerateFStash()
@@ -107,6 +104,7 @@ namespace OpenNos.GameObject.Item.Instance
                 case InventoryType.Costume:
                     return $"ivn 7 {Slot}.{ItemVNum}.{Rare}.{Upgrade}.0";
             }
+
             return string.Empty;
         }
 
@@ -122,7 +120,7 @@ namespace OpenNos.GameObject.Item.Instance
 
         public string GenerateStashPacket()
         {
-            string packet = $"{Slot}.{ItemVNum}.{(byte)Item.Type}";
+            string packet = $"{Slot}.{ItemVNum}.{(byte) Item.Type}";
             switch (Item.Type)
             {
                 case InventoryType.Equipment:

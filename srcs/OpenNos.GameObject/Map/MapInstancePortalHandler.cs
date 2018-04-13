@@ -41,7 +41,7 @@ namespace OpenNos.GameObject.Map
                         SourceY = 132,
                         DestinationX = 5,
                         DestinationY = 8,
-                        Type = (short)PortalType.Miniland,
+                        Type = (short) PortalType.Miniland,
                         SourceMapId = 1,
                         DestinationMapInstanceId = exitMapinstanceId
                     });
@@ -54,7 +54,7 @@ namespace OpenNos.GameObject.Map
                         SourceY = 171,
                         DestinationX = 5,
                         DestinationY = 8,
-                        Type = (short)PortalType.Miniland,
+                        Type = (short) PortalType.Miniland,
                         SourceMapId = 145,
                         DestinationMapInstanceId = exitMapinstanceId
                     });

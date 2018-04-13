@@ -39,7 +39,8 @@ namespace OpenNos.GameObject.Item
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte option = 0,
+            string[] packetsplit = null)
         {
             switch (Effect)
             {
@@ -50,11 +51,14 @@ namespace OpenNos.GameObject.Item
                         delay = true;
                         option = 0;
                     }
+
                     Mate mate = null;
                     if (option != 0)
                     {
-                        mate = session.Character.Mates.FirstOrDefault(s => s.MateType == MateType.Partner && s.PetId == (option - 1));
+                        mate = session.Character.Mates.FirstOrDefault(s =>
+                            s.MateType == MateType.Partner && s.PetId == (option - 1));
                     }
+
                     short slot = inv.Slot;
                     InventoryType equipment = InventoryType.Wear;
                     switch (option)
@@ -95,71 +99,99 @@ namespace OpenNos.GameObject.Item
                                 break;
                         }
 
-                        if (!delay && (EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80) || EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit || EquipmentSlot == EquipmentType.WeaponSkin))
+                        if (!delay &&
+                            (EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80) ||
+                             EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit ||
+                             EquipmentSlot == EquipmentType.WeaponSkin))
                         {
-                            session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
+                            session.SendPacket(
+                                $"qna #u_i^1^{session.Character.CharacterId}^{(byte) itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
                         }
+
                         if (delay)
                         {
                             inv.BoundCharacterId = session.Character.CharacterId;
                         }
                     }
 
-                    double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds - session.Character.LastSp;
+                    double timeSpanSinceLastSpUsage =
+                        (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds -
+                        session.Character.LastSp;
 
                     if (EquipmentSlot == EquipmentType.Sp && inv.Rare == -2)
                     {
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_EQUIP_DESTROYED_SP"), 0));
+                        session.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(
+                                Language.Instance.GetMessageFromKey("CANT_EQUIP_DESTROYED_SP"), 0));
                         return;
                     }
 
                     if (option == 0)
                     {
-                        if (EquipmentSlot == EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Specialist) != null)
+                        if (EquipmentSlot == EquipmentType.Sp &&
+                            timeSpanSinceLastSpUsage <= session.Character.SpCooldown &&
+                            session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp,
+                                InventoryType.Specialist) != null)
                         {
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage)), 0));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"),
+                                    session.Character.SpCooldown - (int) Math.Round(timeSpanSinceLastSpUsage)), 0));
                             return;
                         }
 
-                        if (ItemType != ItemType.Weapon && ItemType != ItemType.Armor && ItemType != ItemType.Fashion && ItemType != ItemType.Jewelery && ItemType != ItemType.Specialist ||
-                            LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || Sex != 0 && Sex != (byte) session.Character.Gender + 1
-                            || ItemType != ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves && (Class >> (byte) session.Character.Class & 1) != 1)
+                        if (ItemType != ItemType.Weapon && ItemType != ItemType.Armor && ItemType != ItemType.Fashion &&
+                            ItemType != ItemType.Jewelery && ItemType != ItemType.Specialist ||
+                            LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) ||
+                            Sex != 0 && Sex != (byte) session.Character.Gender + 1
+                            || ItemType != ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots &&
+                            EquipmentSlot != EquipmentType.Gloves && (Class >> (byte) session.Character.Class & 1) != 1)
                         {
-                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
+                            session.SendPacket(
+                                session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"),
+                                    10));
                             return;
                         }
 
                         if (session.Character.UseSp)
                         {
-                            SpecialistInstance sp = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, equipment);
+                            SpecialistInstance sp =
+                                session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(
+                                    (byte) EquipmentType.Sp, equipment);
 
-                            if (sp != null && sp.Item.Element != 0 && EquipmentSlot == EquipmentType.Fairy && Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
+                            if (sp != null && sp.Item.Element != 0 && EquipmentSlot == EquipmentType.Fairy &&
+                                Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
                             {
-                                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
+                                session.SendPacket(
+                                    UserInterfaceHelper.Instance.GenerateMsg(
+                                        Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                                 return;
                             }
-
                         }
 
                         if (ItemType == ItemType.Weapon || ItemType == ItemType.Armor)
                         {
-                            if (inv.BoundCharacterId.HasValue && inv.BoundCharacterId.Value != session.Character.CharacterId)
+                            if (inv.BoundCharacterId.HasValue &&
+                                inv.BoundCharacterId.Value != session.Character.CharacterId)
                             {
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
+                                session.SendPacket(
+                                    session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"),
+                                        10));
                                 return;
                             }
                         }
 
                         if (session.Character.UseSp && EquipmentSlot == EquipmentType.Sp)
                         {
-                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SP_BLOCKED"), 10));
+                            session.SendPacket(
+                                session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SP_BLOCKED"), 10));
                             return;
                         }
 
                         if (session.Character.JobLevel < LevelJobMinimum)
                         {
-                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 10));
+                            session.SendPacket(
+                                session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 10));
                             return;
                         }
                     }
@@ -167,9 +199,12 @@ namespace OpenNos.GameObject.Item
                     {
                         if (mate.Level < LevelMinimum)
                         {
-                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
+                            session.SendPacket(
+                                session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"),
+                                    10));
                             return;
                         }
+
                         switch (EquipmentSlot)
                         {
                             case EquipmentType.Armor:
@@ -214,12 +249,15 @@ namespace OpenNos.GameObject.Item
                                 }
 
                             default:
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
+                                session.SendPacket(
+                                    session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"),
+                                        10));
                                 return;
                         }
                     }
 
-                    ItemInstance currentlyEquippedItem = session.Character.Inventory.LoadBySlotAndType((short)EquipmentSlot, equipment);
+                    ItemInstance currentlyEquippedItem =
+                        session.Character.Inventory.LoadBySlotAndType((short) EquipmentSlot, equipment);
 
                     if (currentlyEquippedItem == null)
                     {
@@ -230,16 +268,21 @@ namespace OpenNos.GameObject.Item
                     else
                     {
                         // move from wear to equipment and back
-                        session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
+                        session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment,
+                            itemToWearType, inv.Slot);
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
-                        session.Character.BattleEntity.StaticBcards.RemoveWhere(o => o.ItemVNum != currentlyEquippedItem.ItemVNum, out ConcurrentBag<BCard> eqBcards);
+                        session.Character.BattleEntity.StaticBcards.RemoveWhere(
+                            o => o.ItemVNum != currentlyEquippedItem.ItemVNum, out ConcurrentBag<BCard> eqBcards);
                         session.Character.BattleEntity.StaticBcards = eqBcards;
                     }
+
                     inv.Item.BCards.ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
 
                     if (inv is WearableInstance wearableInstance)
                     {
-                        SpecialistInstance specialistInstance = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                        SpecialistInstance specialistInstance =
+                            session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp,
+                                InventoryType.Wear);
 
                         if (wearableInstance.EquipmentOptions != null)
                         {
@@ -252,31 +295,39 @@ namespace OpenNos.GameObject.Item
                                     {
                                         case (byte) EquipmentType.Armor:
                                             session.Character.Inventory.Armor = wearableInstance;
-                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
+                                            EquipmentOptionHelper.Instance
+                                                .ShellToBCards(wearableInstance.EquipmentOptions,
+                                                    wearableInstance.ItemVNum)
                                                 .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
                                             break;
                                         case (byte) EquipmentType.MainWeapon:
                                             session.Character.Inventory.PrimaryWeapon = wearableInstance;
-                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
+                                            EquipmentOptionHelper.Instance
+                                                .ShellToBCards(wearableInstance.EquipmentOptions,
+                                                    wearableInstance.ItemVNum)
                                                 .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
                                             specialistInstance?.RestorePoints(session, specialistInstance);
                                             break;
                                         case (byte) EquipmentType.SecondaryWeapon:
                                             session.Character.Inventory.SecondaryWeapon = wearableInstance;
-                                            EquipmentOptionHelper.Instance.ShellToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
+                                            EquipmentOptionHelper.Instance
+                                                .ShellToBCards(wearableInstance.EquipmentOptions,
+                                                    wearableInstance.ItemVNum)
                                                 .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
                                             specialistInstance?.RestorePoints(session, specialistInstance);
                                             break;
                                         case (byte) EquipmentType.Ring:
                                         case (byte) EquipmentType.Necklace:
                                         case (byte) EquipmentType.Bracelet:
-                                            EquipmentOptionHelper.Instance.CellonToBCards(wearableInstance.EquipmentOptions, wearableInstance.ItemVNum)
+                                            EquipmentOptionHelper.Instance
+                                                .CellonToBCards(wearableInstance.EquipmentOptions,
+                                                    wearableInstance.ItemVNum)
                                                 .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
                                             break;
                                     }
+
                                     break;
                             }
-
                         }
                     }
 
@@ -290,8 +341,13 @@ namespace OpenNos.GameObject.Item
                         switch (EquipmentSlot)
                         {
                             case EquipmentType.Fairy:
-                                WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, equipment);
-                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXpData(fairy.ElementRate + fairy.Item.ElementRate)), 10));
+                                WearableInstance fairy =
+                                    session.Character.Inventory.LoadBySlotAndType<WearableInstance>(
+                                        (byte) EquipmentType.Fairy, equipment);
+                                session.SendPacket(session.Character.GenerateSay(
+                                    string.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP,
+                                        CharacterHelper.LoadFairyXpData(fairy.ElementRate + fairy.Item.ElementRate)),
+                                    10));
                                 break;
                             case EquipmentType.Amulet:
                                 session.SendPacket(session.Character.GenerateEff(39));
@@ -302,6 +358,7 @@ namespace OpenNos.GameObject.Item
                     {
                         session.SendPacket(mate.GenerateScPacket());
                     }
+
                     break;
             }
         }

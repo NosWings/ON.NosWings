@@ -6,5 +6,7 @@ using OpenNos.Core.Serializing;
 namespace OpenNos.GameObject.Packets.CommandPackets
 {
     [PacketHeader("$Help", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
-    public class HelpPacket : PacketDefinition { }
+    public class HelpPacket : PacketDefinition
+    {
+    }
 }

@@ -10,14 +10,11 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public short VNum { get; set; }
+        [PacketIndex(0)] public short VNum { get; set; }
 
-        [PacketIndex(1)]
-        public byte? Design { get; set; }
+        [PacketIndex(1)] public byte? Design { get; set; }
 
-        [PacketIndex(2)]
-        public short? Upgrade { get; set; }
+        [PacketIndex(2)] public short? Upgrade { get; set; }
 
         public static string ReturnHelp()
         {
@@ -30,7 +27,8 @@ namespace OpenNos.GameObject.Packets.CommandPackets
 
         public override string ToString()
         {
-            return $"CreateItem Command VNum: {VNum}" + Design != null ? $" Design: {Design}" : "" + Upgrade != null ? $" Upgrade: {Upgrade}" : "";
+            return $"CreateItem Command VNum: {VNum}" + Design != null ? $" Design: {Design}" :
+                "" + Upgrade != null ? $" Upgrade: {Upgrade}" : "";
         }
 
         #endregion

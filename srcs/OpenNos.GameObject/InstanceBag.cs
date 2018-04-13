@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
             UnlockEvents = new ConcurrentBag<EventContainer>();
             ButtonLocker = new Locker();
             MonsterLocker = new Locker();
-    }
+        }
 
         #endregion
 
@@ -56,9 +56,9 @@ namespace OpenNos.GameObject
         public int Point { get; set; }
 
         public int RoomsVisited { get; set; }
-        public Locker MonsterLocker { get;  set; }
-        public Locker ButtonLocker { get;  set; }
-        public ConcurrentBag<EventContainer> UnlockEvents { get;  set; }
+        public Locker MonsterLocker { get; set; }
+        public Locker ButtonLocker { get; set; }
+        public ConcurrentBag<EventContainer> UnlockEvents { get; set; }
 
         public void Dispose()
         {

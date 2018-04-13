@@ -7,8 +7,7 @@ namespace OpenNos.GameObject.Packets.ServerPackets
     {
         #region Properties
 
-        [PacketIndex(0)]
-        public short MonsterVNum { get; set; }
+        [PacketIndex(0)] public short MonsterVNum { get; set; }
 
         #endregion
     }

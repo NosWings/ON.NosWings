@@ -18,6 +18,7 @@ namespace OpenNos.GameObject.Helpers
             {
                 withoutHeaderpacket += $" {packet[i]}";
             }
+
             LogCommandsDTO command = new LogCommandsDTO
             {
                 CharacterId = characterId,

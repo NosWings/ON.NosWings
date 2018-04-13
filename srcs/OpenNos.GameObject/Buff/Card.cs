@@ -23,7 +23,6 @@ namespace OpenNos.GameObject.Buff
 
         public override void Initialize()
         {
-
         }
     }
 }
