@@ -723,17 +723,20 @@ namespace OpenNos.GameObject.Battle
                 WearableInstance weapon =
                     charact.Inventory.LoadBySlotAndType<WearableInstance>((short) EquipmentType.MainWeapon,
                         InventoryType.Wear);
-                foreach (BCard bcard in weapon.Item.BCards)
+                if (weapon != null)
                 {
-                    Buff.Buff b = new Buff.Buff(bcard.SecondData);
-                    switch (b.Card?.BuffType)
+                    foreach (BCard bcard in weapon.Item.BCards)
                     {
-                        case BuffType.Good:
-                            bcard.ApplyBCards(charact, charact);
-                            break;
-                        case BuffType.Bad:
-                            bcard.ApplyBCards(targetEntity, charact);
-                            break;
+                        Buff.Buff b = new Buff.Buff(bcard.SecondData);
+                        switch (b.Card?.BuffType)
+                        {
+                            case BuffType.Good:
+                                bcard.ApplyBCards(charact, charact);
+                                break;
+                            case BuffType.Bad:
+                                bcard.ApplyBCards(targetEntity, charact);
+                                break;
+                        }
                     }
                 }
 
