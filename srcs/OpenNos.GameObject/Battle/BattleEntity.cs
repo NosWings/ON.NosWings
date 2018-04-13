@@ -668,7 +668,7 @@ namespace OpenNos.GameObject.Battle
                     switch (b.Card?.BuffType)
                     {
                         case BuffType.Good:
-                            bcard.ApplyBCards(charact);
+                            bcard.ApplyBCards(charact, charact);
                             break;
                         case BuffType.Bad:
                             bcard.ApplyBCards(targetEntity, charact);
