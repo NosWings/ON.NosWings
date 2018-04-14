@@ -206,6 +206,7 @@
     <Compile Include="Packets\HomePackets\SetHomePacket.cs" />
     <Compile Include="Packets\HomePackets\UnsetHomePacket.cs" />
     <Compile Include="Packets\ServerPackets\CancelPacket.cs" />
+    <Compile Include="Packets\ServerPackets\CspPacket.cs" />
     <Compile Include="Packets\ServerPackets\SrPacket.cs" />
     <Compile Include="ToSummon.cs" />
     <Compile Include="Packets\ClientPackets\PslPacket.cs" />

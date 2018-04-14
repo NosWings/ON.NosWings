@@ -36,6 +36,10 @@ using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
+using OpenNos.GameObject.Packets.ServerPackets;
+using HeroPacket = OpenNos.GameObject.Packets.ClientPackets.HeroPacket;
+using NcifPacket = OpenNos.GameObject.Packets.ClientPackets.NcifPacket;
+using SayPacket = OpenNos.GameObject.Packets.ClientPackets.SayPacket;
 
 namespace OpenNos.Handler
 {
@@ -58,6 +62,15 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// csp packet
+        /// </summary>
+        /// <param name="cspPacket"></param>
+        public void MessageBubble(CspPacket cspPacket)
+        {
+            Session.Character.MapInstance?.Broadcast($"csp {cspPacket.CharacterId} {cspPacket.Message}");
+        }
 
         /// <summary>
         /// gop packet

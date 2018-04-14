@@ -518,6 +518,7 @@ namespace OpenNos.Handler
                                 case 4:
                                     const int speakerVNum = 2173;
                                     const int petnameVNum = 2157;
+                                    const int messageBubbleVNum = 2174;
                                     switch (guriPacket.Argument)
                                     {
                                         case 1:
@@ -588,6 +589,30 @@ namespace OpenNos.Handler
                                                 ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                                                 LogHelper.Instance.InsertChatLog(ChatType.Speaker, Session.Character.CharacterId, message, Session.IpAddress);
                                             }
+                                            break;
+                                        case 4:
+                                            if (Session.Character.Inventory.CountItem(messageBubbleVNum) < 1)
+                                            {
+                                                return;
+                                            }
+                                            string bmessage = string.Empty;
+
+                                            bmessage = guriPacket.Value.Split(' ').Aggregate(bmessage, (current, t) => current + t + " ");
+                                            if (bmessage.Length > 120)
+                                            {
+                                                bmessage = bmessage.Substring(0, 120);
+                                            }
+                                            bmessage = bmessage.Trim();
+
+                                            Logger.Log.Warn($"Message : {bmessage}");
+                                            if (Session.Character.IsMuted())
+                                            {
+                                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_MSGBUBBLE"), 10));
+                                                return;
+                                            }
+                                            Session.Character.Inventory.RemoveItemAmount(messageBubbleVNum);
+                                            Session.Character.MapInstance?.Broadcast($"csp_r {bmessage}");
+                                            LogHelper.Instance.InsertChatLog(ChatType.General, Session.Character.CharacterId, bmessage, Session.IpAddress);
                                             break;
                                     }
 
