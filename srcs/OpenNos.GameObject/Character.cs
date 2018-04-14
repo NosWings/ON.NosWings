@@ -2090,7 +2090,7 @@ namespace OpenNos.GameObject
                         g.Character.MapInstanceId == MapInstanceId))
                     {
                         if (monsterToAttack.DamageList?.Count >= 0 &&
-                            grp.IsMemberOfGroup(monsterToAttack.DamageList?.FirstOrDefault().Key.GetId() ?? -1))
+                            grp.IsMemberOfGroup(monsterToAttack.DamageList?.FirstOrDefault().Key?.GetId() ?? -1))
                         {
                             targetSession.Character.GenerateXp(monsterToAttack, true);
                         }
