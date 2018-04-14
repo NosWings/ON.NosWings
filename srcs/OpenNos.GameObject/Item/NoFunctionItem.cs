@@ -70,7 +70,7 @@ namespace OpenNos.GameObject.Item
                                 break;
                             case RefinerType.Crystal:
                                 session.Character.GiftAdd(
-                                    cristalItems[ServerManager.Instance.RandomNumber(0, cellonItems.Length)], 1);
+                                    cristalItems[ServerManager.Instance.RandomNumber(0, cristalItems.Length)], 1);
                                 break;
                         }
                     }
