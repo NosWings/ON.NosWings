@@ -2089,8 +2089,7 @@ namespace OpenNos.GameObject
                     foreach (ClientSession targetSession in grp.Characters.Where(g =>
                         g.Character.MapInstanceId == MapInstanceId))
                     {
-                        if (monsterToAttack.DamageList?.Count >= 0 &&
-                            grp.IsMemberOfGroup(monsterToAttack.DamageList?.FirstOrDefault().Key?.GetId() ?? -1))
+                        if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key == null ? CharacterId : monsterToAttack.DamageList.FirstOrDefault().Key.GetId()))
                         {
                             targetSession.Character.GenerateXp(monsterToAttack, true);
                         }
