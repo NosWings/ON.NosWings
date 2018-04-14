@@ -24,7 +24,7 @@ namespace OpenNos.GameObject
 
         public long Price { get; set; }
 
-        public byte SellAmount { get; set; }
+        public short SellAmount { get; set; }
 
         public short ShopSlot { get; set; }
 

@@ -67,7 +67,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            byte amount = buyPacket.Amount;
+            short amount = buyPacket.Amount;
 
             switch (buyPacket.Type)
             {
@@ -80,7 +80,7 @@ namespace OpenNos.Handler
                         }
                         KeyValuePair<long, MapShop> shop = Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(buyPacket.OwnerId));
                         PersonalShopItem item = shop.Value?.Items.FirstOrDefault(i => i.ShopSlot.Equals(buyPacket.Slot));
-                        if (item == null || amount <= 0 || amount > 99)
+                        if (item == null || amount <= 0 || amount > 999)
                         {
                             return;
                         }
@@ -313,7 +313,7 @@ namespace OpenNos.Handler
                                     }
                                 }
 
-                                List<ItemInstance> newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount, rare: rare, upgrade: item.Upgrade, design: item.Color);
+                                List<ItemInstance> newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, (ushort)amount, rare: rare, upgrade: item.Upgrade, design: item.Color);
                                 if (!newItem.Any())
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE")));
@@ -945,7 +945,7 @@ namespace OpenNos.Handler
             }
         }
 
-        private bool BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
+        private bool BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, short amount)
         {
             if (!clientSession.HasCurrentMapInstance)
             {
@@ -970,7 +970,7 @@ namespace OpenNos.Handler
             }
             List<ItemInstance> inv = shopitem.ItemInstance.Type == InventoryType.Equipment
                    ? clientSession.Character.Inventory.AddToInventory(shopitem.ItemInstance)
-                   : clientSession.Character.Inventory.AddNewToInventory(shopitem.ItemInstance.ItemVNum, amount, shopitem.ItemInstance.Type);
+                   : clientSession.Character.Inventory.AddNewToInventory(shopitem.ItemInstance.ItemVNum, (ushort)amount, shopitem.ItemInstance.Type);
 
             if (!inv.Any())
             {
@@ -985,7 +985,7 @@ namespace OpenNos.Handler
             if (shopitem.ItemInstance.Type != InventoryType.Equipment)
             {
                 // remove sold amount of items
-                shopOwnerSession.Character.Inventory.RemoveItemAmountFromInventory(amount, id);
+                shopOwnerSession.Character.Inventory.RemoveItemAmountFromInventory((ushort)amount, id);
 
                 // remove sold amount from sellamount
                 shopitem.SellAmount -= amount;

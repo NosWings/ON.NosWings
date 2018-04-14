@@ -16,7 +16,7 @@ namespace OpenNos.GameObject.Packets.ServerPackets
 
         [PacketIndex(2)] public short Slot { get; set; }
 
-        [PacketIndex(3)] public byte Amount { get; set; }
+        [PacketIndex(3)] public short Amount { get; set; }
 
         public override string ToString()
         {
