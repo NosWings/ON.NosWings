@@ -251,7 +251,7 @@ namespace OpenNos.Handler
                             {
                                 // npc shop
                                 ShopItemDTO item = npc.Shop.ShopItems.FirstOrDefault(it => it.Slot == buyPacket.Slot);
-                                if (item == null || amount <= 0 || amount > 99)
+                                if (item == null || amount <= 0 || amount > 999)
                                 {
                                     return;
                                 }
