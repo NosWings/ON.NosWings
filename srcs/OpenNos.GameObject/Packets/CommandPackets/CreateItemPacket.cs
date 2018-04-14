@@ -12,7 +12,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
 
         [PacketIndex(0)] public short VNum { get; set; }
 
-        [PacketIndex(1)] public byte? Design { get; set; }
+        [PacketIndex(1)] public short? Design { get; set; }
 
         [PacketIndex(2)] public short? Upgrade { get; set; }
 

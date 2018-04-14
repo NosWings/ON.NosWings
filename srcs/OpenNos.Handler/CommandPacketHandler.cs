@@ -1495,7 +1495,8 @@ namespace OpenNos.Handler
                 List<short> boxes = new List<short> { 882, 942, 185, 999 };
                 short vnum = createItemPacket.VNum;
                 sbyte rare = 0;
-                byte amount = 1, design = 0;
+                short amount = 1;
+                short design = 0;
                 short upgrade = 0;
                 if (vnum == 1046)
                 {
@@ -1550,10 +1551,10 @@ namespace OpenNos.Handler
 
                     if (createItemPacket.Design.HasValue && !createItemPacket.Upgrade.HasValue)
                     {
-                        amount = createItemPacket.Design.Value > 99 ? (byte)99 : createItemPacket.Design.Value;
+                        amount = (short)(createItemPacket.Design.Value > 999 ? 999 : createItemPacket.Design.Value);
                     }
 
-                    ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount, rare: rare, upgrade: upgrade, design: design).FirstOrDefault();
+                    ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, (ushort)amount, rare: rare, upgrade: upgrade, design: (byte)design).FirstOrDefault();
                     if (inv != null)
                     {
                         var wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
