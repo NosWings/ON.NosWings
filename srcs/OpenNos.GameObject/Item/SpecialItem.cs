@@ -176,7 +176,7 @@ namespace OpenNos.GameObject.Item
                                         DestinationCharacterId = null,
                                         SourceCharacterId = session.Character.CharacterId,
                                         SourceWorldId = ServerManager.Instance.WorldId,
-                                        Message = Language.Instance.GetMessageFromKey("SUPER_REWARD"),
+                                        Message = string.Format(Language.Instance.GetMessageFromKey("SUPER_REWARD"), session.Character.Name, ServerManager.Instance.GetItem(rollitem.ItemGeneratedVNum).Name),
                                         Type = MessageType.Shout
                                     });
                                 }

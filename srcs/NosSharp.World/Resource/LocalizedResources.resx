@@ -1664,7 +1664,7 @@
     <value>Raid members can not do an exchange.</value>
   </data>
   <data name="SUPER_REWARD" xml:space="preserve">
-    <value>Someone won the jackpot at the Mystere box!</value>
+    <value>{0} won an {1} in the mystery box !</value>
   </data>
   <data name="WRONG_MAP" xml:space="preserve">
     <value>This raid can't started on this portal.</value>
