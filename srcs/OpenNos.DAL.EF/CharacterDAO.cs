@@ -27,7 +27,7 @@ using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
-    public class CharacterDAO : MappingBaseDao<Character, CharacterDTO>, ICharacterDAO
+    public class CharacterDAO : MappingBaseDao<Character, CharacterDTO>
     {
         #region Methods
 
@@ -99,17 +99,31 @@ namespace OpenNos.DAL.EF
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    long characterId = character.CharacterId;
-                    Character entity = context.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId));
-
-                    if (entity == null)
-                    {
-                        character = Insert(character, context);
-                        return SaveResult.Inserted;
-                    }
-                    character = Update(entity, character, context);
-                    return SaveResult.Updated;
+                    var contextref = context;
+                    return InsertOrUpdate(ref character, ref contextref);
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("INSERT_ERROR"), character, e.Message), e);
+                return SaveResult.Error;
+            }
+        }
+
+        public SaveResult InsertOrUpdate(ref CharacterDTO character, ref OpenNosContext context)
+        {
+            try
+            {
+                long characterId = character.CharacterId;
+                Character entity = context.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId));
+
+                if (entity == null)
+                {
+                    character = Insert(character, context);
+                    return SaveResult.Inserted;
+                }
+                character = Update(entity, character, context);
+                return SaveResult.Updated;
             }
             catch (Exception e)
             {
