@@ -32,19 +32,24 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult Delete(long id)
         {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                var contextRef = context;
+                return Delete(ref contextRef, id);
+            }
+        }
+
+        public DeleteResult Delete(ref OpenNosContext context, long id)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                Mate mate = context.Mate.FirstOrDefault(c => c.MateId.Equals(id));
+                if (mate != null)
                 {
-                    Mate mate = context.Mate.FirstOrDefault(c => c.MateId.Equals(id));
-                    if (mate != null)
-                    {
-                        context.Mate.Remove(mate);
-                        context.SaveChanges();
-                    }
-
-                    return DeleteResult.Deleted;
+                    context.Mate.Remove(mate);
                 }
+
+                return DeleteResult.Deleted;
             }
             catch (Exception e)
             {

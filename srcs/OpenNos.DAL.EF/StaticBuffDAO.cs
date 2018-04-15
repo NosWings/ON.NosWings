@@ -108,18 +108,22 @@ namespace OpenNos.DAL.EF
 
         public void Delete(short bonusToDelete, long characterId)
         {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                var contextRef = context;
+                Delete(ref contextRef, bonusToDelete, characterId);
+            }
+        }
+
+        public void Delete(ref OpenNosContext context, short bonusToDelete, long characterId)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                StaticBuff bon = context.StaticBuff.FirstOrDefault(c => c.CardId == bonusToDelete && c.CharacterId == characterId);
+
+                if (bon != null)
                 {
-                    StaticBuff bon = context.StaticBuff.FirstOrDefault(c => c.CardId == bonusToDelete && c.CharacterId == characterId);
-
-                    if (bon != null)
-                    {
-                        context.StaticBuff.Remove(bon);
-                        context.SaveChanges();
-                    }
-
+                    context.StaticBuff.Remove(bon);
                 }
             }
             catch (Exception e)
