@@ -56,23 +56,29 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MinilandObjectDTO obj)
         {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                var contextRef = context;
+                return InsertOrUpdate(ref contextRef, ref obj);
+            }
+        }
+
+        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref MinilandObjectDTO obj)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                long id = obj.MinilandObjectId;
+                MinilandObject entity = context.MinilandObject.FirstOrDefault(c => c.MinilandObjectId.Equals(id));
+
+                if (entity == null)
                 {
-                    long id = obj.MinilandObjectId;
-                    MinilandObject entity = context.MinilandObject.FirstOrDefault(c => c.MinilandObjectId.Equals(id));
-
-                    if (entity == null)
-                    {
-                        obj = Insert(obj, context);
-                        return SaveResult.Inserted;
-                    }
-
-                    obj.MinilandObjectId = entity.MinilandObjectId;
-                    obj = Update(entity, obj, context);
-                    return SaveResult.Updated;
+                    obj = Insert(obj, context);
+                    return SaveResult.Inserted;
                 }
+
+                obj.MinilandObjectId = entity.MinilandObjectId;
+                obj = Update(entity, obj, context);
+                return SaveResult.Updated;
             }
             catch (Exception e)
             {

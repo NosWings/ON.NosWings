@@ -57,23 +57,29 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MailDTO mail)
         {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                var contextRef = context;
+                return InsertOrUpdate(ref contextRef, ref mail);
+            }
+        }
+
+        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref MailDTO mail)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                long mailId = mail.MailId;
+                Mail entity = context.Mail.FirstOrDefault(c => c.MailId.Equals(mailId));
+
+                if (entity == null)
                 {
-                    long mailId = mail.MailId;
-                    Mail entity = context.Mail.FirstOrDefault(c => c.MailId.Equals(mailId));
-
-                    if (entity == null)
-                    {
-                        mail = Insert(mail, context);
-                        return SaveResult.Inserted;
-                    }
-
-                    mail.MailId = entity.MailId;
-                    mail = Update(entity, mail, context);
-                    return SaveResult.Updated;
+                    mail = Insert(mail, context);
+                    return SaveResult.Inserted;
                 }
+
+                mail.MailId = entity.MailId;
+                mail = Update(entity, mail, context);
+                return SaveResult.Updated;
             }
             catch (Exception e)
             {

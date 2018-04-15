@@ -62,7 +62,9 @@ namespace OpenNos.DAL.EF.Base
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (TDTO dto in dtos)
                     {
-                        results.Add(InsertOrUpdate(context, dto));
+                        var contextRef = context;
+                        var dtoRef = dto;
+                        results.Add(InsertOrUpdate(ref contextRef, ref dtoRef));
                     }
                 }
 
@@ -81,7 +83,8 @@ namespace OpenNos.DAL.EF.Base
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    return InsertOrUpdate(context, dto);
+                    var contextRef = context;
+                    return InsertOrUpdate(ref contextRef, ref dto);
                 }
             }
             catch (Exception e)
@@ -107,7 +110,7 @@ namespace OpenNos.DAL.EF.Base
             return _mapper.Map<TDTO>(entity);
         }
 
-        protected virtual TDTO InsertOrUpdate(OpenNosContext context, TDTO dto)
+        public virtual TDTO InsertOrUpdate(ref OpenNosContext context, ref TDTO dto)
         {
             Guid primaryKey = dto.Id;
             TEntity entity = context.Set<TEntity>().FirstOrDefault(c => c.Id == primaryKey);

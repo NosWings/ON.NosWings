@@ -56,23 +56,29 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus)
         {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                var contextRef = context;
+                return InsertOrUpdate(ref contextRef, ref staticBonus);
+            }
+        }
+
+        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref StaticBonusDTO staticBonus)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
-                {
-                    long id = staticBonus.CharacterId;
-                    StaticBonusType cardid = staticBonus.StaticBonusType;
-                    StaticBonus entity = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType == cardid && c.CharacterId == id);
+                long id = staticBonus.CharacterId;
+                StaticBonusType cardid = staticBonus.StaticBonusType;
+                StaticBonus entity = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType == cardid && c.CharacterId == id);
 
-                    if (entity == null)
-                    {
-                        staticBonus = Insert(staticBonus, context);
-                        return SaveResult.Inserted;
-                    }
-                    staticBonus.StaticBonusId = entity.StaticBonusId;
-                    staticBonus = Update(entity, staticBonus, context);
-                    return SaveResult.Updated;
+                if (entity == null)
+                {
+                    staticBonus = Insert(staticBonus, context);
+                    return SaveResult.Inserted;
                 }
+                staticBonus.StaticBonusId = entity.StaticBonusId;
+                staticBonus = Update(entity, staticBonus, context);
+                return SaveResult.Updated;
             }
             catch (Exception e)
             {
