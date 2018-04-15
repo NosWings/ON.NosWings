@@ -32,21 +32,26 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult DeleteById(long mailId)
         {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                var contextRef = context;
+                return DeleteById(ref contextRef, mailId);
+            }
+        }
+
+        public DeleteResult DeleteById(ref OpenNosContext context, long mailId)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                Mail mail = context.Mail.First(i => i.MailId.Equals(mailId));
+
+                if (mail == null)
                 {
-                    Mail mail = context.Mail.First(i => i.MailId.Equals(mailId));
-
-                    if (mail == null)
-                    {
-                        return DeleteResult.Deleted;
-                    }
-                    context.Mail.Remove(mail);
-                    context.SaveChanges();
-
                     return DeleteResult.Deleted;
                 }
+                context.Mail.Remove(mail);
+
+                return DeleteResult.Deleted;
             }
             catch (Exception e)
             {

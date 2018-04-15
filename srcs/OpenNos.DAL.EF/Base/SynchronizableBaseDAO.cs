@@ -22,18 +22,23 @@ namespace OpenNos.DAL.EF.Base
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (Guid id in ids)
-                { 
-                    TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
-                    if (entity != null)
-                    {
-                        context.Set<TEntity>().Remove(entity);
-                    }
-                }
-                context.SaveChanges();
-                return DeleteResult.Deleted;
+                var contextRef = context;
+                return Delete(ref contextRef, ids);
             }
+        }
+
+        public virtual DeleteResult Delete(ref OpenNosContext context, IEnumerable<Guid> ids)
+        {
+            context.Configuration.AutoDetectChangesEnabled = false;
+            foreach (Guid id in ids)
+            {
+                TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
+                if (entity != null)
+                {
+                    context.Set<TEntity>().Remove(entity);
+                }
+            }
+            return DeleteResult.Deleted;
         }
 
         public virtual DeleteResult Delete(Guid id)
