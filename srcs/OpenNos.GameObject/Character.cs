@@ -399,6 +399,17 @@ namespace OpenNos.GameObject
                     RespawnMapTypeId = -1
                 };
 
+                if (MapInstance?.MapInstanceType == MapInstanceType.Act4Instance)
+                {
+                    return new RespawnMapTypeDTO
+                    {
+                        DefaultX = 40,
+                        DefaultY = 42,
+                        DefaultMapId = (short)(Faction == FactionType.Angel ? 130 : 131),
+                        RespawnMapTypeId = -1
+                    };
+                }
+
                 if (!Session.HasCurrentMapInstance || !Session.CurrentMapInstance.Map.MapTypes.Any())
                 {
                     return respawn;

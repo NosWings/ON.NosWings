@@ -583,6 +583,54 @@ namespace OpenNos.GameObject.Networking
             session.Character.LastDeath = DateTime.Now;
             switch (session.CurrentMapInstance.MapInstanceType)
             {
+                case MapInstanceType.Act4Instance:
+                    if (session.Character.Level > 20)
+                    {
+                        session.Character.Dignity -=
+                            (short)(session.Character.Level < 50 ? session.Character.Level : 50);
+                        if (session.Character.Dignity < -1000)
+                        {
+                            session.Character.Dignity = -1000;
+                        }
+
+                        session.SendPacket(session.Character.GenerateSay(
+                            string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"),
+                                (short)(session.Character.Level < 50 ? session.Character.Level : 50)), 11));
+                        session.SendPacket(session.Character.GenerateFd());
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(),
+                            ReceiverType.AllExceptMe);
+                        session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(),
+                            ReceiverType.AllExceptMe);
+                    }
+
+                    session.SendPacket("eff_ob -1 -1 0 4269");
+
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(
+                        $"#revival^0 #revival^1 {(session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                    RespawnMapTypeDTO a4respawn = session.Character.Respawn;
+                    session.Character.MapX = (short)(a4respawn.DefaultX + RandomNumber(-3, 3));
+                    session.Character.MapY = (short)(a4respawn.DefaultY + RandomNumber(-3, 3));
+                    Task.Factory.StartNew(async () =>
+                    {
+                        bool revive = true;
+                        for (int i = 1; i <= 30; i++)
+                        {
+                            await Task.Delay(1000);
+                            if (session.Character.Hp <= 0)
+                            {
+                                continue;
+                            }
+
+                            revive = false;
+                            break;
+                        }
+
+                        if (revive)
+                        {
+                            Instance.ReviveFirstPosition(session.Character.CharacterId);
+                        }
+                    });
+                    break;
                 case MapInstanceType.CaligorInstance:
                     session.SendPacket(
                         UserInterfaceHelper.Instance.GenerateInfo(
@@ -2060,6 +2108,8 @@ namespace OpenNos.GameObject.Networking
                         Instance.ChangeMapInstance(session.Character.CharacterId, citadel.MapInstanceId, x, y);
                     }
 
+                    session.Character.Hp = 1;
+                    session.Character.Mp = 1;
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
                     session.SendPacket(session.Character.GenerateStat());
