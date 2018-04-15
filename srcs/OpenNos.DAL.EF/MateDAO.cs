@@ -55,22 +55,28 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MateDTO mate)
         {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                var contextRef = context;
+                return InsertOrUpdate(ref contextRef, ref mate);
+            }
+        }
+
+        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref MateDTO mate)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                long MateId = mate.MateId;
+                Mate entity = context.Mate.FirstOrDefault(c => c.MateId.Equals(MateId));
+
+                if (entity == null)
                 {
-                    long MateId = mate.MateId;
-                    Mate entity = context.Mate.FirstOrDefault(c => c.MateId.Equals(MateId));
-
-                    if (entity == null)
-                    {
-                        mate = Insert(mate, context);
-                        return SaveResult.Inserted;
-                    }
-
-                    mate = Update(entity, mate, context);
-                    return SaveResult.Updated;
+                    mate = Insert(mate, context);
+                    return SaveResult.Inserted;
                 }
+
+                mate = Update(entity, mate, context);
+                return SaveResult.Updated;
             }
             catch (Exception e)
             {

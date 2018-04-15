@@ -159,7 +159,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        protected override ItemInstanceDTO InsertOrUpdate(OpenNosContext context, ItemInstanceDTO itemInstance)
+        protected ItemInstanceDTO InsertOrUpdate(OpenNosContext context, ItemInstanceDTO itemInstance)
         {
             try
             {
