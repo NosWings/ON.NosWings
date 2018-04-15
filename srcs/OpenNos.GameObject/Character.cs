@@ -4331,7 +4331,7 @@ namespace OpenNos.GameObject
                         // remove all which are saved but not in our current enumerable
                         IEnumerable<ItemInstance> itemInstances =
                             inventories as IList<ItemInstance> ?? inventories.ToList();
-                        DaoFactory.IteminstanceDao.Delete(ref context, currentlySavedInventoryIds.Except(itemInstances.Select(i => i.Id)));
+                        DaoFactory.IteminstanceDao.Delete( currentlySavedInventoryIds.Except(itemInstances.Select(i => i.Id)));
                         
                         // create or update all which are new or do still exist
                         foreach (ItemInstance itemInstance in itemInstances.Where(s =>
@@ -4444,7 +4444,7 @@ namespace OpenNos.GameObject
 
                 //Quest
                 DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).ToList()
-                    .ForEach(q => DaoFactory.CharacterQuestDao.Delete(ref context, CharacterId, q.QuestId));
+                    .ForEach(q => DaoFactory.CharacterQuestDao.Delete(CharacterId, q.QuestId));
                 foreach (var quest in Quests)
                 {
                     var questRef = (CharacterQuestDTO)quest;
