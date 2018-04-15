@@ -324,6 +324,18 @@ namespace OpenNos.GameObject.Item
                                 }
 
                                 break;
+                            case 4:
+                                if (option == 0)
+                                {
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7,
+                                        $"#u_i^{type}^{secondaryType}^{inventoryType}^{slot}^1"));
+                                }
+                                else
+                                {
+                                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, 98, 10, 30);
+                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                }
+                                break;
                         }
                     }
 
