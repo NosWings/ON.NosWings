@@ -198,6 +198,7 @@
     <Compile Include="Map\MapButton.cs" />
     <Compile Include="InstanceBag.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
+    <Compile Include="Packets\ClientPackets\CsprPacket.cs" />
     <Compile Include="Packets\ClientPackets\RInfoPacket.cs" />
     <Compile Include="Packets\CommandPackets\LobbyPacket.cs" />
     <Compile Include="Packets\CommandPackets\MaintenancePacket.cs" />

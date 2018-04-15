@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Handling;
@@ -14,6 +15,7 @@ using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ClientPackets;
+using Group = OpenNos.GameObject.Group;
 
 namespace OpenNos.Handler
 {
@@ -542,6 +544,7 @@ namespace OpenNos.Handler
                                                 Session.Character.Inventory.RemoveItemAmount(petnameVNum);
                                             }
                                             break;
+                                        // Presentation message
                                         case 2:
                                             int presentationVNum = Session.Character.Inventory.CountItem(1117) > 0 ? 1117 : (Session.Character.Inventory.CountItem(9013) > 0 ? 9013 : -1);
                                             if (presentationVNum != -1)
@@ -563,6 +566,7 @@ namespace OpenNos.Handler
                                                 Session.Character.Inventory.RemoveItemAmount(presentationVNum);
                                             }
                                             break;
+                                        // Speaker
                                         case 3:
                                             if (Session.Character.Inventory.CountItem(speakerVNum) > 0)
                                             {
@@ -570,6 +574,7 @@ namespace OpenNos.Handler
                                                 {
                                                     return;
                                                 }
+                                                Logger.Log.Warn($"Speaker : {guriPacket.Value}");
                                                 string message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
                                                 string[] valuesplit = guriPacket.Value.Split(' ');
                                                 message = valuesplit.Aggregate(message, (current, t) => current + t + " ");
@@ -590,35 +595,25 @@ namespace OpenNos.Handler
                                                 LogHelper.Instance.InsertChatLog(ChatType.Speaker, Session.Character.CharacterId, message, Session.IpAddress);
                                             }
                                             break;
+                                        // Message Bubble
                                         case 4:
-                                            if (Session.Character.Inventory.CountItem(messageBubbleVNum) < 1)
-                                            {
-                                                return;
-                                            }
-                                            string bmessage = string.Empty;
+                                            if (Session.Character.Inventory.CountItem(messageBubbleVNum) > 0)
+                                            {                                                
+                                                if (Session.Character.IsMuted())
+                                                {
+                                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_MSG_BUBBLE"), 10));
+                                                    return;
+                                                }
 
-                                            bmessage = guriPacket.Value.Split(' ').Aggregate(bmessage, (current, t) => current + t + " ");
-                                            if (bmessage.Length > 120)
-                                            {
-                                                bmessage = bmessage.Substring(0, 120);
-                                            }
-                                            bmessage = bmessage.Trim();
+                                                Session.Character.Inventory.RemoveItemAmount(messageBubbleVNum);
 
-                                            Logger.Log.Warn($"Message : {bmessage}");
-                                            if (Session.Character.IsMuted())
-                                            {
-                                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_MSGBUBBLE"), 10));
-                                                return;
+                                                Session.Character.MapInstance?.Broadcast(new CsprPacket{Message = guriPacket.Value});
+                                                LogHelper.Instance.InsertChatLog(ChatType.General,
+                                                    Session.Character.CharacterId, guriPacket.Value, Session.IpAddress);
                                             }
-                                            Session.Character.Inventory.RemoveItemAmount(messageBubbleVNum);
-                                            Session.Character.MapInstance?.Broadcast($"csp_r {bmessage}");
-                                            LogHelper.Instance.InsertChatLog(ChatType.General, Session.Character.CharacterId, bmessage, Session.IpAddress);
+
                                             break;
                                     }
-
-                                    // presentation message
-
-                                    // Speaker
                                     break;
                                 default:
                                     if (guriPacket.Type == 199 && guriPacket.Argument == 1)
