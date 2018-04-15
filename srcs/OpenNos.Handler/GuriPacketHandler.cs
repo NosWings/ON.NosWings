@@ -607,7 +607,7 @@ namespace OpenNos.Handler
 
                                                 Session.Character.Inventory.RemoveItemAmount(messageBubbleVNum);
 
-                                                Session.Character.MapInstance?.Broadcast(new CsprPacket{Message = guriPacket.Value});
+                                                Session.SendPacket(new CsprPacket{Message = guriPacket.Value});
                                                 LogHelper.Instance.InsertChatLog(ChatType.General,
                                                     Session.Character.CharacterId, guriPacket.Value, Session.IpAddress);
                                             }
