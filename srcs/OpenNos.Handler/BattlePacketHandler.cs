@@ -84,6 +84,11 @@ namespace OpenNos.Handler
                 return;
             }
 
+            if (mutliTargetListPacket?.Targets == null)
+            {
+                return;
+            }
+
             if (mutliTargetListPacket.TargetsAmount <= 0 || mutliTargetListPacket.TargetsAmount != mutliTargetListPacket.Targets.Count)
             {
                 return;
