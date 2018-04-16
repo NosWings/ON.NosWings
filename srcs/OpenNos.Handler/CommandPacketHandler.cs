@@ -3285,6 +3285,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay($"Authority: {account.Authority}", 13));
                 Session.SendPacket(Session.Character.GenerateSay($"RegistrationIP: {account.RegistrationIP}", 13));
                 Session.SendPacket(Session.Character.GenerateSay($"Email: {account.Email}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Bank money {account.BankMoney}", 13));
                 Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
                 IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => s.AccountId == account.AccountId).ToList();
                 PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
