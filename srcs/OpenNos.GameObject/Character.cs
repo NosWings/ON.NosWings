@@ -4296,12 +4296,13 @@ namespace OpenNos.GameObject
             {
                 DateTime start = DateTime.Now;
                 // Base context
-                var context = DataAccessHelper.CreateContext();
+                OpenNosContext context = DataAccessHelper.CreateContext();
+                context.Configuration.AutoDetectChangesEnabled = false;
 
                 AccountDTO account = Session.Account;
                 DaoFactory.AccountDao.InsertOrUpdate(ref account, ref context);
 
-                CharacterDTO character = DeepCopy();
+                CharacterDTO character = this;
                 DaoFactory.CharacterDao.InsertOrUpdate(ref character, ref context);
 
                 if (Inventory != null)
@@ -4311,26 +4312,21 @@ namespace OpenNos.GameObject
                     {
                         // load and concat inventory with equipment
                         IEnumerable<ItemInstance> inventories = Inventory.Select(s => s.Value);
-                        IEnumerable<Guid> currentlySavedInventoryIds = DaoFactory.IteminstanceDao.LoadSlotAndTypeByCharacterId(CharacterId);
-                        IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadAllCharactersByAccount(Session.Account.AccountId);
-                        currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId)
-                            .Aggregate(currentlySavedInventoryIds,
-                                (current, characteraccount) => current.Concat(DaoFactory.IteminstanceDao
-                                    .LoadByCharacterId(characteraccount.CharacterId)
-                                    .Where(s => s.Type == InventoryType.Warehouse)
-                                    .Select(i => i.Id).ToList()));
+                        IEnumerable<Guid> currentlySavedInventoryIds = DaoFactory.IteminstanceDao.LoadSlotAndTypeByCharacterId(CharacterId, context);
+                        IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadAllCharactersByAccount(Session.Account.AccountId, context);
+                        currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId).Aggregate(currentlySavedInventoryIds,
+                            (current, characteraccount) =>
+                                current.Concat(DaoFactory.IteminstanceDao.LoadByCharacterId(characteraccount.CharacterId, context).Where(s => s.Type == InventoryType.Warehouse).Select(i => i.Id)));
 
                         IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries =
                             DaoFactory.MinilandObjectDao.LoadByCharacterId(CharacterId).ToList();
-                        foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(
-                            Miniland.MapDesignObjects))
+                        foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Miniland.MapDesignObjects))
                         {
                             DaoFactory.MinilandObjectDao.DeleteById(ref context, mobjToDelete.MinilandObjectId);
                         }
 
                         // remove all which are saved but not in our current enumerable
-                        IEnumerable<ItemInstance> itemInstances =
-                            inventories as IList<ItemInstance> ?? inventories.ToList();
+                        IEnumerable<ItemInstance> itemInstances = inventories as IList<ItemInstance> ?? inventories.ToList();
                         DaoFactory.IteminstanceDao.Delete(ref context, currentlySavedInventoryIds.Except(itemInstances.Select(i => i.Id)));
                         
                         // create or update all which are new or do still exist
@@ -4361,8 +4357,7 @@ namespace OpenNos.GameObject
 
                 if (Skills != null)
                 {
-                    IEnumerable<Guid> currentlySavedCharacterSkills =
-                        DaoFactory.CharacterSkillDao.LoadKeysByCharacterId(CharacterId).ToList();
+                    IEnumerable<Guid> currentlySavedCharacterSkills = DaoFactory.CharacterSkillDao.LoadKeysByCharacterId(CharacterId, context);
 
                     DaoFactory.CharacterSkillDao.Delete(ref context, currentlySavedCharacterSkills.Except(Skills.Select(s => s.Value.Id)));
 
@@ -4395,7 +4390,7 @@ namespace OpenNos.GameObject
 
                 foreach (QuicklistEntryDTO quicklistEntry in quickListEntriesToInsertOrUpdate)
                 {
-                    var quicklistRef = quicklistEntry;
+                    QuicklistEntryDTO quicklistRef = quicklistEntry;
                     DaoFactory.QuicklistEntryDao.InsertOrUpdate(ref context, ref quicklistRef);
                 }
 

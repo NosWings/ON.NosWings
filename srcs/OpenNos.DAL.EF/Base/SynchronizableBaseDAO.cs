@@ -12,19 +12,15 @@ using OpenNos.DAL.Interface;
 namespace OpenNos.DAL.EF.Base
 {
     public abstract class SynchronizableBaseDAO<TEntity, TDTO> : MappingBaseDao<TEntity, TDTO>, ISynchronizableBaseDAO<TDTO>
-        where TDTO : SynchronizableBaseDTO
-        where TEntity : SynchronizableBaseEntity
+    where TDTO : SynchronizableBaseDTO
+    where TEntity : SynchronizableBaseEntity
     {
         #region Methods
 
-
         public virtual DeleteResult Delete(IEnumerable<Guid> ids)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
-                return Delete(ref contextRef, ids);
-            }
+            OpenNosContext contextRef = DataAccessHelper.CreateContext();
+            return Delete(ref contextRef, ids);
         }
 
         public virtual DeleteResult Delete(ref OpenNosContext context, IEnumerable<Guid> ids)
@@ -38,6 +34,7 @@ namespace OpenNos.DAL.EF.Base
                     context.Set<TEntity>().Remove(entity);
                 }
             }
+
             return DeleteResult.Deleted;
         }
 
@@ -50,6 +47,7 @@ namespace OpenNos.DAL.EF.Base
                 {
                     return DeleteResult.Deleted;
                 }
+
                 context.Set<TEntity>().Remove(entity);
                 context.SaveChanges();
 
@@ -61,16 +59,13 @@ namespace OpenNos.DAL.EF.Base
         {
             try
             {
+                OpenNosContext context = DataAccessHelper.CreateContext();
                 IList<TDTO> results = new List<TDTO>();
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (TDTO dto in dtos)
                 {
-                    context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (TDTO dto in dtos)
-                    {
-                        var contextRef = context;
-                        var dtoRef = dto;
-                        results.Add(InsertOrUpdate(ref contextRef, ref dtoRef));
-                    }
+                    TDTO dtoRef = dto;
+                    results.Add(InsertOrUpdate(ref context, ref dtoRef));
                 }
 
                 return results;
@@ -86,11 +81,8 @@ namespace OpenNos.DAL.EF.Base
         {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
-                {
-                    var contextRef = context;
-                    return InsertOrUpdate(ref contextRef, ref dto);
-                }
+                OpenNosContext context = DataAccessHelper.CreateContext();
+                return InsertOrUpdate(ref context, ref dto);
             }
             catch (Exception e)
             {
