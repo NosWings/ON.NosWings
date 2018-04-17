@@ -36,7 +36,8 @@ namespace OpenNos.GameObject.Buff
 
         public void ApplyBCards(IBattleEntity session, IBattleEntity caster = null)
         {
-            Mate mate;
+            Mate mate = session is Mate ? (Mate) session.GetSession() : null;
+            Character character = session is Character ? (Character) session.GetSession() : null;
             switch ((BCardType.CardType) Type)
             {
                 case BCardType.CardType.Buff:
@@ -49,13 +50,13 @@ namespace OpenNos.GameObject.Buff
                     break;
 
                 case BCardType.CardType.Move:
-                    if (session.GetSession() is Character chara)
+                    if (character == null)
                     {
-                        chara.LastSpeedChange = DateTime.Now;
-                        chara.LoadSpeed();
-                        chara.Session.SendPacket(chara.GenerateCond());
+                        break;
                     }
-
+                    character.LastSpeedChange = DateTime.Now;
+                    character.LoadSpeed();
+                    character.Session.SendPacket(character.GenerateCond());
                     break;
 
                 case BCardType.CardType.Summons:
@@ -179,55 +180,52 @@ namespace OpenNos.GameObject.Buff
 
                 case BCardType.CardType.HealingBurningAndCasting:
                     var subtype = (AdditionalTypes.HealingBurningAndCasting) SubType;
-                    Character sess;
                     switch (subtype)
                     {
                         case AdditionalTypes.HealingBurningAndCasting.RestoreHP:
                         case AdditionalTypes.HealingBurningAndCasting.RestoreHPWhenCasting:
-                            if (session.GetSession() is Character)
+                            if (character != null)
                             {
-                                sess = (Character) session.GetSession();
                                 int heal = FirstData;
                                 bool change = false;
                                 if (IsLevelScaled)
                                 {
                                     if (IsLevelDivided)
                                     {
-                                        heal /= sess.Level;
+                                        heal /= character.Level;
                                     }
                                     else
                                     {
-                                        heal *= sess.Level;
+                                        heal *= character.Level;
                                     }
                                 }
 
-                                if (sess.Hp + heal < sess.HpLoad())
+                                if (character.Hp + heal < character.HpLoad())
                                 {
-                                    sess.Hp += heal;
-                                    sess.Session?.CurrentMapInstance?.Broadcast(sess.GenerateRc(heal));
+                                    character.Hp += heal;
+                                    character.Session?.CurrentMapInstance?.Broadcast(character.GenerateRc(heal));
                                     change = true;
                                 }
                                 else
                                 {
-                                    if (sess.Hp != (int) sess.HpLoad())
+                                    if (character.Hp != (int)character.HpLoad())
                                     {
-                                        sess.Session?.CurrentMapInstance?.Broadcast(
-                                            sess.GenerateRc((int) (sess.HpLoad() - sess.Hp)));
+                                        character.Session?.CurrentMapInstance?.Broadcast(
+                                            character.GenerateRc((int)(character.HpLoad() - character.Hp)));
                                         change = true;
                                     }
 
-                                    sess.Hp = (int) sess.HpLoad();
+                                    character.Hp = (int)character.HpLoad();
                                 }
 
                                 if (change)
                                 {
-                                    sess.Session?.SendPacket(sess.GenerateStat());
+                                    character.Session?.SendPacket(character.GenerateStat());
                                 }
                             }
 
-                            if (session.GetSession() is Mate)
+                            if (mate != null)
                             {
-                                mate = (Mate) session.GetSession();
                                 int heal = FirstData;
                                 if (IsLevelScaled)
                                 {
@@ -250,50 +248,47 @@ namespace OpenNos.GameObject.Buff
                                     mate.Hp = mate.HpLoad();
                                 }
                             }
-
                             break;
                         case AdditionalTypes.HealingBurningAndCasting.RestoreMP:
-                            if (session.GetSession() is Character)
+                            if (character != null)
                             {
-                                sess = (Character) session.GetSession();
                                 int heal = FirstData;
                                 bool change = false;
                                 if (IsLevelScaled)
                                 {
                                     if (IsLevelDivided)
                                     {
-                                        heal /= sess.Level;
+                                        heal /= character.Level;
                                     }
                                     else
                                     {
-                                        heal *= sess.Level;
+                                        heal *= character.Level;
                                     }
                                 }
 
-                                if (sess.Mp + heal < sess.MpLoad())
+                                if (character.Mp + heal < character.MpLoad())
                                 {
-                                    sess.Mp += heal;
+                                    character.Mp += heal;
                                     change = true;
                                 }
                                 else
                                 {
-                                    if (sess.Mp != (int) sess.MpLoad())
+                                    if (character.Mp != (int)character.MpLoad())
                                     {
                                         change = true;
                                     }
 
-                                    sess.Mp = (int) sess.MpLoad();
+                                    character.Mp = (int)character.MpLoad();
                                 }
 
                                 if (change)
                                 {
-                                    sess.Session?.SendPacket(sess.GenerateStat());
+                                    character.Session?.SendPacket(character.GenerateStat());
                                 }
                             }
 
-                            if (session.GetSession() is Mate)
+                            if (mate != null)
                             {
-                                mate = (Mate) session.GetSession();
                                 int heal = FirstData;
                                 if (IsLevelScaled)
                                 {
@@ -459,15 +454,16 @@ namespace OpenNos.GameObject.Buff
                     break;
 
                 case BCardType.CardType.SpecialActions:
-                    if (session.GetSession() is Character charact)
+                    if (character == null)
                     {
-                        if (SubType.Equals((byte) AdditionalTypes.SpecialActions.Hide))
-                        {
-                            charact.Invisible = true;
-                            charact.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
-                                charact.Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
-                            charact.Session.CurrentMapInstance?.Broadcast(charact.GenerateInvisible());
-                        }
+                        break;
+                    }
+                    if (SubType.Equals((byte)AdditionalTypes.SpecialActions.Hide))
+                    {
+                        character.Invisible = true;
+                        character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
+                            character.Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
+                        character.Session.CurrentMapInstance?.Broadcast(character.GenerateInvisible());
                     }
 
                     break;
@@ -557,7 +553,7 @@ namespace OpenNos.GameObject.Buff
                         {
                             if (ServerManager.Instance.RandomNumber() < FirstData)
                             {
-                                if (!(session is Character character))
+                                if (character == null)
                                 {
                                     break;
                                 }
@@ -593,7 +589,7 @@ namespace OpenNos.GameObject.Buff
                         }
                         else
                         {
-                            if (!(session is Character character))
+                            if (character == null)
                             {
                                 break;
                             }
@@ -616,17 +612,18 @@ namespace OpenNos.GameObject.Buff
                     break;
 
                 case BCardType.CardType.FalconSkill:
-                    if (session is Character c)
+                    if (character == null)
                     {
-                        switch (SubType)
-                        {
-                            case (byte) AdditionalTypes.FalconSkill.Hide:
-                                c.Invisible = true;
-                                c.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
-                                    c.Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
-                                c.Session.CurrentMapInstance?.Broadcast(c.GenerateInvisible());
-                                break;
-                        }
+                        break;
+                    }
+                    switch (SubType)
+                    {
+                        case (byte)AdditionalTypes.FalconSkill.Hide:
+                            character.Invisible = true;
+                            character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
+                                character.Session.CurrentMapInstance?.Broadcast(s.GenerateOut()));
+                            character.Session.CurrentMapInstance?.Broadcast(character.GenerateInvisible());
+                            break;
                     }
 
                     break;
