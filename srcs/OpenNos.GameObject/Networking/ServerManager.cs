@@ -2139,11 +2139,11 @@ namespace OpenNos.GameObject.Networking
 
         public void SaveAll()
         {
-            foreach (ClientSession session in Sessions.Where(s =>
-                s?.HasCurrentMapInstance == true && s.HasSelectedCharacter && s.Character != null))
+            foreach (ClientSession sess in Sessions)
             {
-                session.Character.Save();
+                sess.Character?.Save();
             }
+            DaoFactory.BazaarItemDao.RemoveOutDated();
         }
 
         public void SetProperty(long charId, string property, object value)
@@ -2343,6 +2343,8 @@ namespace OpenNos.GameObject.Networking
         private void LaunchEvents()
         {
             _groups = new ConcurrentDictionary<long, Group>();
+
+            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x => { SaveAll(); });
 
             Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(x => { Act6Process(); });
 
