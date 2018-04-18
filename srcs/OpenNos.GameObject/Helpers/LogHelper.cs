@@ -45,7 +45,7 @@ namespace OpenNos.GameObject.Helpers
                 Timestamp = DateTime.Now
             };
             LogCommandsList.Add(command);
-            if (LogCommandsList.Count != 500)
+            if (LogCommandsList.Count <= 500)
             {
                 return;
             }
@@ -64,7 +64,7 @@ namespace OpenNos.GameObject.Helpers
                 Timestamp = DateTime.Now
             };
             ChatLogList.Add(log);
-            if (ChatLogList.Count != 500)
+            if (ChatLogList.Count <= 500)
             {
                 return;
             }
@@ -83,7 +83,7 @@ namespace OpenNos.GameObject.Helpers
                 LastDaily = lastDaily
             };
             QuestLogList.Add(log);
-            if (QuestLogList.Count != 500)
+            if (QuestLogList.Count <= 500)
             {
                 return;
             }
@@ -100,7 +100,7 @@ namespace OpenNos.GameObject.Helpers
                 Time = time
             };
             RaidLogList.Add(log);
-            if (RaidLogList.Count != 500)
+            if (RaidLogList.Count <= 500)
             {
                 return;
             }
@@ -117,7 +117,7 @@ namespace OpenNos.GameObject.Helpers
                 Time = time
             };
             RaidLogList.Add(log);
-            if (RaidLogList.Count != 500)
+            if (RaidLogList.Count <= 500)
             {
                 return;
             }
