@@ -4298,7 +4298,6 @@ namespace OpenNos.GameObject
         {
             try
             {
-                DateTime start = DateTime.Now;
                 // Base context
                 OpenNosContext context = DataAccessHelper.CreateContext();
                 //context.Configuration.AutoDetectChangesEnabled = false;
@@ -4486,7 +4485,6 @@ namespace OpenNos.GameObject
 
                 context.SaveChanges();
                 Logger.Log.Info($"[DB] Successfully saved Character {Name}");
-                Logger.Log.Warn($"save took : {DateTime.Now - start}");
             }
             catch (Exception e)
             {
