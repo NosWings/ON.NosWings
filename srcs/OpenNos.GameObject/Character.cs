@@ -3304,6 +3304,10 @@ namespace OpenNos.GameObject
             LastDefence = DateTime.Now;
             CloseShop();
             CloseExchangeOrTrade();
+            if (MapInstance == null)
+            {
+                return;
+            }
             switch (MapInstance.MapInstanceType)
             {
                 case MapInstanceType.IceBreakerInstance:
