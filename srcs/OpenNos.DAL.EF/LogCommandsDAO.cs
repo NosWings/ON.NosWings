@@ -12,7 +12,7 @@ using OpenNos.DAL.EF.Base;
 
 namespace OpenNos.DAL.EF
 {
-    public class LogCommandsDAO : MappingBaseDao<LogCommands, LogCommandsDTO>, ILogCommandsDAO
+    public class LogCommandsDAO : MappingBaseDao<LogCommands, LogCommandsDTO>
     {
         public DeleteResult DeleteById(long logId)
         {
@@ -35,6 +35,39 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
                 return DeleteResult.Error;
+            }
+        }
+
+        public SaveResult InsertOrUpdateList(ref List<LogCommandsDTO> logCommandList)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    foreach (LogCommandsDTO command in logCommandList)
+                    {
+                        LogCommandsDTO logCommand = command;
+                        long logId = logCommand.CommandId;
+                        LogCommands entity = context.LogCommands.FirstOrDefault(c => c.CommandId.Equals(logId));
+
+                        if (entity == null)
+                        {
+                            logCommand = Insert(logCommand, context);
+                            return SaveResult.Inserted;
+                        }
+
+                        logCommand.CommandId = entity.CommandId;
+                        logCommand = Update(entity, logCommand, context);
+                        return SaveResult.Updated;
+                    }
+
+                    return SaveResult.Updated;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return SaveResult.Error;
             }
         }
 

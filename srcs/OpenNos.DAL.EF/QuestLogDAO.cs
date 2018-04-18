@@ -44,6 +44,39 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public SaveResult InsertOrUpdateList(ref List<QuestLogDTO> questList)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    foreach (QuestLogDTO q in questList)
+                    {
+                        QuestLogDTO quest = q;
+                        long questId = quest.QuestId;
+                        QuestLog entity = context.QuestLog.FirstOrDefault(c => c.QuestId.Equals(questId));
+
+                        if (entity == null)
+                        {
+                            quest = Insert(quest, context);
+                            return SaveResult.Inserted;
+                        }
+
+                        quest.QuestId = entity.QuestId;
+                        quest = Update(entity, quest, context);
+                        return SaveResult.Updated;
+                    }
+
+                    return SaveResult.Updated;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return SaveResult.Error;
+            }
+        }
+
         public QuestLogDTO Insert(QuestLogDTO quest, OpenNosContext context)
         {
             try
