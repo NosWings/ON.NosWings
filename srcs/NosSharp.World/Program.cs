@@ -33,6 +33,7 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Extensions;
+using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
@@ -199,6 +200,7 @@ namespace ON.NW.World
 
         private static bool ExitHandler(CtrlType sig)
         {
+            LogHelper.Instance.FlushLogs(true);
             ServerManager.Instance.InShutdown = true;
             ServerManager.Instance.SaveAll();
 
@@ -210,6 +212,7 @@ namespace ON.NW.World
 
         private static void ProcessExitHandler(object sender, EventArgs eventArgs)
         {
+            LogHelper.Instance.FlushLogs(true);
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.InShutdown = true;
             ServerManager.Instance.DisconnectAll();
@@ -221,6 +224,7 @@ namespace ON.NW.World
 
         private static void UnhandledExceptionHandler(object sender, EventArgs eventArgs)
         {
+            LogHelper.Instance.FlushLogs(true);
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.InShutdown = true;
             ServerManager.Instance.DisconnectAll();

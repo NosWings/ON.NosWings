@@ -4482,7 +4482,7 @@ namespace OpenNos.GameObject
                         DaoFactory.RespawnDao.InsertOrUpdate(ref context, ref res);
                     }
                 }
-
+                LogHelper.Instance.FlushLogs();
                 context.SaveChanges();
                 Logger.Log.Info($"[DB] Successfully saved Character {Name}");
             }

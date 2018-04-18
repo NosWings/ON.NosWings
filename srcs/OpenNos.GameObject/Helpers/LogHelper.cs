@@ -27,6 +27,41 @@ namespace OpenNos.GameObject.Helpers
         public List<LogChatDTO> ChatLogList;
         #endregion
 
+        public void FlushLogs(bool forceFlush = false)
+        {
+            if (forceFlush)
+            {
+                DaoFactory.LogCommandsDao.InsertOrUpdateList(ref LogCommandsList);
+                DaoFactory.QuestLogDao.InsertOrUpdateList(ref QuestLogList);
+                DaoFactory.RaidLogDao.InsertOrUpdateList(ref RaidLogList);
+                DaoFactory.LogChatDao.InsertOrUpdateList(ref ChatLogList);
+                return;
+            }
+            if (LogCommandsList.Count >= 500)
+            {
+                DaoFactory.LogCommandsDao.InsertOrUpdateList(ref LogCommandsList);
+                LogCommandsList.Clear();
+            }
+
+            if (ChatLogList.Count >= 500)
+            {
+                DaoFactory.LogChatDao.InsertOrUpdateList(ref ChatLogList);
+                ChatLogList.Clear();
+            }
+
+            if (QuestLogList.Count >= 10)
+            {
+                DaoFactory.QuestLogDao.InsertOrUpdateList(ref QuestLogList);
+                QuestLogList.Clear();
+            }
+
+            if (RaidLogList.Count >= 50)
+            {
+                DaoFactory.RaidLogDao.InsertOrUpdateList(ref RaidLogList);
+                RaidLogList.Clear();
+            }
+        }
+
         public void InsertCommandLog(long characterId, PacketDefinition commandPacket, string ipAddress)
         {
             string withoutHeaderpacket = string.Empty;
@@ -45,12 +80,6 @@ namespace OpenNos.GameObject.Helpers
                 Timestamp = DateTime.Now
             };
             LogCommandsList.Add(command);
-            if (LogCommandsList.Count <= 500)
-            {
-                return;
-            }
-            DaoFactory.LogCommandsDao.InsertOrUpdateList(ref LogCommandsList);
-            LogCommandsList.Clear();
         }
 
         public void InsertChatLog(ChatType type, long characterId, string message, string ipAddress)
@@ -64,13 +93,6 @@ namespace OpenNos.GameObject.Helpers
                 Timestamp = DateTime.Now
             };
             ChatLogList.Add(log);
-            if (ChatLogList.Count <= 500)
-            {
-                return;
-            }
-
-            DaoFactory.LogChatDao.InsertOrUpdateList(ref ChatLogList);
-            ChatLogList.Clear();
         }
 
         public void InsertQuestLog(long characterId, string ipAddress, long questId, DateTime lastDaily)
@@ -83,12 +105,6 @@ namespace OpenNos.GameObject.Helpers
                 LastDaily = lastDaily
             };
             QuestLogList.Add(log);
-            if (QuestLogList.Count <= 500)
-            {
-                return;
-            }
-            DaoFactory.QuestLogDao.InsertOrUpdateList(ref QuestLogList);
-            QuestLogList.Clear();
         }
 
         public void InsertRaidLog(long characterId, long raidId, DateTime time)
@@ -100,12 +116,6 @@ namespace OpenNos.GameObject.Helpers
                 Time = time
             };
             RaidLogList.Add(log);
-            if (RaidLogList.Count <= 500)
-            {
-                return;
-            }
-            DaoFactory.RaidLogDao.InsertOrUpdateList(ref RaidLogList);
-            RaidLogList.Clear();
         }
 
         public void InsertFamilyRaidLog(long familyId, long raidId, DateTime time)
@@ -117,12 +127,6 @@ namespace OpenNos.GameObject.Helpers
                 Time = time
             };
             RaidLogList.Add(log);
-            if (RaidLogList.Count <= 500)
-            {
-                return;
-            }
-            DaoFactory.RaidLogDao.InsertOrUpdateList(ref RaidLogList);
-            RaidLogList.Clear();
         }
 
         #region Singleton
