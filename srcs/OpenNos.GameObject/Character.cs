@@ -4297,7 +4297,7 @@ namespace OpenNos.GameObject
                 DateTime start = DateTime.Now;
                 // Base context
                 OpenNosContext context = DataAccessHelper.CreateContext();
-                context.Configuration.AutoDetectChangesEnabled = false;
+                //context.Configuration.AutoDetectChangesEnabled = false;
 
                 AccountDTO account = Session.Account;
                 DaoFactory.AccountDao.InsertOrUpdate(ref account, ref context);
@@ -4327,7 +4327,7 @@ namespace OpenNos.GameObject
 
                         // remove all which are saved but not in our current enumerable
                         IEnumerable<ItemInstance> itemInstances = inventories as IList<ItemInstance> ?? inventories.ToList();
-                        DaoFactory.IteminstanceDao.Delete(ref context, currentlySavedInventoryIds.Except(itemInstances.Select(i => i.Id)));
+                        DaoFactory.IteminstanceDao.Delete(currentlySavedInventoryIds.Except(itemInstances.Select(i => i.Id)));
                         
                         // create or update all which are new or do still exist
                         foreach (ItemInstance itemInstance in itemInstances.Where(s =>
@@ -4359,7 +4359,7 @@ namespace OpenNos.GameObject
                 {
                     IEnumerable<Guid> currentlySavedCharacterSkills = DaoFactory.CharacterSkillDao.LoadKeysByCharacterId(CharacterId, context);
 
-                    DaoFactory.CharacterSkillDao.Delete(ref context, currentlySavedCharacterSkills.Except(Skills.Select(s => s.Value.Id)));
+                    DaoFactory.CharacterSkillDao.Delete(currentlySavedCharacterSkills.Except(Skills.Select(s => s.Value.Id)));
 
                     foreach (CharacterSkill characterSkill in Skills.Select(s => s.Value))
                     {
@@ -4386,7 +4386,7 @@ namespace OpenNos.GameObject
 
                 IEnumerable<Guid> currentlySavedQuicklistEntries =
                     DaoFactory.QuicklistEntryDao.LoadKeysByCharacterId(CharacterId).ToList();
-                DaoFactory.QuicklistEntryDao.Delete(ref context, currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)));
+                DaoFactory.QuicklistEntryDao.Delete(currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)));
 
                 foreach (QuicklistEntryDTO quicklistEntry in quickListEntriesToInsertOrUpdate)
                 {
