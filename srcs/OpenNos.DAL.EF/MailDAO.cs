@@ -32,11 +32,8 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult DeleteById(long mailId)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
+                var contextRef = DataAccessHelper.CreateContext();
                 return DeleteById(ref contextRef, mailId);
-            }
         }
 
         public DeleteResult DeleteById(ref OpenNosContext context, long mailId)
@@ -62,11 +59,8 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MailDTO mail)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
+                var contextRef = DataAccessHelper.CreateContext();
                 return InsertOrUpdate(ref contextRef, ref mail);
-            }
         }
 
         public SaveResult InsertOrUpdate(ref OpenNosContext context, ref MailDTO mail)

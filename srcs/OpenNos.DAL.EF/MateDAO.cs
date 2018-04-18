@@ -32,11 +32,8 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult Delete(long id)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
+                var contextRef = DataAccessHelper.CreateContext();
                 return Delete(ref contextRef, id);
-            }
         }
 
         public DeleteResult Delete(ref OpenNosContext context, long id)
@@ -60,11 +57,8 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MateDTO mate)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
-                return InsertOrUpdate(ref contextRef, ref mate);
-            }
+            var contextRef = DataAccessHelper.CreateContext();
+            return InsertOrUpdate(ref contextRef, ref mate);
         }
 
         public SaveResult InsertOrUpdate(ref OpenNosContext context, ref MateDTO mate)

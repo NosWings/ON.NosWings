@@ -32,11 +32,8 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref RespawnDTO respawn)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
+                var contextRef = DataAccessHelper.CreateContext();
                 return InsertOrUpdate(ref contextRef, ref respawn);
-            }
         }
 
         public SaveResult InsertOrUpdate(ref OpenNosContext context, ref RespawnDTO respawn)

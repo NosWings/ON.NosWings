@@ -32,11 +32,8 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref StaticBuffDTO staticBuff)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
-                return InsertOrUpdate(ref contextRef, ref staticBuff);
-            }
+            var contextRef = DataAccessHelper.CreateContext();
+            return InsertOrUpdate(ref contextRef, ref staticBuff);
         }
 
         public SaveResult InsertOrUpdate(ref OpenNosContext context, ref StaticBuffDTO staticBuff)
@@ -108,11 +105,8 @@ namespace OpenNos.DAL.EF
 
         public void Delete(short bonusToDelete, long characterId)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
+                var contextRef = DataAccessHelper.CreateContext();
                 Delete(ref contextRef, bonusToDelete, characterId);
-            }
         }
 
         public void Delete(ref OpenNosContext context, short bonusToDelete, long characterId)

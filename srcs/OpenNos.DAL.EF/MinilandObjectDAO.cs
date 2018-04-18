@@ -32,14 +32,11 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult DeleteById(long id)
         {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
-                {
-                    var contextRef = context;
-                    MinilandObject item = context.MinilandObject.First(i => i.MinilandObjectId.Equals(id));
+            var context = DataAccessHelper.CreateContext();
+            MinilandObject item = context.MinilandObject.First(i => i.MinilandObjectId.Equals(id));
 
-                    DeleteById(ref contextRef, id);
-                    return DeleteResult.Deleted;
-                }
+            DeleteById(ref context, id);
+            return DeleteResult.Deleted;
         }
 
         public DeleteResult DeleteById(ref OpenNosContext context, long id)

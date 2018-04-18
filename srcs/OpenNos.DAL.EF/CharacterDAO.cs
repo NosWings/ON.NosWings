@@ -95,19 +95,8 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref CharacterDTO character)
         {
-            try
-            {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
-                {
-                    var contextref = context;
-                    return InsertOrUpdate(ref character, ref contextref);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("INSERT_ERROR"), character, e.Message), e);
-                return SaveResult.Error;
-            }
+            var contextref = DataAccessHelper.CreateContext();
+            return InsertOrUpdate(ref character, ref contextref);
         }
 
         public SaveResult InsertOrUpdate(ref CharacterDTO character, ref OpenNosContext context)

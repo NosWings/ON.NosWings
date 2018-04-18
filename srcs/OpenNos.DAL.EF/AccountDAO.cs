@@ -75,11 +75,8 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref AccountDTO account)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextref = context;
-                return InsertOrUpdate(ref account, ref contextref);
-            }
+                var context = DataAccessHelper.CreateContext();
+                return InsertOrUpdate(ref account, ref context);
         }
 
         public SaveResult InsertOrUpdate(ref AccountDTO account, ref OpenNosContext context)

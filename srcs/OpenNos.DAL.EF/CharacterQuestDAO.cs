@@ -18,11 +18,8 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult Delete(long characterId, long questId)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
-                return Delete(ref contextRef, characterId, questId);
-            }
+            var contextRef = DataAccessHelper.CreateContext();
+            return Delete(ref contextRef, characterId, questId);
         }
 
         public DeleteResult Delete(ref OpenNosContext context, long characterId, long questId)

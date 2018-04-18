@@ -34,11 +34,8 @@ namespace OpenNos.DAL.EF
 
         public void Delete(short bonusToDelete, long characterId)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
+                var contextRef = DataAccessHelper.CreateContext();
                 Delete(ref contextRef, bonusToDelete, characterId);
-            }
         }
 
         public void Delete(ref OpenNosContext context, short bonusToDelete, long characterId)
@@ -60,11 +57,8 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                var contextRef = context;
+                var contextRef = DataAccessHelper.CreateContext();
                 return InsertOrUpdate(ref contextRef, ref staticBonus);
-            }
         }
 
         public SaveResult InsertOrUpdate(ref OpenNosContext context, ref StaticBonusDTO staticBonus)
