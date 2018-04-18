@@ -66,6 +66,39 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public SaveResult InsertOrUpdateList(ref List<LogChatDTO> logLists)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    foreach (LogChatDTO chatlog in logLists)
+                    {
+                        LogChatDTO log = chatlog;
+                        long logId = log.LogId;
+                        LogChat entity = context.LogChat.FirstOrDefault(c => c.LogId.Equals(logId));
+
+                        if (entity == null)
+                        {
+                            log = Insert(log, context);
+                            return SaveResult.Inserted;
+                        }
+
+                        log.LogId = entity.LogId;
+                        log = Update(entity, log, context);
+                        return SaveResult.Updated;
+                    }
+
+                    return SaveResult.Updated;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return SaveResult.Error;
+            }
+        }
+
         public IEnumerable<LogChatDTO> LoadAll()
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())

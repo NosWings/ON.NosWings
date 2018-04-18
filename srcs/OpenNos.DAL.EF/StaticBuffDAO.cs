@@ -30,25 +30,28 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
-        public SaveResult InsertOrUpdate(ref StaticBuffDTO StaticBuff)
+        public SaveResult InsertOrUpdate(ref StaticBuffDTO staticBuff)
+        {
+            var contextRef = DataAccessHelper.CreateContext();
+            return InsertOrUpdate(ref contextRef, ref staticBuff);
+        }
+
+        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref StaticBuffDTO staticBuff)
         {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
-                {
-                    long id = StaticBuff.CharacterId;
-                    short cardid = StaticBuff.CardId;
-                    StaticBuff entity = context.StaticBuff.FirstOrDefault(c => c.CardId == cardid && c.CharacterId == id);
+                long id = staticBuff.CharacterId;
+                short cardid = staticBuff.CardId;
+                StaticBuff entity = context.StaticBuff.FirstOrDefault(c => c.CardId == cardid && c.CharacterId == id);
 
-                    if (entity == null)
-                    {
-                        StaticBuff = Insert(StaticBuff, context);
-                        return SaveResult.Inserted;
-                    }
-                    StaticBuff.StaticBuffId = entity.StaticBuffId;
-                    StaticBuff = Update(entity, StaticBuff, context);
-                    return SaveResult.Updated;
+                if (entity == null)
+                {
+                    staticBuff = Insert(staticBuff, context);
+                    return SaveResult.Inserted;
                 }
+                staticBuff.StaticBuffId = entity.StaticBuffId;
+                staticBuff = Update(entity, staticBuff, context);
+                return SaveResult.Updated;
             }
             catch (Exception e)
             {
@@ -56,7 +59,7 @@ namespace OpenNos.DAL.EF
                 return SaveResult.Error;
             }
         }
-        
+
         public IEnumerable<StaticBuffDTO> LoadByCharacterId(long characterId)
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
@@ -102,18 +105,19 @@ namespace OpenNos.DAL.EF
 
         public void Delete(short bonusToDelete, long characterId)
         {
+                var contextRef = DataAccessHelper.CreateContext();
+                Delete(ref contextRef, bonusToDelete, characterId);
+        }
+
+        public void Delete(ref OpenNosContext context, short bonusToDelete, long characterId)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                StaticBuff bon = context.StaticBuff.FirstOrDefault(c => c.CardId == bonusToDelete && c.CharacterId == characterId);
+
+                if (bon != null)
                 {
-                    StaticBuff bon = context.StaticBuff.FirstOrDefault(c => c.CardId == bonusToDelete && c.CharacterId == characterId);
-
-                    if (bon != null)
-                    {
-                        context.StaticBuff.Remove(bon);
-                        context.SaveChanges();
-                    }
-
+                    context.StaticBuff.Remove(bon);
                 }
             }
             catch (Exception e)

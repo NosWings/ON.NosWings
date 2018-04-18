@@ -609,7 +609,7 @@ namespace OpenNos.GameObject.Helpers
 
                                     ServerManager.Instance.GroupList.RemoveAll(s => s.GroupId == grp.GroupId);
                                     ServerManager.Instance._groups.TryRemove(grp.GroupId, out Group _);
-                                    grp.Raid.MapInstanceDictionary.Values.ToList().ForEach(m => m.Dispose());
+                                    grp.Raid?.MapInstanceDictionary?.Values.ToList().ForEach(m => m.Dispose());
                                 });
                             break;
                         case MapInstanceType.CaligorInstance:

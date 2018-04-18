@@ -57,22 +57,23 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult DeleteByWearableInstanceId(Guid wearableInstanceId)
         {
+                var contextRef = DataAccessHelper.CreateContext();
+                return DeleteByWearableInstanceId(ref contextRef, wearableInstanceId);
+        }
+
+        public DeleteResult DeleteByWearableInstanceId(ref OpenNosContext context, Guid wearableInstanceId)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                foreach (EquipmentOption equipmentOption in context.EquipmentOption.Where(
+                    i => i.WearableInstanceId.Equals(wearableInstanceId)))
                 {
-
-                    foreach (EquipmentOption equipmentOption in context.EquipmentOption.Where(
-                        i => i.WearableInstanceId.Equals(wearableInstanceId)))
+                    if (equipmentOption != null)
                     {
-                        if (equipmentOption != null)
-                        {
-                            context.EquipmentOption.Remove(equipmentOption);
-                        }
+                        context.EquipmentOption.Remove(equipmentOption);
                     }
-                    context.SaveChanges();
-                    return DeleteResult.Deleted;
                 }
+                return DeleteResult.Deleted;
             }
             catch (Exception)
             {

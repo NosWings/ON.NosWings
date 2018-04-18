@@ -32,19 +32,21 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult Delete(long id)
         {
+                var contextRef = DataAccessHelper.CreateContext();
+                return Delete(ref contextRef, id);
+        }
+
+        public DeleteResult Delete(ref OpenNosContext context, long id)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                Mate mate = context.Mate.FirstOrDefault(c => c.MateId.Equals(id));
+                if (mate != null)
                 {
-                    Mate mate = context.Mate.FirstOrDefault(c => c.MateId.Equals(id));
-                    if (mate != null)
-                    {
-                        context.Mate.Remove(mate);
-                        context.SaveChanges();
-                    }
-
-                    return DeleteResult.Deleted;
+                    context.Mate.Remove(mate);
                 }
+
+                return DeleteResult.Deleted;
             }
             catch (Exception e)
             {
@@ -55,22 +57,25 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MateDTO mate)
         {
+            var contextRef = DataAccessHelper.CreateContext();
+            return InsertOrUpdate(ref contextRef, ref mate);
+        }
+
+        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref MateDTO mate)
+        {
             try
             {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                long MateId = mate.MateId;
+                Mate entity = context.Mate.FirstOrDefault(c => c.MateId.Equals(MateId));
+
+                if (entity == null)
                 {
-                    long MateId = mate.MateId;
-                    Mate entity = context.Mate.FirstOrDefault(c => c.MateId.Equals(MateId));
-
-                    if (entity == null)
-                    {
-                        mate = Insert(mate, context);
-                        return SaveResult.Inserted;
-                    }
-
-                    mate = Update(entity, mate, context);
-                    return SaveResult.Updated;
+                    mate = Insert(mate, context);
+                    return SaveResult.Inserted;
                 }
+
+                mate = Update(entity, mate, context);
+                return SaveResult.Updated;
             }
             catch (Exception e)
             {

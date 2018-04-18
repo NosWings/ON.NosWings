@@ -43,6 +43,39 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public SaveResult InsertOrUpdateList(ref List<RaidLogDTO> raidList)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    foreach (var r in raidList)
+                    {
+                        RaidLogDTO raid = r;
+                        long raidId = raid.RaidId;
+                        RaidLog entity = context.RaidLog.FirstOrDefault(c => c.RaidId.Equals(raidId));
+
+                        if (entity == null)
+                        {
+                            raid = Insert(raid, context);
+                            return SaveResult.Inserted;
+                        }
+
+                        raid.RaidId = entity.RaidId;
+                        raid = Update(entity, raid, context);
+                        return SaveResult.Updated;
+                    }
+
+                    return SaveResult.Updated;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return SaveResult.Error;
+            }
+        }
+
         public RaidLogDTO Insert(RaidLogDTO raid, OpenNosContext context)
         {
             try

@@ -86,15 +86,18 @@ namespace OpenNos.DAL.EF
             _mapper = config.CreateMapper();
         }
 
+        public IEnumerable<ItemInstanceDTO> LoadByCharacterId(long characterId, OpenNosContext context)
+        {
+            foreach (ItemInstance itemInstance in context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)))
+            {
+                yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
+            }
+        }
+
         public IEnumerable<ItemInstanceDTO> LoadByCharacterId(long characterId)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                foreach (ItemInstance itemInstance in context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)))
-                {
-                    yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
-                }
-            }
+            OpenNosContext context = DataAccessHelper.CreateContext();
+            return LoadByCharacterId(characterId, context);
         }
 
         public ItemInstanceDTO LoadBySlotAndType(long characterId, short slot, InventoryType type)
@@ -128,20 +131,15 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IList<Guid> LoadSlotAndTypeByCharacterId(long characterId, OpenNosContext context)
+        {
+            return context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)).Select(i => i.Id).ToList();
+        }
+
         public IList<Guid> LoadSlotAndTypeByCharacterId(long characterId)
         {
-            try
-            {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
-                {
-                    return context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)).Select(i => i.Id).ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return null;
-            }
+            OpenNosContext context = DataAccessHelper.CreateContext();
+            return LoadSlotAndTypeByCharacterId(characterId, context);
         }
 
         public override IMappingBaseDAO RegisterMapping(Type gameObjectType)
@@ -159,7 +157,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        protected override ItemInstanceDTO InsertOrUpdate(OpenNosContext context, ItemInstanceDTO itemInstance)
+        protected ItemInstanceDTO InsertOrUpdate(OpenNosContext context, ItemInstanceDTO itemInstance)
         {
             try
             {
