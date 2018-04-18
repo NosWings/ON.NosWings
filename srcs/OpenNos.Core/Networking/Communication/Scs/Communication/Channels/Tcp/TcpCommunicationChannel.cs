@@ -12,10 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.Extensions;
-using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
-using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -25,61 +21,25 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenNos.Core.Extensions;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {
     /// <summary>
-    /// This class is used to communicate with a remote application over TCP/IP protocol.
+    ///     This class is used to communicate with a remote application over TCP/IP protocol.
     /// </summary>
     public class TcpCommunicationChannel : CommunicationChannelBase, IDisposable
     {
-        #region Members
-
-        /// <summary>
-        /// Size of the buffer that is used to receive bytes from TCP socket.
-        /// </summary>
-        private const int _receiveBufferSize = 4 * 1024;
-
-        /// <summary>
-        /// This buffer is used to receive bytes
-        /// </summary>
-        private readonly byte[] _buffer;
-
-        /// <summary>
-        /// Socket object to send/reveice messages.
-        /// </summary>
-        private readonly Socket _clientSocket;
-
-        private readonly ConcurrentQueue<byte[]> _highPriorityBuffer;
-        private readonly ConcurrentQueue<byte[]> _lowPriorityBuffer;
-        private readonly Random _random = new Random();
-        private readonly ScsTcpEndPoint _remoteEndPoint;
-
-        private readonly CancellationTokenSource _sendCancellationToken = new CancellationTokenSource();
-
-        private readonly Task _sendTask;
-
-        /// <summary>
-        /// This object is just used for thread synchronizing (locking).
-        /// </summary>
-        private readonly object _syncLock;
-
-        private bool _disposed;
-
-        /// <summary>
-        /// A flag to control thread's running
-        /// </summary>
-        private volatile bool _running;
-
-        #endregion
-
         #region Instantiation
 
         /// <summary>
-        /// Creates a new TcpCommunicationChannel object.
+        ///     Creates a new TcpCommunicationChannel object.
         /// </summary>
         /// <param name="clientSocket">
-        /// A connected Socket object that is used to communicate over network
+        ///     A connected Socket object that is used to communicate over network
         /// </param>
         public TcpCommunicationChannel(Socket clientSocket)
         {
@@ -89,7 +49,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             // initialize lagging mode
             bool isLagMode = string.Equals(ConfigurationManager.AppSettings["LagMode"], "true", StringComparison.CurrentCultureIgnoreCase);
 
-            IPEndPoint ipEndPoint = (IPEndPoint)_clientSocket.RemoteEndPoint;
+            var ipEndPoint = (IPEndPoint)_clientSocket.RemoteEndPoint;
             _remoteEndPoint = new ScsTcpEndPoint(ipEndPoint.Address.ToString(), ipEndPoint.Port);
 
             _buffer = new byte[_receiveBufferSize];
@@ -106,9 +66,49 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         #region Properties
 
         /// <summary>
-        /// Gets the endpoint of remote application.
+        ///     Gets the endpoint of remote application.
         /// </summary>
         public override ScsEndPoint RemoteEndPoint => _remoteEndPoint;
+
+        #endregion
+
+        #region Members
+
+        /// <summary>
+        ///     Size of the buffer that is used to receive bytes from TCP socket.
+        /// </summary>
+        private const int _receiveBufferSize = 4 * 1024;
+
+        /// <summary>
+        ///     This buffer is used to receive bytes
+        /// </summary>
+        private readonly byte[] _buffer;
+
+        /// <summary>
+        ///     Socket object to send/reveice messages.
+        /// </summary>
+        private readonly Socket _clientSocket;
+
+        private readonly ConcurrentQueue<byte[]> _highPriorityBuffer;
+        private readonly ConcurrentQueue<byte[]> _lowPriorityBuffer;
+        private readonly Random _random = new Random();
+        private readonly ScsTcpEndPoint _remoteEndPoint;
+
+        private readonly CancellationTokenSource _sendCancellationToken = new CancellationTokenSource();
+
+        private readonly Task _sendTask;
+
+        /// <summary>
+        ///     This object is just used for thread synchronizing (locking).
+        /// </summary>
+        private readonly object _syncLock;
+
+        private bool _disposed;
+
+        /// <summary>
+        ///     A flag to control thread's running
+        /// </summary>
+        private volatile bool _running;
 
         #endregion
 
@@ -133,7 +133,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
-        /// Disconnects from remote application and closes channel.
+        ///     Disconnects from remote application and closes channel.
         /// </summary>
         public override void Disconnect()
         {
@@ -167,7 +167,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
-        /// Calls Disconnect method.
+        ///     Calls Disconnect method.
         /// </summary>
         public void Dispose()
         {
@@ -193,6 +193,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             {
                 // disconnect
             }
+
             if (!_clientSocket.Connected)
             {
                 // do nothing
@@ -209,7 +210,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
-        /// Sends a message to the remote application.
+        ///     Sends a message to the remote application.
         /// </summary>
         /// <param name="message">Message to be sent</param>
         /// <param name="priority">Priority of message to send</param>
@@ -226,7 +227,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
-        /// Starts the thread to receive messages from socket.
+        ///     Starts the thread to receive messages from socket.
         /// </summary>
         protected override void Startpublic()
         {
@@ -239,7 +240,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             try
             {
                 // Retrieve the socket from the state object.
-                Socket client = (Socket)result.AsyncState;
+                var client = (Socket)result.AsyncState;
 
                 if (!client.Connected)
                 {
@@ -256,8 +257,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
-        /// This method is used as callback method in _clientSocket's BeginReceive method. It
-        /// reveives bytes from socker.
+        ///     This method is used as callback method in _clientSocket's BeginReceive method. It
+        ///     reveives bytes from socker.
         /// </summary>
         /// <param name="result">Asyncronous call result</param>
         private void receiveCallback(IAsyncResult result)
@@ -327,7 +328,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             if (outgoingPacket.Any())
             {
                 _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
-                sendCallback, _clientSocket);
+                    sendCallback, _clientSocket);
             }
         }
 

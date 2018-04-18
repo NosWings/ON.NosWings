@@ -7,31 +7,28 @@ namespace OpenNos.Handler
 {
     public class HomeSystemPacketHandler : IPacketHandler
     {
+        private readonly ClientSession _session;
         public HomeSystemPacketHandler(ClientSession session) => _session = session;
 
-        private readonly ClientSession _session;
-
         /// <summary>
-        /// This method will handle the 
+        ///     This method will handle the
         /// </summary>
         public void SetHome(SetHomePacket packet)
         {
             if (packet == null)
             {
-                return;
             }
 
             // if home already exist replace it
         }
 
         /// <summary>
-        /// This method will handle the unsethome packet
+        ///     This method will handle the unsethome packet
         /// </summary>
         public void UnsetHome(UnsetHomePacket packet)
         {
             if (packet == null)
             {
-                return;
             }
 
             // remove home
@@ -39,7 +36,6 @@ namespace OpenNos.Handler
 
 
         /// <summary>
-        /// 
         /// </summary>
         public void Home(HomePacket packet)
         {
@@ -57,7 +53,6 @@ namespace OpenNos.Handler
             if (_session.Character.InExchangeOrTrade)
             {
                 _session.SendPacket(_session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CLOSE_EXCHANGE"), 11));
-                return;
             }
 
             // X = delay to tp (FileConfiguration)

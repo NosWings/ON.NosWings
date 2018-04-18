@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$RemoveMob", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class RemoveMobPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$RemoveMob";
-        }
+        public static string ReturnHelp() => "$RemoveMob";
     }
 }

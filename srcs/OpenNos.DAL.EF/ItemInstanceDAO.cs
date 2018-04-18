@@ -12,20 +12,20 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using AutoMapper;
 using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -61,7 +61,7 @@ namespace OpenNos.DAL.EF
         public void InitializeMapper(Type baseType)
         {
             _baseType = baseType;
-            MapperConfiguration config = new MapperConfiguration(cfg =>
+            var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap(baseType, typeof(ItemInstance))
                     .ForMember("Item", opts => opts.Ignore());
@@ -72,11 +72,11 @@ namespace OpenNos.DAL.EF
                 {
                     // GameObject -> Entity
                     cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
-                                    .IncludeBase(baseType, typeof(ItemInstance));
+                        .IncludeBase(baseType, typeof(ItemInstance));
 
                     // Entity -> GameObject
                     cfg.CreateMap(entry.Value, entry.Key)
-                                    .IncludeBase(typeof(ItemInstance), baseType);
+                        .IncludeBase(typeof(ItemInstance), baseType);
 
                     // Entity -> GameObject
                     cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
@@ -178,7 +178,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                ItemInstance entity = _mapper.Map<ItemInstance>(dto);
+                var entity = _mapper.Map<ItemInstance>(dto);
                 KeyValuePair<Type, Type> targetMapping = _mappings.FirstOrDefault(k => k.Key == dto.GetType());
                 if (targetMapping.Key != null)
                 {

@@ -10,23 +10,19 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public short MonsterVNum { get; set; }
+        [PacketIndex(0)]
+        public short MonsterVNum { get; set; }
 
-        [PacketIndex(1)] public byte Level { get; set; }
+        [PacketIndex(1)]
+        public byte Level { get; set; }
 
         #endregion
 
         #region Methods
 
-        public static string ReturnHelp()
-        {
-            return "$AddPet MONSTERVNUM LEVEL";
-        }
+        public static string ReturnHelp() => "$AddPet MONSTERVNUM LEVEL";
 
-        public override string ToString()
-        {
-            return $"AddPet Command MonsterVNum: {MonsterVNum} Level: {Level}";
-        }
+        public override string ToString() => $"AddPet Command MonsterVNum: {MonsterVNum} Level: {Level}";
 
         #endregion
     }

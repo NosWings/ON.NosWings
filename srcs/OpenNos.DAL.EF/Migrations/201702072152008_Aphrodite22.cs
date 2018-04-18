@@ -14,8 +14,8 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Up()
         {
-            AddColumn("dbo.Item", "Length", c => c.Byte(nullable: false));
-            AddColumn("dbo.Item", "Width", c => c.Byte(nullable: false));
+            AddColumn("dbo.Item", "Length", c => c.Byte(false));
+            AddColumn("dbo.Item", "Width", c => c.Byte(false));
         }
 
         #endregion

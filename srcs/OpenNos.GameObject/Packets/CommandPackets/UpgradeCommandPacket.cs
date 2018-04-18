@@ -10,16 +10,16 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public short Slot { get; set; }
+        [PacketIndex(0)]
+        public short Slot { get; set; }
 
-        [PacketIndex(1)] public UpgradeMode Mode { get; set; }
+        [PacketIndex(1)]
+        public UpgradeMode Mode { get; set; }
 
-        [PacketIndex(2)] public UpgradeProtection Protection { get; set; }
+        [PacketIndex(2)]
+        public UpgradeProtection Protection { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Upgrade SLOT MODE PROTECTION";
-        }
+        public static string ReturnHelp() => "$Upgrade SLOT MODE PROTECTION";
 
         #endregion
     }

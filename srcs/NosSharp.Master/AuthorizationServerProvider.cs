@@ -18,14 +18,13 @@ namespace ON.NW.Master
         /// <inheritdoc />
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
             AccountDTO account = DaoFactory.AccountDao.LoadByName(context.UserName);
 
 
             if (account != null && account.Password.ToLower().Equals(EncryptionBase.Sha512(context.Password)))
             {
-                ClaimsIdentity identity = new ClaimsIdentity(context.Options.AuthenticationType);
+                var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                 identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, context.UserName));
                 identity.AddClaim(new Claim(ClaimTypes.Role, account.Authority.ToString()));
                 context.Validated(identity);

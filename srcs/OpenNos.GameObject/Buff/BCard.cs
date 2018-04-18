@@ -19,14 +19,12 @@ using System.Reactive.Linq;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Data;
+using OpenNos.GameObject.Battle;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
-using OpenNos.GameObject.Battle;
-using System.Collections.Generic;
-using OpenNos.Core.Extensions;
 
 namespace OpenNos.GameObject.Buff
 {
@@ -36,9 +34,9 @@ namespace OpenNos.GameObject.Buff
 
         public void ApplyBCards(IBattleEntity session, IBattleEntity caster = null)
         {
-            Mate mate = session is Mate ? (Mate) session.GetSession() : null;
-            Character character = session is Character ? (Character) session.GetSession() : null;
-            switch ((BCardType.CardType) Type)
+            Mate mate = session is Mate ? (Mate)session.GetSession() : null;
+            Character character = session is Character ? (Character)session.GetSession() : null;
+            switch ((BCardType.CardType)Type)
             {
                 case BCardType.CardType.Buff:
                     if (ServerManager.Instance.RandomNumber() < FirstData)
@@ -54,6 +52,7 @@ namespace OpenNos.GameObject.Buff
                     {
                         break;
                     }
+
                     character.LastSpeedChange = DateTime.Now;
                     character.LoadSpeed();
                     character.Session.SendPacket(character.GenerateCond());
@@ -64,16 +63,16 @@ namespace OpenNos.GameObject.Buff
                         session.GetSession() is MapNpc npc ? npc.Npc : null;
                     ConcurrentBag<ToSummon> summonParameters = new ConcurrentBag<ToSummon>();
 
-                    switch ((AdditionalTypes.Summons) SubType)
+                    switch ((AdditionalTypes.Summons)SubType)
                     {
                         case AdditionalTypes.Summons.Summons:
                             for (int i = 0; i < FirstData; i++)
                             {
                                 MapCell cell = session.GetPos();
-                                cell.Y += (short) ServerManager.Instance.RandomNumber(-3, 3);
-                                cell.X += (short) ServerManager.Instance.RandomNumber(-3, 3);
-                                summonParameters.Add(new ToSummon((short) SecondData, cell, null, true,
-                                    (byte) Math.Abs(ThirdData)));
+                                cell.Y += (short)ServerManager.Instance.RandomNumber(-3, 3);
+                                cell.X += (short)ServerManager.Instance.RandomNumber(-3, 3);
+                                summonParameters.Add(new ToSummon((short)SecondData, cell, null, true,
+                                    (byte)Math.Abs(ThirdData)));
                             }
 
                             EventHelper.Instance.RunEvent(new EventContainer(session.MapInstance,
@@ -82,10 +81,10 @@ namespace OpenNos.GameObject.Buff
 
                         case AdditionalTypes.Summons.SummonTrainingDummy:
                             if (npcMonster != null && session.BattleEntity.OnHitEvents.All(s =>
-                                    s?.EventActionType != EventActionType.SPAWNMONSTERS))
+                                s?.EventActionType != EventActionType.SPAWNMONSTERS))
                             {
-                                summonParameters.Add(new ToSummon((short) SecondData, session.GetPos(), null, true,
-                                    (byte) Math.Abs(ThirdData)));
+                                summonParameters.Add(new ToSummon((short)SecondData, session.GetPos(), null, true,
+                                    (byte)Math.Abs(ThirdData)));
                                 session.BattleEntity.OnHitEvents.Add(new EventContainer(session.MapInstance,
                                     EventActionType.SPAWNMONSTERS, summonParameters));
                             }
@@ -101,9 +100,9 @@ namespace OpenNos.GameObject.Buff
                                 for (int i = 0; i < FirstData; i++)
                                 {
                                     MapCell cell = session.GetPos();
-                                    cell.Y += (short) i;
-                                    summonParameters.Add(new ToSummon((short) SecondData, cell, null, true,
-                                        (byte) Math.Abs(ThirdData)));
+                                    cell.Y += (short)i;
+                                    summonParameters.Add(new ToSummon((short)SecondData, cell, null, true,
+                                        (byte)Math.Abs(ThirdData)));
                                 }
 
                                 session.BattleEntity.OnDeathEvents.Add(new EventContainer(session.MapInstance,
@@ -179,7 +178,7 @@ namespace OpenNos.GameObject.Buff
                     break;
 
                 case BCardType.CardType.HealingBurningAndCasting:
-                    var subtype = (AdditionalTypes.HealingBurningAndCasting) SubType;
+                    var subtype = (AdditionalTypes.HealingBurningAndCasting)SubType;
                     switch (subtype)
                     {
                         case AdditionalTypes.HealingBurningAndCasting.RestoreHP:
@@ -248,6 +247,7 @@ namespace OpenNos.GameObject.Buff
                                     mate.Hp = mate.HpLoad();
                                 }
                             }
+
                             break;
                         case AdditionalTypes.HealingBurningAndCasting.RestoreMP:
                             if (character != null)
@@ -331,11 +331,11 @@ namespace OpenNos.GameObject.Buff
                     {
                         if (monsterToCapture.Monster.RaceType == 1 &&
                             (hunter.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance ||
-                             hunter.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
+                                hunter.MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance))
                         {
                             if (monsterToCapture.Monster.Level < hunter.Level)
                             {
-                                if (monsterToCapture.CurrentHp < (monsterToCapture.Monster.MaxHP / 2))
+                                if (monsterToCapture.CurrentHp < monsterToCapture.Monster.MaxHP / 2)
                                 {
                                     if (hunter.MaxMateCount > hunter.Mates.Count())
                                     {
@@ -345,7 +345,7 @@ namespace OpenNos.GameObject.Buff
                                         if (ServerManager.Instance.RandomNumber() <= capturerate)
                                         {
                                             if (hunter.Quests.Any(q =>
-                                                q.Quest.QuestType == (int) QuestType.Capture1 &&
+                                                q.Quest.QuestType == (int)QuestType.Capture1 &&
                                                 q.Quest.QuestObjectives.Any(d =>
                                                     d.Data == monsterToCapture.MonsterVNum)))
                                             {
@@ -369,7 +369,7 @@ namespace OpenNos.GameObject.Buff
                                             monsterToCapture.MapInstance.DespawnMonster(monsterToCapture);
                                             NpcMonster mateNpc =
                                                 ServerManager.Instance.GetNpc(monsterToCapture.MonsterVNum);
-                                            mate = new Mate(hunter, mateNpc, (byte) level, MateType.Pet);
+                                            mate = new Mate(hunter, mateNpc, (byte)level, MateType.Pet);
                                             hunter.Mates?.Add(mate);
                                             mate.RefreshStats();
                                             hunter.Session.SendPacket($"ctl 2 {mate.PetId} 3");
@@ -458,6 +458,7 @@ namespace OpenNos.GameObject.Buff
                     {
                         break;
                     }
+
                     if (SubType.Equals((byte)AdditionalTypes.SpecialActions.Hide))
                     {
                         character.Invisible = true;
@@ -549,7 +550,7 @@ namespace OpenNos.GameObject.Buff
                 case BCardType.CardType.MeditationSkill:
                     if (session.GetSession().GetType() == typeof(Character))
                     {
-                        if (SubType.Equals((byte) AdditionalTypes.MeditationSkill.CausingChance))
+                        if (SubType.Equals((byte)AdditionalTypes.MeditationSkill.CausingChance))
                         {
                             if (ServerManager.Instance.RandomNumber() < FirstData)
                             {
@@ -562,7 +563,7 @@ namespace OpenNos.GameObject.Buff
                                 {
                                     character.LastSkillCombo = DateTime.Now;
                                     Skill skill = ServerManager.Instance.GetSkill(SkillVNum.Value);
-                                    Skill newSkill = ServerManager.Instance.GetSkill((short) SecondData);
+                                    Skill newSkill = ServerManager.Instance.GetSkill((short)SecondData);
                                     Observable.Timer(TimeSpan.FromMilliseconds(100)).Subscribe(observer =>
                                     {
                                         foreach (QuicklistEntryDTO qe in character.QuicklistEntries.Where(s =>
@@ -579,10 +580,7 @@ namespace OpenNos.GameObject.Buff
                                     {
                                         // HACK this way
                                         Observable.Timer(TimeSpan.FromMilliseconds(skill.Cooldown * 100 + 500))
-                                            .Subscribe(observer =>
-                                            {
-                                                character.Session.SendPacket($"sr {skill.CastId}");
-                                            });
+                                            .Subscribe(observer => { character.Session.SendPacket($"sr {skill.CastId}"); });
                                     }
                                 }
                             }
@@ -597,13 +595,13 @@ namespace OpenNos.GameObject.Buff
                             switch (SubType)
                             {
                                 case 21:
-                                    character.MeditationDictionary[(short) SecondData] = DateTime.Now.AddSeconds(4);
+                                    character.MeditationDictionary[(short)SecondData] = DateTime.Now.AddSeconds(4);
                                     break;
                                 case 31:
-                                    character.MeditationDictionary[(short) SecondData] = DateTime.Now.AddSeconds(8);
+                                    character.MeditationDictionary[(short)SecondData] = DateTime.Now.AddSeconds(8);
                                     break;
                                 case 41:
-                                    character.MeditationDictionary[(short) SecondData] = DateTime.Now.AddSeconds(12);
+                                    character.MeditationDictionary[(short)SecondData] = DateTime.Now.AddSeconds(12);
                                     break;
                             }
                         }
@@ -616,6 +614,7 @@ namespace OpenNos.GameObject.Buff
                     {
                         break;
                     }
+
                     switch (SubType)
                     {
                         case (byte)AdditionalTypes.FalconSkill.Hide:

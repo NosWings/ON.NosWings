@@ -8,7 +8,7 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Down()
         {
-            AddColumn("dbo.FamilyCharacter", "JoinDate", c => c.DateTime(nullable: false));
+            AddColumn("dbo.FamilyCharacter", "JoinDate", c => c.DateTime(false));
         }
 
         public override void Up()

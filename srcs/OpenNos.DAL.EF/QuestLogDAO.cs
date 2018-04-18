@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Core.Mapping;
-using System.IO;
 using System.Linq;
-using System.Text;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
@@ -44,6 +41,33 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public QuestLogDTO LoadById(long id)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<QuestLogDTO>(context.QuestLog.FirstOrDefault(i => i.QuestId == id));
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return null;
+            }
+        }
+
+        public IEnumerable<QuestLogDTO> LoadByCharacterId(long characterId)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                foreach (QuestLog id in context.QuestLog.Where(c => c.CharacterId == characterId))
+                {
+                    yield return _mapper.Map<QuestLogDTO>(id);
+                }
+            }
+        }
+
         public SaveResult InsertOrUpdateList(ref List<QuestLogDTO> questList)
         {
             try
@@ -81,7 +105,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                QuestLog entity = _mapper.Map<QuestLog>(quest);
+                var entity = _mapper.Map<QuestLog>(quest);
                 context.QuestLog.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<QuestLogDTO>(entity);
@@ -100,34 +124,8 @@ namespace OpenNos.DAL.EF
                 _mapper.Map(old, replace);
                 context.SaveChanges();
             }
+
             return _mapper.Map<QuestLogDTO>(old);
-        }
-
-        public QuestLogDTO LoadById(long id)
-        {
-            try
-            {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
-                {
-                    return _mapper.Map<QuestLogDTO>(context.QuestLog.FirstOrDefault(i => i.QuestId == id));
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-                return null;
-            }
-        }
-
-        public IEnumerable<QuestLogDTO> LoadByCharacterId(long characterId)
-        {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                foreach (var id in context.QuestLog.Where(c => c.CharacterId == characterId))
-                {
-                    yield return _mapper.Map<QuestLogDTO>(id);
-                }
-            }
         }
     }
 }

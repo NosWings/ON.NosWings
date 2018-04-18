@@ -8,7 +8,7 @@ using OpenNos.DAL.Interface;
 namespace OpenNos.DAL.EF.Base
 {
     public class MappingBaseDao<TEntity, TDTO> : IMappingBaseDAO
-        where TDTO : MappingBaseDTO
+    where TDTO : MappingBaseDTO
     {
         #region Members
 
@@ -21,7 +21,7 @@ namespace OpenNos.DAL.EF.Base
 
         public virtual void InitializeMapper()
         {
-            MapperConfiguration config = new MapperConfiguration(cfg =>
+            var config = new MapperConfiguration(cfg =>
             {
                 foreach (KeyValuePair<Type, Type> entry in _mappings)
                 {

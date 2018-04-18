@@ -21,6 +21,6 @@ namespace NosSharp.Enums
         Party = 2,
         Family = 3,
         Friend = 4,
-        Speaker = 5,
+        Speaker = 5
     }
 }

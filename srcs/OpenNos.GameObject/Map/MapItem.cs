@@ -22,13 +22,6 @@ namespace OpenNos.GameObject.Map
 {
     public abstract class MapItem
     {
-        #region Members
-
-        protected ItemInstance ItemInstance;
-        private long _transportId;
-
-        #endregion
-
         #region Instantiation
 
         public MapItem(short x, short y)
@@ -38,6 +31,13 @@ namespace OpenNos.GameObject.Map
             CreatedDate = DateTime.Now;
             TransportId = 0;
         }
+
+        #endregion
+
+        #region Members
+
+        protected ItemInstance ItemInstance;
+        private long _transportId;
 
         #endregion
 
@@ -82,16 +82,10 @@ namespace OpenNos.GameObject.Map
 
         #region Methods
 
-        public string GenerateIn()
-        {
-            return
-                $"in 9 {ItemVNum} {TransportId} {PositionX} {PositionY} {(this is MonsterMapItem && ((MonsterMapItem) this).GoldAmount > 1 ? ((MonsterMapItem) this).GoldAmount : Amount)} 0 0 -1";
-        }
+        public string GenerateIn() =>
+            $"in 9 {ItemVNum} {TransportId} {PositionX} {PositionY} {(this is MonsterMapItem && ((MonsterMapItem)this).GoldAmount > 1 ? ((MonsterMapItem)this).GoldAmount : Amount)} 0 0 -1";
 
-        public string GenerateOut(long id)
-        {
-            return $"out 9 {id}";
-        }
+        public string GenerateOut(long id) => $"out 9 {id}";
 
         public abstract ItemInstance GetItemInstance();
 

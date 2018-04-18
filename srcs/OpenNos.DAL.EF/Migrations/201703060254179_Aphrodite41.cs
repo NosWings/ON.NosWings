@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class Aphrodite41 : DbMigration
     {
         #region Methods
@@ -13,7 +13,7 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Up()
         {
-            AddColumn("dbo.NpcMonster", "HeroXP", c => c.Int(nullable: false));
+            AddColumn("dbo.NpcMonster", "HeroXP", c => c.Int(false));
         }
 
         #endregion

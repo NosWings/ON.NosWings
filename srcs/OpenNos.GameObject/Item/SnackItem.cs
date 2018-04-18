@@ -64,12 +64,12 @@ namespace OpenNos.GameObject.Item
                 session.Character.Mp += session.Character.SnackMp;
                 if (session.Character.Mp > session.Character.MpLoad())
                 {
-                    session.Character.Mp = (int) session.Character.MpLoad();
+                    session.Character.Mp = (int)session.Character.MpLoad();
                 }
 
                 if (session.Character.Hp > session.Character.HpLoad())
                 {
-                    session.Character.Hp = (int) session.Character.HpLoad();
+                    session.Character.Hp = (int)session.Character.HpLoad();
                 }
 
                 if (session.Character.Hp < session.Character.HpLoad() ||
@@ -113,7 +113,7 @@ namespace OpenNos.GameObject.Item
                     int amount = session.Character.SnackAmount;
                     if (amount < 5)
                     {
-                        Thread workerThread = new Thread(() => Regenerate(session, item));
+                        var workerThread = new Thread(() => Regenerate(session, item));
                         workerThread.Start();
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
@@ -126,7 +126,7 @@ namespace OpenNos.GameObject.Item
 
                     if (amount == 0)
                     {
-                        Thread workerThread2 = new Thread(() => Sync(session, item));
+                        var workerThread2 = new Thread(() => Sync(session, item));
                         workerThread2.Start();
                     }
 

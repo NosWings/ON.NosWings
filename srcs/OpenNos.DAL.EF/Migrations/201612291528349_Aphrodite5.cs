@@ -15,9 +15,9 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Up()
         {
-            AddColumn("dbo.Character", "BlockExp", c => c.Boolean(nullable: false));
-            AddColumn("dbo.Character", "BlockRep", c => c.Boolean(nullable: false));
-            AddColumn("dbo.Character", "BlockFXp", c => c.Boolean(nullable: false));
+            AddColumn("dbo.Character", "BlockExp", c => c.Boolean(false));
+            AddColumn("dbo.Character", "BlockRep", c => c.Boolean(false));
+            AddColumn("dbo.Character", "BlockFXp", c => c.Boolean(false));
         }
 
         #endregion

@@ -12,23 +12,23 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.Core.Networking.Communication.Scs.Client;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Server;
-using System;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints
 {
     /// <summary>
-    /// Represents a server side end point in SCS.
+    ///     Represents a server side end point in SCS.
     /// </summary>
     public abstract class ScsEndPoint
     {
         #region Methods
 
         /// <summary>
-        /// Create a Scs End Point from a string. Address must be formatted as: protocol://address
-        /// For example: tcp://89.43.104.179:10048 for a TCP endpoint with IP 89.43.104.179 and port 10048.
+        ///     Create a Scs End Point from a string. Address must be formatted as: protocol://address
+        ///     For example: tcp://89.43.104.179:10048 for a TCP endpoint with IP 89.43.104.179 and port 10048.
         /// </summary>
         /// <param name="endPointAddress">Address to create endpoint</param>
         /// <returns>Created end point</returns>
@@ -68,13 +68,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints
         }
 
         /// <summary>
-        /// Creates a Scs Server that uses this end point to connect to server.
+        ///     Creates a Scs Server that uses this end point to connect to server.
         /// </summary>
         /// <returns>Scs Client</returns>
         public abstract IScsClient CreateClient();
 
         /// <summary>
-        /// Creates a Scs Server that uses this end point to listen incoming connections.
+        ///     Creates a Scs Server that uses this end point to listen incoming connections.
         /// </summary>
         /// <returns>Scs Server</returns>
         public abstract IScsServer CreateServer();

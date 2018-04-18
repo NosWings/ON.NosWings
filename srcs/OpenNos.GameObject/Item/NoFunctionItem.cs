@@ -15,7 +15,6 @@
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Data;
-using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;
 
@@ -41,9 +40,9 @@ namespace OpenNos.GameObject.Item
                 case 10:
                     const short gillionVNum = 1013;
                     const short cellaVNum = 1014;
-                    short[] cristalItems = {1028, 1029, 1031, 1032, 1033, 1034};
-                    short[] cellonItems = {1017, 1018, 1019};
-                    short[] soulGemItems = {1015, 1016};
+                    short[] cristalItems = { 1028, 1029, 1031, 1032, 1033, 1034 };
+                    short[] cellonItems = { 1017, 1018, 1019 };
+                    short[] soulGemItems = { 1015, 1016 };
 
                     int extraItems = ServerManager.Instance.RandomNumber(0, 101);
 
@@ -55,10 +54,10 @@ namespace OpenNos.GameObject.Item
                         return;
                     }
 
-                    session.Character.GiftAdd(cellaVNum, (byte) ServerManager.Instance.RandomNumber(5, 11));
+                    session.Character.GiftAdd(cellaVNum, (byte)ServerManager.Instance.RandomNumber(5, 11));
                     if (extraItems > 70)
                     {
-                        switch ((RefinerType) EffectValue)
+                        switch ((RefinerType)EffectValue)
                         {
                             case RefinerType.SoulGem:
                                 session.Character.GiftAdd(

@@ -8,7 +8,7 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Down()
         {
-            AddColumn("dbo.Family", "Size", c => c.Byte(nullable: false));
+            AddColumn("dbo.Family", "Size", c => c.Byte(false));
         }
 
         public override void Up()

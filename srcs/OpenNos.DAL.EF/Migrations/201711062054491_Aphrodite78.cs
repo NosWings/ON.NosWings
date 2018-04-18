@@ -1,29 +1,28 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class Aphrodite78 : DbMigration
     {
         public override void Up()
         {
             CreateTable(
-                "dbo.LogVip",
-                c => new
+                    "dbo.LogVip",
+                    c => new
                     {
-                        LogId = c.Long(nullable: false, identity: true),
+                        LogId = c.Long(false, true),
                         AccountId = c.Long(),
                         CharacterId = c.Long(),
-                        Timestamp = c.DateTime(nullable: false),
-                        VipPack = c.String(),
+                        Timestamp = c.DateTime(false),
+                        VipPack = c.String()
                     })
                 .PrimaryKey(t => t.LogId)
                 .ForeignKey("dbo.Account", t => t.AccountId)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
                 .Index(t => t.AccountId)
                 .Index(t => t.CharacterId);
-            
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.LogVip", "CharacterId", "dbo.Character");

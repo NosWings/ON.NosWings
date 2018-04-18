@@ -20,8 +20,6 @@ namespace OpenNos.GameObject.Event.BattleRoyale
         private const byte _registrationSeconds = 30;
         private readonly List<ClientSession> _clientSessions = new List<ClientSession>();
         private MapInstance _mapInstance;
-        private bool _locked;
-        private bool _started;
 
         private readonly string _introductionInfo =
             $"----- BATTLE ROYALE -----\n" +
@@ -49,15 +47,9 @@ namespace OpenNos.GameObject.Event.BattleRoyale
 
         #region Properties
 
-        public bool HasStarted
-        {
-            get { return _started; }
-        }
+        public bool HasStarted { get; }
 
-        public bool IsLocked
-        {
-            get { return _locked; }
-        }
+        public bool IsLocked { get; private set; }
 
         #endregion
 
@@ -65,7 +57,7 @@ namespace OpenNos.GameObject.Event.BattleRoyale
 
         public void RegisterSession(ClientSession session)
         {
-            if (_locked)
+            if (IsLocked)
             {
                 return;
             }
@@ -74,7 +66,7 @@ namespace OpenNos.GameObject.Event.BattleRoyale
         }
 
         /// <summary>
-        /// Unregister ClientSession
+        ///     Unregister ClientSession
         /// </summary>
         /// <param name="session"></param>
         public void UnregisterSession(ClientSession session)
@@ -83,9 +75,11 @@ namespace OpenNos.GameObject.Event.BattleRoyale
         }
 
         /// <summary>
-        /// Unregister ClientSession by sessionId from BattleRoyaleManager
+        ///     Unregister ClientSession by sessionId from BattleRoyaleManager
         /// </summary>
-        /// <param name="sessionId"><see cref="ClientSession"/></param>
+        /// <param name="sessionId">
+        ///     <see cref="ClientSession" />
+        /// </param>
         public void UnregisterSession(long sessionId)
         {
             _clientSessions.Remove(_clientSessions.FirstOrDefault(s => s.SessionId == sessionId));
@@ -108,11 +102,11 @@ namespace OpenNos.GameObject.Event.BattleRoyale
 
             ServerManager.Instance.Broadcast(
                 UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BATTLE_ROYAL_OPEN"), 0));
-            _locked = false;
+            IsLocked = false;
 
             await Task.Delay(_registrationSeconds * 1000);
 
-            _locked = true;
+            IsLocked = true;
             foreach (ClientSession session in _clientSessions) // Send Introduction
             {
                 session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(_introductionInfo));

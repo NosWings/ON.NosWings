@@ -11,7 +11,7 @@ namespace OpenNos.GameObject.Helpers
 
         public static readonly Dictionary<int, List<object>> ShellOptionLevel = new Dictionary<int, List<object>>
         {
-            {0, new List<object> {"0", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+            { 0, new List<object> { "0", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
             {
                 1,
                 new List<object>
@@ -39,7 +39,7 @@ namespace OpenNos.GameObject.Helpers
                     null
                 }
             },
-            {2, new List<object> {"B", 1, 4, 7, 9, 10, 11, 12, 13, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, null}},
+            { 2, new List<object> { "B", 1, 4, 7, 9, 10, 11, 12, 13, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, null } },
             {
                 3,
                 new List<object>
@@ -642,99 +642,99 @@ namespace OpenNos.GameObject.Helpers
 
         public static readonly Dictionary<int, List<object>> ShellOptionType = new Dictionary<int, List<object>>
         {
-            {0, new List<object> {0, 0, 0, 0, 0}},
-            {1, new List<object> {835, 1156, 1187, 1502, 1468, 2101, null, null}},
-            {2, new List<object> {null, null, null, null, null, null, 88, 212}},
-            {3, new List<object> {18, 52, null, null, null, null, null, null}},
-            {4, new List<object> {null, null, 18, 52, null, null, null, null}},
-            {5, new List<object> {null, null, null, null, 2, 18, null, null}},
-            {6, new List<object> {18, 52, null, null, null, null, null, null}},
-            {7, new List<object> {null, null, 18, 52, null, null, null, null}},
-            {8, new List<object> {null, null, null, null, 18, 52, null, null}},
-            {9, new List<object> {60, 104, 110, 204, null, null, null, null}},
-            {10, new List<object> {60, 104, 110, 204, null, null, null, null}},
-            {11, new List<object> {60, 104, 110, 204, null, null, null, null}},
-            {12, new List<object> {null, null, 60, 104, 110, 204, null, null}},
-            {13, new List<object> {null, null, 60, 104, 110, 204, null, null}},
-            {14, new List<object> {null, null, null, null, null, null, 229, 256}},
-            {15, new List<object> {30, 104, null, null, null, null, null, null}},
-            {16, new List<object> {342, 645, null, null, null, null, null, null}},
-            {17, new List<object> {null, null, null, null, null, null, null, null}},
-            {18, new List<object> {null, null, 482, 802, 915, 1545, null, null}},
-            {19, new List<object> {null, null, 482, 802, 915, 1545, null, null}},
-            {20, new List<object> {null, null, 482, 802, 915, 1545, null, null}},
-            {21, new List<object> {null, null, 482, 802, 915, 1545, null, null}},
-            {22, new List<object> {null, null, null, null, null, null, 1187, 1778}},
-            {23, new List<object> {70, 118, 162, 232, null, null, null, null}},
-            {24, new List<object> {null, null, 1468, 1504, 1961, 2004, null, null}},
-            {25, new List<object> {null, null, 1468, 1504, 1961, 2004, null, null}},
-            {26, new List<object> {null, null, 88, 123, 130, 177, null, null}},
-            {27, new List<object> {null, null, 88, 123, 130, 177, null, null}},
-            {28, new List<object> {null, null, 88, 123, 130, 177, null, null}},
-            {29, new List<object> {null, null, 88, 123, 130, 177, null, null}},
-            {30, new List<object> {null, null, null, null, null, null, 88, 118}},
-            {31, new List<object> {46, 102, 130, 177, 224, 347, null, null}},
-            {32, new List<object> {null, null, 60, 104, 88, 156, null, null}},
-            {33, new List<object> {null, null, 60, 104, 88, 156, null, null}},
-            {34, new List<object> {88, 118, 39, 104, 88, 177, 187, 340}},
-            {35, new List<object> {88, 115, 88, 152, 113, 204, 212, 347}},
-            {36, new List<object> {null, null, 18, 77, 60, 147, null, null}},
-            {37, new List<object> {null, null, 18, 77, 60, 147, null, null}},
-            {38, new List<object> {null, null, 18, 77, 60, 147, null, null}},
-            {39, new List<object> {null, null, 18, 77, 60, 147, null, null}},
-            {40, new List<object> {null, null, null, null, null, null, 88, 178}},
-            {41, new List<object> {null, null, null, null, null, null, null, null}},
-            {42, new List<object> {483, 602, null, null, null, null, null, null}},
-            {43, new List<object> {88, 190, 229, 304, 360, 502, null, null}},
-            {44, new List<object> {null, null, null, null, null, null, null, null}},
-            {45, new List<object> {null, null, null, null, null, null, null, null}},
-            {46, new List<object> {null, null, null, null, null, null, null, null}},
-            {47, new List<object> {null, null, null, null, null, null, null, null}},
-            {48, new List<object> {null, null, null, null, null, null, null, null}},
-            {49, new List<object> {null, null, null, null, null, null, null, null}},
-            {50, new List<object> {null, null, null, null, null, null, null, null}},
-            {51, new List<object> {384, 690, 680, 1204, 1471, 2002, null, null}},
-            {52, new List<object> {384, 690, 680, 1204, 1471, 2002, null, null}},
-            {53, new List<object> {384, 690, 680, 1204, 1471, 2002, null, null}},
-            {54, new List<object> {null, null, null, null, null, null, 187, 256}},
-            {55, new List<object> {187, 477, null, null, null, null, null, null}},
-            {56, new List<object> {null, null, 187, 477, null, null, null, null}},
-            {57, new List<object> {null, null, null, null, 187, 477, null, null}},
-            {58, new List<object> {187, 477, null, null, null, null, null, null}},
-            {59, new List<object> {null, null, 187, 404, 285, 504, null, null}},
-            {60, new List<object> {null, null, 285, 502, 384, 602, null, null}},
-            {61, new List<object> {null, null, 187, 304, 360, 602, null, null}},
-            {62, new List<object> {285, 502, 384, 602, null, null, null, null}},
-            {63, new List<object> {null, null, 384, 602, null, null, null, null}},
-            {64, new List<object> {null, null, 384, 602, null, null, null, null}},
-            {65, new List<object> {384, 602, null, null, null, null, null, null}},
-            {66, new List<object> {384, 602, null, null, null, null, null, null}},
-            {67, new List<object> {null, null, null, null, null, null, 285, 402}},
-            {68, new List<object> {384, 604, 490, 1004, null, null, null, null}},
-            {69, new List<object> {null, null, null, null, 482, 1002, null, null}},
-            {70, new List<object> {384, 604, 490, 1004, null, null, null, null}},
-            {71, new List<object> {null, null, null, null, 482, 1002, null, null}},
-            {72, new List<object> {null, null, null, null, null, null, 384, 702}},
-            {73, new List<object> {46, 102, 110, 167, null, null, null, null}},
-            {74, new List<object> {null, null, 60, 104, 88, 204, null, null}},
-            {75, new List<object> {null, null, 60, 104, 88, 204, null, null}},
-            {76, new List<object> {null, null, 60, 104, 88, 204, null, null}},
-            {77, new List<object> {null, null, 60, 104, 88, 204, null, null}},
-            {78, new List<object> {null, null, null, null, null, null, 201, 278}},
-            {79, new List<object> {510, 590, null, null, null, null, null, null}},
-            {80, new List<object> {508, 577, 471, 602, null, null, null, null}},
-            {81, new List<object> {null, null, 490, 602, 693, 904, null, null}},
-            {82, new List<object> {null, null, 187, 290, 482, 604, null, null}},
-            {83, new List<object> {88, 118, 125, 177, 187, 252, 273, 404}},
-            {84, new List<object> {null, null, 39, 78, 88, 145, null, null}},
-            {85, new List<object> {null, null, 39, 78, 88, 145, null, null}},
-            {86, new List<object> {null, null, 39, 78, 88, 145, null, null}},
-            {87, new List<object> {null, null, null, null, null, null, 130, 212}},
-            {88, new List<object> {null, null, null, null, null, null, null, null}},
-            {89, new List<object> {null, null, null, null, null, null, null, null}},
-            {90, new List<object> {null, null, null, null, null, null, null, null}},
-            {91, new List<object> {null, null, null, null, null, null, null, null}},
-            {92, new List<object> {null, null, null, null, null, null, null, null}}
+            { 0, new List<object> { 0, 0, 0, 0, 0 } },
+            { 1, new List<object> { 835, 1156, 1187, 1502, 1468, 2101, null, null } },
+            { 2, new List<object> { null, null, null, null, null, null, 88, 212 } },
+            { 3, new List<object> { 18, 52, null, null, null, null, null, null } },
+            { 4, new List<object> { null, null, 18, 52, null, null, null, null } },
+            { 5, new List<object> { null, null, null, null, 2, 18, null, null } },
+            { 6, new List<object> { 18, 52, null, null, null, null, null, null } },
+            { 7, new List<object> { null, null, 18, 52, null, null, null, null } },
+            { 8, new List<object> { null, null, null, null, 18, 52, null, null } },
+            { 9, new List<object> { 60, 104, 110, 204, null, null, null, null } },
+            { 10, new List<object> { 60, 104, 110, 204, null, null, null, null } },
+            { 11, new List<object> { 60, 104, 110, 204, null, null, null, null } },
+            { 12, new List<object> { null, null, 60, 104, 110, 204, null, null } },
+            { 13, new List<object> { null, null, 60, 104, 110, 204, null, null } },
+            { 14, new List<object> { null, null, null, null, null, null, 229, 256 } },
+            { 15, new List<object> { 30, 104, null, null, null, null, null, null } },
+            { 16, new List<object> { 342, 645, null, null, null, null, null, null } },
+            { 17, new List<object> { null, null, null, null, null, null, null, null } },
+            { 18, new List<object> { null, null, 482, 802, 915, 1545, null, null } },
+            { 19, new List<object> { null, null, 482, 802, 915, 1545, null, null } },
+            { 20, new List<object> { null, null, 482, 802, 915, 1545, null, null } },
+            { 21, new List<object> { null, null, 482, 802, 915, 1545, null, null } },
+            { 22, new List<object> { null, null, null, null, null, null, 1187, 1778 } },
+            { 23, new List<object> { 70, 118, 162, 232, null, null, null, null } },
+            { 24, new List<object> { null, null, 1468, 1504, 1961, 2004, null, null } },
+            { 25, new List<object> { null, null, 1468, 1504, 1961, 2004, null, null } },
+            { 26, new List<object> { null, null, 88, 123, 130, 177, null, null } },
+            { 27, new List<object> { null, null, 88, 123, 130, 177, null, null } },
+            { 28, new List<object> { null, null, 88, 123, 130, 177, null, null } },
+            { 29, new List<object> { null, null, 88, 123, 130, 177, null, null } },
+            { 30, new List<object> { null, null, null, null, null, null, 88, 118 } },
+            { 31, new List<object> { 46, 102, 130, 177, 224, 347, null, null } },
+            { 32, new List<object> { null, null, 60, 104, 88, 156, null, null } },
+            { 33, new List<object> { null, null, 60, 104, 88, 156, null, null } },
+            { 34, new List<object> { 88, 118, 39, 104, 88, 177, 187, 340 } },
+            { 35, new List<object> { 88, 115, 88, 152, 113, 204, 212, 347 } },
+            { 36, new List<object> { null, null, 18, 77, 60, 147, null, null } },
+            { 37, new List<object> { null, null, 18, 77, 60, 147, null, null } },
+            { 38, new List<object> { null, null, 18, 77, 60, 147, null, null } },
+            { 39, new List<object> { null, null, 18, 77, 60, 147, null, null } },
+            { 40, new List<object> { null, null, null, null, null, null, 88, 178 } },
+            { 41, new List<object> { null, null, null, null, null, null, null, null } },
+            { 42, new List<object> { 483, 602, null, null, null, null, null, null } },
+            { 43, new List<object> { 88, 190, 229, 304, 360, 502, null, null } },
+            { 44, new List<object> { null, null, null, null, null, null, null, null } },
+            { 45, new List<object> { null, null, null, null, null, null, null, null } },
+            { 46, new List<object> { null, null, null, null, null, null, null, null } },
+            { 47, new List<object> { null, null, null, null, null, null, null, null } },
+            { 48, new List<object> { null, null, null, null, null, null, null, null } },
+            { 49, new List<object> { null, null, null, null, null, null, null, null } },
+            { 50, new List<object> { null, null, null, null, null, null, null, null } },
+            { 51, new List<object> { 384, 690, 680, 1204, 1471, 2002, null, null } },
+            { 52, new List<object> { 384, 690, 680, 1204, 1471, 2002, null, null } },
+            { 53, new List<object> { 384, 690, 680, 1204, 1471, 2002, null, null } },
+            { 54, new List<object> { null, null, null, null, null, null, 187, 256 } },
+            { 55, new List<object> { 187, 477, null, null, null, null, null, null } },
+            { 56, new List<object> { null, null, 187, 477, null, null, null, null } },
+            { 57, new List<object> { null, null, null, null, 187, 477, null, null } },
+            { 58, new List<object> { 187, 477, null, null, null, null, null, null } },
+            { 59, new List<object> { null, null, 187, 404, 285, 504, null, null } },
+            { 60, new List<object> { null, null, 285, 502, 384, 602, null, null } },
+            { 61, new List<object> { null, null, 187, 304, 360, 602, null, null } },
+            { 62, new List<object> { 285, 502, 384, 602, null, null, null, null } },
+            { 63, new List<object> { null, null, 384, 602, null, null, null, null } },
+            { 64, new List<object> { null, null, 384, 602, null, null, null, null } },
+            { 65, new List<object> { 384, 602, null, null, null, null, null, null } },
+            { 66, new List<object> { 384, 602, null, null, null, null, null, null } },
+            { 67, new List<object> { null, null, null, null, null, null, 285, 402 } },
+            { 68, new List<object> { 384, 604, 490, 1004, null, null, null, null } },
+            { 69, new List<object> { null, null, null, null, 482, 1002, null, null } },
+            { 70, new List<object> { 384, 604, 490, 1004, null, null, null, null } },
+            { 71, new List<object> { null, null, null, null, 482, 1002, null, null } },
+            { 72, new List<object> { null, null, null, null, null, null, 384, 702 } },
+            { 73, new List<object> { 46, 102, 110, 167, null, null, null, null } },
+            { 74, new List<object> { null, null, 60, 104, 88, 204, null, null } },
+            { 75, new List<object> { null, null, 60, 104, 88, 204, null, null } },
+            { 76, new List<object> { null, null, 60, 104, 88, 204, null, null } },
+            { 77, new List<object> { null, null, 60, 104, 88, 204, null, null } },
+            { 78, new List<object> { null, null, null, null, null, null, 201, 278 } },
+            { 79, new List<object> { 510, 590, null, null, null, null, null, null } },
+            { 80, new List<object> { 508, 577, 471, 602, null, null, null, null } },
+            { 81, new List<object> { null, null, 490, 602, 693, 904, null, null } },
+            { 82, new List<object> { null, null, 187, 290, 482, 604, null, null } },
+            { 83, new List<object> { 88, 118, 125, 177, 187, 252, 273, 404 } },
+            { 84, new List<object> { null, null, 39, 78, 88, 145, null, null } },
+            { 85, new List<object> { null, null, 39, 78, 88, 145, null, null } },
+            { 86, new List<object> { null, null, 39, 78, 88, 145, null, null } },
+            { 87, new List<object> { null, null, null, null, null, null, 130, 212 } },
+            { 88, new List<object> { null, null, null, null, null, null, null, null } },
+            { 89, new List<object> { null, null, null, null, null, null, null, null } },
+            { 90, new List<object> { null, null, null, null, null, null, null, null } },
+            { 91, new List<object> { null, null, null, null, null, null, null, null } },
+            { 92, new List<object> { null, null, null, null, null, null, null, null } }
         };
 
         #endregion
@@ -745,7 +745,7 @@ namespace OpenNos.GameObject.Helpers
 
         public readonly Dictionary<int, List<object>> ShellType = new Dictionary<int, List<object>>
         {
-            {0, new List<object> {0, 0, 0, 0, 0}},
+            { 0, new List<object> { 0, 0, 0, 0, 0 } },
             {
                 1,
                 new List<object>
@@ -4809,9 +4809,9 @@ namespace OpenNos.GameObject.Helpers
             },
             {
                 132,
-                new List<object> {6, 50, 70, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 7, 0, 11, 0, 11, 0, 10, 0, null, null}
+                new List<object> { 6, 50, 70, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 7, 0, 11, 0, 11, 0, 10, 0, null, null }
             },
-            {133, new List<object> {7, 50, 70, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 7, 0, 12, 0, 12, 0, 11, 0}},
+            { 133, new List<object> { 7, 50, 70, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 7, 0, 12, 0, 12, 0, 11, 0 } },
             {
                 134,
                 new List<object>
@@ -5186,9 +5186,9 @@ namespace OpenNos.GameObject.Helpers
             },
             {
                 146,
-                new List<object> {6, 71, 80, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 7, 0, 11, 0, 11, 0, 10, 0, null, null}
+                new List<object> { 6, 71, 80, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 7, 0, 11, 0, 11, 0, 10, 0, null, null }
             },
-            {147, new List<object> {7, 71, 80, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 7, 0, 12, 0, 12, 0, 11, 0}},
+            { 147, new List<object> { 7, 71, 80, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 7, 0, 12, 0, 12, 0, 11, 0 } },
             {
                 148,
                 new List<object>
@@ -5563,9 +5563,9 @@ namespace OpenNos.GameObject.Helpers
             },
             {
                 160,
-                new List<object> {6, 81, 90, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 7, 0, 11, 0, 11, 0, 10, 0, null, null}
+                new List<object> { 6, 81, 90, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 7, 0, 11, 0, 11, 0, 10, 0, null, null }
             },
-            {161, new List<object> {7, 81, 90, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 7, 0, 12, 0, 12, 0, 11, 0}},
+            { 161, new List<object> { 7, 81, 90, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 7, 0, 12, 0, 12, 0, 11, 0 } },
             {
                 162,
                 new List<object>
@@ -10130,50 +10130,50 @@ namespace OpenNos.GameObject.Helpers
         // VNUM -> ShellType
         public readonly Dictionary<short, byte> ShellTypes = new Dictionary<short, byte>
         {
-            {565, 0},
-            {566, 0},
-            {567, 0}, /* ARMOR */
-            {577, 1},
-            {578, 1},
-            {579, 1}, // SUPER SHELL
-            {568, 2},
-            {569, 2},
-            {570, 2}, /* ARMOR */
-            {580, 3},
-            {581, 3},
-            {582, 3}, // SPECIAL SHELL
-            {571, 4},
-            {572, 4},
-            {573, 4}, /* ARMOR */
-            {583, 5},
-            {584, 5},
-            {585, 5}, // PVP SHELL
-            {574, 6},
-            {575, 6},
-            {576, 6}, /* ARMOR */
-            {586, 7},
-            {587, 7},
-            {588, 7}, // PERFECT SHELL
-            {589, 8},
-            {590, 8},
-            {591, 8},
-            {592, 8},
-            {593, 8},
-            {594, 8},
-            {595, 8},
-            {596, 8},
-            {597, 8},
-            {598, 8}, /* HALF SHELL */
-            {599, 9},
-            {600, 9},
-            {601, 9},
-            {602, 9},
-            {603, 9},
-            {604, 9},
-            {605, 9},
-            {606, 9},
-            {607, 9},
-            {608, 9} /* HALF SHELL */
+            { 565, 0 },
+            { 566, 0 },
+            { 567, 0 }, /* ARMOR */
+            { 577, 1 },
+            { 578, 1 },
+            { 579, 1 }, // SUPER SHELL
+            { 568, 2 },
+            { 569, 2 },
+            { 570, 2 }, /* ARMOR */
+            { 580, 3 },
+            { 581, 3 },
+            { 582, 3 }, // SPECIAL SHELL
+            { 571, 4 },
+            { 572, 4 },
+            { 573, 4 }, /* ARMOR */
+            { 583, 5 },
+            { 584, 5 },
+            { 585, 5 }, // PVP SHELL
+            { 574, 6 },
+            { 575, 6 },
+            { 576, 6 }, /* ARMOR */
+            { 586, 7 },
+            { 587, 7 },
+            { 588, 7 }, // PERFECT SHELL
+            { 589, 8 },
+            { 590, 8 },
+            { 591, 8 },
+            { 592, 8 },
+            { 593, 8 },
+            { 594, 8 },
+            { 595, 8 },
+            { 596, 8 },
+            { 597, 8 },
+            { 598, 8 }, /* HALF SHELL */
+            { 599, 9 },
+            { 600, 9 },
+            { 601, 9 },
+            { 602, 9 },
+            { 603, 9 },
+            { 604, 9 },
+            { 605, 9 },
+            { 606, 9 },
+            { 607, 9 },
+            { 608, 9 } /* HALF SHELL */
         };
 
         #region Perfume

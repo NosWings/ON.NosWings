@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -93,7 +93,7 @@ namespace OpenNos.DAL.EF
 
         private FamilyLogDTO Insert(FamilyLogDTO famlog, OpenNosContext context)
         {
-            FamilyLog entity = _mapper.Map<FamilyLog>(famlog);
+            var entity = _mapper.Map<FamilyLog>(famlog);
             context.FamilyLog.Add(entity);
             context.SaveChanges();
             return _mapper.Map<FamilyLogDTO>(entity);

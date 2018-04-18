@@ -1,11 +1,11 @@
-﻿using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.GameObject;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NosSharp.Enums;
+using OpenNos.Core;
 using OpenNos.Core.Handling;
+using OpenNos.Data;
+using OpenNos.GameObject;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
@@ -15,16 +15,13 @@ namespace OpenNos.Handler
 {
     public class MatePacketHandler : IPacketHandler
     {
-        public MatePacketHandler(ClientSession session)
-        {
-            Session = session;
-        }
+        public MatePacketHandler(ClientSession session) => Session = session;
 
         private ClientSession Session { get; }
 
 
         /// <summary>
-        /// u_pet packet
+        ///     u_pet packet
         /// </summary>
         /// <param name="upetPacket"></param>
         public void SpecialSkill(UpetPacket upetPacket)
@@ -42,18 +39,22 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
                 }
+
                 return;
             }
+
             Mate attacker = Session.Character.Mates.FirstOrDefault(x => x.MateTransportId == upetPacket.MateTransportId);
             if (attacker == null)
             {
                 return;
             }
+
             NpcMonsterSkill mateSkill = null;
             if (attacker.Monster.Skills.Any())
             {
                 mateSkill = attacker.Monster.Skills.FirstOrDefault(x => x.Rate == 0);
             }
+
             if (mateSkill == null)
             {
                 mateSkill = new NpcMonsterSkill
@@ -61,10 +62,12 @@ namespace OpenNos.Handler
                     SkillVNum = 200
                 };
             }
+
             if (attacker.IsSitting)
             {
                 return;
             }
+
             switch (upetPacket.TargetType)
             {
                 case UserType.Monster:
@@ -73,6 +76,7 @@ namespace OpenNos.Handler
                         MapMonster target = Session?.CurrentMapInstance?.GetMonster(upetPacket.TargetId);
                         AttackMonster(attacker, mateSkill, target);
                     }
+
                     return;
 
                 case UserType.Npc:
@@ -90,7 +94,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// suctl packet
+        ///     suctl packet
         /// </summary>
         /// <param name="suctlPacket"></param>
         public void Attack(SuctlPacket suctlPacket)
@@ -108,17 +112,21 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
                 }
+
                 return;
             }
+
             Mate attacker = Session.Character.Mates.FirstOrDefault(x => x.MateTransportId == suctlPacket.MateTransportId);
             if (attacker == null)
             {
                 return;
             }
+
             if (attacker.IsSitting)
             {
                 return;
             }
+
             IEnumerable<NpcMonsterSkill> mateSkills = attacker.IsUsingSp ? attacker.SpSkills.ToList() : attacker.Monster.Skills;
             if (mateSkills != null)
             {
@@ -131,6 +139,7 @@ namespace OpenNos.Handler
                             MapMonster target = Session?.CurrentMapInstance?.GetMonster(suctlPacket.TargetId);
                             AttackMonster(attacker, ski, target);
                         }
+
                         return;
                 }
             }
@@ -142,6 +151,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             if (skill == null)
             {
                 skill = new NpcMonsterSkill
@@ -149,6 +159,7 @@ namespace OpenNos.Handler
                     SkillVNum = attacker.Monster.BasicSkill
                 };
             }
+
             attacker.LastSkillUse = DateTime.Now;
             attacker.Mp -= skill.Skill == null ? 0 : skill.Skill.MpCost;
             target.Monster.BCards.Where(s => s.CastType == 1).ToList().ForEach(s => s.ApplyBCards(attacker));
@@ -158,11 +169,10 @@ namespace OpenNos.Handler
 
         public void AttackCharacter(Mate attacker, NpcMonsterSkill skill, Character target)
         {
-            
         }
 
         /// <summary>
-        /// psl packet
+        ///     psl packet
         /// </summary>
         /// <param name="pslPacket"></param>
         public void Psl(PslPacket pslPacket)
@@ -172,6 +182,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             if (pslPacket.Type == 0)
             {
                 if (mate.IsUsingSp)
@@ -197,8 +208,9 @@ namespace OpenNos.Handler
             {
                 if (mate.SpInstance == null)
                 {
-                    return;                    
+                    return;
                 }
+
                 mate.IsUsingSp = true;
                 //TODO: update pet skills
                 mate.SpSkills = new NpcMonsterSkill[3];

@@ -13,7 +13,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -30,7 +29,7 @@ namespace OpenNos.GameObject.Event.ACT4
     {
         public static void AddNpc(FactionType faction)
         {
-            MapNpc leikaNpc = new MapNpc
+            var leikaNpc = new MapNpc
             {
                 NpcVNum = 540,
                 MapNpcId = faction == FactionType.Angel
@@ -51,10 +50,7 @@ namespace OpenNos.GameObject.Event.ACT4
             ServerManager.Instance.Act4ShipAngel.AddNpc(leikaNpc);
         }
 
-        public static DateTime RoundUp(DateTime dt, TimeSpan d)
-        {
-            return new DateTime((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks);
-        }
+        public static DateTime RoundUp(DateTime dt, TimeSpan d) => new DateTime((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks);
 
         public static void GenerateAct4Ship(FactionType faction)
         {
@@ -62,7 +58,7 @@ namespace OpenNos.GameObject.Event.ACT4
             EventHelper.Instance.RunEvent(new EventContainer(
                 ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(145)),
                 EventActionType.NPCSEFFECTCHANGESTATE, true));
-            var result = RoundUp(DateTime.Now, TimeSpan.FromMinutes(5));
+            DateTime result = RoundUp(DateTime.Now, TimeSpan.FromMinutes(5));
             Observable.Timer(result - DateTime.Now).Subscribe(x => Act4ShipTask.Run(faction));
         }
     }
@@ -107,7 +103,7 @@ namespace OpenNos.GameObject.Event.ACT4
                 map.Broadcast(
                     UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHIP_SETOFF"), 0));
                 Thread.Sleep(3 * 1000);
-                var sessions = map.Sessions.Where(s => s?.Character != null).ToList();
+                List<ClientSession> sessions = map.Sessions.Where(s => s?.Character != null).ToList();
                 TeleportPlayers(sessions);
             }
         }
@@ -125,13 +121,13 @@ namespace OpenNos.GameObject.Event.ACT4
                         return;
                     case FactionType.Angel:
                         s.Character.MapId = 130;
-                        s.Character.MapX = (short) (12 + ServerManager.Instance.RandomNumber(-2, 3));
-                        s.Character.MapY = (short) (40 + ServerManager.Instance.RandomNumber(-2, 3));
+                        s.Character.MapX = (short)(12 + ServerManager.Instance.RandomNumber(-2, 3));
+                        s.Character.MapY = (short)(40 + ServerManager.Instance.RandomNumber(-2, 3));
                         break;
                     case FactionType.Demon:
                         s.Character.MapId = 131;
-                        s.Character.MapX = (short) (12 + ServerManager.Instance.RandomNumber(-2, 3));
-                        s.Character.MapY = (short) (40 + ServerManager.Instance.RandomNumber(-2, 3));
+                        s.Character.MapX = (short)(12 + ServerManager.Instance.RandomNumber(-2, 3));
+                        s.Character.MapY = (short)(40 + ServerManager.Instance.RandomNumber(-2, 3));
                         break;
                 }
 

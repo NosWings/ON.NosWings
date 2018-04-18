@@ -72,7 +72,7 @@ namespace ON.NW.Master
                     server.AddService<ICommunicationService, CommunicationService>(new CommunicationService());
                     server.ClientConnected += OnClientConnected;
                     server.ClientDisconnected += OnClientDisconnected;
-                    WebApp.Start<Startup>(url: ConfigurationManager.AppSettings["WebAppURL"]);
+                    WebApp.Start<Startup>(ConfigurationManager.AppSettings["WebAppURL"]);
                     server.Start();
 
                     // AUTO SESSION KICK
@@ -81,10 +81,7 @@ namespace ON.NW.Master
                         Parallel.ForEach(
                             MsManager.Instance.ConnectedAccounts.Where(s =>
                                 s.LastPulse.AddMinutes(3) <= DateTime.Now),
-                            connection =>
-                            {
-                                CommunicationServiceClient.Instance.KickSession(connection.AccountId, null);
-                            });
+                            connection => { CommunicationServiceClient.Instance.KickSession(connection.AccountId, null); });
                     });
 
                     CommunicationServiceClient.Instance.Authenticate(ConfigurationManager.AppSettings["MasterAuthKey"]);

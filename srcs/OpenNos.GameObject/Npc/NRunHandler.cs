@@ -22,12 +22,12 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.GameObject.Helpers;
+using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
-using WearableInstance = OpenNos.GameObject.Item.Instance.WearableInstance;
 
 namespace OpenNos.GameObject.Npc
 {
@@ -44,11 +44,11 @@ namespace OpenNos.GameObject.Npc
 
             MapNpc npc = session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == packet.NpcId);
             TeleporterDTO tp;
-            Random rand = new Random();
+            var rand = new Random();
             switch (packet.Runner)
             {
                 case 1:
-                    if (session.Character.Class != (byte) ClassType.Adventurer)
+                    if (session.Character.Class != (byte)ClassType.Adventurer)
                     {
                         session.SendPacket(
                             UserInterfaceHelper.Instance.GenerateMsg(
@@ -64,7 +64,7 @@ namespace OpenNos.GameObject.Npc
                         return;
                     }
 
-                    if (packet.Type == (byte) session.Character.Class ||
+                    if (packet.Type == (byte)session.Character.Class ||
                         packet.Type > 3 && session.Account.Authority < AuthorityType.GameMaster || packet.Type < 0)
                     {
                         return;
@@ -72,9 +72,9 @@ namespace OpenNos.GameObject.Npc
 
                     if (session.Character.Inventory.All(i => i.Value.Type != InventoryType.Wear))
                     {
-                        session.Character.Inventory.AddNewToInventory((short) (4 + packet.Type * 14),
+                        session.Character.Inventory.AddNewToInventory((short)(4 + packet.Type * 14),
                             type: InventoryType.Wear);
-                        session.Character.Inventory.AddNewToInventory((short) (81 + packet.Type * 13),
+                        session.Character.Inventory.AddNewToInventory((short)(81 + packet.Type * 13),
                             type: InventoryType.Wear);
                         switch (packet.Type)
                         {
@@ -93,26 +93,26 @@ namespace OpenNos.GameObject.Npc
                                 break;
                         }
 
-                        foreach (var item in session.Character.Inventory.Values.Where(i =>
+                        foreach (ItemInstance item in session.Character.Inventory.Values.Where(i =>
                             i.Type == InventoryType.Wear && i.Item.EquipmentSlot != EquipmentType.Sp))
                         {
                             switch (item.Slot)
                             {
-                                case (byte) EquipmentType.MainWeapon:
-                                    session.Character.Inventory.PrimaryWeapon = (WearableInstance) item;
+                                case (byte)EquipmentType.MainWeapon:
+                                    session.Character.Inventory.PrimaryWeapon = (WearableInstance)item;
                                     break;
-                                case (byte) EquipmentType.SecondaryWeapon:
-                                    session.Character.Inventory.SecondaryWeapon = (WearableInstance) item;
+                                case (byte)EquipmentType.SecondaryWeapon:
+                                    session.Character.Inventory.SecondaryWeapon = (WearableInstance)item;
                                     break;
-                                case (byte) EquipmentType.Armor:
-                                    session.Character.Inventory.Armor = (WearableInstance) item;
+                                case (byte)EquipmentType.Armor:
+                                    session.Character.Inventory.Armor = (WearableInstance)item;
                                     break;
                             }
                         }
 
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateEq());
                         session.SendPacket(session.Character.GenerateEquipment());
-                        session.Character.ChangeClass((ClassType) packet.Type);
+                        session.Character.ChangeClass((ClassType)packet.Type);
                     }
                     else
                     {
@@ -175,8 +175,6 @@ namespace OpenNos.GameObject.Npc
                                     session.SendPacket(
                                         $"qna #n_run^4^5^3^{mate.MateTransportId} {Language.Instance.GetMessageFromKey("ASK_KICK_PET")}");
                                 }
-
-                                break;
                             }
 
                             break;
@@ -233,10 +231,10 @@ namespace OpenNos.GameObject.Npc
                             {
                                 if (session.Character.Level >= mate.Level)
                                 {
-                                    mate.PositionX = (short) (session.Character.PositionX + 1);
+                                    mate.PositionX = (short)(session.Character.PositionX + 1);
                                 }
 
-                                mate.PositionY = (short) (session.Character.PositionY + 1);
+                                mate.PositionY = (short)(session.Character.PositionY + 1);
                                 mate.AddTeamMember();
                                 session.CurrentMapInstance.Broadcast(mate.GenerateIn());
                             }
@@ -302,8 +300,8 @@ namespace OpenNos.GameObject.Npc
                                     session.Character.SetRespawnPoint(145, 13, 110);
                                     break;
 
-                                case (short) SpecialMapIdType.Lobby:
-                                    session.Character.SetRespawnPoint((short) SpecialMapIdType.Lobby, 145, 91);
+                                case (short)SpecialMapIdType.Lobby:
+                                    session.Character.SetRespawnPoint((short)SpecialMapIdType.Lobby, 145, 91);
                                     break;
                             }
 
@@ -522,7 +520,7 @@ namespace OpenNos.GameObject.Npc
                     else
                     {
                         int tickets = 5 - session.Character.GeneralLogs.Count(s =>
-                                          s.LogType == "TalentArena" && s.Timestamp.Date == DateTime.Today);
+                            s.LogType == "TalentArena" && s.Timestamp.Date == DateTime.Today);
                         if (ServerManager.Instance.ArenaMembers.All(s => s.Session != session) && tickets > 0)
                         {
                             if (ServerManager.Instance.IsCharacterMemberOfGroup(session.Character.CharacterId))
@@ -560,7 +558,7 @@ namespace OpenNos.GameObject.Npc
                     break;
 
                 case 150:
-                    if (npc == null || (!npc.EffectActivated && ServerManager.Instance.LodTimes) ||
+                    if (npc == null || !npc.EffectActivated && ServerManager.Instance.LodTimes ||
                         session.Character.Level < ServerManager.Instance.MinLodLevel)
                     {
                         return;
@@ -806,9 +804,9 @@ namespace OpenNos.GameObject.Npc
                     if (medal != null)
                     {
                         Medal = medal.StaticBonusType == StaticBonusType.BazaarMedalGold
-                            ? (byte) MedalType.Gold
-                            : (byte) MedalType.Silver;
-                        Time = (int) (medal.DateEnd - DateTime.Now).TotalHours;
+                            ? (byte)MedalType.Gold
+                            : (byte)MedalType.Silver;
+                        Time = (int)(medal.DateEnd - DateTime.Now).TotalHours;
                     }
 
                     session.SendPacket($"wopen 32 {Medal} {Time}");

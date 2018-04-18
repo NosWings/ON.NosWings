@@ -1,16 +1,16 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class Aphrodite81 : DbMigration
     {
         public override void Up()
         {
-            AddColumn("dbo.QuestReward", "Design", c => c.Byte(nullable: false));
-            AddColumn("dbo.QuestReward", "Rarity", c => c.Byte(nullable: false));
-            AddColumn("dbo.QuestReward", "Upgrade", c => c.Byte(nullable: false));
+            AddColumn("dbo.QuestReward", "Design", c => c.Byte(false));
+            AddColumn("dbo.QuestReward", "Rarity", c => c.Byte(false));
+            AddColumn("dbo.QuestReward", "Upgrade", c => c.Byte(false));
         }
-        
+
         public override void Down()
         {
             DropColumn("dbo.QuestReward", "Upgrade");

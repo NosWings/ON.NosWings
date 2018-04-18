@@ -10,12 +10,10 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public byte Value { get; set; }
+        [PacketIndex(0)]
+        public byte Value { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Zoom VALUE";
-        }
+        public static string ReturnHelp() => "$Zoom VALUE";
 
         #endregion
     }

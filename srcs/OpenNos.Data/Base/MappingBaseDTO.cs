@@ -8,8 +8,8 @@ namespace OpenNos.Data.Base
         #region Methods
 
         /// <summary>
-        /// Intializes the GameObject, will be injected by AutoMapper after Entity -&gt; GO mapping
-        /// Needs to be override in inherited GameObject.
+        ///     Intializes the GameObject, will be injected by AutoMapper after Entity -&gt; GO mapping
+        ///     Needs to be override in inherited GameObject.
         /// </summary>
         public virtual void Initialize()
         {

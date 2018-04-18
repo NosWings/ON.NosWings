@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System.Data.Entity.Migrations;
-    
     public partial class Aphrodite50 : DbMigration
     {
         public override void Up()
@@ -18,23 +18,23 @@ namespace OpenNos.DAL.EF.Migrations
             AddForeignKey("dbo.BCard", "ItemVnum", "dbo.Item", "VNum");
             DropTable("dbo.ItemCard");
         }
-        
+
         public override void Down()
         {
             CreateTable(
-                "dbo.ItemCard",
-                c => new
+                    "dbo.ItemCard",
+                    c => new
                     {
-                        ItemVNum = c.Short(nullable: false),
-                        CardId = c.Short(nullable: false),
-                        CardChance = c.Short(nullable: false),
+                        ItemVNum = c.Short(false),
+                        CardId = c.Short(false),
+                        CardChance = c.Short(false)
                     })
                 .PrimaryKey(t => new { t.ItemVNum, t.CardId });
-            
+
             DropForeignKey("dbo.BCard", "ItemVnum", "dbo.Item");
             DropIndex("dbo.BCard", new[] { "ItemVnum" });
             DropIndex("dbo.BCard", new[] { "CardId" });
-            AlterColumn("dbo.BCard", "CardId", c => c.Short(nullable: false));
+            AlterColumn("dbo.BCard", "CardId", c => c.Short(false));
             DropColumn("dbo.BCard", "ItemVnum");
             CreateIndex("dbo.ItemCard", "CardId");
             CreateIndex("dbo.ItemCard", "ItemVNum");

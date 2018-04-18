@@ -5,8 +5,21 @@ using OpenNos.GameObject.Packets.VipPackets;
 
 namespace OpenNos.GameObject.Helpers
 {
-    class VipHelper
+    internal class VipHelper
     {
+        public Dictionary<string, Action<ClientSession, VipCommandPacket>> TeleportDictionary =
+            new Dictionary<string, Action<ClientSession, VipCommandPacket>>
+            {
+                { "Teleport", Teleport }
+            };
+
+        private static void Teleport(ClientSession session, VipCommandPacket packet)
+        {
+            if (session == null)
+            {
+            }
+        }
+
         public class MapPos
         {
             public MapPos(long mapId, short x, short y)
@@ -21,28 +34,11 @@ namespace OpenNos.GameObject.Helpers
             public short Y { get; }
         }
 
-        public Dictionary<string, Action<ClientSession, VipCommandPacket>> TeleportDictionary =
-            new Dictionary<string, Action<ClientSession, VipCommandPacket>>
-            {
-                {"Teleport", Teleport},
-            };
-
-        private static void Teleport(ClientSession session, VipCommandPacket packet)
-        {
-            if (session == null)
-            {
-                return;
-            }
-        }
-
         #region Singleton
 
         private static VipHelper _instance;
 
-        public static VipHelper Instance
-        {
-            get { return _instance ?? (_instance = new VipHelper()); }
-        }
+        public static VipHelper Instance => _instance ?? (_instance = new VipHelper());
 
         #endregion
     }

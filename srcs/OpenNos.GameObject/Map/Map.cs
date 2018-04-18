@@ -57,12 +57,12 @@ namespace OpenNos.GameObject.Map
                     long? returnMapTypeId = MapTypes.ElementAt(0).ReturnMapTypeId;
                     if (respawnMapTypeId != null)
                     {
-                        DefaultRespawn = DaoFactory.RespawnMapTypeDao.LoadById((long) respawnMapTypeId);
+                        DefaultRespawn = DaoFactory.RespawnMapTypeDao.LoadById((long)respawnMapTypeId);
                     }
 
                     if (returnMapTypeId != null)
                     {
-                        DefaultReturn = DaoFactory.RespawnMapTypeDao.LoadById((long) returnMapTypeId);
+                        DefaultReturn = DaoFactory.RespawnMapTypeDao.LoadById((long)returnMapTypeId);
                     }
                 }
             }
@@ -89,8 +89,8 @@ namespace OpenNos.GameObject.Map
         public int Music { get; set; }
 
         /// <summary>
-        /// This list ONLY for READ access to MapMonster, you CANNOT MODIFY them here. Use
-        /// Add/RemoveMonster instead.
+        ///     This list ONLY for READ access to MapMonster, you CANNOT MODIFY them here. Use
+        ///     Add/RemoveMonster instead.
         /// </summary>
         public string Name { get; set; }
 
@@ -104,16 +104,10 @@ namespace OpenNos.GameObject.Map
 
         #region Methods
 
-        public static int GetDistance(Character character1, Character character2)
-        {
-            return GetDistance(new MapCell {X = character1.PositionX, Y = character1.PositionY},
-                new MapCell {X = character2.PositionX, Y = character2.PositionY});
-        }
+        public static int GetDistance(Character character1, Character character2) => GetDistance(new MapCell { X = character1.PositionX, Y = character1.PositionY },
+            new MapCell { X = character2.PositionX, Y = character2.PositionY });
 
-        public static int GetDistance(MapCell p, MapCell q)
-        {
-            return (int) Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
-        }
+        public static int GetDistance(MapCell p, MapCell q) => (int)Heuristic.Octile(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
 
         public IEnumerable<ToSummon> GenerateSummons(short vnum, short amount, bool move,
             ConcurrentBag<EventContainer> deathEvents, bool isBonusOrProtected = false, bool isHostile = true,
@@ -124,7 +118,7 @@ namespace OpenNos.GameObject.Map
             {
                 MapCell cell = GetRandomPosition();
                 summonParameters.Add(new ToSummon(vnum, cell, null, move, isBonusOrProtected: isBonusOrProtected,
-                    isHostile: isHostile, isBossOrMate: isBossOrMate) {DeathEvents = deathEvents});
+                    isHostile: isHostile, isBossOrMate: isBossOrMate) { DeathEvents = deathEvents });
             }
 
             return summonParameters;
@@ -132,7 +126,7 @@ namespace OpenNos.GameObject.Map
 
         public bool GetDefinedPosition(int x, int y)
         {
-            MapCell cell = new MapCell {X = (short) x, Y = (short) y};
+            var cell = new MapCell { X = (short)x, Y = (short)y };
             if (IsBlockedZone(x, y))
             {
                 return false;
@@ -153,7 +147,7 @@ namespace OpenNos.GameObject.Map
             {
                 if (!IsBlockedZone(x, y))
                 {
-                    Cells.Add(new MapCell {X = (short) x, Y = (short) y});
+                    Cells.Add(new MapCell { X = (short)x, Y = (short)y });
                 }
             }));
             return Cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
@@ -178,11 +172,11 @@ namespace OpenNos.GameObject.Map
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
         {
-            short minX = (short) (-xpoint + firstX);
-            short maxX = (short) (xpoint + firstX);
+            short minX = (short)(-xpoint + firstX);
+            short maxX = (short)(xpoint + firstX);
 
-            short minY = (short) (-ypoint + firstY);
-            short maxY = (short) (ypoint + firstY);
+            short minY = (short)(-ypoint + firstY);
+            short maxY = (short)(ypoint + firstY);
 
             List<MapCell> cells = new List<MapCell>();
             for (short y = minY; y <= maxY; y++)
@@ -191,7 +185,7 @@ namespace OpenNos.GameObject.Map
                 {
                     if (x != firstX || y != firstY)
                     {
-                        cells.Add(new MapCell {X = x, Y = y});
+                        cells.Add(new MapCell { X = x, Y = y });
                     }
                 }
             }
@@ -260,11 +254,11 @@ namespace OpenNos.GameObject.Map
                     for (short t = 0; t < XLength; ++t)
                     {
                         stream.Read(bytes, numBytesRead, numBytesToRead);
-                        Grid[t, i] = new GridPos()
+                        Grid[t, i] = new GridPos
                         {
                             Value = bytes[0],
                             X = t,
-                            Y = i,
+                            Y = i
                         };
                     }
                 }

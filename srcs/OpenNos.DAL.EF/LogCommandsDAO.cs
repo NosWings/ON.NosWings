@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenNos.Core;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
 using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data.Enums;
-using OpenNos.DAL.EF.Base;
 
 namespace OpenNos.DAL.EF
 {
@@ -129,7 +128,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                LogCommands entity = _mapper.Map<LogCommands>(log);
+                var entity = _mapper.Map<LogCommands>(log);
                 context.LogCommands.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<LogCommandsDTO>(entity);
@@ -148,6 +147,7 @@ namespace OpenNos.DAL.EF
                 _mapper.Map(respawn, entity);
                 context.SaveChanges();
             }
+
             return _mapper.Map<LogCommandsDTO>(entity);
         }
     }

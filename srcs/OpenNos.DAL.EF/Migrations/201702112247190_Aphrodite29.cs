@@ -10,9 +10,9 @@ namespace OpenNos.DAL.EF.Migrations
         {
             DropForeignKey("dbo.GeneralLog", "AccountId", "dbo.Account");
             DropIndex("dbo.GeneralLog", new[] { "AccountId" });
-            AlterColumn("dbo.GeneralLog", "AccountId", c => c.Long(nullable: false));
+            AlterColumn("dbo.GeneralLog", "AccountId", c => c.Long(false));
             CreateIndex("dbo.GeneralLog", "AccountId");
-            AddForeignKey("dbo.GeneralLog", "AccountId", "dbo.Account", "AccountId", cascadeDelete: true);
+            AddForeignKey("dbo.GeneralLog", "AccountId", "dbo.Account", "AccountId", true);
         }
 
         public override void Up()

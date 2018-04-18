@@ -12,25 +12,25 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.Networking.Communication.Scs.Communication;
 using System;
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Client
 {
     /// <summary>
-    /// Represents a client for SCS servers.
+    ///     Represents a client for SCS servers.
     /// </summary>
     public interface IConnectableClient : IDisposable
     {
         #region Events
 
         /// <summary>
-        /// This event is raised when client connected to server.
+        ///     This event is raised when client connected to server.
         /// </summary>
         event EventHandler Connected;
 
         /// <summary>
-        /// This event is raised when client disconnected from server.
+        ///     This event is raised when client disconnected from server.
         /// </summary>
         event EventHandler Disconnected;
 
@@ -39,12 +39,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         #region Properties
 
         /// <summary>
-        /// Gets the current communication state.
+        ///     Gets the current communication state.
         /// </summary>
         CommunicationStates CommunicationState { get; }
 
         /// <summary>
-        /// Timeout for connecting to a server (as milliseconds). Default value: 15 seconds (15000 ms).
+        ///     Timeout for connecting to a server (as milliseconds). Default value: 15 seconds (15000 ms).
         /// </summary>
         int ConnectTimeout { get; set; }
 
@@ -53,12 +53,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         #region Methods
 
         /// <summary>
-        /// Connects to server.
+        ///     Connects to server.
         /// </summary>
         void Connect();
 
         /// <summary>
-        /// Disconnects from server. Does nothing if already disconnected.
+        ///     Disconnects from server. Does nothing if already disconnected.
         /// </summary>
         void Disconnect();
 

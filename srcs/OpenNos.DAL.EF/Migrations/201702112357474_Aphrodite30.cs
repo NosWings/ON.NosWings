@@ -9,14 +9,14 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Down()
         {
             CreateTable(
-                "dbo.WarehouseItem",
-                c => new
-                {
-                    WarehouseItemId = c.Long(nullable: false, identity: true),
-                    AccountId = c.Long(),
-                    FamilyId = c.Long(),
-                    ItemInstanceId = c.Guid(nullable: false)
-                })
+                    "dbo.WarehouseItem",
+                    c => new
+                    {
+                        WarehouseItemId = c.Long(false, true),
+                        AccountId = c.Long(),
+                        FamilyId = c.Long(),
+                        ItemInstanceId = c.Guid(false)
+                    })
                 .PrimaryKey(t => t.WarehouseItemId);
 
             CreateIndex("dbo.WarehouseItem", "ItemInstanceId");

@@ -1,8 +1,8 @@
-﻿using Hik.Communication.ScsServices.Service;
-using OpenNos.Master.Library.Data;
-using System;
+﻿using System;
+using Hik.Communication.ScsServices.Service;
 using NosSharp.Enums;
 using OpenNos.Data;
+using OpenNos.Master.Library.Data;
 
 namespace OpenNos.Master.Library.Interface
 {
@@ -10,27 +10,27 @@ namespace OpenNos.Master.Library.Interface
     public interface ICommunicationService
     {
         /// <summary>
-        /// Authenticates a Client to the Service
+        ///     Authenticates a Client to the Service
         /// </summary>
         /// <param name="authKey">The private Authentication key</param>
         /// <returns>true if successful, else false</returns>
         bool Authenticate(string authKey);
 
         /// <summary>
-        /// Checks if the Account is already connected
+        ///     Checks if the Account is already connected
         /// </summary>
         /// <param name="accountId">Id of the Account</param>
         /// <returns></returns>
         bool IsAccountConnected(long accountId);
 
         /// <summary>
-        /// Refreshes the Pulse Timer for the given account
+        ///     Refreshes the Pulse Timer for the given account
         /// </summary>
         /// <param name="accountId">Id of the Account</param>
         void PulseAccount(long accountId);
 
         /// <summary>
-        /// Checks if the Character is connected
+        ///     Checks if the Character is connected
         /// </summary>
         /// <param name="worldGroup">Name of the WorldGroup to look on</param>
         /// <param name="characterId">Id of the Character</param>
@@ -38,19 +38,19 @@ namespace OpenNos.Master.Library.Interface
         bool IsCharacterConnected(string worldGroup, long characterId);
 
         /// <summary>
-        /// Updates the Bazaar on the given WorldGroup
+        ///     Updates the Bazaar on the given WorldGroup
         /// </summary>
         /// <param name="worldGroup">WorldGroup the entry should be update on</param>
         /// <param name="bazaarItemId">BazaarItemId that should be updated</param>
         void UpdateBazaar(string worldGroup, long bazaarItemId);
 
         /// <summary>
-        /// Cleanup, used when rebooting the Server
+        ///     Cleanup, used when rebooting the Server
         /// </summary>
         void Cleanup();
 
         /// <summary>
-        /// Registers the Login of the given Account and removes the permission to login
+        ///     Registers the Login of the given Account and removes the permission to login
         /// </summary>
         /// <param name="worldId">World the Account connects to</param>
         /// <param name="accountId">Id of the connecting Account</param>
@@ -59,7 +59,7 @@ namespace OpenNos.Master.Library.Interface
         bool ConnectAccount(Guid worldId, long accountId, long sessionId);
 
         /// <summary>
-        /// Registers the Login of the given Character
+        ///     Registers the Login of the given Character
         /// </summary>
         /// <param name="worldId">World the Character connects to</param>
         /// <param name="characterId">Id of the connecting Character </param>
@@ -67,20 +67,20 @@ namespace OpenNos.Master.Library.Interface
         bool ConnectCharacter(Guid worldId, long characterId);
 
         /// <summary>
-        /// Registers the Logout of the given Account
+        ///     Registers the Logout of the given Account
         /// </summary>
         /// <param name="accountId">Id of the disconnecting Account</param>
         void DisconnectAccount(long accountId);
 
         /// <summary>
-        /// Registers the Logout of the given Character
+        ///     Registers the Logout of the given Character
         /// </summary>
         /// <param name="worldId">World the Character was connected to</param>
         /// <param name="characterId">Id of the disconnecting Character</param>
         void DisconnectCharacter(Guid worldId, long characterId);
 
         /// <summary>
-        /// Gets the ChannelId by the given WorldId
+        ///     Gets the ChannelId by the given WorldId
         /// </summary>
         /// <param name="worldId">Id of the World</param>
         /// <returns>ChannelId on success, otherwise null</returns>
@@ -88,7 +88,7 @@ namespace OpenNos.Master.Library.Interface
 
 
         /// <summary>
-        /// Updates a Family on the given WorldGroup
+        ///     Updates a Family on the given WorldGroup
         /// </summary>
         /// <param name="worldGroup">WorldGroup the Family should be updated on</param>
         /// <param name="familyId">Family that should be updated</param>
@@ -96,7 +96,7 @@ namespace OpenNos.Master.Library.Interface
         void UpdateFamily(string worldGroup, long familyId, bool changeFaction);
 
         /// <summary>
-        /// Checks if the Account is allowed to login
+        ///     Checks if the Account is allowed to login
         /// </summary>
         /// <param name="accountId">Id of the Account</param>
         /// <param name="sessionId">Id of the Session that should be validated</param>
@@ -104,74 +104,73 @@ namespace OpenNos.Master.Library.Interface
         bool IsLoginPermitted(long accountId, long sessionId);
 
         /// <summary>
-        /// Kicks a Session by their Id or Account
+        ///     Kicks a Session by their Id or Account
         /// </summary>
         /// <param name="accountId">Id of the Account</param>
         /// <param name="sessionId">Id of the Session</param>
         void KickSession(long? accountId, long? sessionId);
 
         /// <summary>
-        /// Refreshes the Penalty Cache
+        ///     Refreshes the Penalty Cache
         /// </summary>
         /// <param name="penaltyId">Id of the Penalty to refresh</param>
         void RefreshPenalty(int penaltyId);
 
         /// <summary>
-        /// Registers the Account for Login
+        ///     Registers the Account for Login
         /// </summary>
         /// <param name="accountId">Id of the Account to register</param>
         /// <param name="sessionId">Id of the Session to register</param>
         void RegisterAccountLogin(long accountId, long sessionId, string accountName);
 
         /// <summary>
-        /// Updates the Relations on the given WorldGroup
+        ///     Updates the Relations on the given WorldGroup
         /// </summary>
         /// <param name="worldGroup">WorldGroup the Relations should be updated on</param>
         /// <param name="relationId">Id of the Relation that should be updated</param>
         void UpdateRelation(string worldGroup, long relationId);
 
 
-  
         /// <summary>
-        /// Shutdown given WorldGroup or WorldServer
+        ///     Shutdown given WorldGroup or WorldServer
         /// </summary>
         /// <param name="worldGroup">WorldGroup that should be shut down</param>
         void Shutdown(string worldGroup);
 
         /// <summary>
-        /// Registers a WorldServer
+        ///     Registers a WorldServer
         /// </summary>
         /// <param name="worldServer">SerializableWorldServer object of the Server that should be registered</param>
         /// <returns>ChannelId on success, else null</returns>
         int? RegisterWorldServer(SerializableWorldServer worldServer);
 
         /// <summary>
-        /// Generates the Stats from all Servers 
+        ///     Generates the Stats from all Servers
         /// </summary>
         /// <returns>the actual result</returns>
         string RetrieveServerStatistics();
 
         /// <summary>
-        /// Generates the Channel Selection Packet
+        ///     Generates the Channel Selection Packet
         /// </summary>
         /// <returns>the actual packet</returns>
         string RetrieveRegisteredWorldServers(long sessionId);
 
         /// <summary>
-        /// Sends a Message to a specific Character
+        ///     Sends a Message to a specific Character
         /// </summary>
         /// <param name="message">The SCSCharacterMessage object containing all required informations</param>
         /// <returns>null if there was an error, otherwise the receiving ChannelId or -1, if the MessageType is a broadcast</returns>
         int? SendMessageToCharacter(SCSCharacterMessage message);
 
         /// <summary>
-        /// Unregisters a previously registered World Server
+        ///     Unregisters a previously registered World Server
         /// </summary>
         /// <param name="worldId">Id of the World to be unregistered</param>
         void UnregisterWorldServer(Guid worldId);
 
         /// <summary>
-        /// Prevents connexions from client
+        ///     Prevents connexions from client
         /// </summary>
         /// <param name="worldId">Id of the targeted World</param>
         void SetWorldServerAsInvisible(Guid worldId);

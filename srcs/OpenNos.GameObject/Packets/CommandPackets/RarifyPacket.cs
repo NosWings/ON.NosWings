@@ -10,16 +10,16 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(1)] public RarifyMode Mode { get; set; }
+        [PacketIndex(1)]
+        public RarifyMode Mode { get; set; }
 
-        [PacketIndex(2)] public RarifyProtection Protection { get; set; }
+        [PacketIndex(2)]
+        public RarifyProtection Protection { get; set; }
 
-        [PacketIndex(0)] public short Slot { get; set; }
+        [PacketIndex(0)]
+        public short Slot { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Rarify SLOT MODE PROTECTION";
-        }
+        public static string ReturnHelp() => "$Rarify SLOT MODE PROTECTION";
 
         #endregion
     }

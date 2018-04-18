@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Web.Http;
 using Microsoft.Owin;
+using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 
@@ -16,23 +17,23 @@ namespace ON.NW.Master
         {
             ConfigureOAuth(appBuilder);
             // Configure Web API for self-host. 
-            HttpConfiguration config = new HttpConfiguration();
+            var config = new HttpConfiguration();
             config.Routes.MapHttpRoute(
                 "DefaultApi",
                 "{controller}/{id}",
-                new {id = RouteParameter.Optional}
+                new { id = RouteParameter.Optional }
             );
 
             MediaTypeHeaderValue appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
-            appBuilder.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+            appBuilder.UseCors(CorsOptions.AllowAll);
             appBuilder.UseWebApi(config);
         }
 
         public void ConfigureOAuth(IAppBuilder app)
         {
-            OAuthAuthorizationServerOptions oAuthServerOptions = new OAuthAuthorizationServerOptions
+            var oAuthServerOptions = new OAuthAuthorizationServerOptions
             {
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/token"),
@@ -43,7 +44,6 @@ namespace ON.NW.Master
             // Token Generation
             app.UseOAuthAuthorizationServer(oAuthServerOptions);
             app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
-
         }
     }
 }

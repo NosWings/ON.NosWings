@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using MongoDB.Bson;
 
 namespace NosSharp.Logs
 {
     public class LoggableManager : IDisposable
     {
-        private ILogger _logger;
         private readonly List<ILoggable> _logs;
         private readonly long _maxLogToFlush;
+        private ILogger _logger;
 
         /// <summary>
         ///     LogManager uses an ILogger to store its logs
@@ -27,7 +25,7 @@ namespace NosSharp.Logs
         }
 
         /// <summary>
-        /// Add logs
+        ///     Add logs
         /// </summary>
         /// <param name="loggable"></param>
         public void AddLog(ILoggable loggable)
@@ -101,10 +99,7 @@ namespace NosSharp.Logs
 
         private static LoggableManager _instance;
 
-        public static LoggableManager Instance
-        {
-            get { return _instance ?? (_instance = new LoggableManager()); }
-        }
+        public static LoggableManager Instance => _instance ?? (_instance = new LoggableManager());
 
         #endregion
     }

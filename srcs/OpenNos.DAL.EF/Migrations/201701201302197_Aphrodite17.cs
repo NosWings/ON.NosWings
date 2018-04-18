@@ -18,19 +18,19 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.StaticBuff",
-                c => new
-                {
-                    StaticBuffId = c.Long(nullable: false, identity: true),
-                    CharacterId = c.Long(nullable: false),
-                    EffectId = c.Int(nullable: false),
-                    RemainingTime = c.Int(nullable: false)
-                })
+                    "dbo.StaticBuff",
+                    c => new
+                    {
+                        StaticBuffId = c.Long(false, true),
+                        CharacterId = c.Long(false),
+                        EffectId = c.Int(false),
+                        RemainingTime = c.Int(false)
+                    })
                 .PrimaryKey(t => t.StaticBuffId)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
                 .Index(t => t.CharacterId);
 
-            AddColumn("dbo.Character", "MinilandState", c => c.Byte(nullable: false));
+            AddColumn("dbo.Character", "MinilandState", c => c.Byte(false));
             AddColumn("dbo.Character", "MinilandMessage", c => c.String(maxLength: 255));
         }
 

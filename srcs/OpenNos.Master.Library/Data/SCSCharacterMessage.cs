@@ -8,10 +8,6 @@ namespace OpenNos.Master.Library.Data
     {
         #region Instantiation
 
-        public SCSCharacterMessage()
-        {
-        }
-
         #endregion
 
         #region Properties

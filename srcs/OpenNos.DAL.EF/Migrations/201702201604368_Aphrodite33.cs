@@ -8,7 +8,7 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Down()
         {
-            AddColumn("dbo.Skill", "BuffId", c => c.Short(nullable: false));
+            AddColumn("dbo.Skill", "BuffId", c => c.Short(false));
         }
 
         public override void Up()

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using CloneExtensions;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
-using CloneExtensions;
-using System.Reactive.Linq;
 
 namespace OpenNos.GameObject.Event.ACT4
 {
@@ -29,23 +28,23 @@ namespace OpenNos.GameObject.Event.ACT4
             }
 
             ServerManager.Instance.Act4RaidStart = DateTime.Now;
-            lobby.CreatePortal(new Portal()
+            lobby.CreatePortal(new Portal
             {
                 SourceMapId = 134,
                 SourceX = 139,
                 SourceY = 100,
-                Type = (short) (9 + faction)
+                Type = (short)(9 + faction)
             }, 3600, true);
 
             foreach (MapInstance map in ServerManager.Instance.Act4Maps)
             {
-                map.Sessions.Where(s => s?.Character?.Faction == (FactionType) faction).ToList().ForEach(s =>
+                map.Sessions.Where(s => s?.Character?.Faction == (FactionType)faction).ToList().ForEach(s =>
                     s.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
                         string.Format(Language.Instance.GetMessageFromKey("ACT4_RAID_OPEN"),
-                            ((Act4RaidType) type).ToString()), 0)));
+                            ((Act4RaidType)type).ToString()), 0)));
             }
 
-            lock (ServerManager.Instance.FamilyList)
+            lock(ServerManager.Instance.FamilyList)
             {
                 foreach (Family family in ServerManager.Instance.FamilyList.Where(f => f != null))
                 {
@@ -75,10 +74,7 @@ namespace OpenNos.GameObject.Event.ACT4
 
         private static Act4Raid _instance;
 
-        public static Act4Raid Instance
-        {
-            get { return _instance ?? (_instance = new Act4Raid()); }
-        }
+        public static Act4Raid Instance => _instance ?? (_instance = new Act4Raid());
 
         #endregion
     }

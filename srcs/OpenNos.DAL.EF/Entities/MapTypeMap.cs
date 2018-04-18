@@ -23,12 +23,14 @@ namespace OpenNos.DAL.EF.Entities
 
         public virtual Map Map { get; set; }
 
-        [Key, Column(Order = 0)]
+        [Key]
+        [Column(Order = 0)]
         public short MapId { get; set; }
 
         public virtual MapType MapType { get; set; }
 
-        [Key, Column(Order = 1)]
+        [Key]
+        [Column(Order = 1)]
         public short MapTypeId { get; set; }
 
         #endregion

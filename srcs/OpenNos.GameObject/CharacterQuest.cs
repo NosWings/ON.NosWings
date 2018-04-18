@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OpenNos.Data;
 using OpenNos.GameObject.Networking;
-using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -29,10 +29,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public Quest Quest
-        {
-            get { return _quest ?? (_quest = ServerManager.Instance.GetQuest(QuestId)); }
-        }
+        public Quest Quest => _quest ?? (_quest = ServerManager.Instance.GetQuest(QuestId));
 
         public bool RewardInWaiting { get; set; }
 
@@ -44,21 +41,15 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public string GetInfoPacket(bool sendMsg)
-        {
-            return
-                $"{QuestNumber}.{Quest.InfoId}.{(IsMainQuest || Quest.IsDaily ? Quest.InfoId : 0)}.{Quest.QuestType}.{FirstObjective}.{GetObjectiveByIndex(1)?.Objective ?? 0}.{(RewardInWaiting ? 1 : 0)}.{SecondObjective}.{GetObjectiveByIndex(2)?.Objective ?? 0}.{ThirdObjective}.{GetObjectiveByIndex(3)?.Objective ?? 0}.{FourthObjective}.{GetObjectiveByIndex(4)?.Objective ?? 0}.{FifthObjective}.{GetObjectiveByIndex(5)?.Objective ?? 0}.{(sendMsg ? 1 : 0)}";
-        }
+        public string GetInfoPacket(bool sendMsg) =>
+            $"{QuestNumber}.{Quest.InfoId}.{(IsMainQuest || Quest.IsDaily ? Quest.InfoId : 0)}.{Quest.QuestType}.{FirstObjective}.{GetObjectiveByIndex(1)?.Objective ?? 0}.{(RewardInWaiting ? 1 : 0)}.{SecondObjective}.{GetObjectiveByIndex(2)?.Objective ?? 0}.{ThirdObjective}.{GetObjectiveByIndex(3)?.Objective ?? 0}.{FourthObjective}.{GetObjectiveByIndex(4)?.Objective ?? 0}.{FifthObjective}.{GetObjectiveByIndex(5)?.Objective ?? 0}.{(sendMsg ? 1 : 0)}";
 
         public QuestObjectiveDTO GetObjectiveByIndex(byte index)
         {
             return Quest.QuestObjectives.FirstOrDefault(q => q.ObjectiveIndex.Equals(index));
         }
 
-        public int[] GetObjectives()
-        {
-            return new int[] {FirstObjective, SecondObjective, ThirdObjective, FourthObjective, FifthObjective};
-        }
+        public int[] GetObjectives() => new[] { FirstObjective, SecondObjective, ThirdObjective, FourthObjective, FifthObjective };
 
         public void Incerment(byte index, int amount)
         {

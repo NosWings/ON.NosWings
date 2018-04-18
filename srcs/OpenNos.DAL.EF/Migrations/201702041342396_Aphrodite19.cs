@@ -19,13 +19,13 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.SkillCard",
-                c => new
-                {
-                    SkillVNum = c.Short(nullable: false),
-                    CardId = c.Short(nullable: false),
-                    CardChance = c.Short(nullable: false)
-                })
+                    "dbo.SkillCard",
+                    c => new
+                    {
+                        SkillVNum = c.Short(false),
+                        CardId = c.Short(false),
+                        CardChance = c.Short(false)
+                    })
                 .PrimaryKey(t => new { t.SkillVNum, t.CardId })
                 .ForeignKey("dbo.Card", t => t.CardId)
                 .ForeignKey("dbo.Skill", t => t.SkillVNum)
@@ -33,21 +33,21 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.CardId);
 
             CreateTable(
-                "dbo.Card",
-                c => new
-                {
-                    CardId = c.Short(nullable: false),
-                    Duration = c.Int(nullable: false),
-                    EffectId = c.Int(nullable: false),
-                    FirstData = c.Short(nullable: false),
-                    Level = c.Byte(nullable: false),
-                    Name = c.String(maxLength: 255),
-                    Period = c.Short(nullable: false),
-                    Propability = c.Byte(nullable: false),
-                    SecondData = c.Short(nullable: false),
-                    SubType = c.Byte(nullable: false),
-                    Type = c.Byte(nullable: false)
-                })
+                    "dbo.Card",
+                    c => new
+                    {
+                        CardId = c.Short(false),
+                        Duration = c.Int(false),
+                        EffectId = c.Int(false),
+                        FirstData = c.Short(false),
+                        Level = c.Byte(false),
+                        Name = c.String(maxLength: 255),
+                        Period = c.Short(false),
+                        Propability = c.Byte(false),
+                        SecondData = c.Short(false),
+                        SubType = c.Byte(false),
+                        Type = c.Byte(false)
+                    })
                 .PrimaryKey(t => t.CardId);
         }
 

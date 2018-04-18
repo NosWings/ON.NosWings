@@ -1,18 +1,18 @@
-﻿using CloneExtensions;
-using OpenNos.Core;
-using OpenNos.GameObject;
-using OpenNos.GameObject.Helpers;
-using OpenNos.GameObject.Packets.ServerPackets;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using CloneExtensions;
 using NosSharp.Enums;
+using OpenNos.Core;
 using OpenNos.Core.Handling;
+using OpenNos.GameObject;
+using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.GameObject.Packets.ServerPackets;
 
 namespace OpenNos.Handler
 {
@@ -20,10 +20,7 @@ namespace OpenNos.Handler
     {
         #region Instantiation
 
-        public ScriptedInstancePacketHandler(ClientSession session)
-        {
-            Session = session;
-        }
+        public ScriptedInstancePacketHandler(ClientSession session) => Session = session;
 
         #endregion
 
@@ -49,6 +46,7 @@ namespace OpenNos.Handler
                             return;
                         }
                     }
+
                     Session.Character.LeaveTalentArena(true);
                     break;
             }
@@ -84,6 +82,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             IEnumerable<ArenaTeamMember> ownteam = arenateam.Where(s => s.ArenaTeamType == arenateam?.FirstOrDefault(e => e.Session == Session)?.ArenaTeamType);
             ClientSession client = ownteam.Where(s => s.Session != Session).OrderBy(s => s.Order).Skip(packet.CalledIndex).FirstOrDefault()?.Session;
             ArenaTeamMember memb = arenateam.FirstOrDefault(s => s.Session == client);
@@ -91,6 +90,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             memb.SummonCount++;
             arenateam.ToList().ForEach(arenauser => { arenauser.Session.SendPacket(arenauser.Session.Character.GenerateTaP(2, true)); });
             ArenaTeamMember arenaTeamMember = arenateam.FirstOrDefault(s => s.Session == client);
@@ -98,6 +98,7 @@ namespace OpenNos.Handler
             {
                 arenaTeamMember.LastSummoned = DateTime.Now;
             }
+
             Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(4432));
             for (int i = 0; i < 3; i++)
             {
@@ -107,12 +108,12 @@ namespace OpenNos.Handler
                     client.SendPacket(client.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("ARENA_CALLED"), 3 - i), 10));
                 });
             }
+
             short x = Session.Character.PositionX;
             short y = Session.Character.PositionY;
             const byte timer = 30;
             Observable.Timer(TimeSpan.FromSeconds(3)).Subscribe(o =>
             {
-
                 Session.CurrentMapInstance.Broadcast($"ta_t 0 {client.Character.CharacterId} {timer}");
                 client.Character.PositionX = x;
                 client.Character.PositionY = y;
@@ -124,24 +125,26 @@ namespace OpenNos.Handler
             Observable.Timer(TimeSpan.FromSeconds(timer + 3)).Subscribe(o =>
             {
                 DateTime? lastsummoned = arenateam.FirstOrDefault(s => s.Session == client)?.LastSummoned;
-                if (lastsummoned == null || ((DateTime) lastsummoned).AddSeconds(timer) >= DateTime.Now)
+                if (lastsummoned == null || ((DateTime)lastsummoned).AddSeconds(timer) >= DateTime.Now)
                 {
                     return;
                 }
+
                 ArenaTeamMember firstOrDefault = arenateam.FirstOrDefault(s => s.Session == client);
                 if (firstOrDefault != null)
                 {
                     firstOrDefault.LastSummoned = null;
                 }
-                client.Character.PositionX = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short) 120 : (short) 19;
-                client.Character.PositionY = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short) 39 : (short) 40;
+
+                client.Character.PositionX = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short)120 : (short)19;
+                client.Character.PositionY = memb.ArenaTeamType == ArenaTeamType.ERENIA ? (short)39 : (short)40;
                 Session?.CurrentMapInstance.Broadcast(client.Character.GenerateTp());
                 client.SendPacket(UserInterfaceHelper.Instance.GenerateTaSt(TalentArenaOptionType.Watch));
             });
         }
 
         /// <summary>
-        /// RSelPacket packet
+        ///     RSelPacket packet
         /// </summary>
         /// <param name="packet"></param>
         public void Escape(EscapePacket packet)
@@ -157,10 +160,7 @@ namespace OpenNos.Handler
                 case MapInstanceType.RaidInstance:
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
                     Session.Character.Group?.Characters.ToList().ForEach(
-                        session =>
-                        {
-                            session.SendPacket(session.Character.Group.GenerateRdlst());
-                        });
+                        session => { session.SendPacket(session.Character.Group.GenerateRdlst()); });
                     Session.SendPacket(Session.Character.GenerateRaid(1, true));
                     Session.SendPacket(Session.Character.GenerateRaid(2, true));
                     Session.Character.Group?.LeaveGroup(Session);
@@ -169,7 +169,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// RSelPacket packet
+        ///     RSelPacket packet
         /// </summary>
         /// <param name="packet"></param>
         public void GetGift(RSelPacket packet)
@@ -178,6 +178,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             Guid mapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(Session.Character.MapId);
             MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
             ScriptedInstance si = map.ScriptedInstances.FirstOrDefault(s => s.PositionX == Session.Character.MapX && s.PositionY == Session.Character.MapY);
@@ -185,6 +186,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             Session.Character.GetReput(si.Reputation, true);
 
             Session.Character.Gold = Session.Character.Gold + si.Gold > ServerManager.Instance.MaxGold ? ServerManager.Instance.MaxGold : Session.Character.Gold + si.Gold;
@@ -222,7 +224,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// treq packet
+        ///     treq packet
         /// </summary>
         /// <param name="treqPacket"></param>
         public void GetTreq(TreqPacket treqPacket)
@@ -233,6 +235,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             if (treqPacket.StartPress == 1 || treqPacket.RecordPress == 1)
             {
                 timespace.LoadScript(MapInstanceType.TimeSpaceInstance);
@@ -240,15 +243,19 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
+
                 foreach (Gift i in timespace.RequieredItems)
                 {
                     if (Session.Character.Inventory.CountItem(i.VNum) < i.Amount)
                     {
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(i.VNum).Name), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                            string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_REQUIERED_ITEM"), ServerManager.Instance.GetItem(i.VNum).Name), 0));
                         return;
                     }
+
                     Session.Character.Inventory.RemoveItemAmount(i.VNum, i.Amount);
                 }
+
                 if (timespace.LevelMinimum > Session.Character.Level)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_REQUIERED_LEVEL"), 0));
@@ -270,7 +277,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// mkraid packet
+        ///     mkraid packet
         /// </summary>
         /// <param name="packet"></param>
         public void GenerateRaid(MkraidPacket packet)
@@ -279,32 +286,38 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             if (Session.Character.MapId != Session.Character.Group?.Raid.MapId && !ServerManager.Instance.SingleRaidPortal)
             {
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg("WRONG_PORTAL", 0));
                 return;
             }
+
             if (Session.Character.Group.CharacterCount > 4 || Session.Character.Authority >= AuthorityType.GameMaster)
             {
                 if (Session.Character.Group.Raid.FirstMap == null)
                 {
                     Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
                 }
+
                 if (Session.Character.Group.Raid.Id == 24 && ServerManager.Instance.Act6Erenia.Percentage < 100 ||
                     Session.Character.Group.Raid.Id == 23 && ServerManager.Instance.Act6Zenas.Percentage < 100)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg("RAID_NOT_READY", 0));
                     return;
                 }
+
                 if (Session.Character.Group.Raid.FirstMap == null)
                 {
                     return;
                 }
+
                 Session.Character.Group.Raid.FirstMap.InstanceBag.Lock = true;
                 if (ServerManager.Instance.GroupList.Any(s => s.GroupId == Session.Character.Group.GroupId))
                 {
                     ServerManager.Instance.GroupList.Remove(Session.Character.Group);
                 }
+
                 Session.Character.Group.Characters.Where(s => s.CurrentMapInstance.MapInstanceId != Session.CurrentMapInstance.MapInstanceId).ToList().ForEach(session =>
                 {
                     Session.Character.Group.LeaveGroup(session);
@@ -312,7 +325,7 @@ namespace OpenNos.Handler
                     session.SendPacket(session.Character.GenerateRaid(2, true));
                 });
 
-                Session.Character.Group.Raid.FirstMap.InstanceBag.Lives = (short) Session.Character.Group.CharacterCount;
+                Session.Character.Group.Raid.FirstMap.InstanceBag.Lives = (short)Session.Character.Group.CharacterCount;
                 Session.Character.Group.Characters.ToList().ForEach(session =>
                 {
                     ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Group.Raid.FirstMap.MapInstanceId, session.Character.Group.Raid.StartX,
@@ -331,7 +344,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// wreq packet
+        ///     wreq packet
         /// </summary>
         /// <param name="packet"></param>
         public void GetWreq(WreqPacket packet)
@@ -343,17 +356,22 @@ namespace OpenNos.Handler
                 {
                     continue;
                 }
+
                 switch (packet.Value)
                 {
                     case 0:
-                        if (Session.Character.Group != null && Session.Character.Group.Characters.Any(s => !s.CurrentMapInstance.InstanceBag.Lock && s.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance && s.Character.MapId == portal.MapId && s.Character.CharacterId != Session.Character.CharacterId && s.Character.MapX == portal.PositionX && s.Character.MapY == portal.PositionY))
+                        if (Session.Character.Group != null && Session.Character.Group.Characters.Any(s =>
+                            !s.CurrentMapInstance.InstanceBag.Lock && s.CurrentMapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance && s.Character.MapId == portal.MapId &&
+                            s.Character.CharacterId != Session.Character.CharacterId && s.Character.MapX == portal.PositionX && s.Character.MapY == portal.PositionY))
                         {
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#wreq^3^{Session.Character.CharacterId} #wreq^0^1 {Language.Instance.GetMessageFromKey("ASK_JOIN_TEAM_TS")}"));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog(
+                                $"#wreq^3^{Session.Character.CharacterId} #wreq^0^1 {Language.Instance.GetMessageFromKey("ASK_JOIN_TEAM_TS")}"));
                         }
                         else
                         {
                             Session.SendPacket(portal.GenerateRbr());
                         }
+
                         break;
 
                     case 1:
@@ -384,13 +402,14 @@ namespace OpenNos.Handler
                             Session.SendPackets(portal.GenerateMinimap());
                             Session.SendPacket(portal.FirstMap.InstanceBag.GenerateScore());
                         }
+
                         break;
                 }
             }
         }
 
         /// <summary>
-        /// GitPacket packet
+        ///     GitPacket packet
         /// </summary>
         /// <param name="packet"></param>
         public void Git(GitPacket packet)
@@ -400,13 +419,14 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             Session.CurrentMapInstance.Broadcast(button.GenerateOut());
             button.RunAction();
             Session.CurrentMapInstance.Broadcast(button.GenerateIn());
         }
 
         /// <summary>
-        /// rxitPacket packet
+        ///     rxitPacket packet
         /// </summary>
         /// <param name="rxitPacket"></param>
         public void InstanceExit(RxitPacket rxitPacket)
@@ -415,6 +435,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance)
             {
                 ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, ServerManager.Instance.ArenaInstance.MapInstanceId);
@@ -428,14 +449,16 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("DIGNITY_LOST"), 20), 11));
                     Session.Character.Dignity = Session.Character.Dignity < -980 ? -1000 : Session.Character.Dignity - 20;
                 }
+
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
             }
             else if (Session.CurrentMapInstance?.MapInstanceType == MapInstanceType.RaidInstance)
             {
-                foreach (var s in Session.Character.Group.Characters)
+                foreach (ClientSession s in Session.Character.Group.Characters)
                 {
                     s.SendPacket(Session.Character.Group.GenerateRdlst());
                 }
+
                 Session.SendPacket(Session.Character.Group.GenerateRdlst());
                 Session.Character.Group?.LeaveGroup(Session);
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);

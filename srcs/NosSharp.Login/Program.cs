@@ -14,10 +14,7 @@
 
 using System;
 using System.Configuration;
-using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
-using System.Reflection;
 using log4net;
 using OpenNos.Core;
 using OpenNos.Core.Serializing;
@@ -68,12 +65,11 @@ namespace NosSharp.Login
                     {
                         // register EF -> GO and GO -> EF mappings
                         RegisterMappings();
-                        
+
                         // initialize PacketSerialization
                         PacketFactory.Initialize<WalkPacket>();
 
                         NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler), typeof(LoginEncryption), false);
-
                     }
                     catch (Exception ex)
                     {

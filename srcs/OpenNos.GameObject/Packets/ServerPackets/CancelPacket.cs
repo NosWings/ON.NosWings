@@ -6,8 +6,10 @@ namespace OpenNos.GameObject.Packets.ServerPackets
     [PacketHeader("cancel")]
     public class CancelPacket : PacketDefinition
     {
-        [PacketIndex(0)] public CancelType Type { get; set; }
+        [PacketIndex(0)]
+        public CancelType Type { get; set; }
 
-        [PacketIndex(1)] public int TargetId { get; set; }
+        [PacketIndex(1)]
+        public int TargetId { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using OpenNos.Core;
-using OpenNos.Core.Serializing;
+﻿using OpenNos.Core.Serializing;
 
 namespace OpenNos.GameObject.Packets.ClientPackets
 {
@@ -8,9 +7,11 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public short Type { get; set; }
+        [PacketIndex(0)]
+        public short Type { get; set; }
 
-        [PacketIndex(1)] public int Data { get; set; }
+        [PacketIndex(1)]
+        public int Data { get; set; }
 
         #endregion
     }

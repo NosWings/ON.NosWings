@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using OpenNos.DAL.EF.Base;
 
 namespace OpenNos.DAL.EF
 {
@@ -32,8 +32,8 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult Delete(long id)
         {
-                var contextRef = DataAccessHelper.CreateContext();
-                return Delete(ref contextRef, id);
+            OpenNosContext contextRef = DataAccessHelper.CreateContext();
+            return Delete(ref contextRef, id);
         }
 
         public DeleteResult Delete(ref OpenNosContext context, long id)
@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MateDTO mate)
         {
-            var contextRef = DataAccessHelper.CreateContext();
+            OpenNosContext contextRef = DataAccessHelper.CreateContext();
             return InsertOrUpdate(ref contextRef, ref mate);
         }
 
@@ -97,7 +97,7 @@ namespace OpenNos.DAL.EF
 
         private MateDTO Insert(MateDTO mate, OpenNosContext context)
         {
-            Mate entity = _mapper.Map<Mate>(mate);
+            var entity = _mapper.Map<Mate>(mate);
             context.Mate.Add(entity);
             context.SaveChanges();
             return _mapper.Map<MateDTO>(entity);

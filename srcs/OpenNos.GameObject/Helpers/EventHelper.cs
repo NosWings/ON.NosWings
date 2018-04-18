@@ -12,9 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.GameObject.Event;
-using OpenNos.PathFinder;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -22,10 +19,11 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NosSharp.Enums;
+using OpenNos.Core;
 using OpenNos.Core.Extensions;
 using OpenNos.DAL;
+using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Event.ACT4;
-using OpenNos.GameObject.Event.BattleRoyale;
 using OpenNos.GameObject.Event.CALIGOR;
 using OpenNos.GameObject.Event.ICEBREAKER;
 using OpenNos.GameObject.Event.INSTANTBATTLE;
@@ -122,7 +120,7 @@ namespace OpenNos.GameObject.Helpers
         }
 
         /// <summary>
-        /// Run Event
+        ///     Run Event
         /// </summary>
         /// <param name="evt">Event Container</param>
         /// <param name="session">Character Session that run the event</param>
@@ -137,11 +135,11 @@ namespace OpenNos.GameObject.Helpers
                     #region EventForUser
 
                     case EventActionType.NPCDIALOG:
-                        session.SendPacket(session.Character.GenerateNpcDialog((int) evt.Parameter));
+                        session.SendPacket(session.Character.GenerateNpcDialog((int)evt.Parameter));
                         break;
 
                     case EventActionType.SENDPACKET:
-                        session.SendPacket((string) evt.Parameter);
+                        session.SendPacket((string)evt.Parameter);
                         break;
 
                     #endregion
@@ -172,7 +170,7 @@ namespace OpenNos.GameObject.Helpers
 
                 case EventActionType.REGISTEREVENT:
                     Tuple<string, ConcurrentBag<EventContainer>> even =
-                        (Tuple<string, ConcurrentBag<EventContainer>>) evt.Parameter;
+                        (Tuple<string, ConcurrentBag<EventContainer>>)evt.Parameter;
                     switch (even.Item1)
                     {
                         case "OnCharacterDiscoveringMap":
@@ -202,11 +200,11 @@ namespace OpenNos.GameObject.Helpers
 
                     break;
                 case EventActionType.REGISTERWAVE:
-                    evt.MapInstance.WaveEvents.Add((EventWave) evt.Parameter);
+                    evt.MapInstance.WaveEvents.Add((EventWave)evt.Parameter);
                     break;
 
                 case EventActionType.SETAREAENTRY:
-                    ZoneEvent even2 = (ZoneEvent) evt.Parameter;
+                    var even2 = (ZoneEvent)evt.Parameter;
                     evt.MapInstance.OnAreaEntryEvents.Add(even2);
                     break;
 
@@ -281,7 +279,7 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.EFFECT:
-                    short evt3 = (short) evt.Parameter;
+                    short evt3 = (short)evt.Parameter;
                     if (monster != null && (DateTime.Now - monster.LastEffect).TotalSeconds >= 5)
                     {
                         evt.MapInstance.Broadcast(monster.GenerateEff(evt3));
@@ -292,7 +290,7 @@ namespace OpenNos.GameObject.Helpers
 
                 case EventActionType.INSTANTBATLLEREWARDS:
                     RunEvent(new EventContainer(evt.MapInstance, EventActionType.SPAWNPORTAL,
-                        new Portal {SourceX = 47, SourceY = 33, DestinationMapId = 1}));
+                        new Portal { SourceX = 47, SourceY = 33, DestinationMapId = 1 }));
                     evt.MapInstance.Broadcast(
                         UserInterfaceHelper.Instance.GenerateMsg(
                             Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
@@ -315,7 +313,7 @@ namespace OpenNos.GameObject.Helpers
                     if (monster != null)
                     {
                         Tuple<short, byte, ConcurrentBag<EventContainer>> evnt =
-                            (Tuple<short, byte, ConcurrentBag<EventContainer>>) evt.Parameter;
+                            (Tuple<short, byte, ConcurrentBag<EventContainer>>)evt.Parameter;
                         List<MapMonster> mapMonsters =
                             evt.MapInstance.GetListMonsterInRange(monster.MapX, monster.MapY, evnt.Item2);
                         if (evnt.Item1 != 0)
@@ -333,7 +331,7 @@ namespace OpenNos.GameObject.Helpers
                     {
                         monster.MoveEvent = null;
                         monster.Path = null;
-                        foreach (EventContainer s in ((ConcurrentBag<EventContainer>) evt.Parameter))
+                        foreach (EventContainer s in (ConcurrentBag<EventContainer>)evt.Parameter)
                         {
                             RunEvent(s, monster: monster);
                         }
@@ -342,12 +340,12 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.MOVE:
-                    ZoneEvent evt4 = (ZoneEvent) evt.Parameter;
+                    var evt4 = (ZoneEvent)evt.Parameter;
                     if (monster != null)
                     {
                         monster.MoveEvent = evt4;
-                        monster.Path = BestFirstSearch.FindPath(new Node {X = monster.MapX, Y = monster.MapY},
-                            new Node {X = evt4.X, Y = evt4.Y}, evt.MapInstance?.Map.Grid);
+                        monster.Path = BestFirstSearch.FindPath(new Node { X = monster.MapX, Y = monster.MapY },
+                            new Node { X = evt4.X, Y = evt4.Y }, evt.MapInstance?.Map.Grid);
                     }
 
                     break;
@@ -391,7 +389,7 @@ namespace OpenNos.GameObject.Helpers
                     switch (evt.MapInstance.MapInstanceType)
                     {
                         case MapInstanceType.TimeSpaceInstance:
-                            evt.MapInstance.InstanceBag.EndState = (byte) evt.Parameter;
+                            evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
                             Guid mapInstanceId =
                                 ServerManager.Instance.GetBaseMapInstanceIdByMapId(client.Character.MapId);
                             MapInstance map = ServerManager.Instance.GetMapInstance(mapInstanceId);
@@ -402,7 +400,7 @@ namespace OpenNos.GameObject.Helpers
                                 return;
                             }
 
-                            byte penalty = (byte) (client.Character.Level - si.LevelMinimum > 50
+                            byte penalty = (byte)(client.Character.Level - si.LevelMinimum > 50
                                 ? 100
                                 : (client.Character.Level - si.LevelMinimum) * 2);
                             if (penalty > 0)
@@ -419,7 +417,7 @@ namespace OpenNos.GameObject.Helpers
                             break;
 
                         case MapInstanceType.RaidInstance:
-                            evt.MapInstance.InstanceBag.EndState = (byte) evt.Parameter;
+                            evt.MapInstance.InstanceBag.EndState = (byte)evt.Parameter;
 
                             if (client.Character?.Family?.Act4Raid?.Maps?.FirstOrDefault(m =>
                                     m != client.Character?.Family?.Act4Raid?.FirstMap) ==
@@ -466,7 +464,7 @@ namespace OpenNos.GameObject.Helpers
 
                                     foreach (Gift gift in instance.GiftItems)
                                     {
-                                        sbyte rare = (sbyte) (gift.IsRandomRare
+                                        sbyte rare = (sbyte)(gift.IsRandomRare
                                             ? ServerManager.Instance.RandomNumber()
                                             : 0);
                                         if (rare > 90)
@@ -479,7 +477,7 @@ namespace OpenNos.GameObject.Helpers
                                         }
                                         else
                                         {
-                                            rare = (sbyte) (gift.IsRandomRare
+                                            rare = (sbyte)(gift.IsRandomRare
                                                 ? ServerManager.Instance.RandomNumber(1, 6)
                                                 : 0);
                                         }
@@ -546,7 +544,7 @@ namespace OpenNos.GameObject.Helpers
 
                                     foreach (Gift gift in grp.Raid.GiftItems)
                                     {
-                                        sbyte rare = (sbyte) (gift.IsRandomRare
+                                        sbyte rare = (sbyte)(gift.IsRandomRare
                                             ? ServerManager.Instance.RandomNumber(-2, 8)
                                             : 0);
 
@@ -617,7 +615,7 @@ namespace OpenNos.GameObject.Helpers
                                 ? FactionType.Angel
                                 : FactionType.Demon;
 
-                            foreach (var player in evt.MapInstance.Sessions)
+                            foreach (ClientSession player in evt.MapInstance.Sessions)
                             {
                                 if (player == null)
                                 {
@@ -627,12 +625,12 @@ namespace OpenNos.GameObject.Helpers
                                 if (Caligor.RaidTime > 2400)
                                 {
                                     player.Character.GiftAdd(
-                                        player.Character.Faction == winningFaction ? (short) 5960 : (short) 5961, 1);
+                                        player.Character.Faction == winningFaction ? (short)5960 : (short)5961, 1);
                                 }
                                 else
                                 {
                                     player.Character.GiftAdd(
-                                        player.Character.Faction == winningFaction ? (short) 5961 : (short) 5958, 1);
+                                        player.Character.Faction == winningFaction ? (short)5961 : (short)5958, 1);
                                 }
 
                                 player.Character.GiftAdd(5959, 1);
@@ -651,7 +649,7 @@ namespace OpenNos.GameObject.Helpers
 
                 case EventActionType.STARTCLOCK:
                     Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>> eve =
-                        (Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>) evt.Parameter;
+                        (Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>)evt.Parameter;
                     if (eve != null)
                     {
                         evt.MapInstance.InstanceBag.Clock.StopEvents = eve.Item2.ToList();
@@ -663,7 +661,7 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.TELEPORT:
-                    Tuple<short, short, short, short> tp = (Tuple<short, short, short, short>) evt.Parameter;
+                    Tuple<short, short, short, short> tp = (Tuple<short, short, short, short>)evt.Parameter;
                     List<Character> characters = evt.MapInstance.GetCharactersInRange(tp.Item1, tp.Item2, 5).ToList();
                     characters.ForEach(s =>
                     {
@@ -679,7 +677,7 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.STARTMAPCLOCK:
-                    eve = (Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>) evt.Parameter;
+                    eve = (Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>)evt.Parameter;
                     if (eve != null)
                     {
                         evt.MapInstance.Clock.StopEvents = eve.Item2.ToList();
@@ -696,7 +694,7 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.SPAWNPORTAL:
-                    evt.MapInstance.CreatePortal((Portal) evt.Parameter);
+                    evt.MapInstance.CreatePortal((Portal)evt.Parameter);
                     break;
 
                 case EventActionType.REFRESHMAPITEMS:
@@ -704,25 +702,25 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.NPCSEFFECTCHANGESTATE:
-                    evt.MapInstance.Npcs.ForEach(s => s.EffectActivated = (bool) evt.Parameter);
+                    evt.MapInstance.Npcs.ForEach(s => s.EffectActivated = (bool)evt.Parameter);
                     break;
 
                 case EventActionType.CHANGEPORTALTYPE:
-                    Tuple<int, PortalType> param = (Tuple<int, PortalType>) evt.Parameter;
+                    Tuple<int, PortalType> param = (Tuple<int, PortalType>)evt.Parameter;
                     Portal portal = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == param.Item1);
                     if (portal != null)
                     {
-                        portal.Type = (short) param.Item2;
+                        portal.Type = (short)param.Item2;
                     }
 
                     break;
 
                 case EventActionType.CHANGEDROPRATE:
-                    evt.MapInstance.DropRate = (int) evt.Parameter;
+                    evt.MapInstance.DropRate = (int)evt.Parameter;
                     break;
 
                 case EventActionType.CHANGEXPRATE:
-                    evt.MapInstance.XpRate = (int) evt.Parameter;
+                    evt.MapInstance.XpRate = (int)evt.Parameter;
                     break;
 
                 case EventActionType.DISPOSEMAP:
@@ -730,15 +728,15 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.SPAWNBUTTON:
-                    evt.MapInstance.SpawnButton((MapButton) evt.Parameter);
+                    evt.MapInstance.SpawnButton((MapButton)evt.Parameter);
                     break;
 
                 case EventActionType.UNSPAWNMONSTERS:
-                    evt.MapInstance.DespawnMonster((int) evt.Parameter);
+                    evt.MapInstance.DespawnMonster((int)evt.Parameter);
                     break;
 
                 case EventActionType.SPAWNMONSTERS:
-                    evt.MapInstance.SummonMonsters(((ConcurrentBag<ToSummon>) evt.Parameter).ToList());
+                    evt.MapInstance.SummonMonsters(((ConcurrentBag<ToSummon>)evt.Parameter).ToList());
                     break;
                 case EventActionType.REFRESHRAIDGOAL:
                     ClientSession cl = evt.MapInstance.Sessions.FirstOrDefault();
@@ -752,15 +750,15 @@ namespace OpenNos.GameObject.Helpers
 
                     break;
                 case EventActionType.SPAWNNPCS:
-                    evt.MapInstance.SummonNpcs((List<ToSummon>) evt.Parameter);
+                    evt.MapInstance.SummonNpcs((List<ToSummon>)evt.Parameter);
                     break;
 
                 case EventActionType.DROPITEMS:
-                    evt.MapInstance.DropItems((List<Tuple<short, int, short, short>>) evt.Parameter);
+                    evt.MapInstance.DropItems((List<Tuple<short, int, short, short>>)evt.Parameter);
                     break;
 
                 case EventActionType.THROWITEMS:
-                    Tuple<int, short, byte, int, int> parameters = (Tuple<int, short, byte, int, int>) evt.Parameter;
+                    Tuple<int, short, byte, int, int> parameters = (Tuple<int, short, byte, int, int>)evt.Parameter;
                     if (monster != null)
                     {
                         parameters = new Tuple<int, short, byte, int, int>(monster.MapMonsterId, parameters.Item2,
@@ -774,7 +772,7 @@ namespace OpenNos.GameObject.Helpers
                     Character lastincharacter = evt.MapInstance.Sessions.OrderByDescending(s => s.RegisterTime)
                         .FirstOrDefault()?.Character;
                     List<ToSummon> summonParameters = new List<ToSummon>();
-                    MapCell hornSpawn = new MapCell
+                    var hornSpawn = new MapCell
                     {
                         X = lastincharacter?.PositionX ?? 154,
                         Y = lastincharacter?.PositionY ?? 140
@@ -787,7 +785,7 @@ namespace OpenNos.GameObject.Helpers
                 case EventActionType.REMOVEPORTAL:
                     Portal portalToRemove = evt.Parameter is Portal p
                         ? evt.MapInstance.Portals.FirstOrDefault(s => s == p)
-                        : evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == (int) evt.Parameter);
+                        : evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == (int)evt.Parameter);
                     if (portalToRemove == null)
                     {
                         return;
@@ -799,7 +797,7 @@ namespace OpenNos.GameObject.Helpers
 
                 case EventActionType.ACT4RAIDEND:
                     // tp // tp X // tp Y
-                    Tuple<MapInstance, short, short> endParameters = (Tuple<MapInstance, short, short>) evt.Parameter;
+                    Tuple<MapInstance, short, short> endParameters = (Tuple<MapInstance, short, short>)evt.Parameter;
                     Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(a =>
                     {
                         evt.MapInstance.Broadcast(
@@ -819,14 +817,14 @@ namespace OpenNos.GameObject.Helpers
                     break;
 
                 case EventActionType.STARTACT4RAID:
-                    Tuple<byte, byte> raidParameters = (Tuple<byte, byte>) evt.Parameter;
-                    PercentBar stat = raidParameters.Item2 == (byte) FactionType.Angel
+                    Tuple<byte, byte> raidParameters = (Tuple<byte, byte>)evt.Parameter;
+                    PercentBar stat = raidParameters.Item2 == (byte)FactionType.Angel
                         ? ServerManager.Instance.Act4AngelStat
                         : ServerManager.Instance.Act4DemonStat;
                     stat.Mode = 3;
                     stat.TotalTime = 3600;
                     Act4Raid.Instance.GenerateRaid(raidParameters.Item1, raidParameters.Item2);
-                    switch ((Act4RaidType) raidParameters.Item1)
+                    switch ((Act4RaidType)raidParameters.Item1)
                     {
                         case Act4RaidType.Morcos:
                             stat.IsMorcos = true;
@@ -846,11 +844,8 @@ namespace OpenNos.GameObject.Helpers
 
                 case EventActionType.ONTIMEELAPSED:
                     Tuple<int, ConcurrentBag<EventContainer>> timeElapsedEvts =
-                        (Tuple<int, ConcurrentBag<EventContainer>>) evt.Parameter;
-                    Observable.Timer(TimeSpan.FromSeconds(timeElapsedEvts.Item1)).Subscribe(e =>
-                    {
-                        timeElapsedEvts.Item2.ToList().ForEach(ev => RunEvent(ev));
-                    });
+                        (Tuple<int, ConcurrentBag<EventContainer>>)evt.Parameter;
+                    Observable.Timer(TimeSpan.FromSeconds(timeElapsedEvts.Item1)).Subscribe(e => { timeElapsedEvts.Item2.ToList().ForEach(ev => RunEvent(ev)); });
                     break;
 
                 #endregion
@@ -868,10 +863,7 @@ namespace OpenNos.GameObject.Helpers
 
         private static EventHelper _instance;
 
-        public static EventHelper Instance
-        {
-            get { return _instance ?? (_instance = new EventHelper()); }
-        }
+        public static EventHelper Instance => _instance ?? (_instance = new EventHelper());
 
         #endregion
     }

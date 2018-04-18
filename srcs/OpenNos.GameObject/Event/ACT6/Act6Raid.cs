@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.GameObject.Map;
@@ -13,14 +8,6 @@ namespace OpenNos.GameObject.Event.ACT6
 {
     public static class Act6Raid
     {
-        #region Properties
-
-        public static ScriptedInstance RaidInstance;
-
-        public static MapInstance EntryMap;
-
-        #endregion
-
         #region Methods
 
         public static void GenerateRaid(FactionType raidType)
@@ -45,12 +32,20 @@ namespace OpenNos.GameObject.Event.ACT6
 
             EntryMap.CreatePortal(new Portal
             {
-                Type = (byte) PortalType.Raid,
+                Type = (byte)PortalType.Raid,
                 SourceMapId = RaidInstance.MapId,
                 SourceX = RaidInstance.PositionX,
                 SourceY = RaidInstance.PositionY
             }, 3600, true);
         }
+
+        #endregion
+
+        #region Properties
+
+        public static ScriptedInstance RaidInstance;
+
+        public static MapInstance EntryMap;
 
         #endregion
     }

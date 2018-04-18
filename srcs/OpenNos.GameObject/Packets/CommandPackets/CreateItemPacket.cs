@@ -8,28 +8,25 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$CreateItem", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class CreateItemPacket : PacketDefinition
     {
-        #region Properties
+        #region Methods
 
-        [PacketIndex(0)] public short VNum { get; set; }
-
-        [PacketIndex(1)] public short? Design { get; set; }
-
-        [PacketIndex(2)] public short? Upgrade { get; set; }
-
-        public static string ReturnHelp()
-        {
-            return "$CreateItem ITEMVNUM DESIGN/RARE/AMOUNT/WINGS UPDATE";
-        }
+        public override string ToString() => ($"CreateItem Command VNum: {VNum}" + Design) != null ? $" Design: {Design}" :
+            ("" + Upgrade) != null ? $" Upgrade: {Upgrade}" : "";
 
         #endregion
 
-        #region Methods
+        #region Properties
 
-        public override string ToString()
-        {
-            return $"CreateItem Command VNum: {VNum}" + Design != null ? $" Design: {Design}" :
-                "" + Upgrade != null ? $" Upgrade: {Upgrade}" : "";
-        }
+        [PacketIndex(0)]
+        public short VNum { get; set; }
+
+        [PacketIndex(1)]
+        public short? Design { get; set; }
+
+        [PacketIndex(2)]
+        public short? Upgrade { get; set; }
+
+        public static string ReturnHelp() => "$CreateItem ITEMVNUM DESIGN/RARE/AMOUNT/WINGS UPDATE";
 
         #endregion
     }

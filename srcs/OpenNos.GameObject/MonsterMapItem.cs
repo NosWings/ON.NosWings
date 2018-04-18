@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
             ItemVNum = itemVNum;
             if (amount < 1000)
             {
-                Amount = (byte) amount;
+                Amount = (byte)amount;
             }
 
             GoldAmount = amount;
@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
 
         public sealed override ushort Amount { get; set; }
 
-        public int GoldAmount { get; private set; }
+        public int GoldAmount { get; }
 
         public sealed override short ItemVNum { get; set; }
 
@@ -65,7 +65,7 @@ namespace OpenNos.GameObject
         {
             ItemInstance instance = GetItemInstance();
             if (instance.Item.Type != InventoryType.Equipment ||
-                (instance.Item.ItemType != ItemType.Weapon && instance.Item.ItemType != ItemType.Armor))
+                instance.Item.ItemType != ItemType.Weapon && instance.Item.ItemType != ItemType.Armor)
             {
                 return;
             }

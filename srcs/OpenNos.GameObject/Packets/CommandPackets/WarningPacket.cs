@@ -8,25 +8,21 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$Warn", PassNonParseablePacket = true, Authority = AuthorityType.Moderator)]
     public class WarningPacket : PacketDefinition
     {
-        #region Properties
+        #region Methods
 
-        [PacketIndex(0)] public string CharacterName { get; set; }
-
-        [PacketIndex(1, serializeToEnd: true)] public string Reason { get; set; }
-
-        public static string ReturnHelp()
-        {
-            return "$Warn CHARACTERNAME REASON";
-        }
+        public override string ToString() => $"Warning Command CharacterName: {CharacterName} Message: {Reason}";
 
         #endregion
 
-        #region Methods
+        #region Properties
 
-        public override string ToString()
-        {
-            return $"Warning Command CharacterName: {CharacterName} Message: {Reason}";
-        }
+        [PacketIndex(0)]
+        public string CharacterName { get; set; }
+
+        [PacketIndex(1, serializeToEnd: true)]
+        public string Reason { get; set; }
+
+        public static string ReturnHelp() => "$Warn CHARACTERNAME REASON";
 
         #endregion
     }

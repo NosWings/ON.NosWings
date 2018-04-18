@@ -18,13 +18,13 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.ItemCard",
-                c => new
-                {
-                    ItemVNum = c.Short(nullable: false),
-                    CardId = c.Short(nullable: false),
-                    CardChance = c.Short(nullable: false)
-                })
+                    "dbo.ItemCard",
+                    c => new
+                    {
+                        ItemVNum = c.Short(false),
+                        CardId = c.Short(false),
+                        CardChance = c.Short(false)
+                    })
                 .PrimaryKey(t => new { t.ItemVNum, t.CardId })
                 .ForeignKey("dbo.Card", t => t.CardId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)

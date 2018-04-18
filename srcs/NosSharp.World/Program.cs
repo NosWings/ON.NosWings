@@ -29,31 +29,44 @@ using OpenNos.Core.Serializing;
 using OpenNos.Core.Utilities;
 using OpenNos.Data;
 using OpenNos.DAL;
+using OpenNos.DAL.EF.Entities;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.GameObject;
-using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Extensions;
 using OpenNos.GameObject.Helpers;
-using OpenNos.GameObject.Item.Instance;
-using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
-using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ClientPackets;
 using OpenNos.Handler;
 using OpenNos.Master.Library.Client;
 using OpenNos.Master.Library.Data;
+using Account = OpenNos.DAL.EF.Entities.Account;
+using BCard = OpenNos.GameObject.Buff.BCard;
+using BoxInstance = OpenNos.GameObject.Item.Instance.BoxInstance;
+using Card = OpenNos.GameObject.Buff.Card;
+using Character = OpenNos.DAL.EF.Entities.Character;
+using CharacterQuest = OpenNos.GameObject.CharacterQuest;
+using CharacterSkill = OpenNos.GameObject.CharacterSkill;
+using Family = OpenNos.GameObject.Family;
+using FamilyCharacter = OpenNos.GameObject.FamilyCharacter;
+using ItemInstance = OpenNos.GameObject.Item.Instance.ItemInstance;
+using MapMonster = OpenNos.GameObject.Map.MapMonster;
+using MapNpc = OpenNos.GameObject.Map.MapNpc;
+using Mate = OpenNos.GameObject.Mate;
+using NpcMonster = OpenNos.GameObject.Npc.NpcMonster;
+using NpcMonsterSkill = OpenNos.GameObject.NpcMonsterSkill;
+using Portal = OpenNos.GameObject.Portal;
+using Quest = OpenNos.GameObject.Quest;
+using Recipe = OpenNos.GameObject.Recipe;
+using ScriptedInstance = OpenNos.GameObject.ScriptedInstance;
+using Shop = OpenNos.GameObject.Shop;
+using Skill = OpenNos.GameObject.Skill;
+using SpecialistInstance = OpenNos.GameObject.Item.Instance.SpecialistInstance;
+using WearableInstance = OpenNos.GameObject.Item.Instance.WearableInstance;
 
 namespace ON.NW.World
 {
     public class Program
     {
-        #region Members
-
-        private static EventHandler _exitHandler;
-        private static ManualResetEvent _run = new ManualResetEvent(true);
-
-        #endregion
-
         #region Delegates
 
         public delegate bool EventHandler(CtrlType sig);
@@ -70,6 +83,13 @@ namespace ON.NW.World
             CTRL_LOGOFF_EVENT = 5,
             CTRL_SHUTDOWN_EVENT = 6
         }
+
+        #endregion
+
+        #region Members
+
+        private static EventHandler _exitHandler;
+        private static ManualResetEvent _run = new ManualResetEvent(true);
 
         #endregion
 
@@ -236,9 +256,9 @@ namespace ON.NW.World
 
         private static void RegisterMappings()
         {
-            DaoExtensions.RegisterMapping<OpenNos.DAL.EF.Entities.Account>(typeof(Account));
-            DaoExtensions.RegisterMapping<OpenNos.DAL.EF.Entities.Character>(typeof(Character));
-            DaoExtensions.RegisterMapping<OpenNos.DAL.EF.Entities.EquipmentOption>(typeof(EquipmentOptionDTO));
+            DaoExtensions.RegisterMapping<Account>(typeof(OpenNos.GameObject.Account));
+            DaoExtensions.RegisterMapping<Character>(typeof(OpenNos.GameObject.Character));
+            DaoExtensions.RegisterMapping<EquipmentOption>(typeof(EquipmentOptionDTO));
 
 
             // register mappings for items
@@ -248,9 +268,9 @@ namespace ON.NW.World
             DaoFactory.IteminstanceDao.InitializeMapper(typeof(ItemInstance));
 
             // entities
-            DaoFactory.AccountDao.RegisterMapping(typeof(Account)).InitializeMapper();
+            DaoFactory.AccountDao.RegisterMapping(typeof(OpenNos.GameObject.Account)).InitializeMapper();
             DaoFactory.EquipmentOptionDao.RegisterMapping(typeof(EquipmentOptionDTO)).InitializeMapper();
-            DaoFactory.CharacterDao.RegisterMapping(typeof(Character)).InitializeMapper();
+            DaoFactory.CharacterDao.RegisterMapping(typeof(OpenNos.GameObject.Character)).InitializeMapper();
             DaoFactory.CharacterRelationDao.RegisterMapping(typeof(CharacterRelationDTO)).InitializeMapper();
             DaoFactory.CharacterSkillDao.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
             DaoFactory.CharacterQuestDao.RegisterMapping(typeof(CharacterQuestDTO)).InitializeMapper();

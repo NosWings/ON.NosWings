@@ -16,14 +16,14 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.StaticBonus",
-                c => new
-                {
-                    StaticBonusId = c.Long(nullable: false, identity: true),
-                    CharacterId = c.Long(nullable: false),
-                    DateEnd = c.DateTime(nullable: false),
-                    StaticBonusType = c.Byte(nullable: false)
-                })
+                    "dbo.StaticBonus",
+                    c => new
+                    {
+                        StaticBonusId = c.Long(false, true),
+                        CharacterId = c.Long(false),
+                        DateEnd = c.DateTime(false),
+                        StaticBonusType = c.Byte(false)
+                    })
                 .PrimaryKey(t => t.StaticBonusId)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
                 .Index(t => t.CharacterId);

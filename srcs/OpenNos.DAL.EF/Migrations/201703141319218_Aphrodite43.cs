@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class Aphrodite43 : DbMigration
     {
         #region Methods
@@ -12,8 +12,8 @@ namespace OpenNos.DAL.EF.Migrations
             AddColumn("dbo.TimeSpace", "SpecialItemGift", c => c.String());
             AddColumn("dbo.TimeSpace", "BonusItemGift", c => c.String());
             AddColumn("dbo.TimeSpace", "DrawItemGift", c => c.String());
-            AddColumn("dbo.TimeSpace", "LevelMaximum", c => c.Int(nullable: false));
-            AddColumn("dbo.TimeSpace", "LevelMinimum", c => c.Int(nullable: false));
+            AddColumn("dbo.TimeSpace", "LevelMaximum", c => c.Int(false));
+            AddColumn("dbo.TimeSpace", "LevelMinimum", c => c.Int(false));
             DropColumn("dbo.TimeSpace", "XMLName");
         }
 

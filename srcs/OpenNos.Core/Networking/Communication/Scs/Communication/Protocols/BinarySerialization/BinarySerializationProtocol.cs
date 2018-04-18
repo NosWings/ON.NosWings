@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,60 +19,81 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.BinarySerialization
 {
     /// <summary>
-    /// Default communication protocol between server and clients to send and receive a message. It
-    /// uses .NET binary serialization to write and read messages.
-    ///
-    /// A Message format: [Message Length (4 bytes)][Serialized Message Content]
-    ///
-    /// If a message is serialized to byte array as N bytes, this protocol adds 4 bytes size
-    /// information to head of the message bytes, so total length is (4 + N) bytes.
-    ///
-    /// This class can be derived to change serializer (default: BinaryFormatter). To do this,
-    /// SerializeMessage and DeserializeMessage methods must be overrided.
+    ///     Default communication protocol between server and clients to send and receive a message. It
+    ///     uses .NET binary serialization to write and read messages.
+    ///     A Message format: [Message Length (4 bytes)][Serialized Message Content]
+    ///     If a message is serialized to byte array as N bytes, this protocol adds 4 bytes size
+    ///     information to head of the message bytes, so total length is (4 + N) bytes.
+    ///     This class can be derived to change serializer (default: BinaryFormatter). To do this,
+    ///     SerializeMessage and DeserializeMessage methods must be overrided.
     /// </summary>
     public class BinarySerializationProtocol : IScsWireProtocol, IDisposable
     {
+        #region Instantiation
+
+        /// <summary>
+        ///     Creates a new instance of BinarySerializationProtocol.
+        /// </summary>
+        public BinarySerializationProtocol() => _receiveMemoryStream = new MemoryStream();
+
+        #endregion
+
+        #region Classes
+
+        /// <summary>
+        ///     This class is used in deserializing to allow deserializing objects that are defined in
+        ///     assemlies that are load in runtime (like PlugIns).
+        /// </summary>
+        protected sealed class DeserializationAppDomainBinder : SerializationBinder
+        {
+            #region Methods
+
+            public override Type BindToType(string assemblyName, string typeName)
+            {
+                string toAssemblyName = assemblyName.Split(',')[0];
+                return (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                        where assembly.FullName.Split(',')[0] == toAssemblyName
+                        select assembly.GetType(typeName)).FirstOrDefault();
+            }
+
+            #endregion
+        }
+
+        #endregion
+
         #region Members
 
         /// <summary>
-        /// Maximum length of a message.
+        ///     Maximum length of a message.
         /// </summary>
         private const int MaxMessageLength = 128 * 1024 * 1024; // 128 Megabytes.
 
         private bool _disposed;
 
         /// <summary>
-        /// This MemoryStream object is used to collect receiving bytes to build messages.
+        ///     This MemoryStream object is used to collect receiving bytes to build messages.
         /// </summary>
         private MemoryStream _receiveMemoryStream;
-
-        #endregion
-
-        #region Instantiation
-
-        /// <summary>
-        /// Creates a new instance of BinarySerializationProtocol.
-        /// </summary>
-        public BinarySerializationProtocol() => _receiveMemoryStream = new MemoryStream();
 
         #endregion
 
         #region Methods
 
         /// <summary>
-        /// Builds messages from a byte array that is received from remote application. The Byte
-        /// array may contain just a part of a message, the protocol must cumulate bytes to build
-        /// messages. This method is synchronized. So, only one thread can call it concurrently.
+        ///     Builds messages from a byte array that is received from remote application. The Byte
+        ///     array may contain just a part of a message, the protocol must cumulate bytes to build
+        ///     messages. This method is synchronized. So, only one thread can call it concurrently.
         /// </summary>
         /// <param name="receivedBytes">Received bytes from remote application</param>
         /// <returns>
-        /// List of messages. Protocol can generate more than one message from a byte array. Also, if
-        /// received bytes are not sufficient to build a message, the protocol may return an empty
-        /// list (and save bytes to combine with next method call).
+        ///     List of messages. Protocol can generate more than one message from a byte array. Also, if
+        ///     received bytes are not sufficient to build a message, the protocol may return an empty
+        ///     list (and save bytes to combine with next method call).
         /// </returns>
         public IEnumerable<IScsMessage> CreateMessages(byte[] receivedBytes)
         {
@@ -103,12 +123,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         }
 
         /// <summary>
-        /// Serializes a message to a byte array to send to remote application. This method is
-        /// synchronized. So, only one thread can call it concurrently.
+        ///     Serializes a message to a byte array to send to remote application. This method is
+        ///     synchronized. So, only one thread can call it concurrently.
         /// </summary>
         /// <param name="message">Message to be serialized</param>
         /// <exception cref="CommunicationException">
-        /// Throws CommunicationException if message is bigger than maximum allowed message length.
+        ///     Throws CommunicationException if message is bigger than maximum allowed message length.
         /// </exception>
         public byte[] GetBytes(IScsMessage message)
         {
@@ -133,8 +153,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         }
 
         /// <summary>
-        /// This method is called when connection with remote application is reset (connection is
-        /// renewing or first connecting). So, wire protocol must reset itself.
+        ///     This method is called when connection with remote application is reset (connection is
+        ///     renewing or first connecting). So, wire protocol must reset itself.
         /// </summary>
         public void Reset()
         {
@@ -145,25 +165,25 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         }
 
         /// <summary>
-        /// This method is used to deserialize a IScsMessage from it's bytes. This method can be
-        /// overrided by derived Classs to change deserialization strategy. It is a couple with
-        /// SerializeMessage method and must be overrided together.
+        ///     This method is used to deserialize a IScsMessage from it's bytes. This method can be
+        ///     overrided by derived Classs to change deserialization strategy. It is a couple with
+        ///     SerializeMessage method and must be overrided together.
         /// </summary>
         /// <param name="bytes">
-        /// Bytes of message to be deserialized (does not include message length. It consist of a
-        /// single whole message)
+        ///     Bytes of message to be deserialized (does not include message length. It consist of a
+        ///     single whole message)
         /// </param>
         /// <returns>Deserialized message</returns>
         protected virtual IScsMessage DeserializeMessage(byte[] bytes)
         {
             // Create a MemoryStream to convert bytes to a stream
-            using (MemoryStream deserializeMemoryStream = new MemoryStream(bytes))
+            using (var deserializeMemoryStream = new MemoryStream(bytes))
             {
                 // Go to head of the stream
                 deserializeMemoryStream.Position = 0;
 
                 // Deserialize the message
-                BinaryFormatter binaryFormatter = new BinaryFormatter
+                var binaryFormatter = new BinaryFormatter
                 {
                     AssemblyFormat = FormatterAssemblyStyle.Simple,
                     Binder = new DeserializationAppDomainBinder()
@@ -183,15 +203,15 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         }
 
         /// <summary>
-        /// This method is used to serialize a IScsMessage to a byte array. This method can be
-        /// overrided by derived Classs to change serialization strategy. It is a couple with
-        /// DeserializeMessage method and must be overrided together.
+        ///     This method is used to serialize a IScsMessage to a byte array. This method can be
+        ///     overrided by derived Classs to change serialization strategy. It is a couple with
+        ///     DeserializeMessage method and must be overrided together.
         /// </summary>
         /// <param name="message">Message to be serialized</param>
         /// <returns>Serialized message bytes. Does not include length of the message.</returns>
         protected virtual byte[] SerializeMessage(IScsMessage message)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
                 new BinaryFormatter().Serialize(memoryStream, message);
                 return memoryStream.ToArray();
@@ -199,13 +219,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         }
 
         /// <summary>
-        /// Reads a byte array with specified length.
+        ///     Reads a byte array with specified length.
         /// </summary>
         /// <param name="stream">Stream to read from</param>
         /// <param name="length">Length of the byte array to read</param>
         /// <returns>Read byte array</returns>
         /// <exception cref="EndOfStreamException">
-        /// Throws EndOfStreamException if can not read from stream.
+        ///     Throws EndOfStreamException if can not read from stream.
         /// </exception>
         private static byte[] ReadByteArray(Stream stream, int length)
         {
@@ -218,6 +238,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
                 {
                     throw new EndOfStreamException("Can not read from stream! Input stream is closed.");
                 }
+
                 totalRead += read;
             }
 
@@ -225,28 +246,28 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         }
 
         /// <summary>
-        /// Writes a int value to a byte array from a starting index.
+        ///     Writes a int value to a byte array from a starting index.
         /// </summary>
         /// <param name="buffer">Byte array to write int value</param>
         /// <param name="startIndex">Start index of byte array to write</param>
         /// <param name="number">An integer value to write</param>
         private static void WriteInt32(byte[] buffer, int startIndex, int number)
         {
-            buffer[startIndex] = (byte)((number >> 24) & 0xFF);
-            buffer[startIndex + 1] = (byte)((number >> 16) & 0xFF);
-            buffer[startIndex + 2] = (byte)((number >> 8) & 0xFF);
+            buffer[startIndex] = (byte)(number >> 24 & 0xFF);
+            buffer[startIndex + 1] = (byte)(number >> 16 & 0xFF);
+            buffer[startIndex + 2] = (byte)(number >> 8 & 0xFF);
             buffer[startIndex + 3] = (byte)(number & 0xFF);
         }
 
         /// <summary>
-        /// This method tries to read a single message and add to the messages collection.
+        ///     This method tries to read a single message and add to the messages collection.
         /// </summary>
         /// <param name="messages">Messages collection to collect messages</param>
         /// <returns>
-        /// Returns a boolean value indicates that if there is a need to re-call this method.
+        ///     Returns a boolean value indicates that if there is a need to re-call this method.
         /// </returns>
         /// <exception cref="CommunicationException">
-        /// Throws CommunicationException if message is bigger than maximum allowed message length.
+        ///     Throws CommunicationException if message is bigger than maximum allowed message length.
         /// </exception>
         private bool ReadSingleMessage(ICollection<IScsMessage> messages)
         {
@@ -312,29 +333,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
 
             // Return true to re-call this method to try to read next message
             return _receiveMemoryStream.Length > 0;
-        }
-
-        #endregion
-
-        #region Classes
-
-        /// <summary>
-        /// This class is used in deserializing to allow deserializing objects that are defined in
-        /// assemlies that are load in runtime (like PlugIns).
-        /// </summary>
-        protected sealed class DeserializationAppDomainBinder : SerializationBinder
-        {
-            #region Methods
-
-            public override Type BindToType(string assemblyName, string typeName)
-            {
-                string toAssemblyName = assemblyName.Split(',')[0];
-                return (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                        where assembly.FullName.Split(',')[0] == toAssemblyName
-                        select assembly.GetType(typeName)).FirstOrDefault();
-            }
-
-            #endregion
         }
 
         #endregion

@@ -14,15 +14,9 @@ namespace OpenNos.GameObject.Packets.VipPackets
         [PacketIndex(0, SerializeToEnd = true)]
         public string Arg { get; set; }
 
-        public IEnumerable<string> Help()
-        {
-            return new List<string>();
-        }
+        public IEnumerable<string> Help() => new List<string>();
 
-        public override string ToString()
-        {
-            return "$VipTp -help";
-        }
+        public override string ToString() => "$VipTp -help";
 
         #endregion
     }

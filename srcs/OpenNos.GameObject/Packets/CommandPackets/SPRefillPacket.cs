@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$SPRefill", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class SpRefillPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$SPRefill";
-        }
+        public static string ReturnHelp() => "$SPRefill";
     }
 }

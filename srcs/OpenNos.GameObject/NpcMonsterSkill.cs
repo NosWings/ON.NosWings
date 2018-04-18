@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System;
+using OpenNos.Data;
 using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
@@ -26,19 +26,6 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Properties
-
-        public short Hit { get; set; }
-
-        public DateTime LastSkillUse { get; set; }
-
-        public Skill Skill
-        {
-            get { return _skill ?? (_skill = ServerManager.Instance.GetSkill(SkillVNum)); }
-        }
-
-        #endregion
-
         #region Methods
 
         public override void Initialize()
@@ -46,6 +33,16 @@ namespace OpenNos.GameObject
             LastSkillUse = DateTime.Now.AddHours(-1);
             Hit = 0;
         }
+
+        #endregion
+
+        #region Properties
+
+        public short Hit { get; set; }
+
+        public DateTime LastSkillUse { get; set; }
+
+        public Skill Skill => _skill ?? (_skill = ServerManager.Instance.GetSkill(SkillVNum));
 
         #endregion
     }

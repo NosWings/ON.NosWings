@@ -8,8 +8,10 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     [PacketHeader("req_exc")]
     public class ExchangeRequestPacket : PacketDefinition
     {
-        [PacketIndex(0)] public RequestExchangeType RequestType { get; set; }
+        [PacketIndex(0)]
+        public RequestExchangeType RequestType { get; set; }
 
-        [PacketIndex(1)] public long CharacterId { get; set; }
+        [PacketIndex(1)]
+        public long CharacterId { get; set; }
     }
 }

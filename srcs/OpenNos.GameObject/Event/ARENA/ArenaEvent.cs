@@ -46,8 +46,8 @@ namespace OpenNos.GameObject.Event.ARENA
                             {
                                 List<ArenaMember> members = ServerManager.Instance.ArenaMembers
                                     .Where(e => e.Session != s.Session && e.ArenaType == EventType.TALENTARENA &&
-                                                e.Session.Character.Level <= s.Session.Character.Level + 5 &&
-                                                e.Session.Character.Level >= s.Session.Character.Level - 5).ToList();
+                                        e.Session.Character.Level <= s.Session.Character.Level + 5 &&
+                                        e.Session.Character.Level >= s.Session.Character.Level - 5).ToList();
                                 members.RemoveAll(o => o.GroupId != null && groupids.Contains(o.GroupId.Value));
                                 ArenaMember member = members.FirstOrDefault();
                                 if (member == null)
@@ -125,15 +125,15 @@ namespace OpenNos.GameObject.Event.ARENA
                                 for (int i = 0; i < 6; i++)
                                 {
                                     ItemInstance item = Inventory.InstantiateItemInstance(
-                                        (short) (4433 + (i > 2 ? 5 - i : i)), member.Session.Character.CharacterId);
-                                    item.Design = (short) (4433 + (i > 2 ? 5 - i : i));
+                                        (short)(4433 + (i > 2 ? 5 - i : i)), member.Session.Character.CharacterId);
+                                    item.Design = (short)(4433 + (i > 2 ? 5 - i : i));
                                     map.MapDesignObjects.Add(new MapDesignObject
                                     {
                                         ItemInstance = item,
                                         ItemInstanceId = item.Id,
                                         CharacterId = member.Session.Character.CharacterId,
-                                        MapX = (short) (i > 2 ? 120 : 19),
-                                        MapY = (short) (i > 2 ? 35 + i % 3 * 4 : 36 + i % 3 * 4)
+                                        MapX = (short)(i > 2 ? 120 : 19),
+                                        MapY = (short)(i > 2 ? 35 + i % 3 * 4 : 36 + i % 3 * 4)
                                     });
                                 }
 
@@ -197,8 +197,8 @@ namespace OpenNos.GameObject.Event.ARENA
                                             };
                                             o.Session.Character.DisableBuffs(bufftodisable);
                                             int i = Array.IndexOf(arenamembers, o) + 1;
-                                            o.Session.Character.Hp = (int) o.Session.Character.HpLoad();
-                                            o.Session.Character.Mp = (int) o.Session.Character.MpLoad();
+                                            o.Session.Character.Hp = (int)o.Session.Character.HpLoad();
+                                            o.Session.Character.Mp = (int)o.Session.Character.MpLoad();
                                             ServerManager.Instance.ChangeMapInstance(o.Session.Character.CharacterId,
                                                 map.MapInstanceId, o.GroupId == member.GroupId ? 125 : 14,
                                                 (o.GroupId == member.GroupId ? 37 : 38) + i % 3 * 2);
@@ -261,9 +261,9 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                                     e.ItemInstance.ItemVNum &&
                                                                                     e.MapX ==
                                                                                     (teammember.ArenaTeamType ==
-                                                                                     ArenaTeamType.ERENIA
-                                                                                        ? 120
-                                                                                        : 19));
+                                                                                        ArenaTeamType.ERENIA
+                                                                                            ? 120
+                                                                                            : 19));
                                                                         if (obj != null)
                                                                         {
                                                                             obj.ItemInstance.Design =
@@ -272,7 +272,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                                     }
 
                                                                     teammember.Order =
-                                                                        (byte) (e.ItemInstance.ItemVNum - 4433);
+                                                                        (byte)(e.ItemInstance.ItemVNum - 4433);
                                                                 }
                                                             }
                                                         }
@@ -460,12 +460,12 @@ namespace OpenNos.GameObject.Event.ARENA
                                                     at.LastSummoned = null;
                                                     at.Session.Character.PositionX =
                                                         at.ArenaTeamType == ArenaTeamType.ERENIA
-                                                            ? (short) 120
-                                                            : (short) 19;
+                                                            ? (short)120
+                                                            : (short)19;
                                                     at.Session.Character.PositionY =
                                                         at.ArenaTeamType == ArenaTeamType.ERENIA
-                                                            ? (short) 39
-                                                            : (short) 40;
+                                                            ? (short)39
+                                                            : (short)40;
                                                     at.Session.CurrentMapInstance.Broadcast(at.Session.Character
                                                         .GenerateTp());
                                                     at.Session.SendPacket(
@@ -510,10 +510,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                                         TalentArenaOptionType.Call));
 
                                                 map.Broadcast("ta_s");
-                                                Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(start4 =>
-                                                {
-                                                    map.IsPvp = true;
-                                                });
+                                                Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe(start4 => { map.IsPvp = true; });
                                             }
                                             else
                                             {
@@ -637,10 +634,7 @@ namespace OpenNos.GameObject.Event.ARENA
                                     });
                                 ServerManager.Instance.ArenaMembers
                                     .Where(o => o.GroupId == member.GroupId || o.GroupId == s.GroupId).ToList()
-                                    .ForEach(se =>
-                                    {
-                                        se.Session.SendPacket(se.Session.Character.GenerateBsInfo(2, 2, 0, 0));
-                                    });
+                                    .ForEach(se => { se.Session.SendPacket(se.Session.Character.GenerateBsInfo(2, 2, 0, 0)); });
 
                                 ServerManager.Instance.ArenaMembers.RemoveAll(o =>
                                     o.GroupId == member.GroupId || o.GroupId == s.GroupId);
@@ -702,7 +696,7 @@ namespace OpenNos.GameObject.Event.ARENA
             if (win)
             {
                 member.Session.Character.GetXp(RewardsHelper.Instance.ArenaXpReward(member.Session.Character.Level) /
-                                               ServerManager.Instance.XpRate);
+                    ServerManager.Instance.XpRate);
                 member.Session.Character.GetReput(500, true);
                 member.Session.Character.GiftAdd(2800, 1);
                 member.Session.Character.GetGold(member.Session.Character.Level * 1000);
@@ -711,7 +705,7 @@ namespace OpenNos.GameObject.Event.ARENA
             else
             {
                 member.Session.Character.GetXp(RewardsHelper.Instance.ArenaXpReward(member.Session.Character.Level) /
-                                               2 / ServerManager.Instance.XpRate);
+                    2 / ServerManager.Instance.XpRate);
                 member.Session.Character.GetReput(200, true);
                 member.Session.Character.GiftAdd(2801, 3);
                 member.Session.Character.GetGold(member.Session.Character.Level * 500);

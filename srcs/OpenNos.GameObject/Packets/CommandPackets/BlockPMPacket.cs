@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$BlockPM", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class BlockPmPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$BlockPM";
-        }
+        public static string ReturnHelp() => "$BlockPM";
     }
 }

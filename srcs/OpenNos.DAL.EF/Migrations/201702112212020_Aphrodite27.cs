@@ -8,8 +8,8 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Down()
         {
-            AddColumn("dbo.Character", "LastLogin", c => c.DateTime(nullable: false));
-            AddColumn("dbo.Account", "LastCompliment", c => c.DateTime(nullable: false));
+            AddColumn("dbo.Character", "LastLogin", c => c.DateTime(false));
+            AddColumn("dbo.Account", "LastCompliment", c => c.DateTime(false));
         }
 
         public override void Up()

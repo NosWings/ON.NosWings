@@ -10,12 +10,10 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public int EffectId { get; set; }
+        [PacketIndex(0)]
+        public int EffectId { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Effect EFFECTID";
-        }
+        public static string ReturnHelp() => "$Effect EFFECTID";
 
         #endregion
     }

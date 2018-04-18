@@ -15,7 +15,7 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Up()
         {
             DropForeignKey("dbo.GeneralLog", "AccountId", "dbo.Account");
-            AddForeignKey("dbo.GeneralLog", "AccountId", "dbo.Account", "AccountId", cascadeDelete: true);
+            AddForeignKey("dbo.GeneralLog", "AccountId", "dbo.Account", "AccountId", true);
         }
 
         #endregion

@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class Aphrodite46 : DbMigration
     {
         #region Methods
@@ -9,17 +9,17 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Down()
         {
             CreateTable(
-                "dbo.TimeSpace",
-                c => new
-                {
-                    TimespaceId = c.Short(nullable: false, identity: true),
-                    MapId = c.Short(nullable: false),
-                    PositionX = c.Short(nullable: false),
-                    PositionY = c.Short(nullable: false),
-                    Winner = c.String(maxLength: 255),
-                    Script = c.String(),
-                    WinnerScore = c.Int(nullable: false),
-                })
+                    "dbo.TimeSpace",
+                    c => new
+                    {
+                        TimespaceId = c.Short(false, true),
+                        MapId = c.Short(false),
+                        PositionX = c.Short(false),
+                        PositionY = c.Short(false),
+                        Winner = c.String(maxLength: 255),
+                        Script = c.String(),
+                        WinnerScore = c.Int(false)
+                    })
                 .PrimaryKey(t => t.TimespaceId);
 
             DropForeignKey("dbo.ScriptedInstance", "MapId", "dbo.Map");
@@ -34,18 +34,18 @@ namespace OpenNos.DAL.EF.Migrations
             DropForeignKey("dbo.TimeSpace", "MapId", "dbo.Map");
             DropIndex("dbo.TimeSpace", new[] { "MapId" });
             CreateTable(
-                "dbo.ScriptedInstance",
-                c => new
-                {
-                    ScriptedInstanceId = c.Short(nullable: false, identity: true),
-                    Type = c.Byte(nullable: false),
-                    MapId = c.Short(nullable: false),
-                    PositionX = c.Short(nullable: false),
-                    PositionY = c.Short(nullable: false),
-                    Winner = c.String(maxLength: 255),
-                    Script = c.String(),
-                    WinnerScore = c.Int(nullable: false),
-                })
+                    "dbo.ScriptedInstance",
+                    c => new
+                    {
+                        ScriptedInstanceId = c.Short(false, true),
+                        Type = c.Byte(false),
+                        MapId = c.Short(false),
+                        PositionX = c.Short(false),
+                        PositionY = c.Short(false),
+                        Winner = c.String(maxLength: 255),
+                        Script = c.String(),
+                        WinnerScore = c.Int(false)
+                    })
                 .PrimaryKey(t => t.ScriptedInstanceId)
                 .ForeignKey("dbo.Map", t => t.MapId)
                 .Index(t => t.MapId);

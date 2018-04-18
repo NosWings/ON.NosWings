@@ -13,10 +13,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
         [PacketIndex(0, SerializeToEnd = true)]
         public string Data { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$SearchItem PAGE NAME(*)";
-        }
+        public static string ReturnHelp() => "$SearchItem PAGE NAME(*)";
 
         #endregion
     }

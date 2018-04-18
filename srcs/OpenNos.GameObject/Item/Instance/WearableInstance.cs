@@ -130,7 +130,7 @@ namespace OpenNos.GameObject.Item.Instance
             byte classe = Item.Class;
             byte subtype = Item.ItemSubType;
             DateTime test = ItemDeleteTime ?? DateTime.Now;
-            long time = ItemDeleteTime != null ? (long) (test - DateTime.Now).TotalSeconds : 0;
+            long time = ItemDeleteTime != null ? (long)(test - DateTime.Now).TotalSeconds : 0;
             long seconds = IsBound ? time : Item.ItemValidTime;
             List<EquipmentOptionDTO> options = EquipmentOptions.Where(s => s.Level <= (s.Level > 12 ? 20 : 8))
                 .OrderBy(s => s.Level).ToList();
@@ -233,7 +233,7 @@ namespace OpenNos.GameObject.Item.Instance
                         return $"e_info 7 {ItemVNum} 0";
                     }
 
-                    BoxInstance specialist = (BoxInstance) this;
+                    var specialist = (BoxInstance)this;
 
                     // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
                     // 5=fairy pearl
@@ -293,7 +293,7 @@ namespace OpenNos.GameObject.Item.Instance
 
             if (Rare < 8)
             {
-                shellType = (byte) (Item.ItemType == ItemType.Armor ? 11 : 10);
+                shellType = (byte)(Item.ItemType == ItemType.Armor ? 11 : 10);
                 if (shellType != 11 && shellType != 10)
                 {
                     return;
@@ -301,9 +301,9 @@ namespace OpenNos.GameObject.Item.Instance
             }
             else
             {
-                List<byte> possibleTypes = new List<byte> {4, 5, 6, 7};
+                List<byte> possibleTypes = new List<byte> { 4, 5, 6, 7 };
                 int probability = ServerManager.Instance.RandomNumber();
-                shellType = (byte) (Item.ItemType == ItemType.Armor
+                shellType = (byte)(Item.ItemType == ItemType.Armor
                     ? (probability > 50 ? 5 : 7)
                     : (probability > 50 ? 4 : 6));
                 if (!possibleTypes.Contains(shellType))
@@ -381,9 +381,9 @@ namespace OpenNos.GameObject.Item.Instance
                     case RarifyMode.Free:
                         break;
                     case RarifyMode.Reduce:
-                        WearableInstance amulet =
+                        var amulet =
                             session.Character.Inventory.LoadBySlotAndType<WearableInstance>(
-                                (short) EquipmentType.Amulet, InventoryType.Wear);
+                                (short)EquipmentType.Amulet, InventoryType.Wear);
                         if (amulet == null)
                         {
                             return;
@@ -445,7 +445,7 @@ namespace OpenNos.GameObject.Item.Instance
                         }
 
                         if ((protection == RarifyProtection.Scroll || protection == RarifyProtection.BlueAmulet ||
-                             protection == RarifyProtection.RedAmulet) && !isCommand && Item.IsHeroic)
+                            protection == RarifyProtection.RedAmulet) && !isCommand && Item.IsHeroic)
                         {
                             session.SendPacket(
                                 UserInterfaceHelper.Instance.GenerateMsg(
@@ -454,7 +454,7 @@ namespace OpenNos.GameObject.Item.Instance
                         }
 
                         if ((protection == RarifyProtection.HeroicAmulet ||
-                             protection == RarifyProtection.RandomHeroicAmulet) && !Item.IsHeroic)
+                            protection == RarifyProtection.RandomHeroicAmulet) && !Item.IsHeroic)
                         {
                             session.SendPacket(
                                 UserInterfaceHelper.Instance.GenerateMsg(
@@ -634,9 +634,9 @@ namespace OpenNos.GameObject.Item.Instance
                         case RarifyProtection.RedAmulet:
                         case RarifyProtection.HeroicAmulet:
                         case RarifyProtection.RandomHeroicAmulet:
-                            WearableInstance amulet =
+                            var amulet =
                                 session.Character.Inventory.LoadBySlotAndType<WearableInstance>(
-                                    (short) EquipmentType.Amulet, InventoryType.Wear);
+                                    (short)EquipmentType.Amulet, InventoryType.Wear);
                             if (amulet == null)
                             {
                                 return;
@@ -700,7 +700,7 @@ namespace OpenNos.GameObject.Item.Instance
                 case EquipmentType.SecondaryWeapon:
                 {
                     int point = CharacterHelper.Instance.RarityPoint(Rare,
-                        Item.IsHeroic ? (short) (95 + Item.LevelMinimum) : Item.LevelMinimum);
+                        Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum);
                     Concentrate = 0;
                     HitRate = 0;
                     DamageMinimum = 0;
@@ -736,7 +736,7 @@ namespace OpenNos.GameObject.Item.Instance
                 case EquipmentType.Armor:
                 {
                     int point = CharacterHelper.Instance.RarityPoint(Rare,
-                        Item.IsHeroic ? (short) (95 + Item.LevelMinimum) : Item.LevelMinimum);
+                        Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum);
                     DefenceDodge = 0;
                     DistanceDefenceDodge = 0;
                     DistanceDefence = 0;
@@ -786,12 +786,12 @@ namespace OpenNos.GameObject.Item.Instance
                 return;
             }
 
-            short[] upsuccess = {100, 100, 85, 70, 50, 20};
-            int[] goldprice = {1500, 3000, 6000, 12000, 24000, 48000};
-            short[] sand = {5, 10, 15, 20, 25, 30};
+            short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
+            int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
+            short[] sand = { 5, 10, 15, 20, 25, 30 };
             const int sandVnum = 1027;
             if (Upgrade + itemToSum.Upgrade >= 6 || (itemToSum.Item.EquipmentSlot != EquipmentType.Gloves ||
-                                                     Item.EquipmentSlot != EquipmentType.Gloves) &&
+                    Item.EquipmentSlot != EquipmentType.Gloves) &&
                 (Item.EquipmentSlot != EquipmentType.Boots || itemToSum.Item.EquipmentSlot != EquipmentType.Boots))
             {
                 return;
@@ -807,17 +807,17 @@ namespace OpenNos.GameObject.Item.Instance
                 return;
             }
 
-            session.Character.Inventory.RemoveItemAmount(sandVnum, (byte) sand[Upgrade + itemToSum.Upgrade]);
+            session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)sand[Upgrade + itemToSum.Upgrade]);
             session.Character.Gold -= goldprice[Upgrade + itemToSum.Upgrade];
 
             int rnd = ServerManager.Instance.RandomNumber();
             if (rnd < upsuccess[Upgrade + itemToSum.Upgrade])
             {
-                Upgrade += (byte) (itemToSum.Upgrade + 1);
-                DarkResistance += (short) (itemToSum.DarkResistance + itemToSum.Item.DarkResistance);
-                LightResistance += (short) (itemToSum.LightResistance + itemToSum.Item.LightResistance);
-                WaterResistance += (short) (itemToSum.WaterResistance + itemToSum.Item.WaterResistance);
-                FireResistance += (short) (itemToSum.FireResistance + itemToSum.Item.FireResistance);
+                Upgrade += (byte)(itemToSum.Upgrade + 1);
+                DarkResistance += (short)(itemToSum.DarkResistance + itemToSum.Item.DarkResistance);
+                LightResistance += (short)(itemToSum.LightResistance + itemToSum.Item.LightResistance);
+                WaterResistance += (short)(itemToSum.WaterResistance + itemToSum.Item.WaterResistance);
+                FireResistance += (short)(itemToSum.FireResistance + itemToSum.Item.FireResistance);
                 session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                 session.SendPacket($"pdti 10 {ItemVNum} 1 27 {Upgrade} 0");
                 session.SendPacket(
@@ -868,26 +868,26 @@ namespace OpenNos.GameObject.Item.Instance
 
             if (Rare >= 8)
             {
-                upfix = new short[] {50, 40, 70, 65, 80, 90, 95, 97, 98, 99};
-                upfail = new short[] {50, 40, 60, 50, 60, 70, 75, 77, 83, 89};
+                upfix = new short[] { 50, 40, 70, 65, 80, 90, 95, 97, 98, 99 };
+                upfail = new short[] { 50, 40, 60, 50, 60, 70, 75, 77, 83, 89 };
 
-                goldprice = new[] {5000, 15000, 30000, 100000, 300000, 800000, 1500000, 4000000, 7000000, 10000000};
-                cella = new short[] {40, 100, 160, 240, 320, 440, 560, 760, 960, 1200};
-                gem = new short[] {2, 2, 4, 4, 6, 2, 2, 4, 4, 6};
+                goldprice = new[] { 5000, 15000, 30000, 100000, 300000, 800000, 1500000, 4000000, 7000000, 10000000 };
+                cella = new short[] { 40, 100, 160, 240, 320, 440, 560, 760, 960, 1200 };
+                gem = new short[] { 2, 2, 4, 4, 6, 2, 2, 4, 4, 6 };
             }
             else
             {
-                upfix = new short[] {0, 0, 10, 15, 20, 20, 10, 5, 3, 1};
-                upfail = new short[] {0, 0, 0, 5, 20, 40, 70, 85, 92, 98};
+                upfix = new short[] { 0, 0, 10, 15, 20, 20, 10, 5, 3, 1 };
+                upfail = new short[] { 0, 0, 0, 5, 20, 40, 70, 85, 92, 98 };
 
-                goldprice = new[] {500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000};
-                cella = new short[] {20, 50, 80, 120, 160, 220, 280, 380, 480, 600};
-                gem = new short[] {1, 1, 2, 2, 3, 1, 1, 2, 2, 3};
+                goldprice = new[] { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
+                cella = new short[] { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
+                gem = new short[] { 1, 1, 2, 2, 3, 1, 1, 2, 2, 3 };
             }
 
             if (hasAmulet == FixedUpMode.HasAmulet && IsFixed)
             {
-                upfix = new short[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                upfix = new short[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             }
 
             const short cellaVnum = 1014;
@@ -918,7 +918,7 @@ namespace OpenNos.GameObject.Item.Instance
                 case UpgradeMode.Reduced:
 
                     // TODO: Reduced Item Amount
-                    if (session.Character.Gold < (long) (goldprice[Upgrade] * reducedpricefactor))
+                    if (session.Character.Gold < (long)(goldprice[Upgrade] * reducedpricefactor))
                     {
                         session.SendPacket(
                             session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
@@ -979,9 +979,9 @@ namespace OpenNos.GameObject.Item.Instance
 
                     if (hasAmulet == FixedUpMode.HasAmulet && IsFixed)
                     {
-                        WearableInstance amulet =
+                        var amulet =
                             session.Character.Inventory.LoadBySlotAndType<WearableInstance>(
-                                (short) EquipmentType.Amulet, InventoryType.Wear);
+                                (short)EquipmentType.Amulet, InventoryType.Wear);
                         amulet.DurabilityPoint -= 1;
                         if (amulet.DurabilityPoint <= 0)
                         {
@@ -991,9 +991,9 @@ namespace OpenNos.GameObject.Item.Instance
                         }
                     }
 
-                    session.Character.Gold -= (long) (goldprice[Upgrade] * reducedpricefactor);
+                    session.Character.Gold -= (long)(goldprice[Upgrade] * reducedpricefactor);
                     session.Character.Inventory.RemoveItemAmount(cellaVnum,
-                        (int) (cella[Upgrade] * reducedpricefactor));
+                        (int)(cella[Upgrade] * reducedpricefactor));
                     session.SendPacket(session.Character.GenerateGold());
                     break;
 
@@ -1056,9 +1056,9 @@ namespace OpenNos.GameObject.Item.Instance
 
                     if (hasAmulet == FixedUpMode.HasAmulet && IsFixed)
                     {
-                        WearableInstance amulet =
+                        var amulet =
                             session.Character.Inventory.LoadBySlotAndType<WearableInstance>(
-                                (short) EquipmentType.Amulet, InventoryType.Wear);
+                                (short)EquipmentType.Amulet, InventoryType.Wear);
                         amulet.DurabilityPoint -= 1;
                         if (amulet.DurabilityPoint <= 0)
                         {
@@ -1074,7 +1074,7 @@ namespace OpenNos.GameObject.Item.Instance
                     break;
             }
 
-            WearableInstance wearable = session.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
+            var wearable = session.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
 
             int rnd = ServerManager.Instance.RandomNumber();
             if (Rare == 8)

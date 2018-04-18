@@ -18,7 +18,7 @@ using System.Runtime.Serialization;
 namespace OpenNos.Core.Networking.Communication.Scs.Communication
 {
     /// <summary>
-    /// This application is thrown in a communication error.
+    ///     This application is thrown in a communication error.
     /// </summary>
     [Serializable]
     public class CommunicationException : Exception
@@ -26,14 +26,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication
         #region Instantiation
 
         /// <summary>
-        /// Contstructor.
+        ///     Contstructor.
         /// </summary>
         public CommunicationException()
         {
         }
 
         /// <summary>
-        /// Contstructor for serializing.
+        ///     Contstructor for serializing.
         /// </summary>
         /// <param name="serializationInfo"></param>
         /// <param name="context"></param>
@@ -42,7 +42,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication
         }
 
         /// <summary>
-        /// Contstructor.
+        ///     Contstructor.
         /// </summary>
         /// <param name="message">Exception message</param>
         public CommunicationException(string message) : base(message)
@@ -50,7 +50,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication
         }
 
         /// <summary>
-        /// Contstructor.
+        ///     Contstructor.
         /// </summary>
         /// <param name="message">Exception message</param>
         /// <param name="innerException">Inner exception</param>

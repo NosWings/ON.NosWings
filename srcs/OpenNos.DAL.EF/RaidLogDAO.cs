@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
@@ -43,13 +41,35 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<RaidLogDTO> LoadByCharacterId(long characterId)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                foreach (RaidLog id in context.RaidLog.Where(c => c.CharacterId == characterId))
+                {
+                    yield return _mapper.Map<RaidLogDTO>(id);
+                }
+            }
+        }
+
+        public IEnumerable<RaidLogDTO> LoadByFamilyId(long familyId)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                foreach (RaidLog id in context.RaidLog.Where(c => c.FamilyId == familyId))
+                {
+                    yield return _mapper.Map<RaidLogDTO>(id);
+                }
+            }
+        }
+
         public SaveResult InsertOrUpdateList(ref List<RaidLogDTO> raidList)
         {
             try
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    foreach (var r in raidList)
+                    foreach (RaidLogDTO r in raidList)
                     {
                         RaidLogDTO raid = r;
                         long raidId = raid.RaidId;
@@ -80,7 +100,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                RaidLog entity = _mapper.Map<RaidLog>(raid);
+                var entity = _mapper.Map<RaidLog>(raid);
                 context.RaidLog.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<RaidLogDTO>(entity);
@@ -99,29 +119,8 @@ namespace OpenNos.DAL.EF
                 _mapper.Map(old, replace);
                 context.SaveChanges();
             }
+
             return _mapper.Map<RaidLogDTO>(old);
-        }
-
-        public IEnumerable<RaidLogDTO> LoadByCharacterId(long characterId)
-        {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                foreach (var id in context.RaidLog.Where(c => c.CharacterId == characterId))
-                {
-                    yield return _mapper.Map<RaidLogDTO>(id);
-                }
-            }
-        }
-
-        public IEnumerable<RaidLogDTO> LoadByFamilyId(long familyId)
-        {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                foreach (var id in context.RaidLog.Where(c => c.FamilyId == familyId))
-                {
-                    yield return _mapper.Map<RaidLogDTO>(id);
-                }
-            }
         }
     }
 }

@@ -15,9 +15,9 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Up()
         {
-            AddColumn("dbo.FamilyLog", "FamilyLogType", c => c.Byte(nullable: false));
+            AddColumn("dbo.FamilyLog", "FamilyLogType", c => c.Byte(false));
             AddColumn("dbo.FamilyLog", "FamilyLogData", c => c.String(maxLength: 255));
-            AddColumn("dbo.FamilyLog", "Timestamp", c => c.DateTime(nullable: false));
+            AddColumn("dbo.FamilyLog", "Timestamp", c => c.DateTime(false));
         }
 
         #endregion

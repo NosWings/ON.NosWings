@@ -12,11 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.GameObject;
-using OpenNos.GameObject.Helpers;
-using OpenNos.GameObject.Networking;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,12 +19,17 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using NosSharp.Enums;
+using OpenNos.Core;
 using OpenNos.Core.Handling;
+using OpenNos.Data;
+using OpenNos.GameObject;
+using OpenNos.GameObject.Battle;
 using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Event.ICEBREAKER;
+using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Map;
+using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Packets.ClientPackets;
-using OpenNos.GameObject.Battle;
 using OpenNos.GameObject.Packets.ServerPackets;
 
 namespace OpenNos.Handler
@@ -38,10 +38,7 @@ namespace OpenNos.Handler
     {
         #region Instantiation
 
-        public BattlePacketHandler(ClientSession session)
-        {
-            Session = session;
-        }
+        public BattlePacketHandler(ClientSession session) => Session = session;
 
         #endregion
 
@@ -54,7 +51,7 @@ namespace OpenNos.Handler
         #region Methods
 
         /// <summary>
-        /// mtlist packet
+        ///     mtlist packet
         /// </summary>
         /// <param name="mutliTargetListPacket"></param>
         public void MultiTargetListHit(MultiTargetListPacket mutliTargetListPacket)
@@ -100,7 +97,7 @@ namespace OpenNos.Handler
             foreach (MultiTargetListSubPacket subpacket in mutliTargetListPacket.Targets)
             {
                 IEnumerable<CharacterSkill> characterSkills = skills as IList<CharacterSkill> ?? skills.ToList();
-                characterSkills?.FirstOrDefault(s => s.Skill.CastId == subpacket.SkillCastId - 1);
+                characterSkills?.FirstOrDefault(s => s.Skill.CastId == (subpacket.SkillCastId - 1));
                 if (ski == null || !ski.CanBeUsed() || !Session.HasCurrentMapInstance)
                 {
                     continue;
@@ -123,7 +120,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// u_s packet
+        ///     u_s packet
         /// </summary>
         /// <param name="useSkillPacket"></param>
         public void UseSkill(UseSkillPacket useSkillPacket)
@@ -213,7 +210,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// u_as packet
+        ///     u_as packet
         /// </summary>
         /// <param name="useAoeSkillPacket"></param>
         public void UseZonesSkill(UseAoeSkillPacket useAoeSkillPacket)
@@ -351,7 +348,6 @@ namespace OpenNos.Handler
                                             else if (IceBreaker.SessionsHaveSameGroup(Session, character))
                                             {
                                                 Session.SendPacket(new CancelPacket { Type = CancelType.InCombatMode, TargetId = targetId });
-                                                break;
                                             }
 
                                             break;
@@ -498,7 +494,8 @@ namespace OpenNos.Handler
                                         Session.Character.PositionY);
                                     return;
                                 }
-                                else if (IceBreaker.SessionsHaveSameGroup(Session, playerToAttack))
+
+                                if (IceBreaker.SessionsHaveSameGroup(Session, playerToAttack))
                                 {
                                     Session.SendPacket(new CancelPacket { Type = CancelType.InCombatMode, TargetId = targetId });
                                     return;
@@ -568,7 +565,7 @@ namespace OpenNos.Handler
                                                 if ((team == null || team.FirstOrDefault(s => s.Session == Session)?.ArenaTeamType ==
                                                         team.FirstOrDefault(s => s.Session == character)?.ArenaTeamType) &&
                                                     (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.TalentArenaMapInstance ||
-                                                        (Session.Character.Group != null && Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))))
+                                                        Session.Character.Group != null && Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId)))
                                                 {
                                                     continue;
                                                 }
@@ -966,6 +963,7 @@ namespace OpenNos.Handler
                                             break;
                                     }
                                 }
+
                                 Session.Character.BattleEntity.TargetHit(mon, TargetHitType.ZoneHit, characterSkill.Skill, mapX: x, mapY: y);
                             }
                         }

@@ -8,10 +8,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        public static string ReturnHelp()
-        {
-            return "$MuteMap";
-        }
+        public static string ReturnHelp() => "$MuteMap";
 
         #endregion
     }

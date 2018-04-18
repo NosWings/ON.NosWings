@@ -21,10 +21,13 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public CharacterMapItem(short x, short y, ItemInstance itemInstance) : base(x, y)
-        {
-            ItemInstance = itemInstance;
-        }
+        public CharacterMapItem(short x, short y, ItemInstance itemInstance) : base(x, y) => ItemInstance = itemInstance;
+
+        #endregion
+
+        #region Methods
+
+        public override ItemInstance GetItemInstance() => ItemInstance;
 
         #endregion
 
@@ -32,16 +35,16 @@ namespace OpenNos.GameObject
 
         public override ushort Amount
         {
-            get { return ItemInstance.Amount; }
+            get => ItemInstance.Amount;
 
-            set { ItemInstance.Amount = Amount; }
+            set => ItemInstance.Amount = Amount;
         }
 
         public override short ItemVNum
         {
-            get { return ItemInstance.ItemVNum; }
+            get => ItemInstance.ItemVNum;
 
-            set { ItemInstance.ItemVNum = value; }
+            set => ItemInstance.ItemVNum = value;
         }
 
         public override long TransportId
@@ -52,15 +55,6 @@ namespace OpenNos.GameObject
             {
                 // cannot set TransportId
             }
-        }
-
-        #endregion
-
-        #region Methods
-
-        public override ItemInstance GetItemInstance()
-        {
-            return ItemInstance;
         }
 
         #endregion

@@ -13,10 +13,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
         [PacketIndex(0, SerializeToEnd = true)]
         public string Message { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$ShoutHere MESSAGE";
-        }
+        public static string ReturnHelp() => "$ShoutHere MESSAGE";
 
         #endregion
     }

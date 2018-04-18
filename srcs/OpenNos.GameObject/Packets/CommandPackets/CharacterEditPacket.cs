@@ -10,14 +10,13 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public string Property { get; set; }
+        [PacketIndex(0)]
+        public string Property { get; set; }
 
-        [PacketIndex(1, serializeToEnd: true)] public string Data { get; set; }
+        [PacketIndex(1, serializeToEnd: true)]
+        public string Data { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$CharEdit PROPERTYNAME DATA";
-        }
+        public static string ReturnHelp() => "$CharEdit PROPERTYNAME DATA";
 
         #endregion
     }

@@ -12,19 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
 
 namespace OpenNos.DAL.EF
 {
@@ -75,8 +73,8 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref AccountDTO account)
         {
-                var context = DataAccessHelper.CreateContext();
-                return InsertOrUpdate(ref account, ref context);
+            OpenNosContext context = DataAccessHelper.CreateContext();
+            return InsertOrUpdate(ref account, ref context);
         }
 
         public SaveResult InsertOrUpdate(ref AccountDTO account, ref OpenNosContext context)
@@ -113,6 +111,7 @@ namespace OpenNos.DAL.EF
                         return true;
                     }
                 }
+
                 return false;
             }
             catch (Exception e)
@@ -170,7 +169,7 @@ namespace OpenNos.DAL.EF
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    GeneralLog log = new GeneralLog
+                    var log = new GeneralLog
                     {
                         AccountId = accountId,
                         IpAddress = ipAddress,
@@ -192,7 +191,7 @@ namespace OpenNos.DAL.EF
 
         private AccountDTO Insert(AccountDTO account, OpenNosContext context)
         {
-            Account entity = _mapper.Map<Account>(account);
+            var entity = _mapper.Map<Account>(account);
             context.Account.Add(entity);
             context.SaveChanges();
             return _mapper.Map<AccountDTO>(entity);
@@ -204,6 +203,7 @@ namespace OpenNos.DAL.EF
             {
                 return null;
             }
+
             // The Mapper breaks context.SaveChanges(), so we need to "map" the data by hand...
             // entity = _mapper.Map<Account>(account);
             entity.Authority = account.Authority;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -28,7 +24,7 @@ namespace OpenNos.GameObject.Helpers
         public void LoadSkipQuests()
         {
             SkipQuests = new List<int>();
-            SkipQuests.AddRange(new List<int> {1676, 1677, 1698, 1714, 1715, 1719, 3014, 3019});
+            SkipQuests.AddRange(new List<int> { 1676, 1677, 1698, 1714, 1715, 1719, 3014, 3019 });
         }
 
         #endregion
@@ -37,10 +33,7 @@ namespace OpenNos.GameObject.Helpers
 
         private static QuestHelper _instance;
 
-        public static QuestHelper Instance
-        {
-            get { return _instance ?? (_instance = new QuestHelper()); }
-        }
+        public static QuestHelper Instance => _instance ?? (_instance = new QuestHelper());
 
         #endregion
     }

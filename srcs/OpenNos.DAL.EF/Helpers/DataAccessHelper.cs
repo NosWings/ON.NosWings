@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
 using System;
 using System.Data;
 using System.Data.Common;
+using OpenNos.Core;
+using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF.Helpers
 {
@@ -37,8 +37,8 @@ namespace OpenNos.DAL.EF.Helpers
         #region Methods
 
         /// <summary>
-        /// Begins and returns a new transaction. Be sure to commit/rollback/dispose this transaction
-        /// or use it in an using-clause.
+        ///     Begins and returns a new transaction. Be sure to commit/rollback/dispose this transaction
+        ///     or use it in an using-clause.
         /// </summary>
         /// <returns>A new transaction.</returns>
         public static DbTransaction BeginTransaction()
@@ -55,15 +55,12 @@ namespace OpenNos.DAL.EF.Helpers
         }
 
         /// <summary>
-        /// Creates new instance of database context.
+        ///     Creates new instance of database context.
         /// </summary>
-        public static OpenNosContext CreateContext()
-        {
-            return new OpenNosContext();
-        }
+        public static OpenNosContext CreateContext() => new OpenNosContext();
 
         /// <summary>
-        /// Disposes the current instance of database context.
+        ///     Disposes the current instance of database context.
         /// </summary>
         public static void DisposeContext()
         {
@@ -90,6 +87,7 @@ namespace OpenNos.DAL.EF.Helpers
                     Logger.Log.Error(Language.Instance.GetMessageFromKey("DATABASE_NOT_UPTODATE"));
                     return false;
                 }
+
                 return true;
             }
         }

@@ -16,16 +16,16 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.CharacterRelation",
-                c => new
-                {
-                    CharacterRelationId = c.Long(nullable: false, identity: true),
-                    CharacterId = c.Long(nullable: false),
-                    RelatedCharacterId = c.Long(nullable: false),
-                    RelationType = c.Short(nullable: false)
-                })
+                    "dbo.CharacterRelation",
+                    c => new
+                    {
+                        CharacterRelationId = c.Long(false, true),
+                        CharacterId = c.Long(false),
+                        RelatedCharacterId = c.Long(false),
+                        RelationType = c.Short(false)
+                    })
                 .PrimaryKey(t => t.CharacterRelationId)
-                .ForeignKey("dbo.Character", t => t.CharacterId, cascadeDelete: true)
+                .ForeignKey("dbo.Character", t => t.CharacterId, true)
                 .Index(t => t.CharacterId);
         }
 

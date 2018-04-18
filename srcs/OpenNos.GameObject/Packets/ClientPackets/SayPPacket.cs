@@ -9,7 +9,8 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public int PetId { get; set; }
+        [PacketIndex(0)]
+        public int PetId { get; set; }
 
         [PacketIndex(1, SerializeToEnd = true)]
         public string Message { get; set; }

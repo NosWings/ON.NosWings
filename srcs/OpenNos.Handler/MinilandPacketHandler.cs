@@ -12,16 +12,16 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.GameObject;
-using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using NosSharp.Enums;
+using OpenNos.Core;
 using OpenNos.Core.Extensions;
 using OpenNos.Core.Handling;
+using OpenNos.GameObject;
+using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Packets.ClientPackets;
@@ -32,29 +32,24 @@ namespace OpenNos.Handler
     {
         #region Members
 
-        private readonly ClientSession _session;
-
         #endregion
 
         #region Instantiation
 
-        public MinilandPacketHandler(ClientSession session)
-        {
-            _session = session;
-        }
+        public MinilandPacketHandler(ClientSession session) => Session = session;
 
         #endregion
 
         #region Properties
 
-        private ClientSession Session => _session;
+        private ClientSession Session { get; }
 
         #endregion
 
         #region Methods
 
         /// <summary>
-        /// mjoin packet
+        ///     mjoin packet
         /// </summary>
         /// <param name="mJoinPacket"></param>
         public void JoinMiniland(MJoinPacket mJoinPacket)
@@ -80,7 +75,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// mg packet
+        ///     mg packet
         /// </summary>
         /// <param name="packet"></param>
         public void MinigamePlay(MinigamePacket packet)
@@ -89,6 +84,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             ClientSession client = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Miniland == Session.Character.MapInstance);
             MapDesignObject mlobj = Session.CurrentMapInstance?.MapDesignObjects.FirstOrDefault(s => s.ItemInstance.ItemVNum == packet.MinigameVNum);
             if (mlobj == null)
@@ -311,7 +307,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// addobj packet
+        ///     addobj packet
         /// </summary>
         /// <param name="packet"></param>
         public void MinilandAddObject(AddobjPacket packet)
@@ -320,6 +316,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             var minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
             if (minilandobject == null)
             {
@@ -394,7 +391,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// mledit packet
+        ///     mledit packet
         /// </summary>
         /// <param name="mlEditPacket"></param>
         public void MinilandEdit(MlEditPacket mlEditPacket)
@@ -449,7 +446,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// rmvobj packet
+        ///     rmvobj packet
         /// </summary>
         /// <param name="packet"></param>
         public void MinilandRemoveObject(RmvobjPacket packet)
@@ -491,7 +488,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// useobj packet
+        ///     useobj packet
         /// </summary>
         /// <param name="packet"></param>
         public void UseMinilandObject(UseobjPacket packet)

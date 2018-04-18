@@ -10,12 +10,10 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public float Dignity { get; set; }
+        [PacketIndex(0)]
+        public float Dignity { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$ChangeDignity AMOUNT";
-        }
+        public static string ReturnHelp() => "$ChangeDignity AMOUNT";
 
         #endregion
     }

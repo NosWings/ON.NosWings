@@ -8,7 +8,7 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Down()
         {
-            AddColumn("dbo.Account", "LastSession", c => c.Int(nullable: false));
+            AddColumn("dbo.Account", "LastSession", c => c.Int(false));
         }
 
         public override void Up()

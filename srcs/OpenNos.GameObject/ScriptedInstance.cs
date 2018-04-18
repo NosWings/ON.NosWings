@@ -12,9 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,7 +20,10 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Xml;
 using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 
@@ -91,14 +91,11 @@ namespace OpenNos.GameObject
             MapInstanceDictionary.Values.ToList().ForEach(m => m.Dispose());
         }
 
-        public string GenerateMainInfo()
-        {
-            return $"minfo 0 1 -1.0/0 -1.0/0 -1/0 -1.0/0 1 {FirstMap.InstanceBag.Lives + 1} 0";
-        }
+        public string GenerateMainInfo() => $"minfo 0 1 -1.0/0 -1.0/0 -1/0 -1.0/0 1 {FirstMap.InstanceBag.Lives + 1} 0";
 
         public List<string> GenerateMinimap()
         {
-            List<string> lst = new List<string> {"rsfm 0 0 4 12"};
+            List<string> lst = new List<string> { "rsfm 0 0 4 12" };
             MapInstanceDictionary.Values.ToList().ForEach(s => lst.Add(s.GenerateRsfn(true)));
             return lst;
         }
@@ -135,10 +132,7 @@ namespace OpenNos.GameObject
                 $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} {RequieredItems.Sum(s => s.Amount)} {drawgift} {specialitems} {bonusitems} {winnerScore}.{(winnerScore > 0 ? winner : "")} 0 0 {(Title != string.Empty ? Title : Language.Instance.GetMessageFromKey("TS_TUTORIAL"))}\n{Label}";
         }
 
-        public string GenerateWp()
-        {
-            return $"wp {PositionX} {PositionY} {ScriptedInstanceId} 0 {LevelMinimum} {LevelMaximum}";
-        }
+        public string GenerateWp() => $"wp {PositionX} {PositionY} {ScriptedInstanceId} 0 {LevelMinimum} {LevelMaximum}";
 
         public void LoadGlobals()
         {
@@ -270,7 +264,7 @@ namespace OpenNos.GameObject
                 }
 
                 MapInstanceDictionary.Values.ToList().ForEach(m =>
-                    EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1)));
+                    EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1)));
                 Dispose();
             });
             GenerateEvent(instanceEvents, FirstMap);
@@ -343,7 +337,7 @@ namespace OpenNos.GameObject
                 }
 
                 MapInstance mapinstance = MapInstanceDictionary.FirstOrDefault(s => s.Key == mapid).Value ??
-                                          parentmapinstance;
+                    parentmapinstance;
                 MapCell cell;
                 switch (mapevent.Name)
                 {
@@ -472,7 +466,7 @@ namespace OpenNos.GameObject
                         ConcurrentBag<ToSummon> lst = new ConcurrentBag<ToSummon>
                         {
                             new ToSummon(short.Parse(mapevent?.Attributes["VNum"].Value),
-                                new MapCell {X = positionX, Y = positionY}, null, move, 100, isTarget, isBonus,
+                                new MapCell { X = positionX, Y = positionY }, null, move, 100, isTarget, isBonus,
                                 isHostile, isBoss)
                             {
                                 DeathEvents = death,
@@ -504,7 +498,7 @@ namespace OpenNos.GameObject
                         }
 
                         evts.Add(new EventContainer(mapinstance, EventActionType.MOVE,
-                            new ZoneEvent() {X = positionX, Y = positionY, Events = moveevents}));
+                            new ZoneEvent { X = positionX, Y = positionY, Events = moveevents }));
                         break;
 
                     case "SummonNpc":
@@ -522,7 +516,7 @@ namespace OpenNos.GameObject
                         List<ToSummon> lstn = new List<ToSummon>
                         {
                             new ToSummon(short.Parse(mapevent?.Attributes["VNum"].Value),
-                                new MapCell() {X = positionX, Y = positionY}, null, move, 100, isBossOrMate: isMate,
+                                new MapCell { X = positionX, Y = positionY }, null, move, 100, isBossOrMate: isMate,
                                 isBonusOrProtected: isProtected)
                             {
                                 DeathEvents = GenerateEvent(mapevent, mapinstance)
@@ -590,7 +584,7 @@ namespace OpenNos.GameObject
                         int.TryParse(mapevent?.Attributes["MinAmount"]?.Value, out int minAmount);
                         int.TryParse(mapevent?.Attributes["MaxAmount"]?.Value, out int maxAmount);
                         evts.Add(new EventContainer(mapinstance, EventActionType.THROWITEMS,
-                            new Tuple<int, short, byte, int, int>(-1, vnum2, packAmount == 0 ? (byte) 1 : packAmount,
+                            new Tuple<int, short, byte, int, int>(-1, vnum2, packAmount == 0 ? (byte)1 : packAmount,
                                 minAmount == 0 ? 1 : minAmount, maxAmount == 0 ? 1 : maxAmount)));
                         break;
 
@@ -601,7 +595,7 @@ namespace OpenNos.GameObject
                     case "ChangePortalType":
                         evts.Add(new EventContainer(mapinstance, EventActionType.CHANGEPORTALTYPE,
                             new Tuple<int, PortalType>(int.Parse(mapevent?.Attributes["IdOnMap"].Value),
-                                (PortalType) sbyte.Parse(mapevent?.Attributes["Type"].Value))));
+                                (PortalType)sbyte.Parse(mapevent?.Attributes["Type"].Value))));
                         break;
 
                     case "SendPacket":
@@ -704,9 +698,9 @@ namespace OpenNos.GameObject
                             Type = short.Parse(mapevent?.Attributes["Type"].Value),
                             DestinationX = toX,
                             DestinationY = toY,
-                            DestinationMapId = (short) (destmapInstanceId == default(Guid) ? -1 : 0),
+                            DestinationMapId = (short)(destmapInstanceId == default(Guid) ? -1 : 0),
                             SourceMapInstanceId = mapinstance.MapInstanceId,
-                            DestinationMapInstanceId = destmapInstanceId,
+                            DestinationMapInstanceId = destmapInstanceId
                         };
                         foreach (XmlNode var in mapevent.ChildNodes)
                         {
@@ -734,7 +728,7 @@ namespace OpenNos.GameObject
             {
                 foreach (MapInstance m in MapInstanceDictionary.Values)
                 {
-                    EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 3));
+                    EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)3));
                 }
 
                 Dispose();
@@ -747,7 +741,7 @@ namespace OpenNos.GameObject
 
             foreach (MapInstance m in MapInstanceDictionary.Values)
             {
-                EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte) 1));
+                EventHelper.Instance.RunEvent(new EventContainer(m, EventActionType.SCRIPTEND, (byte)1));
             }
 
             Dispose();

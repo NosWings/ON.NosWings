@@ -34,10 +34,7 @@ namespace ON.NW.Master
     {
         #region Methods
 
-        public bool GetMaintenanceState()
-        {
-            return MsManager.Instance.MaintenanceState;
-        }
+        public bool GetMaintenanceState() => MsManager.Instance.MaintenanceState;
 
         public void SetMaintenanceState(bool state)
         {
@@ -50,6 +47,7 @@ namespace ON.NW.Master
             {
                 return false;
             }
+
             MsManager.Instance.AuthentificatedClients.Add(CurrentClient.ClientId);
             return true;
         }
@@ -60,6 +58,7 @@ namespace ON.NW.Master
             {
                 return;
             }
+
             MsManager.Instance.ConnectedAccounts.Clear();
             MsManager.Instance.WorldServers.Clear();
         }
@@ -76,6 +75,7 @@ namespace ON.NW.Master
             {
                 account.ConnectedWorld = MsManager.Instance.WorldServers.FirstOrDefault(w => w.Id.Equals(worldId));
             }
+
             return account?.ConnectedWorld != null;
         }
 
@@ -95,12 +95,14 @@ namespace ON.NW.Master
             {
                 return false;
             }
+
             account.CharacterId = characterId;
             account.Character = new AccountSession.CharacterSession(character.Name, character.Level, character.Gender.ToString(), character.Class.ToString());
             foreach (WorldServer world in MsManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(account.ConnectedWorld.WorldGroup)))
             {
                 world.ServiceClient.GetClientProxy<ICommunicationClient>().CharacterConnected(characterId);
             }
+
             Console.Title = $"MASTER SERVER - Channels :{MsManager.Instance.WorldServers.Count} - Players : {MsManager.Instance.ConnectedAccounts.Count(s => s.Character != null)}";
             return true;
         }
@@ -113,11 +115,13 @@ namespace ON.NW.Master
             {
                 return act4Channel.Serializable;
             }
+
             act4Channel = MsManager.Instance.WorldServers.FirstOrDefault(s => s.WorldGroup == worldGroup);
             if (act4Channel == null)
             {
                 return null;
             }
+
             Logger.Log.Info($"[{act4Channel.WorldGroup}] ACT4 Channel elected on ChannelId : {act4Channel.ChannelId} ");
             act4Channel.IsAct4 = true;
             //ServerManager.Instance.RestoreAct4();
@@ -136,10 +140,12 @@ namespace ON.NW.Master
             {
                 return;
             }
+
             if (MsManager.Instance.ConnectedAccounts.Any(s => s.AccountId.Equals(accountId) && s.CanSwitchChannel))
             {
                 return;
             }
+
             MsManager.Instance.ConnectedAccounts.RemoveWhere(s => s.AccountId != accountId, out ConcurrentBag<AccountSession> instanceConnectedAccounts);
             MsManager.Instance.ConnectedAccounts = instanceConnectedAccounts;
         }
@@ -157,10 +163,12 @@ namespace ON.NW.Master
                 {
                     world.ServiceClient.GetClientProxy<ICommunicationClient>().CharacterDisconnected(characterId);
                 }
+
                 if (account.CanSwitchChannel)
                 {
                     continue;
                 }
+
                 account.Character = null;
                 account.ConnectedWorld = null;
                 Console.Title = $"MASTER SERVER - Channels :{MsManager.Instance.WorldServers.Count} - Players : {MsManager.Instance.ConnectedAccounts.Count(s => s.CharacterId != 0)}";
@@ -201,6 +209,7 @@ namespace ON.NW.Master
             {
                 world.ServiceClient.GetClientProxy<ICommunicationClient>().KickSession(accountId, sessionId);
             }
+
             if (accountId.HasValue)
             {
                 MsManager.Instance.ConnectedAccounts.RemoveWhere(s => !s.AccountId.Equals(accountId.Value), out ConcurrentBag<AccountSession> tmp);
@@ -224,6 +233,7 @@ namespace ON.NW.Master
             {
                 world.ServiceClient.GetClientProxy<ICommunicationClient>().UpdatePenaltyLog(penaltyId);
             }
+
             foreach (IScsServiceClient login in MsManager.Instance.LoginServers)
             {
                 login.GetClientProxy<ICommunicationClient>().UpdatePenaltyLog(penaltyId);
@@ -236,6 +246,7 @@ namespace ON.NW.Master
             {
                 return;
             }
+
             MsManager.Instance.ConnectedAccounts.RemoveWhere(a => !a.AccountId.Equals(accountId), out ConcurrentBag<AccountSession> tmp);
             MsManager.Instance.ConnectedAccounts = tmp;
             MsManager.Instance.ConnectedAccounts.Add(new AccountSession(accountId, sessionId, accountName));
@@ -262,11 +273,13 @@ namespace ON.NW.Master
             {
                 return false;
             }
+
             AccountSession account = MsManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId) && a.SessionId.Equals(sessionId));
             if (account == null)
             {
                 return false;
             }
+
             {
                 account.CanSwitchChannel = false;
                 account.PreviousChannel = account.ConnectedWorld;
@@ -296,7 +309,8 @@ namespace ON.NW.Master
             {
                 return null;
             }
-            WorldServer ws = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIp, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup)
+
+            var ws = new WorldServer(worldServer.Id, new ScsTcpEndPoint(worldServer.EndPointIp, worldServer.EndPointPort), worldServer.AccountLimit, worldServer.WorldGroup)
             {
                 ServiceClient = CurrentClient,
                 ChannelId = Enumerable.Range(1, 30).Except(MsManager.Instance.WorldServers.Where(w => w.WorldGroup.Equals(worldServer.WorldGroup)).OrderBy(w => w.ChannelId).Select(w => w.ChannelId))
@@ -317,6 +331,7 @@ namespace ON.NW.Master
             {
                 return null;
             }
+
             string channelPacket = $"NsTeST {account.AccountName} {sessionId} ";
             foreach (WorldServer world in MsManager.Instance.WorldServers.Where(x => x.IsInvisible == false).OrderBy(w => w.WorldGroup))
             {
@@ -324,6 +339,7 @@ namespace ON.NW.Master
                 {
                     worldCount++;
                 }
+
                 lastGroup = world.WorldGroup;
 
                 int currentlyConnectedAccounts = MsManager.Instance.ConnectedAccounts.Count(a => a.ConnectedWorld?.ChannelId == world.ChannelId);
@@ -336,6 +352,7 @@ namespace ON.NW.Master
 
                 channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:{channelcolor}:{worldCount}.{world.ChannelId}.{world.WorldGroup} ";
             }
+
             channelPacket += "-1:-1:-1:10000.10000.1";
             return MsManager.Instance.WorldServers.Any() ? channelPacket : null;
         }
@@ -345,13 +362,14 @@ namespace ON.NW.Master
             Dictionary<int, List<AccountSession.CharacterSession>> dictionary =
                 MsManager.Instance.WorldServers.ToDictionary(world => world.ChannelId, world => new List<AccountSession.CharacterSession>());
 
-            foreach (IGrouping<int, AccountSession> accountConnections in MsManager.Instance.ConnectedAccounts.Where(s=> s.Character != null).GroupBy(s => s.ConnectedWorld.ChannelId))
+            foreach (IGrouping<int, AccountSession> accountConnections in MsManager.Instance.ConnectedAccounts.Where(s => s.Character != null).GroupBy(s => s.ConnectedWorld.ChannelId))
             {
                 foreach (AccountSession i in accountConnections)
                 {
                     dictionary[accountConnections.Key].Add(i.Character);
                 }
             }
+
             return JsonConvert.SerializeObject(dictionary);
         }
 
@@ -367,6 +385,7 @@ namespace ON.NW.Master
             {
                 return null;
             }
+
             switch (message.Type)
             {
                 case MessageType.Family:
@@ -375,6 +394,7 @@ namespace ON.NW.Master
                     {
                         world.ServiceClient.GetClientProxy<ICommunicationClient>().SendMessageToCharacter(message);
                     }
+
                     return -1;
 
                 case MessageType.PrivateChat:
@@ -389,6 +409,7 @@ namespace ON.NW.Master
                             return account.ConnectedWorld.ChannelId;
                         }
                     }
+
                     break;
 
                 case MessageType.Shout:
@@ -396,8 +417,10 @@ namespace ON.NW.Master
                     {
                         world.ServiceClient.GetClientProxy<ICommunicationClient>().SendMessageToCharacter(message);
                     }
+
                     return -1;
             }
+
             return null;
         }
 
@@ -407,6 +430,7 @@ namespace ON.NW.Master
             {
                 return;
             }
+
             MsManager.Instance.ConnectedAccounts.RemoveWhere(a => a == null || a.ConnectedWorld?.Id.Equals(worldId) != true, out ConcurrentBag<AccountSession> tmp);
             MsManager.Instance.ConnectedAccounts = tmp;
             MsManager.Instance.WorldServers.RemoveAll(w => w.Id.Equals(worldId));
@@ -480,6 +504,7 @@ namespace ON.NW.Master
             {
                 return;
             }
+
             AccountSession account = MsManager.Instance.ConnectedAccounts.FirstOrDefault(a => a.AccountId.Equals(accountId));
             if (account != null)
             {
@@ -494,6 +519,7 @@ namespace ON.NW.Master
             {
                 MsManager.Instance.ConnectedAccounts.ToList().CopyTo(tmp);
             }
+
             foreach (AccountSession account in tmp.Where(a => a != null && a.LastPulse.AddMinutes(5) <= DateTime.Now))
             {
                 KickSession(account.AccountId, null);
@@ -507,6 +533,7 @@ namespace ON.NW.Master
             {
                 return false;
             }
+
             LogVIPDTO log = DaoFactory.LogVipDao.GetLastByAccountId(character.AccountId);
 
             if (log == null)
@@ -523,14 +550,15 @@ namespace ON.NW.Master
             else
             {
                 // PRO RATA
-                LogVIPDTO newlog = new LogVIPDTO
+                var newlog = new LogVIPDTO
                 {
                     AccountId = character.AccountId,
                     Timestamp = log.Timestamp.Date.AddMonths(1),
-                    VipPack = authority.ToString(),
+                    VipPack = authority.ToString()
                 };
                 DaoFactory.LogVipDao.InsertOrUpdate(ref log);
             }
+
             if (!IsAccountConnected(character.AccountId))
             {
                 AccountDTO account = DaoFactory.AccountDao.LoadById(character.AccountId);
@@ -542,6 +570,7 @@ namespace ON.NW.Master
                 AccountSession account = MsManager.Instance.ConnectedAccounts.FirstOrDefault(s => s.AccountId == character.AccountId);
                 account?.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().ChangeAuthority(account.AccountId, authority);
             }
+
             return true;
         }
 
@@ -559,6 +588,7 @@ namespace ON.NW.Master
                     DaoFactory.MailDao.InsertOrUpdate(ref mail);
                     return;
                 }
+
                 account.ConnectedWorld.ServiceClient.GetClientProxy<ICommunicationClient>().SendMail(mail);
             }
         }
@@ -569,7 +599,8 @@ namespace ON.NW.Master
             {
                 return;
             }
-            foreach (var worldServer in MsManager.Instance.WorldServers.Where(x => x.Id.Equals(worldId)))
+
+            foreach (WorldServer worldServer in MsManager.Instance.WorldServers.Where(x => x.Id.Equals(worldId)))
             {
                 worldServer.IsInvisible = true;
             }

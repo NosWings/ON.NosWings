@@ -16,13 +16,6 @@ namespace OpenNos.Core
 {
     public class SessionFactory
     {
-        #region Members
-
-        private static SessionFactory _instance;
-        private int _sessionCounter;
-
-        #endregion
-
         #region Instantiation
 
         private SessionFactory()
@@ -44,6 +37,13 @@ namespace OpenNos.Core
             _sessionCounter += 2;
             return _sessionCounter;
         }
+
+        #endregion
+
+        #region Members
+
+        private static SessionFactory _instance;
+        private int _sessionCounter;
 
         #endregion
     }

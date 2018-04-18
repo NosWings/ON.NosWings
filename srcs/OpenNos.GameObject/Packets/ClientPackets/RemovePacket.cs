@@ -9,9 +9,11 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public byte InventorySlot { get; set; }
+        [PacketIndex(0)]
+        public byte InventorySlot { get; set; }
 
-        [PacketIndex(1)] public byte Type { get; set; }
+        [PacketIndex(1)]
+        public byte Type { get; set; }
 
         #endregion
     }

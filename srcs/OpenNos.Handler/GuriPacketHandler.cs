@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Handling;
@@ -15,19 +14,14 @@ using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ClientPackets;
-using Group = OpenNos.GameObject.Group;
 
 namespace OpenNos.Handler
 {
-    class GuriPacketHandler : IPacketHandler
+    internal class GuriPacketHandler : IPacketHandler
     {
-
         #region Instantiation
 
-        public GuriPacketHandler(ClientSession session)
-        {
-            Session = session;
-        }
+        public GuriPacketHandler(ClientSession session) => Session = session;
 
         #endregion
 
@@ -40,7 +34,7 @@ namespace OpenNos.Handler
         #region Methods
 
         /// <summary>
-        ///  guri packet
+        ///     guri packet
         /// </summary>
         /// <param name="guriPacket"></param>
         public void Guri(GuriPacket guriPacket)
@@ -49,6 +43,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             if (guriPacket.Type == 10 && guriPacket.Data >= 973 && guriPacket.Data <= 999 && !Session.Character.EmoticonsBlocked)
             {
                 if (guriPacket.User != null && Convert.ToInt64(guriPacket.User.Value) == Session.Character.CharacterId)
@@ -67,7 +62,7 @@ namespace OpenNos.Handler
             else
             {
                 switch (guriPacket.Type)
-                { 
+                {
                     // SHELL IDENTIFYING
                     case 204:
                         if (guriPacket.User == null)
@@ -76,9 +71,9 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        var inventoryType = (InventoryType) guriPacket.Argument;
+                        var inventoryType = (InventoryType)guriPacket.Argument;
                         ItemInstance pearls = Session.Character.Inventory.FirstOrDefault(s => s.Value.ItemVNum == 1429).Value;
-                        var shell = (WearableInstance) Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, inventoryType);
+                        var shell = (WearableInstance)Session.Character.Inventory.LoadBySlotAndType((short)guriPacket.User.Value, inventoryType);
 
                         if (pearls == null)
                         {
@@ -157,22 +152,24 @@ namespace OpenNos.Handler
                         {
                             return;
                         }
+
                         const int perfumeVnum = 1428;
-                        var perfumeInventoryType = (InventoryType) guriPacket.Argument;
-                        var eq = (WearableInstance) Session.Character.Inventory.LoadBySlotAndType((short) guriPacket.User.Value, perfumeInventoryType);
+                        var perfumeInventoryType = (InventoryType)guriPacket.Argument;
+                        var eq = (WearableInstance)Session.Character.Inventory.LoadBySlotAndType((short)guriPacket.User.Value, perfumeInventoryType);
 
                         if (eq.BoundCharacterId == Session.Character.CharacterId)
                         {
                             // ALREADY YOURS
                             return;
                         }
+
                         if (eq.ShellRarity == null)
                         {
                             // NO SHELL APPLIED
                             return;
                         }
 
-                        int perfumesNeeded = ShellGeneratorHelper.Instance.PerfumeFromItemLevelAndShellRarity(eq.Item.LevelMinimum, (byte) eq.ShellRarity.Value);
+                        int perfumesNeeded = ShellGeneratorHelper.Instance.PerfumeFromItemLevelAndShellRarity(eq.Item.LevelMinimum, (byte)eq.ShellRarity.Value);
                         if (Session.Character.Inventory.CountItem(perfumeVnum) < perfumesNeeded)
                         {
                             // NOT ENOUGH PEARLS
@@ -189,13 +186,14 @@ namespace OpenNos.Handler
                             {
                                 return;
                             }
-                            short slot = (short) guriPacket.User.Value;
+
+                            short slot = (short)guriPacket.User.Value;
                             ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
                             if (box != null)
                             {
                                 if (guriPacket.Data > 0)
                                 {
-                                    box.Item.Use(Session, ref box, 1, new[] {guriPacket.Data.ToString()});
+                                    box.Item.Use(Session, ref box, 1, new[] { guriPacket.Data.ToString() });
                                 }
                                 else
                                 {
@@ -203,6 +201,7 @@ namespace OpenNos.Handler
                                 }
                             }
                         }
+
                         break;
                     case 501:
                         if (ServerManager.Instance.IceBreakerInWaiting && IceBreaker.Map.Sessions.Count() < IceBreaker.MaxAllowedPlayers)
@@ -211,7 +210,7 @@ namespace OpenNos.Handler
                             var group = new Group(GroupType.IceBreaker);
                             if (Session.Character.Group != null)
                             {
-                                foreach (var session in Session.Character.Group.Characters)
+                                foreach (ClientSession session in Session.Character.Group.Characters)
                                 {
                                     group.Characters.Add(session);
                                 }
@@ -220,8 +219,10 @@ namespace OpenNos.Handler
                             {
                                 group.Characters.Add(Session);
                             }
+
                             IceBreaker.AddGroup(group);
                         }
+
                         break;
                     case 502:
                         long? charid = guriPacket.User;
@@ -229,6 +230,7 @@ namespace OpenNos.Handler
                         {
                             return;
                         }
+
                         ClientSession target = ServerManager.Instance.GetSessionByCharacterId(charid.Value);
                         IceBreaker.FrozenPlayers.Remove(target);
                         IceBreaker.AlreadyFrozenPlayers.Add(target);
@@ -240,12 +242,14 @@ namespace OpenNos.Handler
                             Group[] groups = { IceBreaker.GetGroupByClientSession(Session), IceBreaker.GetGroupByClientSession(target) };
                             IceBreaker.MergeGroups(groups);
                         }
+
                         break;
                     case 506:
                         if (ServerManager.Instance.EventInWaiting)
                         {
                             Session.Character.IsWaitingForEvent = true;
                         }
+
                         break;
 
                     case 710: // Maps Teleporters 
@@ -253,15 +257,18 @@ namespace OpenNos.Handler
                         {
                             return;
                         }
-                        Session.Character.TeleportOnMap((short) guriPacket.Argument, (short) guriPacket.User);
+
+                        Session.Character.TeleportOnMap((short)guriPacket.Argument, (short)guriPacket.User);
                         break;
 
                     case 711: // Maps Teleporters 
-                        TeleporterDTO tp = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.Teleporters.Any(t => t?.TeleporterId == guriPacket.Argument))?.Teleporters.FirstOrDefault(t => t?.Type == TeleporterType.TeleportOnOtherMap);
+                        TeleporterDTO tp = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.Teleporters.Any(t => t?.TeleporterId == guriPacket.Argument))?.Teleporters
+                            .FirstOrDefault(t => t?.Type == TeleporterType.TeleportOnOtherMap);
                         if (tp == null)
                         {
                             return;
                         }
+
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         break;
 
@@ -272,6 +279,7 @@ namespace OpenNos.Handler
                             {
                                 return;
                             }
+
                             short slot = (short)guriPacket.User.Value;
                             ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(slot, InventoryType.Main);
                             if (item != null)
@@ -286,12 +294,13 @@ namespace OpenNos.Handler
                                 }
                             }
                         }
+
                         break;
 
                     default:
                         if (guriPacket.Type == 199 && guriPacket.Argument == 2)
                         {
-                            short[] listWingOfFriendship = {2160, 2312, 10048};
+                            short[] listWingOfFriendship = { 2160, 2312, 10048 };
                             short vnumToUse = -1;
                             foreach (short vnum in listWingOfFriendship)
                             {
@@ -300,16 +309,19 @@ namespace OpenNos.Handler
                                     vnumToUse = vnum;
                                 }
                             }
+
                             if (vnumToUse != -1 || Session.Character.Authority > AuthorityType.User)
                             {
                                 if (guriPacket.User == null)
                                 {
                                     return;
                                 }
+
                                 if (!long.TryParse(guriPacket.User.Value.ToString(), out long charId))
                                 {
                                     return;
                                 }
+
                                 ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                                 if (session != null)
                                 {
@@ -326,7 +338,8 @@ namespace OpenNos.Handler
                                         }
                                         else
                                         {
-                                            if (session.Character.Faction == Session.Character.Faction && session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance || session.Character.MapInstance.MapInstanceType == MapInstanceType.LobbyMapInstance)
+                                            if (session.Character.Faction == Session.Character.Faction && session.Character.MapInstance.MapInstanceType == MapInstanceType.Act4Instance ||
+                                                session.Character.MapInstance.MapInstanceType == MapInstanceType.LobbyMapInstance)
                                             {
                                                 short mapy = session.Character.PositionY;
                                                 short mapx = session.Character.PositionX;
@@ -363,13 +376,14 @@ namespace OpenNos.Handler
                                         {
                                             return;
                                         }
+
                                         MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(guriPacket.Argument));
                                         if (npc != null)
                                         {
                                             NpcMonster mapobject = ServerManager.Instance.GetNpc(npc.NpcVNum);
 
                                             int rateDrop = ServerManager.Instance.DropRate;
-                                            int delay = (int) Math.Round((3 + mapobject.RespawnTime / 1000d) * Session.Character.TimesUsed);
+                                            int delay = (int)Math.Round((3 + mapobject.RespawnTime / 1000d) * Session.Character.TimesUsed);
                                             delay = delay > 11 ? 8 : delay;
                                             if (Session.Character.LastMapObject.AddSeconds(delay) < DateTime.Now)
                                             {
@@ -381,6 +395,7 @@ namespace OpenNos.Handler
                                                         return;
                                                     }
                                                 }
+
                                                 var random = new Random();
                                                 double randomAmount = ServerManager.Instance.RandomNumber() * random.NextDouble();
                                                 DropDTO drop = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum);
@@ -394,14 +409,17 @@ namespace OpenNos.Handler
                                                         {
                                                             return;
                                                         }
+
                                                         Session.Character.IncrementQuests(QuestType.Collect1, drop.ItemVNum);
                                                         Session.CurrentMapInstance.Broadcast(npc.GenerateOut());
-                                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
+                                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                                                            string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
                                                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 11));
                                                         return;
                                                     }
+
                                                     int dropChance = drop.DropChance;
-                                                    if (randomAmount <= (double) dropChance * rateDrop / 5000.000)
+                                                    if (randomAmount <= (double)dropChance * rateDrop / 5000.000)
                                                     {
                                                         ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(vnum).FirstOrDefault();
                                                         Session.Character.LastMapObject = DateTime.Now;
@@ -410,6 +428,7 @@ namespace OpenNos.Handler
                                                         {
                                                             Session.Character.TimesUsed = 0;
                                                         }
+
                                                         if (newInv != null)
                                                         {
                                                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
@@ -433,10 +452,11 @@ namespace OpenNos.Handler
                                             {
                                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
                                                     string.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"),
-                                                        (int) (Session.Character.LastMapObject.AddSeconds(delay) - DateTime.Now).TotalSeconds), 0));
+                                                        (int)(Session.Character.LastMapObject.AddSeconds(delay) - DateTime.Now).TotalSeconds), 0));
                                             }
                                         }
                                     }
+
                                     break;
                                 case 710:
                                     if (guriPacket.Value != null)
@@ -445,6 +465,7 @@ namespace OpenNos.Handler
                                         // n.MapNpcId.Equals(Convert.ToInt16(guriPacket.Data)); NpcMonster mapObject
                                         // = ServerManager.Instance.GetNpc(npc.NpcVNum); teleport free
                                     }
+
                                     break;
                                 case 750:
                                     if (!guriPacket.User.HasValue)
@@ -455,11 +476,13 @@ namespace OpenNos.Handler
                                             // WRONG PACKET
                                             return;
                                         }
+
                                         if (Session.Character.Inventory.CountItem(baseVnum + faction) < 1)
                                         {
                                             // NO EGG
                                             return;
                                         }
+
                                         if (faction > 4)
                                         {
                                             /*
@@ -468,6 +491,7 @@ namespace OpenNos.Handler
                                              */
                                             return;
                                         }
+
                                         if (faction < 3)
                                         {
                                             if (Session.Character.Family != null)
@@ -476,6 +500,7 @@ namespace OpenNos.Handler
                                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_CHARACTER_FACTION_IN_FAM"), 0));
                                                 return;
                                             }
+
                                             Session.Character.Faction = (FactionType)faction;
                                             Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
                                             Session.SendPacket("scr 0 0 0 0 0 0 0");
@@ -493,15 +518,17 @@ namespace OpenNos.Handler
                                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
                                                 return;
                                             }
+
                                             if (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
                                             {
                                                 // IF IS NOT HEAD OF FAMILY
                                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_FAMILYHEAD"), 0));
                                                 return;
                                             }
+
                                             FamilyDTO fam = Session.Character.Family;
                                             fam.FamilyFaction = (byte)(faction / 2);
-                                            Session.Character.Faction = (FactionType) (faction / 2);
+                                            Session.Character.Faction = (FactionType)(faction / 2);
                                             Session.SendPacket(Session.Character.GenerateFaction());
                                             DaoFactory.FamilyDao.InsertOrUpdate(ref fam);
                                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
@@ -512,6 +539,7 @@ namespace OpenNos.Handler
                                                     $"GET_PROTECTION_POWER_{faction / 2}"), 0));
                                         }
                                     }
+
                                     break;
                                 case 2:
                                     Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX,
@@ -530,6 +558,7 @@ namespace OpenNos.Handler
                                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_NAME_PET_MAX_LENGTH")));
                                                 return;
                                             }
+
                                             if (mate != null)
                                             {
                                                 mate.Name = guriPacket.Value;
@@ -543,6 +572,7 @@ namespace OpenNos.Handler
                                                 Session.SendPackets(Session.Character.GenerateScP());
                                                 Session.Character.Inventory.RemoveItemAmount(petnameVNum);
                                             }
+
                                             break;
                                         // Presentation message
                                         case 2:
@@ -565,6 +595,7 @@ namespace OpenNos.Handler
                                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("INTRODUCTION_SET"), 10));
                                                 Session.Character.Inventory.RemoveItemAmount(presentationVNum);
                                             }
+
                                             break;
                                         // Speaker
                                         case 3:
@@ -574,6 +605,7 @@ namespace OpenNos.Handler
                                                 {
                                                     return;
                                                 }
+
                                                 Logger.Log.Warn($"Speaker : {guriPacket.Value}");
                                                 string message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
                                                 string[] valuesplit = guriPacket.Value.Split(' ');
@@ -590,15 +622,17 @@ namespace OpenNos.Handler
                                                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SPEAKER_CANT_BE_USED"), 10));
                                                     return;
                                                 }
+
                                                 Session.Character.Inventory.RemoveItemAmount(speakerVNum);
                                                 ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                                                 LogHelper.Instance.InsertChatLog(ChatType.Speaker, Session.Character.CharacterId, message, Session.IpAddress);
                                             }
+
                                             break;
                                         // Message Bubble
                                         case 4:
                                             if (Session.Character.Inventory.CountItem(messageBubbleVNum) > 0)
-                                            {                                                
+                                            {
                                                 if (Session.Character.IsMuted())
                                                 {
                                                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_MSG_BUBBLE"), 10));
@@ -607,13 +641,14 @@ namespace OpenNos.Handler
 
                                                 Session.Character.Inventory.RemoveItemAmount(messageBubbleVNum);
 
-                                                Session.SendPacket(new CsprPacket{Message = guriPacket.Value});
+                                                Session.SendPacket(new CsprPacket { Message = guriPacket.Value });
                                                 LogHelper.Instance.InsertChatLog(ChatType.General,
                                                     Session.Character.CharacterId, guriPacket.Value, Session.IpAddress);
                                             }
 
                                             break;
                                     }
+
                                     break;
                                 default:
                                     if (guriPacket.Type == 199 && guriPacket.Argument == 1)
@@ -625,6 +660,7 @@ namespace OpenNos.Handler
                                                 Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
                                                 return;
                                             }
+
                                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 4, $"#guri^199^2^{guriPacket.User.Value}"));
                                         }
                                     }
@@ -637,6 +673,7 @@ namespace OpenNos.Handler
                                                 {
                                                     Session.SendPacket(Session.Character.GenerateStashAll());
                                                 }
+
                                                 break;
                                             case 202:
                                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PARTNER_BACKPACK"), 10));
@@ -680,7 +717,7 @@ namespace OpenNos.Handler
                                                     }
                                                     case 203 when guriPacket.Argument == 0:
                                                         // SP points initialization
-                                                        int[] listPotionResetVNums = {1366, 1427, 5115, 9040};
+                                                        int[] listPotionResetVNums = { 1366, 1427, 5115, 9040 };
                                                         int vnumToUse = -1;
                                                         foreach (int vnum in listPotionResetVNums)
                                                         {
@@ -689,12 +726,13 @@ namespace OpenNos.Handler
                                                                 vnumToUse = vnum;
                                                             }
                                                         }
+
                                                         if (vnumToUse != -1)
                                                         {
                                                             if (Session.Character.UseSp)
                                                             {
                                                                 var specialistInstance =
-                                                                    Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp, InventoryType.Wear);
+                                                                    Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                                                                 if (specialistInstance != null)
                                                                 {
                                                                     specialistInstance.SlDamage = 0;
@@ -722,8 +760,8 @@ namespace OpenNos.Handler
                                                                     specialistInstance.MP = 0;
 
                                                                     Session.Character.Inventory.RemoveItemAmount(vnumToUse);
-                                                                    Session.Character.Inventory.DeleteFromSlotAndType((byte) EquipmentType.Sp, InventoryType.Wear);
-                                                                    Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (byte) EquipmentType.Sp);
+                                                                    Session.Character.Inventory.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Wear);
+                                                                    Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (byte)EquipmentType.Sp);
                                                                     Session.SendPacket(Session.Character.GenerateCond());
                                                                     Session.SendPacket(specialistInstance.GenerateSlInfo());
                                                                     Session.SendPacket(Session.Character.GenerateLev());
@@ -743,12 +781,15 @@ namespace OpenNos.Handler
 
                                                         break;
                                                 }
+
                                                 break;
                                         }
                                     }
+
                                     break;
                             }
                         }
+
                         break;
                 }
             }

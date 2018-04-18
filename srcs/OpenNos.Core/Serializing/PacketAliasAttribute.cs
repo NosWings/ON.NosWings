@@ -21,10 +21,7 @@ namespace OpenNos.Core.Serializing
     {
         #region Instantiation
 
-        public PacketAliasAttribute(string alias)
-        {
-            Alias = alias;
-        }
+        public PacketAliasAttribute(string alias) => Alias = alias;
 
         #endregion
 

@@ -22,13 +22,6 @@ namespace OpenNos.Core.Networking
 {
     public class NetworkClient : ScsServerClient, INetworkClient
     {
-        #region Members
-
-        private EncryptionBase _encryptor;
-        private object _session;
-
-        #endregion
-
         #region Instantiation
 
         public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
@@ -37,23 +30,18 @@ namespace OpenNos.Core.Networking
 
         #endregion
 
+        #region Members
+
+        private EncryptionBase _encryptor;
+        private object _session;
+
+        #endregion
+
         #region Properties
 
-        public string IpAddress
-        {
-            get
-            {
-                return RemoteEndPoint.ToString();
-            }
-        }
+        public string IpAddress => RemoteEndPoint.ToString();
 
-        public bool IsConnected
-        {
-            get
-            {
-                return CommunicationState == CommunicationStates.Connected;
-            }
-        }
+        public bool IsConnected => CommunicationState == CommunicationStates.Connected;
 
         public bool IsDisposing { get; set; }
 
@@ -73,7 +61,7 @@ namespace OpenNos.Core.Networking
                 return;
             }
 
-            ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
+            var rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
             SendMessage(rawMessage, priority);
         }
 

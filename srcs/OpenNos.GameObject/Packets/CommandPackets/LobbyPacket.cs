@@ -8,10 +8,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Methods
 
-        public static string ReturnHelp()
-        {
-            return "$Lobby";
-        }
+        public static string ReturnHelp() => "$Lobby";
 
         #endregion
     }

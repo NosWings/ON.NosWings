@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -32,8 +32,8 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref RespawnDTO respawn)
         {
-                var contextRef = DataAccessHelper.CreateContext();
-                return InsertOrUpdate(ref contextRef, ref respawn);
+            OpenNosContext contextRef = DataAccessHelper.CreateContext();
+            return InsertOrUpdate(ref contextRef, ref respawn);
         }
 
         public SaveResult InsertOrUpdate(ref OpenNosContext context, ref RespawnDTO respawn)
@@ -92,7 +92,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                Respawn entity = _mapper.Map<Respawn>(respawn);
+                var entity = _mapper.Map<Respawn>(respawn);
                 context.Respawn.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<RespawnDTO>(entity);
@@ -111,6 +111,7 @@ namespace OpenNos.DAL.EF
                 _mapper.Map(respawn, entity);
                 context.SaveChanges();
             }
+
             return _mapper.Map<RespawnDTO>(entity);
         }
 

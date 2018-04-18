@@ -28,10 +28,7 @@ namespace OpenNos.GameObject.Item.Instance
 
         #region Instantiation
 
-        public BoxInstance()
-        {
-            _random = new Random();
-        }
+        public BoxInstance() => _random = new Random();
 
         public BoxInstance(Guid id)
         {

@@ -12,13 +12,7 @@ namespace OpenNos.PathFinder.PathFinder
 
         #region Properties
 
-        public int Count
-        {
-            get
-            {
-                return _array.Count;
-            }
-        }
+        public int Count => _array.Count;
 
         #endregion
 
@@ -34,26 +28,25 @@ namespace OpenNos.PathFinder.PathFinder
             while (c < _array.Count)
             {
                 int min = c;
-                if ((2 * c) + 1 < _array.Count && _array[(2 * c) + 1].CompareTo(_array[min]) == -1)
+                if (2 * c + 1 < _array.Count && _array[2 * c + 1].CompareTo(_array[min]) == -1)
                 {
-                    min = (2 * c) + 1;
+                    min = 2 * c + 1;
                 }
-                if ((2 * c) + 2 < _array.Count && _array[(2 * c) + 2].CompareTo(_array[min]) == -1)
+
+                if (2 * c + 2 < _array.Count && _array[2 * c + 2].CompareTo(_array[min]) == -1)
                 {
-                    min = (2 * c) + 2;
+                    min = 2 * c + 2;
                 }
 
                 if (min == c)
                 {
                     break;
                 }
-                else
-                {
-                    Node tmp = _array[c];
-                    _array[c] = _array[min];
-                    _array[min] = tmp;
-                    c = min;
-                }
+
+                Node tmp = _array[c];
+                _array[c] = _array[min];
+                _array[min] = tmp;
+                c = min;
             }
 
             return ret;
@@ -63,14 +56,14 @@ namespace OpenNos.PathFinder.PathFinder
         {
             _array.Add(element);
             int c = _array.Count - 1;
-            int parent = (c - 1) >> 1;
+            int parent = c - 1 >> 1;
             while (c > 0 && _array[c].CompareTo(_array[parent]) < 0)
             {
                 Node tmp = _array[c];
                 _array[c] = _array[parent];
                 _array[parent] = tmp;
                 c = parent;
-                parent = (c - 1) >> 1;
+                parent = c - 1 >> 1;
             }
         }
 

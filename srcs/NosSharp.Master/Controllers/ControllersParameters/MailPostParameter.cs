@@ -1,6 +1,5 @@
 ﻿namespace ON.NW.Master.Controllers.ControllersParameters
 {
-
     public class MailPostParameter
     {
         public long CharacterId { get; set; }

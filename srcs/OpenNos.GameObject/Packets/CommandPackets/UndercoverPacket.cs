@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$Undercover", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class UndercoverPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$Undercover";
-        }
+        public static string ReturnHelp() => "$Undercover";
     }
 }

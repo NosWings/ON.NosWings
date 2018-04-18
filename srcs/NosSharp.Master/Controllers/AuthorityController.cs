@@ -12,10 +12,8 @@ namespace ON.NW.Master.Controllers
     {
         // POST /Authority 
         [AuthorizeRole(AuthorityType.Administrator)]
-        public bool Post([FromBody] ChangeAuthorityParameter authorityParameter)
-        {
-            return CommunicationServiceClient.Instance.ChangeAuthority(authorityParameter.WorldGroup, authorityParameter.CharacterName, (AuthorityType)authorityParameter.Authority);
-        }
+        public bool Post([FromBody] ChangeAuthorityParameter authorityParameter) =>
+            CommunicationServiceClient.Instance.ChangeAuthority(authorityParameter.WorldGroup, authorityParameter.CharacterName, (AuthorityType)authorityParameter.Authority);
 
         public string Get()
         {
@@ -27,6 +25,7 @@ namespace ON.NW.Master.Controllers
                     authorities[i.ToString()] = (int)(AuthorityType)i;
                 }
             }
+
             return JsonConvert.SerializeObject(authorities);
         }
     }

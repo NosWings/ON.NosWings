@@ -64,7 +64,7 @@ namespace OpenNos.GameObject.Item
                             }
 
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                            session.Character.AddStaticBuff(new StaticBuffDTO {CardId = 393});
+                            session.Character.AddStaticBuff(new StaticBuffDTO { CardId = 393 });
                             break;
                         case 1428:
                             session.SendPacket("guri 18 1");
@@ -90,7 +90,7 @@ namespace OpenNos.GameObject.Item
                                 return;
                             }
 
-                            WearableInstance eq =
+                            var eq =
                                 session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
                             if (eq == null)
                             {
@@ -113,7 +113,7 @@ namespace OpenNos.GameObject.Item
                                 UserInterfaceHelper.Instance.GenerateGuri(17, 1, session.Character.CharacterId));
                             break;
                         case 1904:
-                            short[] items = {1894, 1895, 1896, 1897, 1898, 1899, 1900, 1901, 1902, 1903};
+                            short[] items = { 1894, 1895, 1896, 1897, 1898, 1899, 1900, 1901, 1902, 1903 };
                             for (int i = 0; i < 5; i++)
                             {
                                 session.Character.GiftAdd(items[ServerManager.Instance.RandomNumber(0, items.Length)],
@@ -176,7 +176,8 @@ namespace OpenNos.GameObject.Item
                                         DestinationCharacterId = null,
                                         SourceCharacterId = session.Character.CharacterId,
                                         SourceWorldId = ServerManager.Instance.WorldId,
-                                        Message = string.Format(Language.Instance.GetMessageFromKey("SUPER_REWARD"), session.Character.Name, ServerManager.Instance.GetItem(rollitem.ItemGeneratedVNum).Name),
+                                        Message = string.Format(Language.Instance.GetMessageFromKey("SUPER_REWARD"), session.Character.Name,
+                                            ServerManager.Instance.GetItem(rollitem.ItemGeneratedVNum).Name),
                                         Type = MessageType.Shout
                                     });
                                 }
@@ -237,7 +238,7 @@ namespace OpenNos.GameObject.Item
                     }
 
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                    session.Character.AddStaticBuff(new StaticBuffDTO {CardId = 131});
+                    session.Character.AddStaticBuff(new StaticBuffDTO { CardId = 131 });
                     session.CurrentMapInstance.Broadcast(session.Character.GeneratePairy());
                     session.SendPacket(session.Character.GeneratePairy());
                     break;
@@ -267,18 +268,18 @@ namespace OpenNos.GameObject.Item
                         return;
                     }
 
-                    ItemInstance raidSeal =
+                    var raidSeal =
                         session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
 
                     ScriptedInstance raid = ServerManager.Instance?.Raids?.FirstOrDefault(s =>
                     {
                         return s?.RequieredItems != null &&
-                               s.RequieredItems.Any(obj => obj?.VNum == raidSeal?.ItemVNum);
+                            s.RequieredItems.Any(obj => obj?.VNum == raidSeal?.ItemVNum);
                     })?.GetClone();
                     if (raid != null)
                     {
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
-                        GroupType groupType = GroupType.Team;
+                        var groupType = GroupType.Team;
                         switch (raidSeal.Item.EffectValue)
                         {
                             case 20:
@@ -289,7 +290,7 @@ namespace OpenNos.GameObject.Item
                                 break;
                         }
 
-                        Group group = new Group(groupType);
+                        var group = new Group(groupType);
                         group.Raid = raid;
                         group.JoinGroup(session.Character.CharacterId);
                         ServerManager.Instance.AddGroup(group);
@@ -404,7 +405,7 @@ namespace OpenNos.GameObject.Item
                         case 2522: // Roller M
                         case 2523: // Roller F
                             // Removes <= lv 4 debuffs
-                            List<BuffType> bufftodisable = new List<BuffType> {BuffType.Bad};
+                            List<BuffType> bufftodisable = new List<BuffType> { BuffType.Bad };
                             session.Character.DisableBuffs(bufftodisable, 4);
                             break;
                     }
@@ -438,46 +439,46 @@ namespace OpenNos.GameObject.Item
                                     case 0:
                                         // -y
                                         ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId,
-                                            session.Character.PositionX, (short) (session.Character.PositionY - 5));
+                                            session.Character.PositionX, (short)(session.Character.PositionY - 5));
                                         break;
                                     case 1:
                                         // +x
                                         ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId,
-                                            (short) (session.Character.PositionX + 5), session.Character.PositionY);
+                                            (short)(session.Character.PositionX + 5), session.Character.PositionY);
                                         break;
                                     case 2:
                                         // +y
                                         ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId,
-                                            session.Character.PositionX, (short) (session.Character.PositionY + 5));
+                                            session.Character.PositionX, (short)(session.Character.PositionY + 5));
                                         break;
                                     case 3:
                                         // -x
                                         ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId,
-                                            (short) (session.Character.PositionX - 5), session.Character.PositionY);
+                                            (short)(session.Character.PositionX - 5), session.Character.PositionY);
                                         break;
                                     case 4:
                                         ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId,
-                                            (short) (session.Character.PositionX - 5),
-                                            (short) (session.Character.PositionY - 5));
+                                            (short)(session.Character.PositionX - 5),
+                                            (short)(session.Character.PositionY - 5));
                                         // -x -y
                                         break;
                                     case 5:
                                         // +x +y
                                         ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId,
-                                            (short) (session.Character.PositionX - 5),
-                                            (short) (session.Character.PositionY - 5));
+                                            (short)(session.Character.PositionX - 5),
+                                            (short)(session.Character.PositionY - 5));
                                         break;
                                     case 6:
                                         // +x -y
                                         ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId,
-                                            (short) (session.Character.PositionX + 5),
-                                            (short) (session.Character.PositionY + 5));
+                                            (short)(session.Character.PositionX + 5),
+                                            (short)(session.Character.PositionY + 5));
                                         break;
                                     case 7:
                                         // -x +y
                                         ServerManager.Instance.TeleportForward(session, session.Character.MapInstanceId,
-                                            (short) (session.Character.PositionX - 5),
-                                            (short) (session.Character.PositionY + 5));
+                                            (short)(session.Character.PositionX - 5),
+                                            (short)(session.Character.PositionY + 5));
                                         break;
                                 }
 
@@ -490,7 +491,7 @@ namespace OpenNos.GameObject.Item
                                     session.Character.Hp += session.Character.Level * 15;
                                     if (session.Character.Hp > session.Character.HpLoad())
                                     {
-                                        session.Character.Hp = (int) session.Character.HpLoad();
+                                        session.Character.Hp = (int)session.Character.HpLoad();
                                     }
                                 }
 
@@ -558,7 +559,7 @@ namespace OpenNos.GameObject.Item
 
                     if (EffectValue < 3)
                     {
-                        if (session.Character.Faction == (FactionType) EffectValue)
+                        if (session.Character.Faction == (FactionType)EffectValue)
                         {
                             session.SendPacket(
                                 UserInterfaceHelper.Instance.GenerateMsg(
@@ -581,7 +582,7 @@ namespace OpenNos.GameObject.Item
                             return;
                         }
 
-                        if (session.Character.Family.FamilyFaction / 2 == EffectValue)
+                        if ((session.Character.Family.FamilyFaction / 2) == EffectValue)
                         {
                             session.SendPacket(
                                 UserInterfaceHelper.Instance.GenerateMsg(
@@ -605,13 +606,13 @@ namespace OpenNos.GameObject.Item
                         if (option == 0)
                         {
                             session.SendPacket(
-                                $"qna #u_i^1^{session.Character.CharacterId}^{(byte) inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
+                                $"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
                         }
                         else
                         {
                             CharacterHelper.Instance.RemoveSpecialistWingsBuff(session);
                             CharacterHelper.Instance.AddSpecialistWingsBuff(session);
-                            session.Character.SpInstance.Design = (byte) EffectValue;
+                            session.Character.SpInstance.Design = (byte)EffectValue;
                             session.Character.MorphUpgrade2 = EffectValue;
                             session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
                             session.SendPacket(session.Character.GenerateStat());
@@ -647,7 +648,7 @@ namespace OpenNos.GameObject.Item
                         if (option == 0)
                         {
                             session.SendPacket(
-                                $"qna #u_i^1^{session.Character.CharacterId}^{(byte) inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
+                                $"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
                         }
                         else
                         {
@@ -683,7 +684,7 @@ namespace OpenNos.GameObject.Item
 
                             session.Character.LastDelay = DateTime.Now;
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 3,
-                                $"#u_i^1^{session.Character.CharacterId}^{(byte) inv.Type}^{inv.Slot}^2"));
+                                $"#u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2"));
                         }
                         else
                         {
@@ -698,7 +699,7 @@ namespace OpenNos.GameObject.Item
                                     session.Character.VehicleSpeed = Speed;
                                     session.Character.MorphUpgrade = 0;
                                     session.Character.MorphUpgrade2 = 0;
-                                    session.Character.Morph = Morph + (byte) session.Character.Gender;
+                                    session.Character.Morph = Morph + (byte)session.Character.Gender;
                                     session.Character.Mates?.ForEach(x =>
                                         session.CurrentMapInstance?.Broadcast(x.GenerateOut()));
                                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(196),
@@ -726,7 +727,7 @@ namespace OpenNos.GameObject.Item
                 case 1002:
                     if (session.HasCurrentMapInstance)
                     {
-                        if (session.CurrentMapInstance.Map.MapTypes.All(m => m.MapTypeId != (short) MapTypeEnum.Act4))
+                        if (session.CurrentMapInstance.Map.MapTypes.All(m => m.MapTypeId != (short)MapTypeEnum.Act4))
                         {
                             short[] vnums =
                             {
@@ -741,13 +742,13 @@ namespace OpenNos.GameObject.Item
                                 return;
                             }
 
-                            MapMonster monster = new MapMonster
+                            var monster = new MapMonster
                             {
                                 MonsterVNum = vnum,
                                 MapY = session.Character.MapY,
                                 MapX = session.Character.MapX,
                                 MapId = session.Character.MapInstance.Map.MapId,
-                                Position = (byte) session.Character.Direction,
+                                Position = (byte)session.Character.Direction,
                                 IsMoving = true,
                                 MapMonsterId = session.CurrentMapInstance.GetNextId(),
                                 ShouldRespawn = false
@@ -768,7 +769,7 @@ namespace OpenNos.GameObject.Item
                     break;
 
                 case 789:
-                    session.Character.GiftAdd((short) inv.Item.EffectValue, 1);
+                    session.Character.GiftAdd((short)inv.Item.EffectValue, 1);
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
 
@@ -829,7 +830,7 @@ namespace OpenNos.GameObject.Item
                     if (option == 0)
                     {
                         session.SendPacket(
-                            $"qna #u_i^1^{session.Character.CharacterId}^{(byte) inv.Type}^{inv.Slot}^2 {Language.Instance.GetMessageFromKey("ASK_PET_MAX")}");
+                            $"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2 {Language.Instance.GetMessageFromKey("ASK_PET_MAX")}");
                     }
                     else
                     {
@@ -894,44 +895,42 @@ namespace OpenNos.GameObject.Item
 
                             break;
                         }
-                        else
+
+                        int probabilities = rolls.Sum(s => s.Probability);
+                        int rnd = ServerManager.Instance.RandomNumber(0, probabilities);
+                        int currentrnd = 0;
+                        List<ItemInstance> newInv = null;
+                        foreach (RollGeneratedItemDTO rollitem in rolls)
                         {
-                            int probabilities = rolls.Sum(s => s.Probability);
-                            int rnd = ServerManager.Instance.RandomNumber(0, probabilities);
-                            int currentrnd = 0;
-                            List<ItemInstance> newInv = null;
-                            foreach (RollGeneratedItemDTO rollitem in rolls)
+                            if (rollitem.Probability == 10000)
                             {
-                                if (rollitem.Probability == 10000)
-                                {
-                                    session.Character.GiftAdd(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
-                                    continue;
-                                }
-
-                                currentrnd += rollitem.Probability;
-                                if (newInv != null || currentrnd < rnd)
-                                {
-                                    continue;
-                                }
-
-                                newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum,
-                                    rollitem.ItemGeneratedAmount, upgrade: rollitem.ItemGeneratedUpgrade);
-                                short slot = inv.Slot;
-                                if (!newInv.Any() || slot == -1)
-                                {
-                                    continue;
-                                }
-
-                                session.SendPacket(session.Character.GenerateSay(
-                                    $"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.FirstOrDefault()?.Item.Name ?? ""} x {rollitem.ItemGeneratedAmount})",
-                                    12));
-                                session.SendPacket($"rdi {rollitem.ItemGeneratedVNum} {rollitem.ItemGeneratedAmount}");
-                                newInv.ForEach(s => session.SendPacket(s?.GenerateInventoryAdd()));
+                                session.Character.GiftAdd(rollitem.ItemGeneratedVNum, rollitem.ItemGeneratedAmount);
+                                continue;
                             }
 
-                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                            break;
+                            currentrnd += rollitem.Probability;
+                            if (newInv != null || currentrnd < rnd)
+                            {
+                                continue;
+                            }
+
+                            newInv = session.Character.Inventory.AddNewToInventory(rollitem.ItemGeneratedVNum,
+                                rollitem.ItemGeneratedAmount, upgrade: rollitem.ItemGeneratedUpgrade);
+                            short slot = inv.Slot;
+                            if (!newInv.Any() || slot == -1)
+                            {
+                                continue;
+                            }
+
+                            session.SendPacket(session.Character.GenerateSay(
+                                $"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.FirstOrDefault()?.Item.Name ?? ""} x {rollitem.ItemGeneratedAmount})",
+                                12));
+                            session.SendPacket($"rdi {rollitem.ItemGeneratedVNum} {rollitem.ItemGeneratedAmount}");
+                            newInv.ForEach(s => session.SendPacket(s?.GenerateInventoryAdd()));
                         }
+
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                        break;
                     }
 
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));

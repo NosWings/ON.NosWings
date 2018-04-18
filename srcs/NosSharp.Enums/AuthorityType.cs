@@ -29,6 +29,6 @@ namespace NosSharp.Enums
         Moderator = 25,
         GameMaster = 40,
         SuperGameMaster = 50,
-        Administrator = 100,
+        Administrator = 100
     }
 }

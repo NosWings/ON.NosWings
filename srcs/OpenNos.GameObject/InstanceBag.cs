@@ -33,6 +33,12 @@ namespace OpenNos.GameObject
 
         #endregion
 
+        #region Methods
+
+        public string GenerateScore() => $"rnsc {Point}";
+
+        #endregion
+
         #region Properties
 
         public Clock Clock { get; set; }
@@ -63,15 +69,6 @@ namespace OpenNos.GameObject
         public void Dispose()
         {
             Clock.Dispose();
-        }
-
-        #endregion
-
-        #region Methods
-
-        public string GenerateScore()
-        {
-            return $"rnsc {Point}";
         }
 
         #endregion

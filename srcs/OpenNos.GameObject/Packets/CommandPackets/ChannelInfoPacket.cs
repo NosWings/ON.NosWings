@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$ChannelInfo", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ChannelInfoPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$ChannelInfo";
-        }
+        public static string ReturnHelp() => "$ChannelInfo";
     }
 }

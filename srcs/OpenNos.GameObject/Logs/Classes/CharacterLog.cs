@@ -2,10 +2,6 @@
 {
     public class CharacterLog
     {
-        public CharacterLog()
-        {
-        }
-
         public long AccountId { get; set; }
 
         public long CharacterId { get; set; }

@@ -10,12 +10,10 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public ClassType ClassType { get; set; }
+        [PacketIndex(0)]
+        public ClassType ClassType { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$ChangeClass CLASS";
-        }
+        public static string ReturnHelp() => "$ChangeClass CLASS";
 
         #endregion
     }

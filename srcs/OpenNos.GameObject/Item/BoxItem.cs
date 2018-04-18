@@ -52,7 +52,7 @@ namespace OpenNos.GameObject.Item
                     {
                         if (packetsplit != null && packetsplit.Length == 9)
                         {
-                            BoxInstance box =
+                            var box =
                                 session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot,
                                     InventoryType.Equipment);
                             if (box != null)
@@ -78,7 +78,7 @@ namespace OpenNos.GameObject.Item
                     else
                     {
                         //u_i 2 2000000 0 21 0 0
-                        BoxInstance box =
+                        var box =
                             session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot,
                                 InventoryType.Equipment);
                         if (box != null)
@@ -108,16 +108,16 @@ namespace OpenNos.GameObject.Item
 
                                     if (createdItem.ItemType == ItemType.Shell)
                                     {
-                                        rollitem.ItemGeneratedUpgrade = (byte) ServerManager.Instance.RandomNumber();
+                                        rollitem.ItemGeneratedUpgrade = (byte)ServerManager.Instance.RandomNumber();
                                         if (rollitem.ItemGeneratedUpgrade >= 95)
                                         {
                                             rollitem.ItemGeneratedUpgrade =
-                                                (byte) ServerManager.Instance.RandomNumber(80, 91);
+                                                (byte)ServerManager.Instance.RandomNumber(80, 91);
                                         }
                                         else
                                         {
                                             rollitem.ItemGeneratedUpgrade =
-                                                (byte) ServerManager.Instance.RandomNumber(70, 80);
+                                                (byte)ServerManager.Instance.RandomNumber(70, 80);
                                         }
                                     }
 
@@ -179,8 +179,8 @@ namespace OpenNos.GameObject.Item
 
                                 if (heldMonster != null)
                                 {
-                                    Mate mate = new Mate(session.Character, heldMonster,
-                                        (byte) (box.SpLevel == 0 ? 1 : box.SpLevel), box.MateType)
+                                    var mate = new Mate(session.Character, heldMonster,
+                                        (byte)(box.SpLevel == 0 ? 1 : box.SpLevel), box.MateType)
                                     {
                                         Attack = box.SpDamage,
                                         Defence = box.SpDefence
@@ -207,10 +207,10 @@ namespace OpenNos.GameObject.Item
                     }
                     else
                     {
-                        NpcMonster heldMonster = ServerManager.Instance.GetNpc((short) EffectValue);
+                        NpcMonster heldMonster = ServerManager.Instance.GetNpc((short)EffectValue);
                         if (session.CurrentMapInstance == session.Character.Miniland && heldMonster != null)
                         {
-                            Mate mate = new Mate(session.Character, heldMonster, LevelMinimum,
+                            var mate = new Mate(session.Character, heldMonster, LevelMinimum,
                                 ItemSubType == 1 ? MateType.Partner : MateType.Pet);
                             if (session.Character.AddPet(mate))
                             {
@@ -220,10 +220,6 @@ namespace OpenNos.GameObject.Item
                                         Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
                             }
                         }
-                        else
-                        {
-                            //TODO ADD MINILAND SENDPACKET
-                        }
                     }
 
                     break;
@@ -231,7 +227,7 @@ namespace OpenNos.GameObject.Item
                 case 69:
                     if (EffectValue == 1 || EffectValue == 2)
                     {
-                        BoxInstance box =
+                        var box =
                             session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot,
                                 InventoryType.Equipment);
                         if (box != null)
@@ -247,7 +243,7 @@ namespace OpenNos.GameObject.Item
                                 if (newInv.Any())
                                 {
                                     ItemInstance itemInstance = newInv.First();
-                                    SpecialistInstance specialist =
+                                    var specialist =
                                         session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(
                                             itemInstance.Slot, itemInstance.Type);
                                     if (specialist != null)
@@ -296,7 +292,7 @@ namespace OpenNos.GameObject.Item
 
                     if (EffectValue == 3)
                     {
-                        BoxInstance box =
+                        var box =
                             session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot,
                                 InventoryType.Equipment);
                         if (box != null)
@@ -312,7 +308,7 @@ namespace OpenNos.GameObject.Item
                                 if (newInv.Any())
                                 {
                                     ItemInstance itemInstance = newInv.First();
-                                    WearableInstance fairy =
+                                    var fairy =
                                         session.Character.Inventory.LoadBySlotAndType<WearableInstance>(
                                             itemInstance.Slot, itemInstance.Type);
                                     if (fairy != null)
@@ -346,7 +342,7 @@ namespace OpenNos.GameObject.Item
 
                     if (EffectValue == 4)
                     {
-                        BoxInstance box =
+                        var box =
                             session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot,
                                 InventoryType.Equipment);
                         if (box != null)

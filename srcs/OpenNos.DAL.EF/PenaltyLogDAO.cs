@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -120,7 +120,7 @@ namespace OpenNos.DAL.EF
 
         private PenaltyLogDTO Insert(PenaltyLogDTO penaltylog, OpenNosContext context)
         {
-            PenaltyLog entity = _mapper.Map<PenaltyLog>(penaltylog);
+            var entity = _mapper.Map<PenaltyLog>(penaltylog);
             context.PenaltyLog.Add(entity);
             context.SaveChanges();
             return _mapper.Map<PenaltyLogDTO>(entity);
@@ -133,6 +133,7 @@ namespace OpenNos.DAL.EF
                 _mapper.Map(penaltylog, entity);
                 context.SaveChanges();
             }
+
             return _mapper.Map<PenaltyLogDTO>(entity);
         }
 

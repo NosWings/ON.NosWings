@@ -8,7 +8,7 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Down()
         {
-            AddColumn("dbo.MinilandObject", "Durability", c => c.Int(nullable: false));
+            AddColumn("dbo.MinilandObject", "Durability", c => c.Int(false));
         }
 
         public override void Up()

@@ -46,8 +46,9 @@ namespace OpenNos.GameObject.Item
             {
                 return;
             }
-            else if (session.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance &&
-                     (DateTime.Now - session.Character.LastPotion).TotalSeconds < 5)
+
+            if (session.CurrentMapInstance?.MapInstanceType == MapInstanceType.Act4Instance &&
+                (DateTime.Now - session.Character.LastPotion).TotalSeconds < 5)
             {
                 return;
             }
@@ -73,8 +74,8 @@ namespace OpenNos.GameObject.Item
                         session.CurrentMapInstance?.IsPvp != true)
                     {
                         session.CurrentMapInstance?.Broadcast(
-                            session.Character.GenerateRc((int) session.Character.HpLoad() - session.Character.Hp));
-                        session.Character.Hp = (int) session.Character.HpLoad();
+                            session.Character.GenerateRc((int)session.Character.HpLoad() - session.Character.Hp));
+                        session.Character.Hp = (int)session.Character.HpLoad();
                         foreach (Mate mate in session.Character.Mates.Where(m => m.IsTeamMember))
                         {
                             mate.Hp = mate.HpLoad();
@@ -88,15 +89,15 @@ namespace OpenNos.GameObject.Item
                     if (session.CurrentMapInstance?.Map.MapId == 153)
                     {
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc(
-                            (int) (session.Character.HpLoad() / 2 + session.Character.Hp) >
-                            (int) session.Character.HpLoad()
-                                ? (int) session.Character.HpLoad() - session.Character.Hp
-                                : (int) session.Character.HpLoad() / 2));
+                            (int)(session.Character.HpLoad() / 2 + session.Character.Hp) >
+                            (int)session.Character.HpLoad()
+                                ? (int)session.Character.HpLoad() - session.Character.Hp
+                                : (int)session.Character.HpLoad() / 2));
                         session.Character.Hp =
-                            (int) (session.Character.HpLoad() / 2 + session.Character.Hp) >
-                            (int) session.Character.HpLoad()
-                                ? (int) session.Character.HpLoad()
-                                : session.Character.Hp + (int) session.Character.HpLoad() / 2;
+                            (int)(session.Character.HpLoad() / 2 + session.Character.Hp) >
+                            (int)session.Character.HpLoad()
+                                ? (int)session.Character.HpLoad()
+                                : session.Character.Hp + (int)session.Character.HpLoad() / 2;
                         foreach (Mate mate in session.Character.Mates.Where(m => m.IsTeamMember))
                         {
                             mate.Hp = mate.HpLoad() / 2 + mate.Hp > mate.HpLoad()
@@ -120,7 +121,7 @@ namespace OpenNos.GameObject.Item
                     if (session.CurrentMapInstance?.MapInstanceType != MapInstanceType.Act4Instance &&
                         session.CurrentMapInstance?.IsPvp != true)
                     {
-                        session.Character.Mp = (int) session.Character.MpLoad();
+                        session.Character.Mp = (int)session.Character.MpLoad();
                         session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => m.Mp = m.MpLoad());
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         session.SendPacket(session.Character.GenerateStat());
@@ -129,10 +130,10 @@ namespace OpenNos.GameObject.Item
                     if (session.CurrentMapInstance?.Map.MapId == 153)
                     {
                         session.Character.Mp =
-                            (int) (session.Character.MpLoad() / 2 + session.Character.Mp) >
-                            (int) session.Character.MpLoad()
-                                ? (int) session.Character.MpLoad()
-                                : session.Character.Mp + (int) session.Character.MpLoad() / 2;
+                            (int)(session.Character.MpLoad() / 2 + session.Character.Mp) >
+                            (int)session.Character.MpLoad()
+                                ? (int)session.Character.MpLoad()
+                                : session.Character.Mp + (int)session.Character.MpLoad() / 2;
                         session.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m =>
                             m.Mp = m.MpLoad() / 2 + m.Mp > m.MpLoad() ? m.MpLoad() : m.Mp + m.MpLoad() / 2);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -148,9 +149,9 @@ namespace OpenNos.GameObject.Item
                         session.CurrentMapInstance?.IsPvp != true)
                     {
                         session.CurrentMapInstance?.Broadcast(
-                            session.Character.GenerateRc((int) session.Character.HpLoad() - session.Character.Hp));
-                        session.Character.Hp = (int) session.Character.HpLoad();
-                        session.Character.Mp = (int) session.Character.MpLoad();
+                            session.Character.GenerateRc((int)session.Character.HpLoad() - session.Character.Hp));
+                        session.Character.Hp = (int)session.Character.HpLoad();
+                        session.Character.Mp = (int)session.Character.MpLoad();
                         foreach (Mate mate in session.Character.Mates.Where(m => m.IsTeamMember))
                         {
                             mate.Hp = mate.HpLoad();
@@ -165,20 +166,20 @@ namespace OpenNos.GameObject.Item
                     if (session.CurrentMapInstance?.Map.MapId == 153)
                     {
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc(
-                            (int) (session.Character.HpLoad() / 2 + session.Character.Hp) >
-                            (int) session.Character.HpLoad()
-                                ? (int) session.Character.HpLoad() - session.Character.Hp
-                                : (int) session.Character.HpLoad() / 2));
+                            (int)(session.Character.HpLoad() / 2 + session.Character.Hp) >
+                            (int)session.Character.HpLoad()
+                                ? (int)session.Character.HpLoad() - session.Character.Hp
+                                : (int)session.Character.HpLoad() / 2));
                         session.Character.Hp =
-                            (int) (session.Character.HpLoad() / 2 + session.Character.Hp) >
-                            (int) session.Character.HpLoad()
-                                ? (int) session.Character.HpLoad()
-                                : session.Character.Hp + (int) session.Character.HpLoad() / 2;
+                            (int)(session.Character.HpLoad() / 2 + session.Character.Hp) >
+                            (int)session.Character.HpLoad()
+                                ? (int)session.Character.HpLoad()
+                                : session.Character.Hp + (int)session.Character.HpLoad() / 2;
                         session.Character.Mp =
-                            (int) (session.Character.MpLoad() / 2 + session.Character.Mp) >
-                            (int) session.Character.MpLoad()
-                                ? (int) session.Character.MpLoad()
-                                : session.Character.Mp + (int) session.Character.MpLoad() / 2;
+                            (int)(session.Character.MpLoad() / 2 + session.Character.Mp) >
+                            (int)session.Character.MpLoad()
+                                ? (int)session.Character.MpLoad()
+                                : session.Character.Mp + (int)session.Character.MpLoad() / 2;
                         foreach (Mate mate in session.Character.Mates.Where(m => m.IsTeamMember))
                         {
                             mate.Hp = mate.HpLoad() / 2 + mate.Hp > mate.HpLoad()
@@ -201,12 +202,12 @@ namespace OpenNos.GameObject.Item
 
                 default:
                     int hpHeal = session.Character.Hp + Hp > session.Character.HpLoad()
-                        ? (int) session.Character.HpLoad() - session.Character.Hp
+                        ? (int)session.Character.HpLoad() - session.Character.Hp
                         : Hp;
                     session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc(hpHeal));
                     session.Character.Hp += hpHeal;
                     session.Character.Mp += session.Character.Mp + Mp > session.Character.MpLoad()
-                        ? (int) session.Character.MpLoad() - session.Character.Mp
+                        ? (int)session.Character.MpLoad() - session.Character.Mp
                         : Mp;
 
                     foreach (Mate mate in session.Character.Mates.Where(m => m.IsTeamMember))

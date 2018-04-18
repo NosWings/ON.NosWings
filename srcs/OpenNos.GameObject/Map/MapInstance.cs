@@ -23,13 +23,13 @@ using OpenNos.Core;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.DAL;
+using OpenNos.GameObject.Battle;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.PathFinder.PathFinder;
-using OpenNos.GameObject.Battle;
 
 namespace OpenNos.GameObject.Map
 {
@@ -77,7 +77,7 @@ namespace OpenNos.GameObject.Map
         private int _lastMapId;
 
         private readonly ConcurrentDictionary<long, MapMonster> _monsters;
-        private bool _isShopAllowed;
+        private readonly bool _isShopAllowed;
 
         private readonly ConcurrentDictionary<long, MapNpc> _npcs;
 
@@ -182,10 +182,7 @@ namespace OpenNos.GameObject.Map
 
         public List<Portal> Portals { get; }
 
-        public bool ShopAllowed
-        {
-            get { return _isShopAllowed || MapInstanceType == MapInstanceType.LobbyMapInstance; }
-        }
+        public bool ShopAllowed => _isShopAllowed || MapInstanceType == MapInstanceType.LobbyMapInstance;
 
         public List<ScriptedInstance> ScriptedInstances { get; }
 
@@ -241,14 +238,14 @@ namespace OpenNos.GameObject.Map
                 {
                     for (short y = -1; y < 2; y++)
                     {
-                        possibilities.Add(new MapCell {X = x, Y = y});
+                        possibilities.Add(new MapCell { X = x, Y = y });
                     }
                 }
 
                 foreach (MapCell possibilitie in possibilities.OrderBy(s => ServerManager.Instance.RandomNumber()))
                 {
-                    localMapX = (short) (mapX + possibilitie.X);
-                    localMapY = (short) (mapY + possibilitie.Y);
+                    localMapX = (short)(mapX + possibilitie.X);
+                    localMapY = (short)(mapY + possibilitie.Y);
                     if (!Map.IsBlockedZone(localMapX, localMapY))
                     {
                         break;
@@ -278,15 +275,12 @@ namespace OpenNos.GameObject.Map
             }
         }
 
-        private IEnumerable<string> GenerateNpcShopOnMap()
-        {
-            return (from npc in Npcs
-                    where npc.Shop != null
-                    select
-                        $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}"
-                )
-                .ToList();
-        }
+        private IEnumerable<string> GenerateNpcShopOnMap() => (from npc in Npcs
+                                                               where npc.Shop != null
+                                                               select
+                                                                   $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}"
+            )
+            .ToList();
 
         private IEnumerable<string> GeneratePlayerShopOnMap()
         {
@@ -333,10 +327,7 @@ namespace OpenNos.GameObject.Map
             return packets;
         }
 
-        public MapMonster GetMonster(long mapMonsterId)
-        {
-            return !_monsters.ContainsKey(mapMonsterId) ? null : _monsters[mapMonsterId];
-        }
+        public MapMonster GetMonster(long mapMonsterId) => !_monsters.ContainsKey(mapMonsterId) ? null : _monsters[mapMonsterId];
 
         // TODO: Fix, Seems glitchy.
         public int GetNextId()
@@ -430,7 +421,7 @@ namespace OpenNos.GameObject.Map
             {
                 for (short y = -2; y < 3; y++)
                 {
-                    possibilities.Add(new GridPos {X = x, Y = y});
+                    possibilities.Add(new GridPos { X = x, Y = y });
                 }
             }
 
@@ -439,8 +430,8 @@ namespace OpenNos.GameObject.Map
             bool niceSpot = false;
             foreach (GridPos possibility in possibilities.OrderBy(s => _random.Next()))
             {
-                mapX = (short) (session.Character.PositionX + possibility.X);
-                mapY = (short) (session.Character.PositionY + possibility.Y);
+                mapX = (short)(session.Character.PositionX + possibility.X);
+                mapY = (short)(session.Character.PositionY + possibility.Y);
                 if (Map.IsBlockedZone(mapX, mapY))
                 {
                     continue;
@@ -536,7 +527,7 @@ namespace OpenNos.GameObject.Map
             IEnumerable<ClientSession> clientSessions = cl as IList<ClientSession> ?? cl.ToList();
             for (int i = clientSessions.Count() - 1; i >= 0; i--)
             {
-                if (Map.GetDistance(new MapCell {X = mapX, Y = mapY},
+                if (Map.GetDistance(new MapCell { X = mapX, Y = mapY },
                         new MapCell
                         {
                             X = clientSessions.ElementAt(i).Character.PositionX,
@@ -581,8 +572,8 @@ namespace OpenNos.GameObject.Map
             for (int i = 0; i < parameter.Item3; i++)
             {
                 positionRandomizer:
-                short destX = (short) (originX + ServerManager.Instance.RandomNumber(-10, 10));
-                short destY = (short) (originY + ServerManager.Instance.RandomNumber(-10, 10));
+                short destX = (short)(originX + ServerManager.Instance.RandomNumber(-10, 10));
+                short destY = (short)(originY + ServerManager.Instance.RandomNumber(-10, 10));
                 if (Map.IsBlockedZone(destX, destY))
                 {
                     goto positionRandomizer;
@@ -611,7 +602,7 @@ namespace OpenNos.GameObject.Map
                         s.Events.ToList().ForEach(e => EventHelper.Instance.RunEvent(e));
                     }
 
-                    s.Offset = s.Offset > 0 ? (byte) (s.Offset - 1) : (byte) 0;
+                    s.Offset = s.Offset > 0 ? (byte)(s.Offset - 1) : (byte)0;
                     s.LastStart = DateTime.Now;
                 });
                 try
@@ -729,10 +720,7 @@ namespace OpenNos.GameObject.Map
 
         private static EventHelper _instance;
 
-        public static EventHelper Instance
-        {
-            get { return _instance ?? (_instance = new EventHelper()); }
-        }
+        public static EventHelper Instance => _instance ?? (_instance = new EventHelper());
 
         #endregion
     }

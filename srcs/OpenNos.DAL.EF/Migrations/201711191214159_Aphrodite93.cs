@@ -1,18 +1,18 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class Aphrodite93 : DbMigration
     {
         public override void Up()
         {
             CreateTable(
-                "dbo.Quest",
-                c => new
+                    "dbo.Quest",
+                    c => new
                     {
-                        QuestId = c.Long(nullable: false),
-                        QuestType = c.Int(nullable: false),
-                        FirstData = c.Int(nullable: false),
+                        QuestId = c.Long(false),
+                        QuestType = c.Int(false),
+                        FirstData = c.Int(false),
                         SecondData = c.Int(),
                         ThirdData = c.Int(),
                         FourthData = c.Int(),
@@ -23,7 +23,7 @@ namespace OpenNos.DAL.EF.Migrations
                         ThirdSpecialData = c.Int(),
                         FourthSpecialData = c.Int(),
                         FifthSpecialData = c.Int(),
-                        FirstObjective = c.Int(nullable: false),
+                        FirstObjective = c.Int(false),
                         SecondObjective = c.Int(),
                         ThirdObjective = c.Int(),
                         FourthObjective = c.Int(),
@@ -32,19 +32,19 @@ namespace OpenNos.DAL.EF.Migrations
                         TargetX = c.Short(),
                         TargetY = c.Short(),
                         NextQuestId = c.Long(),
-                        InfoId = c.Int(nullable: false),
-                        IsDaily = c.Boolean(nullable: false),
+                        InfoId = c.Int(false),
+                        IsDaily = c.Boolean(false),
                         EndDialogId = c.Int(),
                         StartDialogId = c.Int(),
-                        LevelMin = c.Byte(nullable: false),
-                        LevelMax = c.Byte(nullable: false),
+                        LevelMin = c.Byte(false),
+                        LevelMax = c.Byte(false)
                     })
                 .PrimaryKey(t => t.QuestId);
-            
+
             CreateIndex("dbo.CharacterQuest", "QuestId");
-            AddForeignKey("dbo.CharacterQuest", "QuestId", "dbo.Quest", "QuestId", cascadeDelete: true);
+            AddForeignKey("dbo.CharacterQuest", "QuestId", "dbo.Quest", "QuestId", true);
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.CharacterQuest", "QuestId", "dbo.Quest");

@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -60,7 +60,7 @@ namespace OpenNos.DAL.EF
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    ShopItem entity = _mapper.Map<ShopItem>(item);
+                    var entity = _mapper.Map<ShopItem>(item);
                     context.ShopItem.Add(entity);
                     context.SaveChanges();
                     return _mapper.Map<ShopItemDTO>(entity);
@@ -82,9 +82,10 @@ namespace OpenNos.DAL.EF
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (ShopItemDTO Item in items)
                     {
-                        ShopItem entity = _mapper.Map<ShopItem>(Item);
+                        var entity = _mapper.Map<ShopItem>(Item);
                         context.ShopItem.Add(entity);
                     }
+
                     context.Configuration.AutoDetectChangesEnabled = true;
                     context.SaveChanges();
                 }

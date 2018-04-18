@@ -18,12 +18,8 @@ namespace OpenNos.Core
     {
         #region Methods
 
-        public static string Truncate(this string str, int length)
-        {
-            return str.Length > length ? str.Substring(0, length) : str;
-        }
+        public static string Truncate(this string str, int length) => str.Length > length ? str.Substring(0, length) : str;
 
-    
         #endregion
     }
 }

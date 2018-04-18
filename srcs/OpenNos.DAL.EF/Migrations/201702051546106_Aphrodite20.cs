@@ -8,7 +8,7 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Down()
         {
-            AddColumn("dbo.Character", "Backpack", c => c.Int(nullable: false));
+            AddColumn("dbo.Character", "Backpack", c => c.Int(false));
             DropForeignKey("dbo.WarehouseItem", "AccountId", "dbo.Account");
             DropForeignKey("dbo.MinilandObject", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.WarehouseItem", "ItemInstanceId", "dbo.ItemInstance");
@@ -26,21 +26,21 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.MinilandObject",
-                c => new
-                {
-                    MinilandObjectId = c.Long(nullable: false, identity: true),
-                    CharacterId = c.Long(nullable: false),
-                    Durability = c.Int(nullable: false),
-                    Level1BoxAmount = c.Byte(nullable: false),
-                    Level2BoxAmount = c.Byte(nullable: false),
-                    Level3BoxAmount = c.Byte(nullable: false),
-                    Level4BoxAmount = c.Byte(nullable: false),
-                    Level5BoxAmount = c.Byte(nullable: false),
-                    MapX = c.Short(nullable: false),
-                    MapY = c.Short(nullable: false),
-                    MinilandObjectVNum = c.Short(nullable: false)
-                })
+                    "dbo.MinilandObject",
+                    c => new
+                    {
+                        MinilandObjectId = c.Long(false, true),
+                        CharacterId = c.Long(false),
+                        Durability = c.Int(false),
+                        Level1BoxAmount = c.Byte(false),
+                        Level2BoxAmount = c.Byte(false),
+                        Level3BoxAmount = c.Byte(false),
+                        Level4BoxAmount = c.Byte(false),
+                        Level5BoxAmount = c.Byte(false),
+                        MapX = c.Short(false),
+                        MapY = c.Short(false),
+                        MinilandObjectVNum = c.Short(false)
+                    })
                 .PrimaryKey(t => t.MinilandObjectId)
                 .ForeignKey("dbo.Item", t => t.MinilandObjectVNum)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
@@ -48,14 +48,14 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.MinilandObjectVNum);
 
             CreateTable(
-                "dbo.WarehouseItem",
-                c => new
-                {
-                    WarehouseItemId = c.Long(nullable: false, identity: true),
-                    AccountId = c.Long(),
-                    FamilyId = c.Long(),
-                    ItemInstanceId = c.Guid(nullable: false)
-                })
+                    "dbo.WarehouseItem",
+                    c => new
+                    {
+                        WarehouseItemId = c.Long(false, true),
+                        AccountId = c.Long(),
+                        FamilyId = c.Long(),
+                        ItemInstanceId = c.Guid(false)
+                    })
                 .PrimaryKey(t => t.WarehouseItemId)
                 .ForeignKey("dbo.Family", t => t.FamilyId)
                 .ForeignKey("dbo.ItemInstance", t => t.ItemInstanceId)

@@ -4,6 +4,13 @@ namespace OpenNos.PathFinder.PathFinder
 {
     public class Node : GridPos, IComparable<Node>
     {
+        #region Methods
+
+        public int CompareTo(Node other) => F > other.F ? 1 :
+            F < other.F ? -1 : 0;
+
+        #endregion
+
         #region Instantiation
 
         public Node(GridPos node)
@@ -30,15 +37,6 @@ namespace OpenNos.PathFinder.PathFinder
         public bool Opened { get; internal set; }
 
         public Node Parent { get; internal set; }
-
-        #endregion
-
-        #region Methods
-
-        public int CompareTo(Node other)
-        {
-            return F > other.F ? 1 : F < other.F ? -1 : 0;
-        }
 
         #endregion
     }

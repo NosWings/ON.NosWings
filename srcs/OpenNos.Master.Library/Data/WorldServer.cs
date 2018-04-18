@@ -1,6 +1,6 @@
-﻿using Hik.Communication.Scs.Communication.EndPoints.Tcp;
+﻿using System;
+using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Service;
-using System;
 
 namespace OpenNos.Master.Library.Data
 {

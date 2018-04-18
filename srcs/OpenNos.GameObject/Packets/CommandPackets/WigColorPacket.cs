@@ -10,12 +10,10 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public byte Color { get; set; }
+        [PacketIndex(0)]
+        public byte Color { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$WigColor COLORID";
-        }
+        public static string ReturnHelp() => "$WigColor COLORID";
 
         #endregion
     }

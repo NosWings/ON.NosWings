@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System;
+using OpenNos.Data;
 using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
@@ -23,6 +23,12 @@ namespace OpenNos.GameObject
         #region Members
 
         private Skill _skill;
+
+        #endregion
+
+        #region Methods
+
+        public bool CanBeUsed() => Skill != null && LastUse.AddMilliseconds(Skill.Cooldown * 100) < DateTime.Now;
 
         #endregion
 
@@ -51,19 +57,7 @@ namespace OpenNos.GameObject
 
         public DateTime LastUse { get; set; }
 
-        public Skill Skill
-        {
-            get { return _skill ?? (_skill = ServerManager.Instance.GetSkill(SkillVNum)); }
-        }
-
-        #endregion
-
-        #region Methods
-
-        public bool CanBeUsed()
-        {
-            return Skill != null && LastUse.AddMilliseconds(Skill.Cooldown * 100) < DateTime.Now;
-        }
+        public Skill Skill => _skill ?? (_skill = ServerManager.Instance.GetSkill(SkillVNum));
 
         #endregion
     }

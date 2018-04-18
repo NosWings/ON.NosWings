@@ -6,10 +6,7 @@ namespace OpenNos.Data.Base
     {
         #region Instantiation
 
-        public SynchronizableBaseDTO()
-        {
-            Id = Guid.NewGuid(); //make unique
-        }
+        public SynchronizableBaseDTO() => Id = Guid.NewGuid();
 
         #endregion
 
@@ -21,15 +18,9 @@ namespace OpenNos.Data.Base
 
         #region Methods
 
-        public override bool Equals(object obj)
-        {
-            return ((SynchronizableBaseDTO)obj).Id == Id;
-        }
+        public override bool Equals(object obj) => ((SynchronizableBaseDTO)obj).Id == Id;
 
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+        public override int GetHashCode() => Id.GetHashCode();
 
         #endregion
     }

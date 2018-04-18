@@ -12,24 +12,24 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using OpenNos.GameObject.Helpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using static NosSharp.Enums.BCardType;
-using System.Collections.Concurrent;
-using OpenNos.Core;
 using System.Reactive.Linq;
 using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.GameObject.Battle;
 using OpenNos.GameObject.Buff;
+using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.PathFinder.PathFinder;
-using OpenNos.GameObject.Battle;
+using static NosSharp.Enums.BCardType;
 
 namespace OpenNos.GameObject
 {
@@ -55,10 +55,10 @@ namespace OpenNos.GameObject
             Name = npcMonster.Name;
             MateType = matetype;
             Loyalty = 1000;
-            PositionY = (short) (owner.PositionY + 1);
-            PositionX = (short) (owner.PositionX + 1);
-            MapX = (short) (owner.PositionX + 1);
-            MapY = (short) (owner.PositionY + 1);
+            PositionY = (short)(owner.PositionY + 1);
+            PositionX = (short)(owner.PositionX + 1);
+            MapX = (short)(owner.PositionX + 1);
+            MapY = (short)(owner.PositionY + 1);
             Direction = 2;
             CharacterId = owner.CharacterId;
             AddTeamMember();
@@ -86,29 +86,26 @@ namespace OpenNos.GameObject
         public bool HasBuff(CardType type, byte subtype, bool removeWeaponEffects = false) =>
             BattleEntity.HasBuff(type, subtype, removeWeaponEffects);
 
-        public bool HasBuff(BuffType type)
-        {
-            throw new NotImplementedException();
-        }
+        public bool HasBuff(BuffType type) => throw new NotImplementedException();
 
         public ConcurrentBag<Buff.Buff> Buffs => BattleEntity.Buffs;
 
         public int Concentrate
         {
-            get { return BattleEntity.HitRate; }
-            set { BattleEntity.HitRate = value; }
+            get => BattleEntity.HitRate;
+            set => BattleEntity.HitRate = value;
         }
 
         public int DamageMaximum
         {
-            get { return BattleEntity.MaxDamage; }
-            set { BattleEntity.MaxDamage = value; }
+            get => BattleEntity.MaxDamage;
+            set => BattleEntity.MaxDamage = value;
         }
 
         public int DamageMinimum
         {
-            get { return BattleEntity.MinDamage; }
-            set { BattleEntity.MinDamage = value; }
+            get => BattleEntity.MinDamage;
+            set => BattleEntity.MinDamage = value;
         }
 
         #endregion
@@ -121,8 +118,8 @@ namespace OpenNos.GameObject
 
         public int CurrentHp
         {
-            get { return Hp; }
-            set { Hp = value; }
+            get => Hp;
+            set => Hp = value;
         }
 
         public short CloseDefence { get; set; }
@@ -177,19 +174,19 @@ namespace OpenNos.GameObject
         {
             get
             {
-                byte bonusSpeed = (byte) (GetBuff(CardType.Move, (byte) AdditionalTypes.Move.SetMovementNegated)[0]
-                                          + GetBuff(CardType.Move,
-                                              (byte) AdditionalTypes.Move.MovementSpeedIncreased)[0]
-                                          + GetBuff(CardType.Move,
-                                              (byte) AdditionalTypes.Move.MovementSpeedDecreased)[0]);
+                byte bonusSpeed = (byte)(GetBuff(CardType.Move, (byte)AdditionalTypes.Move.SetMovementNegated)[0]
+                    + GetBuff(CardType.Move,
+                        (byte)AdditionalTypes.Move.MovementSpeedIncreased)[0]
+                    + GetBuff(CardType.Move,
+                        (byte)AdditionalTypes.Move.MovementSpeedDecreased)[0]);
 
-                return (byte) (Monster.Speed + bonusSpeed > 59 ? 59 : Monster.Speed + bonusSpeed);
+                return (byte)(Monster.Speed + bonusSpeed > 59 ? 59 : Monster.Speed + bonusSpeed);
             }
 
             set
             {
                 LastSpeedChange = DateTime.Now;
-                Monster.Speed = value > 59 ? (byte) 59 : value;
+                Monster.Speed = value > 59 ? (byte)59 : value;
             }
         }
 
@@ -203,7 +200,7 @@ namespace OpenNos.GameObject
 
         public void UpdateBushFire()
         {
-            BrushFire = BestFirstSearch.LoadBrushFire(new GridPos()
+            BrushFire = BestFirstSearch.LoadBrushFire(new GridPos
             {
                 X = PositionX,
                 Y = PositionY
@@ -241,31 +238,19 @@ namespace OpenNos.GameObject
             MateTransportId = nextId;
         }
 
-        public string GenerateCMode(short morphId)
-        {
-            return $"c_mode 2 {MateTransportId} {morphId} 0 0";
-        }
+        public string GenerateCMode(short morphId) => $"c_mode 2 {MateTransportId} {morphId} 0 0";
 
-        public string GenerateCond()
-        {
-            return $"cond 2 {MateTransportId} 0 0 {Speed}";
-        }
+        public string GenerateCond() => $"cond 2 {MateTransportId} 0 0 {Speed}";
 
-        public EffectPacket GenerateEff(int effectid)
+        public EffectPacket GenerateEff(int effectid) => new EffectPacket
         {
-            return new EffectPacket
-            {
-                EffectType = 2,
-                CharacterId = MateTransportId,
-                Id = effectid
-            };
-        }
+            EffectType = 2,
+            CharacterId = MateTransportId,
+            Id = effectid
+        };
 
-        public string GenerateEInfo()
-        {
-            return
-                $"e_info 10 {NpcMonsterVNum} {Level} {Monster.Element} {Monster.AttackClass} {Monster.ElementRate} {Monster.AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Monster.MaxHP} {Monster.MaxMP} -1 {Name.Replace(' ', '^')}";
-        }
+        public string GenerateEInfo() =>
+            $"e_info 10 {NpcMonsterVNum} {Level} {Monster.Element} {Monster.AttackClass} {Monster.ElementRate} {Monster.AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Monster.MaxHP} {Monster.MaxMP} -1 {Name.Replace(' ', '^')}";
 
         public string GenerateIn(bool foe = false, bool isAct4 = false)
         {
@@ -283,11 +268,11 @@ namespace OpenNos.GameObject
             int faction = 0;
             if (isAct4)
             {
-                faction = (byte) Owner.Faction + 2;
+                faction = (byte)Owner.Faction + 2;
             }
 
             return
-                $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int) (Hp / (float) MaxHp * 100)} {(int) (Mp / (float) MaxMp * 100)} 0 {faction} 3 {CharacterId} 1 0 {(IsUsingSp && SpInstance != null ? SpInstance.Item.Morph : (Skin != 0 ? Skin : -1))} {name} 0 -1 0 0 0 0 0 0 0 0";
+                $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 {faction} 3 {CharacterId} 1 0 {(IsUsingSp && SpInstance != null ? SpInstance.Item.Morph : (Skin != 0 ? Skin : -1))} {name} 0 -1 0 0 0 0 0 0 0 0";
         }
 
         private void GenerateLevelXpLevelUp()
@@ -295,7 +280,7 @@ namespace OpenNos.GameObject
             double t = XpLoad();
             while (Experience >= t)
             {
-                Experience -= (long) t;
+                Experience -= (long)t;
                 Level++;
                 t = XpLoad();
                 if (Level >= ServerManager.Instance.MaxMateLevel)
@@ -313,16 +298,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateOut()
-        {
-            return $"out 2 {MateTransportId}";
-        }
+        public string GenerateOut() => $"out 2 {MateTransportId}";
 
-        public string GeneratePst()
-        {
-            return
-                $"pst 2 {MateTransportId} {(int) MateType} {(int) (Hp / (float) MaxHp * 100)} {(int) (Mp / (float) MaxMp * 100)} {Hp} {Mp} 0 0 0";
-        }
+        public string GeneratePst() => $"pst 2 {MateTransportId} {(int)MateType} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} {Hp} {Mp} 0 0 0";
 
         public string GeneratePski()
         {
@@ -334,10 +312,7 @@ namespace OpenNos.GameObject
             return "pski";
         }
 
-        public string GenerateRc(int heal)
-        {
-            return $"rc 2 {MateTransportId} {heal} 0";
-        }
+        public string GenerateRc(int heal) => $"rc 2 {MateTransportId} {heal} 0";
 
         public string GenerateRest()
         {
@@ -345,23 +320,13 @@ namespace OpenNos.GameObject
             return $"rest 2 {MateTransportId} {(IsSitting ? 1 : 0)}";
         }
 
-        public string GenerateSay(string message, int type)
-        {
-            return $"say 2 {MateTransportId} 2 {message}";
-        }
+        public string GenerateSay(string message, int type) => $"say 2 {MateTransportId} 2 {message}";
 
-        public string GenerateScPacket()
-        {
-            return MateType == MateType.Partner
-                ? $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(WeaponInstance != null ? $"{WeaponInstance.ItemVNum}.{WeaponInstance.Rare}.{WeaponInstance.Upgrade}" : "-1")} {(ArmorInstance != null ? $"{ArmorInstance.ItemVNum}.{ArmorInstance.Rare}.{ArmorInstance.Upgrade}" : "-1")} {(GlovesInstance != null ? $"{GlovesInstance.ItemVNum}.0.0" : "-1")} {(BootsInstance != null ? $"{BootsInstance.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 {Hp} {MaxHp} {Mp} {MaxMp} 0 285816 {Name.Replace(' ', '^')} {(IsUsingSp && SpInstance != null ? SpInstance.Item.Morph : Skin != 0 ? Skin : -1)} {(IsSummonable ? 1 : 0)} {(SpInstance != null ? $"{SpInstance.ItemVNum}.100" : "-1")} -1 -1 -1"
-                : $"sc_p {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 {Monster.AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.Element} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} {(byte) (IsTeamMember ? 1 : 0)} {XpLoad()} {(byte) (CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(byte) (IsSummonable ? 1 : 0)}";
-        }
+        public string GenerateScPacket() => MateType == MateType.Partner
+            ? $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(WeaponInstance != null ? $"{WeaponInstance.ItemVNum}.{WeaponInstance.Rare}.{WeaponInstance.Upgrade}" : "-1")} {(ArmorInstance != null ? $"{ArmorInstance.ItemVNum}.{ArmorInstance.Rare}.{ArmorInstance.Upgrade}" : "-1")} {(GlovesInstance != null ? $"{GlovesInstance.ItemVNum}.0.0" : "-1")} {(BootsInstance != null ? $"{BootsInstance.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 {Hp} {MaxHp} {Mp} {MaxMp} 0 285816 {Name.Replace(' ', '^')} {(IsUsingSp && SpInstance != null ? SpInstance.Item.Morph : Skin != 0 ? Skin : -1)} {(IsSummonable ? 1 : 0)} {(SpInstance != null ? $"{SpInstance.ItemVNum}.100" : "-1")} -1 -1 -1"
+            : $"sc_p {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 {Monster.AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.Element} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} {(byte)(IsTeamMember ? 1 : 0)} {XpLoad()} {(byte)(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(byte)(IsSummonable ? 1 : 0)}";
 
-        public string GenerateStatInfo()
-        {
-            return
-                $"st 2 {MateTransportId} {Level} 0 {(int) (Hp / (float) MaxHp * 100)} {(int) (Mp / (float) MaxMp * 100)} {Hp} {Mp}";
-        }
+        public string GenerateStatInfo() => $"st 2 {MateTransportId} {Level} 0 {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} {Hp} {Mp}";
 
         public void GenerateXp(int xp)
         {
@@ -396,16 +361,16 @@ namespace OpenNos.GameObject
 
         private int HealthHpLoad()
         {
-            int regen = GetBuff(CardType.Recovery, (byte) AdditionalTypes.Recovery.HPRecoveryIncreased)[0]
-                        - GetBuff(CardType.Recovery, (byte) AdditionalTypes.Recovery.HPRecoveryDecreased)[0];
+            int regen = GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.HPRecoveryIncreased)[0]
+                - GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.HPRecoveryDecreased)[0];
             return IsSitting ? regen + 50 :
                 (DateTime.Now - LastDefence).TotalSeconds > 4 ? regen + 20 : 0;
         }
 
         private int HealthMpLoad()
         {
-            int regen = GetBuff(CardType.Recovery, (byte) AdditionalTypes.Recovery.MPRecoveryIncreased)[0]
-                        - GetBuff(CardType.Recovery, (byte) AdditionalTypes.Recovery.MPRecoveryDecreased)[0];
+            int regen = GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.MPRecoveryIncreased)[0]
+                - GetBuff(CardType.Recovery, (byte)AdditionalTypes.Recovery.MPRecoveryDecreased)[0];
             return IsSitting ? regen + 50 :
                 (DateTime.Now - LastDefence).TotalSeconds > 4 ? regen + 20 : 0;
         }
@@ -415,14 +380,14 @@ namespace OpenNos.GameObject
             double multiplicator = 1.0;
             int hp = 0;
 
-            multiplicator += (GetBuff(CardType.BearSpirit, (byte) AdditionalTypes.BearSpirit.IncreaseMaximumHP)[0]
-                              + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumHP)[0]) / 100D;
-            hp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0]
-                  + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0]
-                  - GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0]
-                  + Monster.MaxHP - MateHelper.Instance.HpData[Monster.Level]; // Monster HpBonus
+            multiplicator += (GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumHP)[0]
+                + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumHP)[0]) / 100D;
+            hp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased)[0]
+                + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0]
+                - GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0]
+                + Monster.MaxHP - MateHelper.Instance.HpData[Monster.Level]; // Monster HpBonus
 
-            return (int) ((MateHelper.Instance.HpData[Level] + hp) * multiplicator);
+            return (int)((MateHelper.Instance.HpData[Level] + hp) * multiplicator);
         }
 
         public override void Initialize()
@@ -436,13 +401,13 @@ namespace OpenNos.GameObject
 
             Life = null;
             BattleEntity = new BattleEntity(this);
-            byte type = (byte) (Monster.AttackClass == 2 ? 1 : 0);
-            Concentrate = (short) (MateHelper.Instance.Concentrate[type, Level] +
-                                   (Monster.Concentrate - MateHelper.Instance.Concentrate[type, Monster.Level]));
-            DamageMinimum = (short) (MateHelper.Instance.MinDamageData[type, Level] +
-                                     (Monster.DamageMinimum - MateHelper.Instance.MinDamageData[type, Monster.Level]));
-            DamageMaximum = (short) (MateHelper.Instance.MaxDamageData[type, Level] +
-                                     (Monster.DamageMaximum - MateHelper.Instance.MaxDamageData[type, Monster.Level]));
+            byte type = (byte)(Monster.AttackClass == 2 ? 1 : 0);
+            Concentrate = (short)(MateHelper.Instance.Concentrate[type, Level] +
+                (Monster.Concentrate - MateHelper.Instance.Concentrate[type, Monster.Level]));
+            DamageMinimum = (short)(MateHelper.Instance.MinDamageData[type, Level] +
+                (Monster.DamageMinimum - MateHelper.Instance.MinDamageData[type, Monster.Level]));
+            DamageMaximum = (short)(MateHelper.Instance.MaxDamageData[type, Level] +
+                (Monster.DamageMaximum - MateHelper.Instance.MaxDamageData[type, Monster.Level]));
             IsAlive = true;
             Hp = MaxHp;
             if (IsTeamMember)
@@ -466,16 +431,13 @@ namespace OpenNos.GameObject
         }
 
         /// <summary>
-        /// Checks if the current character is in range of the given position
+        ///     Checks if the current character is in range of the given position
         /// </summary>
         /// <param name="xCoordinate">The x coordinate of the object to check.</param>
         /// <param name="yCoordinate">The y coordinate of the object to check.</param>
         /// <param name="range">The range of the coordinates to be maximal distanced.</param>
         /// <returns>True if the object is in Range, False if not.</returns>
-        public bool IsInRange(int xCoordinate, int yCoordinate, int range)
-        {
-            return Math.Abs(PositionX - xCoordinate) <= range && Math.Abs(PositionY - yCoordinate) <= range;
-        }
+        public bool IsInRange(int xCoordinate, int yCoordinate, int range) => Math.Abs(PositionX - xCoordinate) <= range && Math.Abs(PositionY - yCoordinate) <= range;
 
         public void LoadInventory()
         {
@@ -496,18 +458,18 @@ namespace OpenNos.GameObject
         {
             int mp = 0;
             double multiplicator = 1.0;
-            multiplicator += (GetBuff(CardType.BearSpirit, (byte) AdditionalTypes.BearSpirit.IncreaseMaximumMP)[0]
-                              + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.IncreasesMaximumMP)[0]) / 100D;
-            mp += GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0]
-                  + GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0]
-                  - GetBuff(CardType.MaxHPMP, (byte) AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0]
-                  + Monster.MaxMP -
-                  (Monster.Race == 0
-                      ? MateHelper.Instance.PrimaryMpData[Monster.Level]
-                      : MateHelper.Instance.SecondaryMpData[Monster.Level]); // Monster Bonus MP
-            return (int) (((Monster.Race == 0
-                               ? MateHelper.Instance.PrimaryMpData[Level]
-                               : MateHelper.Instance.SecondaryMpData[Level]) + mp) * multiplicator);
+            multiplicator += (GetBuff(CardType.BearSpirit, (byte)AdditionalTypes.BearSpirit.IncreaseMaximumMP)[0]
+                + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.IncreasesMaximumMP)[0]) / 100D;
+            mp += GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumMPIncreased)[0]
+                + GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPMPIncreased)[0]
+                - GetBuff(CardType.MaxHPMP, (byte)AdditionalTypes.MaxHPMP.MaximumHPDecreased)[0]
+                + Monster.MaxMP -
+                (Monster.Race == 0
+                    ? MateHelper.Instance.PrimaryMpData[Monster.Level]
+                    : MateHelper.Instance.SecondaryMpData[Monster.Level]); // Monster Bonus MP
+            return (int)(((Monster.Race == 0
+                ? MateHelper.Instance.PrimaryMpData[Level]
+                : MateHelper.Instance.SecondaryMpData[Level]) + mp) * multiplicator);
         }
 
         private void MateLife()
@@ -556,8 +518,8 @@ namespace OpenNos.GameObject
 
             Owner.MapInstance?.Broadcast(GenerateOut());
             IsAlive = true;
-            PositionY = (short) (Owner.PositionY + 1);
-            PositionX = (short) (Owner.PositionX + 1);
+            PositionY = (short)(Owner.PositionY + 1);
+            PositionX = (short)(Owner.PositionX + 1);
             Owner.MapInstance?.Broadcast(GenerateIn());
             Owner.Session.SendPacket(GenerateCond());
             Owner.Session.SendPacket(Owner.GeneratePinit());
@@ -567,13 +529,13 @@ namespace OpenNos.GameObject
 
         public void RefreshStats()
         {
-            byte type = (byte) (Monster.AttackClass == 2 ? 1 : 0);
-            Concentrate = (short) (MateHelper.Instance.Concentrate[type, Level] +
-                                   (Monster.Concentrate - MateHelper.Instance.Concentrate[type, Monster.Level]));
-            DamageMinimum = (short) (MateHelper.Instance.MinDamageData[type, Level] +
-                                     (Monster.DamageMinimum - MateHelper.Instance.MinDamageData[type, Monster.Level]));
-            DamageMaximum = (short) (MateHelper.Instance.MaxDamageData[type, Level] +
-                                     (Monster.DamageMaximum - MateHelper.Instance.MaxDamageData[type, Monster.Level]));
+            byte type = (byte)(Monster.AttackClass == 2 ? 1 : 0);
+            Concentrate = (short)(MateHelper.Instance.Concentrate[type, Level] +
+                (Monster.Concentrate - MateHelper.Instance.Concentrate[type, Monster.Level]));
+            DamageMinimum = (short)(MateHelper.Instance.MinDamageData[type, Level] +
+                (Monster.DamageMinimum - MateHelper.Instance.MinDamageData[type, Monster.Level]));
+            DamageMaximum = (short)(MateHelper.Instance.MaxDamageData[type, Level] +
+                (Monster.DamageMaximum - MateHelper.Instance.MaxDamageData[type, Monster.Level]));
         }
 
         public void AddTeamMember()
@@ -615,17 +577,17 @@ namespace OpenNos.GameObject
             }
         }
 
-        public MapCell GetPos() => new MapCell {X = PositionX, Y = PositionY};
+        public MapCell GetPos() => new MapCell { X = PositionX, Y = PositionY };
 
         public object GetSession() => this;
 
-        public AttackType GetAttackType(Skill skill = null) => (AttackType) Monster.AttackClass;
+        public AttackType GetAttackType(Skill skill = null) => (AttackType)Monster.AttackClass;
 
         public bool IsTargetable(SessionType type, bool isPvP = false) =>
             type == NosSharp.Enums.SessionType.Monster && IsAlive && Hp > 0;
 
         public Node[,] GetBrushFire() =>
-            BestFirstSearch.LoadBrushFire(new GridPos() {X = PositionX, Y = PositionY}, Owner.MapInstance.Map.Grid);
+            BestFirstSearch.LoadBrushFire(new GridPos { X = PositionX, Y = PositionY }, Owner.MapInstance.Map.Grid);
 
         public SessionType SessionType() => NosSharp.Enums.SessionType.MateAndNpc;
 
@@ -644,7 +606,7 @@ namespace OpenNos.GameObject
             IsAlive = false;
             Hp = 1;
             Owner.Session.SendPacket(GenerateScPacket());
-            Loyalty -= (short) (Owner.Authority >= AuthorityType.VipPlus ? 0 : 50);
+            Loyalty -= (short)(Owner.Authority >= AuthorityType.VipPlus ? 0 : 50);
             Owner.Session.SendPacket(GenerateScPacket());
 
             if (MateType == MateType.Pet ? Owner.IsPetAutoRelive : Owner.IsPartnerAutoRelive)

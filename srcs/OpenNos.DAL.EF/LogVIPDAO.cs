@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Linq;
-using OpenNos.Data;
-using OpenNos.DAL.Interface;
-using OpenNos.Data.Enums;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
 using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
     public class LogVIPDAO : MappingBaseDao<LogVip, LogVIPDTO>, ILogVIPDAO
     {
-
         public SaveResult InsertOrUpdate(ref LogVIPDTO log)
         {
             try
@@ -61,7 +60,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                LogVip entity = _mapper.Map<LogVip>(log);
+                var entity = _mapper.Map<LogVip>(log);
                 context.LogVip.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<LogVIPDTO>(entity);
@@ -79,6 +78,7 @@ namespace OpenNos.DAL.EF
             {
                 return null;
             }
+
             _mapper.Map(respawn, entity);
             context.SaveChanges();
             return _mapper.Map<LogVIPDTO>(entity);

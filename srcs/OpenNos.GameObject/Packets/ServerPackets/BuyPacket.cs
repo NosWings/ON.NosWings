@@ -10,18 +10,19 @@ namespace OpenNos.GameObject.Packets.ServerPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public BuyShopType Type { get; set; }
+        [PacketIndex(0)]
+        public BuyShopType Type { get; set; }
 
-        [PacketIndex(1)] public long OwnerId { get; set; }
+        [PacketIndex(1)]
+        public long OwnerId { get; set; }
 
-        [PacketIndex(2)] public short Slot { get; set; }
+        [PacketIndex(2)]
+        public short Slot { get; set; }
 
-        [PacketIndex(3)] public short Amount { get; set; }
+        [PacketIndex(3)]
+        public short Amount { get; set; }
 
-        public override string ToString()
-        {
-            return $"BuyShop {Type} {OwnerId} {Slot} {Amount}";
-        }
+        public override string ToString() => $"BuyShop {Type} {OwnerId} {Slot} {Amount}";
 
         #endregion
     }

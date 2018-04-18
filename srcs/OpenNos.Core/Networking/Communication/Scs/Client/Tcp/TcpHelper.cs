@@ -19,25 +19,25 @@ using System.Net.Sockets;
 namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
 {
     /// <summary>
-    /// This class is used to simplify TCP socket operations.
+    ///     This class is used to simplify TCP socket operations.
     /// </summary>
     public static class TcpHelper
     {
         #region Methods
 
         /// <summary>
-        /// This code is used to connect to a TCP socket with timeout option.
+        ///     This code is used to connect to a TCP socket with timeout option.
         /// </summary>
         /// <param name="endPoint">IP endpoint of remote server</param>
         /// <param name="timeoutMs">Timeout to wait until connect</param>
         /// <returns>Socket object connected to server</returns>
         /// <exception cref="SocketException">Throws SocketException if can not connect.</exception>
         /// <exception cref="TimeoutException">
-        /// Throws TimeoutException if can not connect within specified timeoutMs
+        ///     Throws TimeoutException if can not connect within specified timeoutMs
         /// </exception>
         public static Socket ConnectToServer(EndPoint endPoint, int timeoutMs)
         {
-            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
                 socket.Blocking = false;

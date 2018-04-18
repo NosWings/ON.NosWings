@@ -23,10 +23,7 @@ namespace OpenNos.DAL.EF.Entities
     {
         #region Instantiation
 
-        public Card()
-        {
-            BCards = new HashSet<BCard>();
-        }
+        public Card() => BCards = new HashSet<BCard>();
 
         #endregion
 
@@ -38,7 +35,7 @@ namespace OpenNos.DAL.EF.Entities
 
         public int Duration { get; set; }
 
-        public int EffectId { get; set; }   
+        public int EffectId { get; set; }
 
         public byte Level { get; set; }
 
@@ -47,13 +44,13 @@ namespace OpenNos.DAL.EF.Entities
 
         public int Delay { get; set; }
 
-        public short TimeoutBuff { get; set; } 
+        public short TimeoutBuff { get; set; }
 
         public byte TimeoutBuffChance { get; set; }
 
         public BCardType.CardType BuffType { get; set; }
 
-        public byte Propability { get; set; }   
+        public byte Propability { get; set; }
 
         public virtual ICollection<BCard> BCards { get; set; }
 

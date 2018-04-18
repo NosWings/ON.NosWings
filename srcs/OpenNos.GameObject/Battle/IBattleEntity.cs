@@ -1,7 +1,7 @@
-﻿using OpenNos.GameObject.Map;
-using NosSharp.Enums;
-using OpenNos.PathFinder.PathFinder;
+﻿using NosSharp.Enums;
+using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Packets.ServerPackets;
+using OpenNos.PathFinder.PathFinder;
 
 namespace OpenNos.GameObject.Battle
 {
@@ -37,10 +37,10 @@ namespace OpenNos.GameObject.Battle
 
 
         /// BUFFS
-        ///  <summary>
-        ///  BUFFS
-        ///  </summary>
-        ///  <param name="type"></param>
+        /// <summary>
+        ///     BUFFS
+        /// </summary>
+        /// <param name="type"></param>
         /// <param name="indicator"></param>
         /// <returns></returns>
         void AddBuff(Buff.Buff indicator);

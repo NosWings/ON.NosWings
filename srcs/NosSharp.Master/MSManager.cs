@@ -25,7 +25,6 @@ namespace ON.NW.Master
 
         private static MsManager _instance;
 
-
         #endregion
 
         #region Instantiation
@@ -42,13 +41,10 @@ namespace ON.NW.Master
 
         #region Properties
 
-        public static MsManager Instance
-        {
-            get { return _instance ?? (_instance = new MsManager()); }
-        }
+        public static MsManager Instance => _instance ?? (_instance = new MsManager());
 
         public List<long> AuthentificatedClients { get; set; }
-        
+
         public ConcurrentBag<AccountSession> ConnectedAccounts { get; set; }
 
         public List<IScsServiceClient> LoginServers { get; set; }

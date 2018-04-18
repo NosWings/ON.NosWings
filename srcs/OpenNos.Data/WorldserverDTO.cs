@@ -1,6 +1,6 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 
 namespace OpenNos.Data
 {

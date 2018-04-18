@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using log4net;
 using System;
 using System.Runtime.CompilerServices;
+using log4net;
 
 namespace OpenNos.Core
 {
@@ -29,7 +29,7 @@ namespace OpenNos.Core
         #region Methods
 
         /// <summary>
-        /// Wraps up the message with the CallerMemberName
+        ///     Wraps up the message with the CallerMemberName
         /// </summary>
         /// <param name="Caller"></param>
         /// <param name="message"></param>
@@ -40,7 +40,7 @@ namespace OpenNos.Core
         }
 
         /// <summary>
-        /// Wraps up the error message with the CallerMemberName
+        ///     Wraps up the error message with the CallerMemberName
         /// </summary>
         /// <param name="memberName"></param>
         /// <param name="innerException"></param>
@@ -53,7 +53,7 @@ namespace OpenNos.Core
         }
 
         /// <summary>
-        /// Wraps up the info message with the CallerMemberName
+        ///     Wraps up the info message with the CallerMemberName
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>

@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$Invisible", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class InvisiblePacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$Invisible";
-        }
+        public static string ReturnHelp() => "$Invisible";
     }
 }

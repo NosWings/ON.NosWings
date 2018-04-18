@@ -30,6 +30,26 @@ namespace OpenNos.Master.Library.Data
 
         #endregion
 
+        #region CharacterSession
+
+        public class CharacterSession
+        {
+            public CharacterSession(string name, int level, string gender, string @class)
+            {
+                Name = name;
+                Level = level;
+                Gender = gender;
+                Class = @class;
+            }
+
+            public string Name { get; }
+            public int Level { get; }
+            public string Gender { get; }
+            public string Class { get; }
+        }
+
+        #endregion
+
         #region Properties
 
         public string AccountName { get; }
@@ -49,26 +69,6 @@ namespace OpenNos.Master.Library.Data
         public WorldServer PreviousChannel { get; set; }
 
         public long SessionId { get; }
-
-        #endregion
-
-        #region CharacterSession
-
-        public class CharacterSession
-        {
-            public CharacterSession(string name, int level, string gender, string @class)
-            {
-                Name = name;
-                Level = level;
-                Gender = gender;
-                Class = @class;
-            }
-
-            public string Name { get; }
-            public int Level { get; }
-            public string Gender { get; }
-            public string Class { get; }
-        }
 
         #endregion
     }

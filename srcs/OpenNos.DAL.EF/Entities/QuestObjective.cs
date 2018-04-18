@@ -13,7 +13,7 @@
         public int? SpecialData { get; set; }
 
         public int? DropRate { get; set; }
-        
+
         public byte ObjectiveIndex { get; set; }
     }
 }

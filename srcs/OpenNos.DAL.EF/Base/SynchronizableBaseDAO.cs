@@ -116,10 +116,7 @@ namespace OpenNos.DAL.EF.Base
             return dto;
         }
 
-        protected virtual TEntity MapEntity(TDTO dto)
-        {
-            return _mapper.Map<TEntity>(dto);
-        }
+        protected virtual TEntity MapEntity(TDTO dto) => _mapper.Map<TEntity>(dto);
 
         protected virtual TDTO Update(TEntity entity, TDTO inventory, OpenNosContext context)
         {

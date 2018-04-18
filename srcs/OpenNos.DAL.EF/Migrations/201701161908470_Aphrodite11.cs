@@ -19,13 +19,13 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Up()
         {
-            AddColumn("dbo.Family", "ManagerCanInvite", c => c.Boolean(nullable: false));
-            AddColumn("dbo.Family", "ManagerCanShout", c => c.Boolean(nullable: false));
-            AddColumn("dbo.Family", "ManagerCanNotice", c => c.Boolean(nullable: false));
-            AddColumn("dbo.Family", "ManagerAuthorityType", c => c.Byte(nullable: false));
-            AddColumn("dbo.Family", "ManagerCanGetHistory", c => c.Boolean(nullable: false));
-            AddColumn("dbo.Family", "MemberCanGetHistory", c => c.Boolean(nullable: false));
-            AddColumn("dbo.Family", "MemberAuthorityType", c => c.Byte(nullable: false));
+            AddColumn("dbo.Family", "ManagerCanInvite", c => c.Boolean(false));
+            AddColumn("dbo.Family", "ManagerCanShout", c => c.Boolean(false));
+            AddColumn("dbo.Family", "ManagerCanNotice", c => c.Boolean(false));
+            AddColumn("dbo.Family", "ManagerAuthorityType", c => c.Byte(false));
+            AddColumn("dbo.Family", "ManagerCanGetHistory", c => c.Boolean(false));
+            AddColumn("dbo.Family", "MemberCanGetHistory", c => c.Boolean(false));
+            AddColumn("dbo.Family", "MemberAuthorityType", c => c.Byte(false));
         }
 
         #endregion

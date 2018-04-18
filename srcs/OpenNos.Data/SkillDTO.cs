@@ -41,7 +41,7 @@ namespace OpenNos.Data
         public short Effect { get; set; }
 
         public byte Element { get; set; }
-        
+
         public byte HitType { get; set; }
 
         public short ItemVNum { get; set; }

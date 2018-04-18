@@ -19,20 +19,20 @@ namespace OpenNos.GameObject.Event
 {
     public class EventWave
     {
-        #region Methods
-
-        #endregion
-
-        public byte Delay { get; private set; }
-        public byte Offset { get; set; }
-        public DateTime LastStart { get; set; }
-        public ConcurrentBag<EventContainer> Events { get; private set; }
-
         public EventWave(byte delay, ConcurrentBag<EventContainer> events, byte offset = 0)
         {
             Delay = delay;
             Offset = offset;
             Events = events;
         }
+
+        public byte Delay { get; }
+        public byte Offset { get; set; }
+        public DateTime LastStart { get; set; }
+        public ConcurrentBag<EventContainer> Events { get; }
+
+        #region Methods
+
+        #endregion
     }
 }

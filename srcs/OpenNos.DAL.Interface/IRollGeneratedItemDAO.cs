@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System.Collections.Generic;
+using OpenNos.Data;
 
 namespace OpenNos.DAL.Interface
 {
@@ -28,7 +28,7 @@ namespace OpenNos.DAL.Interface
         RollGeneratedItemDTO LoadById(short id);
 
         IEnumerable<RollGeneratedItemDTO> LoadByItemVNum(short vnum);
-        
+
         #endregion
     }
 }

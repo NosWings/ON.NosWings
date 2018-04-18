@@ -10,12 +10,10 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public byte SpecialistLevel { get; set; }
+        [PacketIndex(0)]
+        public byte SpecialistLevel { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$SPLvl SPLEVEL";
-        }
+        public static string ReturnHelp() => "$SPLvl SPLEVEL";
 
         #endregion
     }

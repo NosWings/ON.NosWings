@@ -23,14 +23,6 @@ namespace OpenNos.GameObject.Networking
 {
     public class SessionManager
     {
-        #region Members
-
-        protected Type PacketHandler { get; }
-
-        protected ConcurrentDictionary<long, ClientSession> Sessions = new ConcurrentDictionary<long, ClientSession>();
-
-        #endregion
-
         #region Instantiation
 
         public SessionManager(Type packetHandler, bool isWorldServer)
@@ -44,6 +36,14 @@ namespace OpenNos.GameObject.Networking
         #region Properties
 
         public bool IsWorldServer { get; set; }
+
+        #endregion
+
+        #region Members
+
+        protected Type PacketHandler { get; }
+
+        protected ConcurrentDictionary<long, ClientSession> Sessions = new ConcurrentDictionary<long, ClientSession>();
 
         #endregion
 
@@ -79,7 +79,7 @@ namespace OpenNos.GameObject.Networking
 
         protected virtual ClientSession IntializeNewSession(INetworkClient client)
         {
-            ClientSession session = new ClientSession(client);
+            var session = new ClientSession(client);
             client.SetClientSession(session);
             return session;
         }

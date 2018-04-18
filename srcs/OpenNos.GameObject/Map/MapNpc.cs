@@ -21,13 +21,12 @@ using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Extensions;
 using OpenNos.Data;
-using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Battle;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Npc;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.PathFinder.PathFinder;
-using OpenNos.GameObject.Battle;
 using static NosSharp.Enums.BCardType;
 
 namespace OpenNos.GameObject.Map
@@ -59,10 +58,7 @@ namespace OpenNos.GameObject.Map
         public bool HasBuff(CardType type, byte subtype, bool removeWeaponEffects = false) =>
             BattleEntity.HasBuff(type, subtype, removeWeaponEffects);
 
-        public bool HasBuff(BuffType type)
-        {
-            throw new NotImplementedException();
-        }
+        public bool HasBuff(BuffType type) => throw new NotImplementedException();
 
         public ConcurrentBag<Buff.Buff> Buffs => BattleEntity.Buffs;
 
@@ -127,12 +123,12 @@ namespace OpenNos.GameObject.Map
         #region Methods
 
         /// <summary>
-        /// Follow the Monsters target to it's position.
+        ///     Follow the Monsters target to it's position.
         /// </summary>
         /// <param name="targetSession">The TargetSession to follow</param>
         private void FollowTarget()
         {
-            if (Npc == null || !IsAlive || HasBuff(CardType.Move, (byte) AdditionalTypes.Move.MovementImpossible))
+            if (Npc == null || !IsAlive || HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
             {
                 return;
             }
@@ -145,27 +141,21 @@ namespace OpenNos.GameObject.Map
 
             if (!Path.Any())
             {
-                Path = BestFirstSearch.TracePath(new Node() {X = MapX, Y = MapY}, Target.GetBrushFire(),
+                Path = BestFirstSearch.TracePath(new Node { X = MapX, Y = MapY }, Target.GetBrushFire(),
                     MapInstance.Map.Grid);
             }
 
             Move(); // follow the target
         }
 
-        public EffectPacket GenerateEff(int effectid)
+        public EffectPacket GenerateEff(int effectid) => new EffectPacket
         {
-            return new EffectPacket
-            {
-                EffectType = 2,
-                CharacterId = MapNpcId,
-                Id = effectid
-            };
-        }
+            EffectType = 2,
+            CharacterId = MapNpcId,
+            Id = effectid
+        };
 
-        public string GenerateSay(string message, int type)
-        {
-            return $"say 2 {MapNpcId} 2 {message}";
-        }
+        public string GenerateSay(string message, int type) => $"say 2 {MapNpcId} 2 {message}";
 
         public string GenerateIn()
         {
@@ -177,7 +167,7 @@ namespace OpenNos.GameObject.Map
 
             IsOut = false;
             return
-                $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} {(int) (CurrentHp / (float) Npc.MaxHP * 100)} {(int) (CurrentMp / (float) Npc.MaxMP * 100)} {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
+                $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} {(int)(CurrentHp / (float)Npc.MaxHP * 100)} {(int)(CurrentMp / (float)Npc.MaxMP * 100)} {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
         }
 
         public string GenerateOut()
@@ -192,10 +182,7 @@ namespace OpenNos.GameObject.Map
             return $"out 2 {MapNpcId}";
         }
 
-        public string GetNpcDialog()
-        {
-            return $"npc_req 2 {MapNpcId} {Dialog}";
-        }
+        public string GetNpcDialog() => $"npc_req 2 {MapNpcId} {Dialog}";
 
         public void Initialize(MapInstance currentMapInstance)
         {
@@ -224,7 +211,7 @@ namespace OpenNos.GameObject.Map
             Path = new List<Node>();
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
             Target = null;
-            Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short) MapNpcId);
+            Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
             Shop shop = ServerManager.Instance.GetShopByMapNpcId(MapNpcId);
             if (shop == null)
             {
@@ -242,7 +229,7 @@ namespace OpenNos.GameObject.Map
             {
                 if (e.EventActionType == EventActionType.THROWITEMS)
                 {
-                    Tuple<int, short, byte, int, int> evt = (Tuple<int, short, byte, int, int>) e.Parameter;
+                    Tuple<int, short, byte, int, int> evt = (Tuple<int, short, byte, int, int>)e.Parameter;
                     e.Parameter =
                         new Tuple<int, short, byte, int, int>(MapNpcId, evt.Item2, evt.Item3, evt.Item4, evt.Item5);
                 }
@@ -279,10 +266,7 @@ namespace OpenNos.GameObject.Map
             Life = null;
         }
 
-        private string GenerateMv2()
-        {
-            return $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
-        }
+        private string GenerateMv2() => $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
 
         public void ShowEffect()
         {
@@ -331,7 +315,7 @@ namespace OpenNos.GameObject.Map
                 return;
             }
 
-            lock (Target)
+            lock(Target)
             {
                 NpcMonsterSkill npcMonsterSkill = null;
                 if (ServerManager.Instance.RandomNumber(0, 10) > 8 && Skills != null)
@@ -362,7 +346,7 @@ namespace OpenNos.GameObject.Map
         private void Move()
         {
             if (Npc == null || !IsAlive || !IsMoving || Npc.Speed <= 0 ||
-                HasBuff(CardType.Move, (byte) AdditionalTypes.Move.MovementImpossible))
+                HasBuff(CardType.Move, (byte)AdditionalTypes.Move.MovementImpossible))
             {
                 return;
             }
@@ -371,9 +355,9 @@ namespace OpenNos.GameObject.Map
             {
                 short mapX = FirstX, mapY = FirstY;
                 if (MapInstance.Map?.GetFreePosition(ref mapX, ref mapY,
-                        (byte) ServerManager.Instance.RandomNumber(0, 2), (byte) _random.Next(0, 2)) ?? false)
+                    (byte)ServerManager.Instance.RandomNumber(0, 2), (byte)_random.Next(0, 2)) ?? false)
                 {
-                    int distance = Map.GetDistance(new MapCell {X = mapX, Y = mapY}, GetPos());
+                    int distance = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, GetPos());
                     double value = 1000d * distance / (2 * Npc.Speed);
                     Observable.Timer(TimeSpan.FromMilliseconds(value)).Subscribe(x =>
                     {
@@ -386,21 +370,21 @@ namespace OpenNos.GameObject.Map
             }
             else if (DateTime.Now > LastMove && Path.Any()) // Follow target || move back to original pos
             {
-                byte speedIndex = (byte) (Npc.Speed / 2 < 1 ? 1 : Npc.Speed / 2);
+                byte speedIndex = (byte)(Npc.Speed / 2 < 1 ? 1 : Npc.Speed / 2);
                 int maxindex = Path.Count > speedIndex ? speedIndex : Path.Count;
                 short smapX = Path[maxindex - 1].X;
                 short smapY = Path[maxindex - 1].Y;
-                double waitingtime = Map.GetDistance(new MapCell {X = smapX, Y = smapY}, GetPos()) / (double) Npc.Speed;
+                double waitingtime = Map.GetDistance(new MapCell { X = smapX, Y = smapY }, GetPos()) / (double)Npc.Speed;
                 MapInstance.Broadcast(new BroadcastPacket(null, $"mv 2 {MapNpcId} {smapX} {smapY} {Npc.Speed}",
                     ReceiverType.All, xCoordinate: smapX, yCoordinate: smapY));
                 LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
-                Observable.Timer(TimeSpan.FromMilliseconds((int) ((waitingtime > 1 ? 1 : waitingtime) * 1000)))
+                Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000)))
                     .Subscribe(x =>
                     {
                         MapX = smapX;
                         MapY = smapY;
                     });
-                if (Target != null && Map.GetDistance(new MapCell {X = FirstX, Y = FirstY}, GetPos()) > _maxDistance
+                if (Target != null && Map.GetDistance(new MapCell { X = FirstX, Y = FirstY }, GetPos()) > _maxDistance
                 ) // Remove Target if distance between target & monster is > max Distance
                 {
                     RemoveTarget();
@@ -426,17 +410,17 @@ namespace OpenNos.GameObject.Map
         }
 
         /// <summary>
-        /// Remove the current Target from Npc.
+        ///     Remove the current Target from Npc.
         /// </summary>
         internal void RemoveTarget()
         {
             Target = null;
-            Path = BestFirstSearch.FindPath(new Node {X = MapX, Y = MapY}, new Node {X = FirstX, Y = FirstY},
+            Path = BestFirstSearch.FindPath(new Node { X = MapX, Y = MapY }, new Node { X = FirstX, Y = FirstY },
                 MapInstance.Map.Grid); // Path To origins
         }
 
         /// <summary>
-        /// Start the Respawn
+        ///     Start the Respawn
         /// </summary>
         private void Respawn()
         {
@@ -459,9 +443,9 @@ namespace OpenNos.GameObject.Map
         public void TargetHit(NpcMonsterSkill npcMonsterSkill)
         {
             if (Npc == null ||
-                (!((DateTime.Now - LastSkill).TotalMilliseconds >= 1000 + Npc.BasicCooldown * 250) &&
-                 npcMonsterSkill == null) ||
-                HasBuff(CardType.SpecialAttack, (byte) AdditionalTypes.SpecialAttack.NoAttack))
+                !((DateTime.Now - LastSkill).TotalMilliseconds >= 1000 + Npc.BasicCooldown * 250) &&
+                npcMonsterSkill == null ||
+                HasBuff(CardType.SpecialAttack, (byte)AdditionalTypes.SpecialAttack.NoAttack))
             {
                 return;
             }
@@ -478,25 +462,25 @@ namespace OpenNos.GameObject.Map
                 npcMonsterSkill.LastSkillUse = DateTime.Now;
                 CurrentMp -= npcMonsterSkill.Skill.MpCost;
                 MapInstance.Broadcast(
-                    $"ct 2 {MapNpcId} {(byte) Target.SessionType()} {Target.GetId()} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
+                    $"ct 2 {MapNpcId} {(byte)Target.SessionType()} {Target.GetId()} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
             }
 
             LastMove = DateTime.Now;
             BattleEntity.TargetHit(Target, TargetHitType.SingleTargetHit, npcMonsterSkill?.Skill,
-                skillEffect: Npc.BasicSkill);
+                Npc.BasicSkill);
         }
 
-        public MapCell GetPos() => new MapCell {X = MapX, Y = MapY};
+        public MapCell GetPos() => new MapCell { X = MapX, Y = MapY };
 
         public object GetSession() => this;
 
-        public AttackType GetAttackType(Skill skill = null) => (AttackType) Npc.AttackClass;
+        public AttackType GetAttackType(Skill skill = null) => (AttackType)Npc.AttackClass;
 
         public bool IsTargetable(SessionType type, bool isPvP = false) =>
             type == NosSharp.Enums.SessionType.Monster && IsHostile && IsAlive && CurrentHp > 0;
 
         public Node[,] GetBrushFire() =>
-            BestFirstSearch.LoadBrushFire(new GridPos() {X = MapX, Y = MapY}, MapInstance.Map.Grid);
+            BestFirstSearch.LoadBrushFire(new GridPos { X = MapX, Y = MapY }, MapInstance.Map.Grid);
 
         public SessionType SessionType() => NosSharp.Enums.SessionType.MateAndNpc;
 

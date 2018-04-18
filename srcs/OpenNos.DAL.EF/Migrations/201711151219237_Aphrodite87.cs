@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class Aphrodite87 : DbMigration
     {
         public override void Up()
@@ -17,7 +17,7 @@ namespace OpenNos.DAL.EF.Migrations
             AddColumn("dbo.Quest", "FifthObjective", c => c.Int());
             DropColumn("dbo.Quest", "SpecialData");
         }
-        
+
         public override void Down()
         {
             AddColumn("dbo.Quest", "SpecialData", c => c.Int());

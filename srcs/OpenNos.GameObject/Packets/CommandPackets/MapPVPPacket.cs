@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$MapPVP", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class MapPvpPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$MapPVP";
-        }
+        public static string ReturnHelp() => "$MapPVP";
     }
 }

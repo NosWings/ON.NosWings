@@ -29,6 +29,5 @@ namespace OpenNos.Data
         public bool IsLevelScaled { get; set; }
 
         public bool IsLevelDivided { get; set; }
-
     }
 }

@@ -15,5 +15,4 @@ namespace ON.NW.Master
             Roles = string.Join(",", enums.ToArray());
         }
     }
-
 }

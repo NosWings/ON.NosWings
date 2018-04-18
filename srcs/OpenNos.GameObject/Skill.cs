@@ -13,8 +13,8 @@
  */
 
 using System.Collections.Concurrent;
-using OpenNos.Data;
 using System.Collections.Generic;
+using OpenNos.Data;
 using OpenNos.GameObject.Buff;
 
 namespace OpenNos.GameObject
@@ -31,20 +31,20 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Properties
-
-        public List<ComboDTO> Combos { get; set; }
-
-        public ConcurrentBag<BCard> BCards { get; set; }
-
-        #endregion
-
         #region Methods
 
         public override void Initialize()
         {
             // no custom stuff done for Skill
         }
+
+        #endregion
+
+        #region Properties
+
+        public List<ComboDTO> Combos { get; set; }
+
+        public ConcurrentBag<BCard> BCards { get; set; }
 
         #endregion
     }

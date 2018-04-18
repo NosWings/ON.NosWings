@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$Stat", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class StatCommandPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$Stat";
-        }
+        public static string ReturnHelp() => "$Stat";
     }
 }

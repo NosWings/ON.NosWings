@@ -44,11 +44,8 @@ namespace OpenNos.GameObject.Npc
 
         #region Methods
 
-        public string GenerateEInfo()
-        {
-            return
-                $"e_info 10 {NpcMonsterVNum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalChance} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} {MaxHP} {MaxMP} -1 {Name.Replace(' ', '^')}";
-        }
+        public string GenerateEInfo() =>
+            $"e_info 10 {NpcMonsterVNum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalChance} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} {MaxHP} {MaxMP} -1 {Name.Replace(' ', '^')}";
 
         public float GetRes(int skillelement)
         {
@@ -72,7 +69,7 @@ namespace OpenNos.GameObject.Npc
         }
 
         /// <summary>
-        /// Intializes the GameObject, will be injected by AutoMapper after Entity -&gt; GO mapping
+        ///     Intializes the GameObject, will be injected by AutoMapper after Entity -&gt; GO mapping
         /// </summary>
         public override void Initialize()
         {

@@ -4,7 +4,7 @@ using AutoMapper;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Data.Base;
-using OpenNos.DAL.Interface;
+using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.GameObject.Extensions
 {
@@ -25,7 +25,7 @@ namespace OpenNos.GameObject.Extensions
 
                     // Entity -> GameObject
                     cfg.CreateMap(entry.Value, typeof(TDto))
-                        .AfterMap((src, dest) => ((MappingBaseDTO) dest).Initialize()).As(entry.Key);
+                        .AfterMap((src, dest) => ((MappingBaseDTO)dest).Initialize()).As(entry.Key);
                 }
             });
 
@@ -50,7 +50,7 @@ namespace OpenNos.GameObject.Extensions
 
         public static DAL.EF.Entities.Account ToEntity(this Account from) => Mapper.Map<DAL.EF.Entities.Account>(from);
 
-        public static DAL.EF.Entities.EquipmentOption ToEntity(this EquipmentOptionDTO from) =>
-            Mapper.Map<DAL.EF.Entities.EquipmentOption>(from);
+        public static EquipmentOption ToEntity(this EquipmentOptionDTO from) =>
+            Mapper.Map<EquipmentOption>(from);
     }
 }

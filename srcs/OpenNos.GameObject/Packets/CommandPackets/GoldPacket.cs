@@ -10,12 +10,10 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public long Amount { get; set; }
+        [PacketIndex(0)]
+        public long Amount { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Gold AMOUNT";
-        }
+        public static string ReturnHelp() => "$Gold AMOUNT";
 
         #endregion
     }

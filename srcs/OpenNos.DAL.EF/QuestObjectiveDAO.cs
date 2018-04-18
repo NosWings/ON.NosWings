@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Entities;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Base;
-using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
@@ -24,9 +24,10 @@ namespace OpenNos.DAL.EF
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (QuestObjectiveDTO quest in quests)
                     {
-                        QuestObjective entity = _mapper.Map<QuestObjective>(quest);
+                        var entity = _mapper.Map<QuestObjective>(quest);
                         context.QuestObjective.Add(entity);
                     }
+
                     context.Configuration.AutoDetectChangesEnabled = true;
                     context.SaveChanges();
                 }
@@ -43,7 +44,7 @@ namespace OpenNos.DAL.EF
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    QuestObjective entity = _mapper.Map<QuestObjective>(quest);
+                    var entity = _mapper.Map<QuestObjective>(quest);
                     context.QuestObjective.Add(entity);
                     context.SaveChanges();
                     return _mapper.Map<QuestObjectiveDTO>(quest);

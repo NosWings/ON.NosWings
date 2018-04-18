@@ -4,7 +4,6 @@ namespace OpenNos.Data
 {
     public class QuestRewardDTO : MappingBaseDTO
     {
-
         #region Properties
 
         public long QuestRewardId { get; set; }
@@ -24,6 +23,5 @@ namespace OpenNos.Data
         public long QuestId { get; set; }
 
         #endregion
-
     }
 }

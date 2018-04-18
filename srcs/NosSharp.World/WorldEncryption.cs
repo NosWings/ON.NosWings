@@ -73,6 +73,7 @@ namespace ON.NW.World
                         {
                             highbyte = 0;
                         }
+
                         highbyte &= 0xF0;
                         highbyte >>= 0x4;
 
@@ -85,6 +86,7 @@ namespace ON.NW.World
                         {
                             lowbyte = 0;
                         }
+
                         lowbyte &= 0x0F;
 
                         if (highbyte != 0x0 && highbyte != 0xF)
@@ -100,6 +102,7 @@ namespace ON.NW.World
                     }
                 }
             }
+
             return Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, receiveData.ToArray()));
         }
 
@@ -120,6 +123,7 @@ namespace ON.NW.World
                         byte highbyte = unchecked((byte)(character - firstbyte));
                         encrypted_string += (char)highbyte;
                     }
+
                     break;
 
                 case 1:
@@ -129,6 +133,7 @@ namespace ON.NW.World
                         byte highbyte = unchecked((byte)(character + firstbyte));
                         encrypted_string += (char)highbyte;
                     }
+
                     break;
 
                 case 2:
@@ -138,6 +143,7 @@ namespace ON.NW.World
                         byte highbyte = unchecked((byte)(character - firstbyte ^ 0xC3));
                         encrypted_string += (char)highbyte;
                     }
+
                     break;
 
                 case 3:
@@ -147,6 +153,7 @@ namespace ON.NW.World
                         byte highbyte = unchecked((byte)(character + firstbyte ^ 0xC3));
                         encrypted_string += (char)highbyte;
                     }
+
                     break;
 
                 default:
@@ -254,13 +261,15 @@ namespace ON.NW.World
             int ii = 0;
             for (int i = 0; i < BytesLength; i++)
             {
-                if (i % 0x7E == 0)
+                if ((i % 0x7E) == 0)
                 {
                     encryptedData[i + ii] = (byte)(BytesLength - i > 0x7E ? 0x7E : BytesLength - i);
                     ii++;
                 }
+
                 encryptedData[i + ii] = (byte)~StrBytes[i];
             }
+
             encryptedData[encryptedData.Length - 1] = 0xFF;
 
             return encryptedData;

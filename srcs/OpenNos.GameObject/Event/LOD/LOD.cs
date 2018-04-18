@@ -19,7 +19,6 @@ using System.Reactive.Linq;
 using System.Threading;
 using NosSharp.Enums;
 using OpenNos.Core;
-using OpenNos.DAL.EF;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
@@ -38,7 +37,7 @@ namespace OpenNos.GameObject.Event.LOD
             EventHelper.Instance.RunEvent(new EventContainer(
                 ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)),
                 EventActionType.NPCSEFFECTCHANGESTATE, true));
-            LodThread lodThread = new LodThread();
+            var lodThread = new LodThread();
             Observable.Timer(TimeSpan.FromMinutes(0)).Subscribe(x =>
                 lodThread.Run(lodtime * 60, hornTime * 60, hornRepawn * 60, hornStay * 60));
             List<MapNpc> portalList = ServerManager.Instance.GetMapNpcsPerVNum(453);
@@ -67,7 +66,7 @@ namespace OpenNos.GameObject.Event.LOD
             {
                 RefreshLod(lodTime);
 
-                if (lodTime == hornTime || lodTime == hornTime - hornRespawn * dhspawns)
+                if (lodTime == hornTime || lodTime == (hornTime - hornRespawn * dhspawns))
                 {
                     SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList)
@@ -84,7 +83,7 @@ namespace OpenNos.GameObject.Event.LOD
                         SpawnDh(fam.LandOfDeath);
                     }
                 }
-                else if (lodTime == hornTime - hornRespawn * dhspawns - hornStay)
+                else if (lodTime == (hornTime - hornRespawn * dhspawns - hornStay))
                 {
                     SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
                     foreach (Family fam in ServerManager.Instance.FamilyList)

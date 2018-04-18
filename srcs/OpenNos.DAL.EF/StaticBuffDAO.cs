@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref StaticBuffDTO staticBuff)
         {
-            var contextRef = DataAccessHelper.CreateContext();
+            OpenNosContext contextRef = DataAccessHelper.CreateContext();
             return InsertOrUpdate(ref contextRef, ref staticBuff);
         }
 
@@ -49,6 +49,7 @@ namespace OpenNos.DAL.EF
                     staticBuff = Insert(staticBuff, context);
                     return SaveResult.Inserted;
                 }
+
                 staticBuff.StaticBuffId = entity.StaticBuffId;
                 staticBuff = Update(entity, staticBuff, context);
                 return SaveResult.Updated;
@@ -91,7 +92,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                StaticBuff entity = _mapper.Map<StaticBuff>(sb);
+                var entity = _mapper.Map<StaticBuff>(sb);
                 context.StaticBuff.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<StaticBuffDTO>(entity);
@@ -105,8 +106,8 @@ namespace OpenNos.DAL.EF
 
         public void Delete(short bonusToDelete, long characterId)
         {
-                var contextRef = DataAccessHelper.CreateContext();
-                Delete(ref contextRef, bonusToDelete, characterId);
+            OpenNosContext contextRef = DataAccessHelper.CreateContext();
+            Delete(ref contextRef, bonusToDelete, characterId);
         }
 
         public void Delete(ref OpenNosContext context, short bonusToDelete, long characterId)
@@ -149,6 +150,7 @@ namespace OpenNos.DAL.EF
                 _mapper.Map(sb, entity);
                 context.SaveChanges();
             }
+
             return _mapper.Map<StaticBuffDTO>(entity);
         }
 

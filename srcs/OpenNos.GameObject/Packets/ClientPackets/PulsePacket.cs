@@ -9,7 +9,8 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public int Tick { get; set; }
+        [PacketIndex(0)]
+        public int Tick { get; set; }
 
         #endregion
     }

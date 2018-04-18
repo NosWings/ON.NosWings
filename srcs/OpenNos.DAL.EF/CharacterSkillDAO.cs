@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -42,6 +42,7 @@ namespace OpenNos.DAL.EF
                         context.CharacterSkill.Remove(invItem);
                         context.SaveChanges();
                     }
+
                     return DeleteResult.Deleted;
                 }
             }
@@ -77,7 +78,7 @@ namespace OpenNos.DAL.EF
 
         protected override CharacterSkill MapEntity(CharacterSkillDTO dto)
         {
-            CharacterSkill entity = _mapper.Map<CharacterSkill>(dto);
+            var entity = _mapper.Map<CharacterSkill>(dto);
             return entity;
         }
 

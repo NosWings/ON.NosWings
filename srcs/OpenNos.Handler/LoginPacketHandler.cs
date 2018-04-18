@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.GameObject.Packets.ClientPackets;
-using OpenNos.Master.Library.Client;
 using System;
 using System.Configuration;
 using System.Linq;
 using NosSharp.Enums;
+using OpenNos.Core;
 using OpenNos.Core.Handling;
+using OpenNos.Data;
+using OpenNos.DAL;
 using OpenNos.GameObject.Networking;
+using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.Master.Library.Client;
 
 namespace OpenNos.Handler
 {
@@ -36,10 +36,7 @@ namespace OpenNos.Handler
 
         #region Instantiation
 
-        public LoginPacketHandler(ClientSession session)
-        {
-            _session = session;
-        }
+        public LoginPacketHandler(ClientSession session) => _session = session;
 
         #endregion
 
@@ -53,6 +50,7 @@ namespace OpenNos.Handler
             {
                 return channelpacket;
             }
+
             Logger.Log.Error("Could not retrieve Worldserver groups. Please make sure they've already been registered.");
             _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"), DateTime.Now)}");
 
@@ -60,7 +58,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// login packet
+        ///     login packet
         /// </summary>
         /// <param name="loginPacket"></param>
         public void VerifyLogin(LoginPacket loginPacket)
@@ -70,7 +68,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            UserDTO user = new UserDTO
+            var user = new UserDTO
             {
                 Name = loginPacket.Name,
                 Password = ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.Sha512(LoginEncryption.GetPassword(loginPacket.Password)).ToUpper() : loginPacket.Password
@@ -95,43 +93,45 @@ namespace OpenNos.Handler
                         {
                             // TODO TO ENUM
                             case AuthorityType.Unconfirmed:
-                                {
-                                    _session.SendPacket($"failc {(byte)LoginFailType.CantConnect}");
-                                }
+                            {
+                                _session.SendPacket($"failc {(byte)LoginFailType.CantConnect}");
+                            }
                                 break;
 
                             case AuthorityType.Banned:
-                                {
-                                    _session.SendPacket($"failc {(byte)LoginFailType.Banned}");
-                                }
+                            {
+                                _session.SendPacket($"failc {(byte)LoginFailType.Banned}");
+                            }
                                 break;
 
                             case AuthorityType.Closed:
-                                {
-                                    _session.SendPacket($"failc {(byte)LoginFailType.CantConnect}");
-                                }
+                            {
+                                _session.SendPacket($"failc {(byte)LoginFailType.CantConnect}");
+                            }
                                 break;
 
                             default:
-                                {
-                                    int newSessionId = SessionFactory.Instance.GenerateSessionId();
-                                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
+                            {
+                                int newSessionId = SessionFactory.Instance.GenerateSessionId();
+                                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
-                                    if (CommunicationServiceClient.Instance.GetMaintenanceState() && _session?.Account?.Authority <= AuthorityType.GameMaster)
-                                    {
-                                        _session.SendPacket("failc 2");
-                                        return;
-                                    }
-                                    try
-                                    {
-                                        CommunicationServiceClient.Instance.RegisterAccountLogin(loadedAccount.AccountId, newSessionId, loadedAccount.Name);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Logger.Log.Error("General Error SessionId: " + newSessionId, ex);
-                                    }
-                                    _session.SendPacket(BuildServersPacket(loadedAccount.AccountId, newSessionId));
+                                if (CommunicationServiceClient.Instance.GetMaintenanceState() && _session?.Account?.Authority <= AuthorityType.GameMaster)
+                                {
+                                    _session.SendPacket("failc 2");
+                                    return;
                                 }
+
+                                try
+                                {
+                                    CommunicationServiceClient.Instance.RegisterAccountLogin(loadedAccount.AccountId, newSessionId, loadedAccount.Name);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.Log.Error("General Error SessionId: " + newSessionId, ex);
+                                }
+
+                                _session.SendPacket(BuildServersPacket(loadedAccount.AccountId, newSessionId));
+                            }
                                 break;
                         }
                     }

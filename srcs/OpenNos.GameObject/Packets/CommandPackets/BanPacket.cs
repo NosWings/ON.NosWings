@@ -10,22 +10,18 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public string CharacterName { get; set; }
+        [PacketIndex(0)]
+        public string CharacterName { get; set; }
 
-        [PacketIndex(1)] public int Duration { get; set; }
+        [PacketIndex(1)]
+        public int Duration { get; set; }
 
         [PacketIndex(2, SerializeToEnd = true)]
         public string Reason { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Ban CHARACTERNAME DURATION(DAYS) REASON";
-        }
+        public static string ReturnHelp() => "$Ban CHARACTERNAME DURATION(DAYS) REASON";
 
-        public override string ToString()
-        {
-            return $"Ban Command CharacterName: {CharacterName} Duration: {Duration} Reason: {Reason}";
-        }
+        public override string ToString() => $"Ban Command CharacterName: {CharacterName} Duration: {Duration} Reason: {Reason}";
 
         #endregion
     }

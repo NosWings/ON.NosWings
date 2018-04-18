@@ -34,7 +34,8 @@ namespace OpenNos.DAL.EF.Entities
 
         public virtual ICollection<Drop> Drops { get; set; }
 
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public short MapTypeId { get; set; }
 
         public virtual ICollection<MapTypeMap> MapTypeMap { get; set; }

@@ -9,11 +9,14 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties        
 
-        [PacketIndex(0)] public int CastId { get; set; }
+        [PacketIndex(0)]
+        public int CastId { get; set; }
 
-        [PacketIndex(1)] public short MapX { get; set; }
+        [PacketIndex(1)]
+        public short MapX { get; set; }
 
-        [PacketIndex(2)] public short MapY { get; set; }
+        [PacketIndex(2)]
+        public short MapY { get; set; }
 
         #endregion
     }

@@ -14,13 +14,15 @@ namespace OpenNos.PathFinder.PathFinder
             {
                 return new List<Node>();
             }
+
             Node[,] grid = new Node[Grid.GetLength(0), Grid.GetLength(1)];
             if (grid[start.X, start.Y] == null)
             {
                 grid[start.X, start.Y] = new Node(Grid[start.X, start.Y]);
             }
+
             Node Start = grid[start.X, start.Y];
-            MinHeap path = new MinHeap();
+            var path = new MinHeap();
 
             // push the start node into the open list
             path.Push(Start);
@@ -35,6 +37,7 @@ namespace OpenNos.PathFinder.PathFinder
                 {
                     grid[node.X, node.Y] = new Node(Grid[node.X, node.Y]);
                 }
+
                 grid[node.X, node.Y].Closed = true;
 
                 //if reached the end position, construct the path and return it
@@ -61,6 +64,7 @@ namespace OpenNos.PathFinder.PathFinder
                     {
                         continue;
                     }
+
                     if (neighbor.F == 0)
                     {
                         neighbor.F = Heuristic.Octile(Math.Abs(neighbor.X - end.X), Math.Abs(neighbor.Y - end.Y));
@@ -75,11 +79,11 @@ namespace OpenNos.PathFinder.PathFinder
                     }
                     else
                     {
-
                         neighbor.Parent = node;
                     }
                 }
             }
+
             return new List<Node>();
         }
 
@@ -92,8 +96,9 @@ namespace OpenNos.PathFinder.PathFinder
             {
                 grid[user.X, user.Y] = new Node(mapGrid[user.X, user.Y]);
             }
+
             Node start = grid[user.X, user.Y];
-            MinHeap path = new MinHeap();
+            var path = new MinHeap();
 
 
             // push the start node into the open list
@@ -130,6 +135,7 @@ namespace OpenNos.PathFinder.PathFinder
                     {
                         continue;
                     }
+
                     if (neighbor.F == 0)
                     {
                         double distance = Heuristic.Octile(Math.Abs(neighbor.X - node.X), Math.Abs(neighbor.Y - node.Y)) + node.F;
@@ -138,10 +144,8 @@ namespace OpenNos.PathFinder.PathFinder
                             neighbor.Value = 1;
                             continue;
                         }
-                        else
-                        {
-                            neighbor.F = distance;
-                        }
+
+                        neighbor.F = distance;
                         grid[neighbor.X, neighbor.Y].F = neighbor.F;
                     }
 
@@ -158,6 +162,7 @@ namespace OpenNos.PathFinder.PathFinder
                     }
                 }
             }
+
             return grid;
         }
 
@@ -180,6 +185,7 @@ namespace OpenNos.PathFinder.PathFinder
                 {
                     grid[indexX, indexY] = new Node(mapGrid[indexX, indexY]);
                 }
+
                 neighbors.Add(grid[indexX, indexY]);
                 s0 = true;
             }
@@ -193,6 +199,7 @@ namespace OpenNos.PathFinder.PathFinder
                 {
                     grid[indexX, indexY] = new Node(mapGrid[indexX, indexY]);
                 }
+
                 neighbors.Add(grid[indexX, indexY]);
                 s1 = true;
             }
@@ -206,6 +213,7 @@ namespace OpenNos.PathFinder.PathFinder
                 {
                     grid[indexX, indexY] = new Node(mapGrid[indexX, indexY]);
                 }
+
                 neighbors.Add(grid[indexX, indexY]);
                 s2 = true;
             }
@@ -219,6 +227,7 @@ namespace OpenNos.PathFinder.PathFinder
                 {
                     grid[indexX, indexY] = new Node(mapGrid[indexX, indexY]);
                 }
+
                 neighbors.Add(grid[indexX, indexY]);
                 s3 = true;
             }
@@ -237,6 +246,7 @@ namespace OpenNos.PathFinder.PathFinder
                 {
                     grid[indexX, indexY] = new Node(mapGrid[indexX, indexY]);
                 }
+
                 neighbors.Add(grid[indexX, indexY]);
             }
 
@@ -249,6 +259,7 @@ namespace OpenNos.PathFinder.PathFinder
                 {
                     grid[indexX, indexY] = new Node(mapGrid[indexX, indexY]);
                 }
+
                 neighbors.Add(grid[indexX, indexY]);
             }
 
@@ -261,6 +272,7 @@ namespace OpenNos.PathFinder.PathFinder
                 {
                     grid[indexX, indexY] = new Node(mapGrid[indexX, indexY]);
                 }
+
                 neighbors.Add(grid[indexX, indexY]);
             }
 
@@ -271,10 +283,12 @@ namespace OpenNos.PathFinder.PathFinder
             {
                 return neighbors;
             }
+
             if (grid[indexX, indexY] == null)
             {
                 grid[indexX, indexY] = new Node(mapGrid[indexX, indexY]);
             }
+
             neighbors.Add(grid[indexX, indexY]);
 
             return neighbors;
@@ -288,6 +302,7 @@ namespace OpenNos.PathFinder.PathFinder
                 end = end.Parent;
                 path.Add(end);
             }
+
             path.Reverse();
             return path;
         }
@@ -301,6 +316,7 @@ namespace OpenNos.PathFinder.PathFinder
                 list.Add(node);
                 return list;
             }
+
             Node currentnode = Grid[node.X, node.Y];
             while (currentnode.F != 1 && currentnode.F != 0)
             {
@@ -309,11 +325,14 @@ namespace OpenNos.PathFinder.PathFinder
                 {
                     continue;
                 }
+
                 list.Add(newnode);
                 currentnode = newnode;
             }
+
             return list;
         }
+
         #endregion
     }
 }

@@ -15,15 +15,9 @@ namespace OpenNos.GameObject.Packets.CommandPackets
         [PacketIndex(0, SerializeToEnd = true)]
         public string Arg { get; set; }
 
-        public IEnumerable<string> Help()
-        {
-            return VipHelper.Instance.TeleportDictionary.Keys;
-        }
+        public IEnumerable<string> Help() => VipHelper.Instance.TeleportDictionary.Keys;
 
-        public override string ToString()
-        {
-            return "$VipTp -help";
-        }
+        public override string ToString() => "$VipTp -help";
 
         #endregion
     }

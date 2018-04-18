@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult DeleteById(long id)
         {
-            var context = DataAccessHelper.CreateContext();
+            OpenNosContext context = DataAccessHelper.CreateContext();
             MinilandObject item = context.MinilandObject.First(i => i.MinilandObjectId.Equals(id));
 
             DeleteById(ref context, id);
@@ -108,7 +108,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                MinilandObject entity = _mapper.Map<MinilandObject>(obj);
+                var entity = _mapper.Map<MinilandObject>(obj);
                 context.MinilandObject.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<MinilandObjectDTO>(entity);
@@ -127,6 +127,7 @@ namespace OpenNos.DAL.EF
                 _mapper.Map(respawn, entity);
                 context.SaveChanges();
             }
+
             return _mapper.Map<MinilandObjectDTO>(entity);
         }
 

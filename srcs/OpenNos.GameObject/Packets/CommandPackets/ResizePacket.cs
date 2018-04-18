@@ -10,12 +10,10 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public int Value { get; set; }
+        [PacketIndex(0)]
+        public int Value { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Resize VALUE";
-        }
+        public static string ReturnHelp() => "$Resize VALUE";
 
         #endregion
     }

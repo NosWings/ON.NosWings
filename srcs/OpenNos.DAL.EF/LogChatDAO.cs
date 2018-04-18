@@ -1,44 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Data;
-using OpenNos.DAL.Interface;
-using OpenNos.Data.Enums;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
 using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
     public class LogChatDAO : MappingBaseDao<LogChat, LogChatDTO>, ILogChatDAO
     {
-        public DeleteResult DeleteById(long logId)
-        {
-            try
-            {
-                using (OpenNosContext context = DataAccessHelper.CreateContext())
-                {
-                    LogChat log = context.LogChat.First(i => i.LogId.Equals(logId));
-
-                    if (log == null)
-                    {
-                        return DeleteResult.Deleted;
-                    }
-                    context.LogChat.Remove(log);
-                    context.SaveChanges();
-
-                    return DeleteResult.Deleted;
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return DeleteResult.Error;
-            }
-        }
-
         public SaveResult InsertOrUpdate(ref LogChatDTO log)
         {
             try
@@ -63,6 +38,32 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
                 return SaveResult.Error;
+            }
+        }
+
+        public DeleteResult DeleteById(long logId)
+        {
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    LogChat log = context.LogChat.First(i => i.LogId.Equals(logId));
+
+                    if (log == null)
+                    {
+                        return DeleteResult.Deleted;
+                    }
+
+                    context.LogChat.Remove(log);
+                    context.SaveChanges();
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return DeleteResult.Error;
             }
         }
 
@@ -130,7 +131,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                LogChat entity = _mapper.Map<LogChat>(log);
+                var entity = _mapper.Map<LogChat>(log);
                 context.LogChat.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<LogChatDTO>(entity);
@@ -148,6 +149,7 @@ namespace OpenNos.DAL.EF
             {
                 return null;
             }
+
             _mapper.Map(respawn, entity);
             context.SaveChanges();
             return _mapper.Map<LogChatDTO>(entity);

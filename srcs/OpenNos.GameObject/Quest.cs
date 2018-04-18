@@ -11,10 +11,6 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public Quest()
-        {
-        }
-
         #endregion
 
         #region Properties
@@ -48,13 +44,13 @@ namespace OpenNos.GameObject
                         continue;
                     }
 
-                    switch ((QuestRewardType) reward.RewardType)
+                    switch ((QuestRewardType)reward.RewardType)
                     {
                         // Item
                         case QuestRewardType.WearItem:
                         case QuestRewardType.EtcMainItem:
-                            character.GiftAdd((short) reward.Data, (byte) (reward.Amount == 0 ? 1 : reward.Amount),
-                                reward.Design, reward.Upgrade, (sbyte) reward.Rarity, true);
+                            character.GiftAdd((short)reward.Data, (byte)(reward.Amount == 0 ? 1 : reward.Amount),
+                                reward.Design, reward.Upgrade, (sbyte)reward.Rarity, true);
                             str += $"{reward.RewardType} {reward.Data} {(reward.Amount == 0 ? 1 : reward.Amount)} ";
                             break;
 
@@ -80,8 +76,8 @@ namespace OpenNos.GameObject
                             }
 
                             character.GetXp(
-                                (long) (CharacterHelper.Instance.XpData[reward.Data > 255 ? 255 : reward.Data] *
-                                        reward.Amount / 100D));
+                                (long)(CharacterHelper.Instance.XpData[reward.Data > 255 ? 255 : reward.Data] *
+                                    reward.Amount / 100D));
                             str += $"{reward.RewardType} 0 0 ";
                             break;
 
@@ -92,27 +88,27 @@ namespace OpenNos.GameObject
                                 break;
                             }
 
-                            character.GetXp((long) (CharacterHelper.Instance.XpData[character.Level] * reward.Amount /
-                                                    100D));
+                            character.GetXp((long)(CharacterHelper.Instance.XpData[character.Level] * reward.Amount /
+                                100D));
                             str += $"{reward.RewardType} 0 0 ";
                             break;
 
                         case QuestRewardType.JobExp: // JobExperience
-                            character.GetJobExp((long) ((character.Class == (byte) ClassType.Adventurer
-                                                            ? CharacterHelper.Instance.FirstJobXpData[
-                                                                reward.Data > 255 ? 255 : reward.Data]
-                                                            : CharacterHelper.Instance.SecondJobXpData[
-                                                                reward.Data > 255 ? 255 : reward.Data]) *
-                                                        reward.Amount / 100D));
+                            character.GetJobExp((long)((character.Class == (byte)ClassType.Adventurer
+                                    ? CharacterHelper.Instance.FirstJobXpData[
+                                        reward.Data > 255 ? 255 : reward.Data]
+                                    : CharacterHelper.Instance.SecondJobXpData[
+                                        reward.Data > 255 ? 255 : reward.Data]) *
+                                reward.Amount / 100D));
                             str += $"{reward.RewardType} 0 0 ";
                             break;
 
                         case QuestRewardType.SecondJobExp: // % JobExperience
                             character.GetJobExp(
-                                (long) ((character.Class == (byte) ClassType.Adventurer
-                                            ? CharacterHelper.Instance.FirstJobXpData[character.JobLevel]
-                                            : CharacterHelper.Instance.SecondJobXpData[character.JobLevel]) *
-                                        reward.Amount / 100D));
+                                (long)((character.Class == (byte)ClassType.Adventurer
+                                        ? CharacterHelper.Instance.FirstJobXpData[character.JobLevel]
+                                        : CharacterHelper.Instance.SecondJobXpData[character.JobLevel]) *
+                                    reward.Amount / 100D));
                             str += $"{reward.RewardType} 0 0 ";
                             break;
 
@@ -126,15 +122,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string TargetPacket()
-        {
-            return $"target {TargetX} {TargetY} {TargetMap} {QuestId}";
-        }
+        public string TargetPacket() => $"target {TargetX} {TargetY} {TargetMap} {QuestId}";
 
-        public string RemoveTargetPacket()
-        {
-            return $"targetoff {TargetX} {TargetY} {TargetMap} {QuestId}";
-        }
+        public string RemoveTargetPacket() => $"targetoff {TargetX} {TargetY} {TargetMap} {QuestId}";
 
         #endregion
     }

@@ -12,16 +12,16 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -38,9 +38,10 @@ namespace OpenNos.DAL.EF
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (MapDTO Item in maps)
                     {
-                        Map entity = _mapper.Map<Map>(Item);
+                        var entity = _mapper.Map<Map>(Item);
                         context.Map.Add(entity);
                     }
+
                     context.Configuration.AutoDetectChangesEnabled = true;
                     context.SaveChanges();
                 }
@@ -59,11 +60,12 @@ namespace OpenNos.DAL.EF
                 {
                     if (context.Map.FirstOrDefault(c => c.MapId.Equals(map.MapId)) == null)
                     {
-                        Map entity = _mapper.Map<Map>(map);
+                        var entity = _mapper.Map<Map>(map);
                         context.Map.Add(entity);
                         context.SaveChanges();
                         return _mapper.Map<MapDTO>(entity);
                     }
+
                     return new MapDTO();
                 }
             }

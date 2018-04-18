@@ -16,13 +16,6 @@ namespace OpenNos.GameObject.Networking
 {
     public class TransportFactory
     {
-        #region Members
-
-        private static TransportFactory _instance;
-        private long _lastTransportId = 100000;
-
-        #endregion
-
         #region Instantiation
 
         private TransportFactory()
@@ -51,6 +44,13 @@ namespace OpenNos.GameObject.Networking
 
             return _lastTransportId;
         }
+
+        #endregion
+
+        #region Members
+
+        private static TransportFactory _instance;
+        private long _lastTransportId = 100000;
 
         #endregion
     }

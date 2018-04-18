@@ -1,60 +1,59 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class Aphrodite74 : DbMigration
     {
         public override void Up()
         {
             CreateTable(
-                "dbo.CharacterQuest",
-                c => new
+                    "dbo.CharacterQuest",
+                    c => new
                     {
-                        Id = c.Guid(nullable: false),
-                        CharacterId = c.Long(nullable: false),
-                        QuestId = c.Long(nullable: false),
+                        Id = c.Guid(false),
+                        CharacterId = c.Long(false),
+                        QuestId = c.Long(false),
                         FirstObjective = c.Int(),
                         SecondObjective = c.Int(),
-                        ThirdObjective = c.Int(),
+                        ThirdObjective = c.Int()
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Character", t => t.CharacterId, cascadeDelete: true)
-                .ForeignKey("dbo.Quest", t => t.QuestId, cascadeDelete: true)
+                .ForeignKey("dbo.Character", t => t.CharacterId, true)
+                .ForeignKey("dbo.Quest", t => t.QuestId, true)
                 .Index(t => t.CharacterId)
                 .Index(t => t.QuestId);
-            
+
             CreateTable(
-                "dbo.Quest",
-                c => new
+                    "dbo.Quest",
+                    c => new
                     {
-                        QuestId = c.Long(nullable: false, identity: true),
-                        QuestType = c.Byte(nullable: false),
-                        FirstData = c.Int(nullable: false),
+                        QuestId = c.Long(false, true),
+                        QuestType = c.Byte(false),
+                        FirstData = c.Int(false),
                         SecondData = c.Int(),
                         ThirdData = c.Int(),
-                        FirstObjective = c.Int(nullable: false),
+                        FirstObjective = c.Int(false),
                         SecondObjective = c.Int(),
                         ThirdObjective = c.Int(),
                         TargetMap = c.Short(),
                         TargetX = c.Short(),
-                        TargetY = c.Short(),
+                        TargetY = c.Short()
                     })
                 .PrimaryKey(t => t.QuestId);
-            
+
             CreateTable(
-                "dbo.QuestReward",
-                c => new
+                    "dbo.QuestReward",
+                    c => new
                     {
-                        QuestRewardId = c.Long(nullable: false, identity: true),
-                        RewardType = c.Byte(nullable: false),
-                        Data = c.Int(nullable: false),
-                        Amount = c.Int(nullable: false),
-                        QuestId = c.Long(nullable: false),
+                        QuestRewardId = c.Long(false, true),
+                        RewardType = c.Byte(false),
+                        Data = c.Int(false),
+                        Amount = c.Int(false),
+                        QuestId = c.Long(false)
                     })
                 .PrimaryKey(t => t.QuestRewardId);
-            
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.CharacterQuest", "QuestId", "dbo.Quest");

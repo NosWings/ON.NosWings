@@ -21,10 +21,7 @@ namespace OpenNos.GameObject.Map
             Range = 1;
         }
 
-        public bool InZone(short positionX, short positionY)
-        {
-            return positionX <= X + Range && positionX >= X - Range && positionY <= Y + Range && positionY >= Y - Range;
-        }
+        public bool InZone(short positionX, short positionY) => positionX <= X + Range && positionX >= X - Range && positionY <= Y + Range && positionY >= Y - Range;
 
         #endregion
     }

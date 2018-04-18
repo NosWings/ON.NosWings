@@ -8,14 +8,13 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public int? Faction { get; set; }
+        [PacketIndex(0)]
+        public int? Faction { get; set; }
 
-        [PacketIndex(1)] public int? Percent { get; set; }
+        [PacketIndex(1)]
+        public int? Percent { get; set; }
 
-        public override string ToString()
-        {
-            return "$Act4Percent Faction Percent";
-        }
+        public override string ToString() => "$Act4Percent Faction Percent";
 
         #endregion
     }

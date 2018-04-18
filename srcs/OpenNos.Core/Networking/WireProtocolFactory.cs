@@ -17,14 +17,11 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 namespace OpenNos.Core.Networking
 {
     public class WireProtocolFactory<EncryptorT> : IScsWireProtocolFactory
-        where EncryptorT : EncryptionBase
+    where EncryptorT : EncryptionBase
     {
         #region Methods
 
-        public IScsWireProtocol CreateWireProtocol()
-        {
-            return new WireProtocol();
-        }
+        public IScsWireProtocol CreateWireProtocol() => new WireProtocol();
 
         #endregion
     }

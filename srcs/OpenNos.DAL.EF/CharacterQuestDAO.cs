@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult Delete(long characterId, long questId)
         {
-            var contextRef = DataAccessHelper.CreateContext();
+            OpenNosContext contextRef = DataAccessHelper.CreateContext();
             return Delete(ref contextRef, characterId, questId);
         }
 
@@ -31,6 +31,7 @@ namespace OpenNos.DAL.EF
                 {
                     context.CharacterQuest.Remove(charQuest);
                 }
+
                 return DeleteResult.Deleted;
             }
             catch (Exception e)

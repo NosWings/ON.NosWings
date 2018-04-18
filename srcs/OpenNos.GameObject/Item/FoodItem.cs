@@ -68,7 +68,7 @@ namespace OpenNos.GameObject.Item
                 session.Character.Mp += session.Character.FoodMp;
                 if (session.Character.FoodHp > 0 && session.Character.FoodHp > 0 &&
                     (session.Character.Hp < session.Character.HpLoad() ||
-                     session.Character.Mp < session.Character.MpLoad()))
+                        session.Character.Mp < session.Character.MpLoad()))
                 {
                     session.CurrentMapInstance?.Broadcast(session,
                         session.Character.GenerateRc(session.Character.FoodHp));
@@ -118,7 +118,7 @@ namespace OpenNos.GameObject.Item
                             return;
                         }
 
-                        Thread workerThread = new Thread(() => Regenerate(session, item));
+                        var workerThread = new Thread(() => Regenerate(session, item));
                         workerThread.Start();
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
@@ -136,7 +136,7 @@ namespace OpenNos.GameObject.Item
                             return;
                         }
 
-                        Thread workerThread2 = new Thread(() => Sync(session, item));
+                        var workerThread2 = new Thread(() => Sync(session, item));
                         workerThread2.Start();
                     }
 

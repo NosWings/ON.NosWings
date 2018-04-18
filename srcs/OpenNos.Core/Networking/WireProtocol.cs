@@ -23,10 +23,20 @@ namespace OpenNos.Core.Networking
 {
     public class WireProtocol : IScsWireProtocol, IDisposable
     {
+        #region Instantiation
+
+        public WireProtocol()
+        {
+            _receiveMemoryStream = new MemoryStream();
+            _connectionHistory = new Dictionary<string, DateTime>();
+        }
+
+        #endregion
+
         #region Members
 
         /// <summary>
-        /// Maximum length of a message.
+        ///     Maximum length of a message.
         /// </summary>
         private const short MaxMessageLength = 4096;
 
@@ -35,19 +45,9 @@ namespace OpenNos.Core.Networking
         private bool _disposed;
 
         /// <summary>
-        /// This MemoryStream object is used to collect receiving bytes to build messages.
+        ///     This MemoryStream object is used to collect receiving bytes to build messages.
         /// </summary>
         private MemoryStream _receiveMemoryStream;
-
-        #endregion
-
-        #region Instantiation
-
-        public WireProtocol()
-        {
-            _receiveMemoryStream = new MemoryStream();
-            _connectionHistory = new Dictionary<string, DateTime>();
-        }
 
         #endregion
 
@@ -83,10 +83,8 @@ namespace OpenNos.Core.Networking
         public byte[] GetBytes(IScsMessage message)
         {
             // Serialize the message to a byte array
-            ScsTextMessage textMessage = message as ScsTextMessage;
-            byte[] bytes = textMessage != null ?
-                Encoding.Default.GetBytes(textMessage.Text) :
-                ((ScsRawDataMessage)message).MessageData;
+            var textMessage = message as ScsTextMessage;
+            byte[] bytes = textMessage != null ? Encoding.Default.GetBytes(textMessage.Text) : ((ScsRawDataMessage)message).MessageData;
 
             return bytes;
         }
@@ -108,13 +106,13 @@ namespace OpenNos.Core.Networking
         }
 
         /// <summary>
-        /// Reads a byte array with specified length.
+        ///     Reads a byte array with specified length.
         /// </summary>
         /// <param name="stream">Stream to read from</param>
         /// <param name="length">Length of the byte array to read</param>
         /// <returns>Read byte array</returns>
         /// <exception cref="EndOfStreamException">
-        /// Throws EndOfStreamException if can not read from stream.
+        ///     Throws EndOfStreamException if can not read from stream.
         /// </exception>
         private static byte[] ReadByteArray(Stream stream, short length)
         {
@@ -130,14 +128,14 @@ namespace OpenNos.Core.Networking
         }
 
         /// <summary>
-        /// This method tries to read a single message and add to the messages collection.
+        ///     This method tries to read a single message and add to the messages collection.
         /// </summary>
         /// <param name="messages">Messages collection to collect messages</param>
         /// <returns>
-        /// Returns a boolean value indicates that if there is a need to re-call this method.
+        ///     Returns a boolean value indicates that if there is a need to re-call this method.
         /// </returns>
         /// <exception cref="CommunicationException">
-        /// Throws CommunicationException if message is bigger than maximum allowed message length.
+        ///     Throws CommunicationException if message is bigger than maximum allowed message length.
         /// </exception>
         private bool ReadSingleMessage(ICollection<IScsMessage> messages)
         {

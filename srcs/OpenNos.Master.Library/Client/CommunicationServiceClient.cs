@@ -1,27 +1,20 @@
-﻿using Hik.Communication.Scs.Communication;
+﻿using System;
+using System.Configuration;
+using System.Threading;
+using Hik.Communication.Scs.Communication;
 using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 using Hik.Communication.ScsServices.Client;
+using NosSharp.Enums;
 using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.Master.Library.Data;
 using OpenNos.Master.Library.Interface;
-using System;
-using System.Configuration;
-using NosSharp.Enums;
-using OpenNos.Data;
 
 namespace OpenNos.Master.Library.Client
 {
     public class CommunicationServiceClient : ICommunicationService
     {
-        #region Members
-
-        private static CommunicationServiceClient _instance;
-        private IScsServiceClient<ICommunicationService> _client;
-        private CommunicationClient _commClient;
-
-        #endregion
-
         #region Instantiation
 
         public CommunicationServiceClient()
@@ -39,10 +32,18 @@ namespace OpenNos.Master.Library.Client
                 catch
                 {
                     Logger.Log.Error(Language.Instance.GetMessageFromKey("RETRY_CONNECTION"));
-                    System.Threading.Thread.Sleep(2000);
+                    Thread.Sleep(2000);
                 }
             }
         }
+
+        #endregion
+
+        #region Members
+
+        private static CommunicationServiceClient _instance;
+        private readonly IScsServiceClient<ICommunicationService> _client;
+        private readonly CommunicationClient _commClient;
 
         #endregion
 
@@ -76,49 +77,31 @@ namespace OpenNos.Master.Library.Client
 
         public static CommunicationServiceClient Instance => _instance ?? (_instance = new CommunicationServiceClient());
 
-        public CommunicationStates CommunicationState
-        {
-            get { return _client.CommunicationState; }
-        }
+        public CommunicationStates CommunicationState => _client.CommunicationState;
 
         #endregion
 
         #region Methods
 
-        public bool GetMaintenanceState()
-        {
-            return _client.ServiceProxy.GetMaintenanceState();
-        }
+        public bool GetMaintenanceState() => _client.ServiceProxy.GetMaintenanceState();
 
         public void SetMaintenanceState(bool state)
         {
             _client.ServiceProxy.SetMaintenanceState(state);
         }
 
-        public bool Authenticate(string authKey)
-        {
-            return _client.ServiceProxy.Authenticate(authKey);
-        }
+        public bool Authenticate(string authKey) => _client.ServiceProxy.Authenticate(authKey);
 
         public void Cleanup()
         {
             _client.ServiceProxy.Cleanup();
         }
 
-        public bool ChangeAuthority(string worldGroup, string characterName, AuthorityType authority)
-        {
-            return _client.ServiceProxy.ChangeAuthority(worldGroup, characterName, authority);
-        }
+        public bool ChangeAuthority(string worldGroup, string characterName, AuthorityType authority) => _client.ServiceProxy.ChangeAuthority(worldGroup, characterName, authority);
 
-        public bool ConnectAccount(Guid worldId, long accountId, long sessionId)
-        {
-            return _client.ServiceProxy.ConnectAccount(worldId, accountId, sessionId);
-        }
+        public bool ConnectAccount(Guid worldId, long accountId, long sessionId) => _client.ServiceProxy.ConnectAccount(worldId, accountId, sessionId);
 
-        public bool ConnectCharacter(Guid worldId, long characterId)
-        {
-            return _client.ServiceProxy.ConnectCharacter(worldId, characterId);
-        }
+        public bool ConnectCharacter(Guid worldId, long characterId) => _client.ServiceProxy.ConnectCharacter(worldId, characterId);
 
         public void SetWorldServerAsInvisible(Guid worldId)
         {
@@ -135,25 +118,13 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.DisconnectCharacter(worldId, characterId);
         }
 
-        public int? GetChannelIdByWorldId(Guid worldId)
-        {
-            return _client.ServiceProxy.GetChannelIdByWorldId(worldId);
-        }
+        public int? GetChannelIdByWorldId(Guid worldId) => _client.ServiceProxy.GetChannelIdByWorldId(worldId);
 
-        public bool IsAccountConnected(long accountId)
-        {
-            return _client.ServiceProxy.IsAccountConnected(accountId);
-        }
+        public bool IsAccountConnected(long accountId) => _client.ServiceProxy.IsAccountConnected(accountId);
 
-        public bool IsCharacterConnected(string worldGroup, long characterId)
-        {
-            return _client.ServiceProxy.IsCharacterConnected(worldGroup, characterId);
-        }
+        public bool IsCharacterConnected(string worldGroup, long characterId) => _client.ServiceProxy.IsCharacterConnected(worldGroup, characterId);
 
-        public bool IsLoginPermitted(long accountId, long sessionId)
-        {
-            return _client.ServiceProxy.IsLoginPermitted(accountId, sessionId);
-        }
+        public bool IsLoginPermitted(long accountId, long sessionId) => _client.ServiceProxy.IsLoginPermitted(accountId, sessionId);
 
         public void KickSession(long? accountId, long? sessionId)
         {
@@ -175,50 +146,26 @@ namespace OpenNos.Master.Library.Client
             _client.ServiceProxy.RegisterAccountLogin(accountId, sessionId, accountName);
         }
 
-        public bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId)
-        {
-            return _client.ServiceProxy.ConnectAccountInternal(worldId, accountId, sessionId);
-        }
+        public bool ConnectAccountInternal(Guid worldId, long accountId, int sessionId) => _client.ServiceProxy.ConnectAccountInternal(worldId, accountId, sessionId);
 
         public void RegisterInternalAccountLogin(long accountId, int sessionId)
         {
             _client.ServiceProxy.RegisterInternalAccountLogin(accountId, sessionId);
         }
 
-        public int? RegisterWorldServer(SerializableWorldServer worldServer)
-        {
-            return _client.ServiceProxy.RegisterWorldServer(worldServer);
-        }
+        public int? RegisterWorldServer(SerializableWorldServer worldServer) => _client.ServiceProxy.RegisterWorldServer(worldServer);
 
-        public string RetrieveRegisteredWorldServers(long sessionId)
-        {
-            return _client.ServiceProxy.RetrieveRegisteredWorldServers(sessionId);
-        }
+        public string RetrieveRegisteredWorldServers(long sessionId) => _client.ServiceProxy.RetrieveRegisteredWorldServers(sessionId);
 
-        public string RetrieveServerStatistics()
-        {
-            return _client.ServiceProxy.RetrieveServerStatistics();
-        }
+        public string RetrieveServerStatistics() => _client.ServiceProxy.RetrieveServerStatistics();
 
-        public SerializableWorldServer GetPreviousChannelByAccountId(long accountId)
-        {
-            return _client.ServiceProxy.GetPreviousChannelByAccountId(accountId);
-        }
+        public SerializableWorldServer GetPreviousChannelByAccountId(long accountId) => _client.ServiceProxy.GetPreviousChannelByAccountId(accountId);
 
-        public SerializableWorldServer GetAct4ChannelInfo(string worldGroup)
-        {
-            return _client.ServiceProxy.GetAct4ChannelInfo(worldGroup);
-        }
+        public SerializableWorldServer GetAct4ChannelInfo(string worldGroup) => _client.ServiceProxy.GetAct4ChannelInfo(worldGroup);
 
-        public bool IsCrossServerLoginPermitted(long accountId, int sessionId)
-        {
-            return _client.ServiceProxy.IsCrossServerLoginPermitted(accountId, sessionId);
-        }
+        public bool IsCrossServerLoginPermitted(long accountId, int sessionId) => _client.ServiceProxy.IsCrossServerLoginPermitted(accountId, sessionId);
 
-        public int? SendMessageToCharacter(SCSCharacterMessage message)
-        {
-            return _client.ServiceProxy.SendMessageToCharacter(message);
-        }
+        public int? SendMessageToCharacter(SCSCharacterMessage message) => _client.ServiceProxy.SendMessageToCharacter(message);
 
         public void Shutdown(string worldGroup)
         {

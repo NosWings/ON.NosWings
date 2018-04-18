@@ -21,14 +21,6 @@ namespace OpenNos.Core
 {
     public class Language
     {
-        #region Members
-
-        private static Language instance;
-        private ResourceManager _manager;
-        private CultureInfo _resourceCulture;
-
-        #endregion
-
         #region Instantiation
 
         private Language()
@@ -44,13 +36,7 @@ namespace OpenNos.Core
 
         #region Properties
 
-        public static Language Instance
-        {
-            get
-            {
-                return instance ?? (instance = new Language());
-            }
-        }
+        public static Language Instance => instance ?? (instance = new Language());
 
         #endregion
 
@@ -62,6 +48,14 @@ namespace OpenNos.Core
 
             return !string.IsNullOrEmpty(resourceMessage) ? resourceMessage : $"#<{message}>";
         }
+
+        #endregion
+
+        #region Members
+
+        private static Language instance;
+        private readonly ResourceManager _manager;
+        private readonly CultureInfo _resourceCulture;
 
         #endregion
     }

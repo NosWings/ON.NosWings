@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core;
-using OpenNos.GameObject.Battle;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
@@ -113,7 +107,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static void TeleportPlayers()
         {
-            foreach (var character in ServerManager.Instance.CaligorMapInstance.Sessions)
+            foreach (ClientSession character in ServerManager.Instance.CaligorMapInstance.Sessions)
             {
                 // Teleport everyone back to the raidmap
                 ServerManager.Instance.ChangeMapInstance(character.Character.CharacterId, EntryMap.MapInstanceId,
@@ -151,7 +145,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
                 DestinationMapInstanceId = ServerManager.Instance.CaligorMapInstance.MapInstanceId,
                 Type = -1
             });
-            EntryMap?.CreatePortal(new Portal()
+            EntryMap?.CreatePortal(new Portal
             {
                 SourceMapId = 153,
                 SourceX = 87,
@@ -186,7 +180,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
                 DestinationMapInstanceId = EntryMap.MapInstanceId,
                 Type = -1
             });
-            ServerManager.Instance.CaligorMapInstance?.CreatePortal(new Portal()
+            ServerManager.Instance.CaligorMapInstance?.CreatePortal(new Portal
             {
                 SourceMapId = 154,
                 SourceX = 87,
@@ -201,7 +195,7 @@ namespace OpenNos.GameObject.Event.CALIGOR
 
         public static void RemovePortals()
         {
-            foreach (var portal in EntryMap.Portals.Where(p =>
+            foreach (Portal portal in EntryMap.Portals.Where(p =>
                 p.DestinationMapInstanceId == ServerManager.Instance.CaligorMapInstance.MapInstanceId))
             {
                 EntryMap.Portals.Remove(portal);

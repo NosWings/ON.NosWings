@@ -18,7 +18,6 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
-using CloneExtensions;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Data;
@@ -28,20 +27,17 @@ namespace NosSharp.Parser
 {
     public class ImportFactory
     {
+        #region Instantiation
+
+        public ImportFactory(string folder) => _folder = folder;
+
+        #endregion
+
         #region Members
 
         private readonly string _folder;
         private readonly List<string[]> _packetList = new List<string[]>();
         private List<MapDTO> _maps;
-
-        #endregion
-
-        #region Instantiation
-
-        public ImportFactory(string folder)
-        {
-            _folder = folder;
-        }
 
         #endregion
 
@@ -55,7 +51,8 @@ namespace NosSharp.Parser
                 // We definately don't want people to access the admin account.
                 return;
             }
-            AccountDTO acc1 = new AccountDTO
+
+            var acc1 = new AccountDTO
             {
                 AccountId = 1,
                 Authority = AuthorityType.GameMaster,
@@ -64,7 +61,7 @@ namespace NosSharp.Parser
             };
             DaoFactory.AccountDao.InsertOrUpdate(ref acc1);
 
-            AccountDTO acc2 = new AccountDTO
+            var acc2 = new AccountDTO
             {
                 AccountId = 2,
                 Authority = AuthorityType.User,
@@ -81,10 +78,10 @@ namespace NosSharp.Parser
             int qstCounter = 0;
 
             Dictionary<long, QuestRewardDTO> dictionaryRewards = new Dictionary<long, QuestRewardDTO>();
-            QuestRewardDTO reward = new QuestRewardDTO();
+            var reward = new QuestRewardDTO();
             string line;
 
-            using (StreamReader questRewardStream = new StreamReader(fileRewardsDat, Encoding.GetEncoding(1252)))
+            using (var questRewardStream = new StreamReader(fileRewardsDat, Encoding.GetEncoding(1252)))
             {
                 while ((line = questRewardStream.ReadLine()) != null)
                 {
@@ -93,6 +90,7 @@ namespace NosSharp.Parser
                     {
                         continue;
                     }
+
                     switch (currentLine[0])
                     {
                         case "VNUM":
@@ -108,7 +106,8 @@ namespace NosSharp.Parser
                             {
                                 return;
                             }
-                            switch ((QuestRewardType) reward.RewardType)
+
+                            switch ((QuestRewardType)reward.RewardType)
                             {
                                 case QuestRewardType.Exp:
                                 case QuestRewardType.SecondExp:
@@ -142,6 +141,7 @@ namespace NosSharp.Parser
                                     reward.Amount = int.Parse(currentLine[2]);
                                     break;
                             }
+
                             break;
 
                         case "END":
@@ -149,22 +149,23 @@ namespace NosSharp.Parser
                             break;
                     }
                 }
+
                 questRewardStream.Close();
             }
 
-            
+
             // Final List
             List<QuestDTO> quests = new List<QuestDTO>();
             List<QuestRewardDTO> rewards = new List<QuestRewardDTO>();
             List<QuestObjectiveDTO> questObjectives = new List<QuestObjectiveDTO>();
 
             // Current
-            QuestDTO quest = new QuestDTO();
+            var quest = new QuestDTO();
             List<QuestRewardDTO> currentRewards = new List<QuestRewardDTO>();
             List<QuestObjectiveDTO> currentObjectives = new List<QuestObjectiveDTO>();
 
             byte objectiveIndex = 0;
-            using (StreamReader questStream = new StreamReader(fileQuestDat, Encoding.GetEncoding(1252)))
+            using (var questStream = new StreamReader(fileQuestDat, Encoding.GetEncoding(1252)))
             {
                 while ((line = questStream.ReadLine()) != null)
                 {
@@ -197,6 +198,7 @@ namespace NosSharp.Parser
                                         quest.IsDaily = true;
                                         break;
                                 }
+
                                 objectiveIndex = 0;
                                 currentRewards.Clear();
                                 currentObjectives.Clear();
@@ -248,9 +250,11 @@ namespace NosSharp.Parser
                                         {
                                             continue;
                                         }
+
                                         quest.NextQuestId = quest.QuestId + 1;
                                         break;
                                 }
+
                                 break;
 
                             case "LEVEL":
@@ -263,10 +267,12 @@ namespace NosSharp.Parser
                                 {
                                     quest.StartDialogId = int.Parse(currentLine[1]);
                                 }
+
                                 if (int.Parse(currentLine[2]) > 0)
                                 {
                                     quest.EndDialogId = int.Parse(currentLine[2]);
                                 }
+
                                 break;
 
                             case "TARGET":
@@ -276,6 +282,7 @@ namespace NosSharp.Parser
                                     quest.TargetX = short.Parse(currentLine[1]);
                                     quest.TargetY = short.Parse(currentLine[2]);
                                 }
+
                                 break;
 
                             case "DATA":
@@ -283,6 +290,7 @@ namespace NosSharp.Parser
                                 {
                                     return;
                                 }
+
                                 objectiveIndex++;
                                 int? data = null, objective = null, specialData = null, secondSpecialData = null;
                                 switch ((QuestType)quest.QuestType)
@@ -326,7 +334,7 @@ namespace NosSharp.Parser
                                         break;
 
                                     case QuestType.TransmitGold: // NpcVNum - Gold x10K - * //
-                                        data = int.Parse(currentLine[1]); 
+                                        data = int.Parse(currentLine[1]);
                                         objective = int.Parse(currentLine[2]) * 10000;
                                         break;
 
@@ -368,9 +376,9 @@ namespace NosSharp.Parser
                                         objective = int.Parse(currentLine[2]);
                                         specialData = int.Parse(currentLine[3]);
                                         break;
-
                                 }
-                                currentObjectives.Add(new QuestObjectiveDTO()
+
+                                currentObjectives.Add(new QuestObjectiveDTO
                                 {
                                     Data = data,
                                     Objective = objective ?? 1,
@@ -388,8 +396,9 @@ namespace NosSharp.Parser
                                     {
                                         continue;
                                     }
+
                                     QuestRewardDTO currentReward = dictionaryRewards[long.Parse(currentLine[a])];
-                                    currentRewards.Add(new QuestRewardDTO()
+                                    currentRewards.Add(new QuestRewardDTO
                                     {
                                         RewardType = currentReward.RewardType,
                                         Data = currentReward.Data,
@@ -397,6 +406,7 @@ namespace NosSharp.Parser
                                         QuestId = quest.QuestId
                                     });
                                 }
+
                                 break;
 
                             case "END":
@@ -406,11 +416,13 @@ namespace NosSharp.Parser
                                     rewards.AddRange(currentRewards);
                                     qstCounter++;
                                 }
+
                                 quests.Add(quest);
                                 break;
                         }
                     }
                 }
+
                 DaoFactory.QuestDao.InsertOrUpdate(quests);
                 DaoFactory.QuestRewardDao.Insert(rewards);
                 DaoFactory.QuestObjectiveDao.Insert(questObjectives);
@@ -428,14 +440,14 @@ namespace NosSharp.Parser
             string fileCardLang = $"{_folder}\\_code_{ConfigurationManager.AppSettings["Language"]}_Card.txt";
             List<CardDTO> cards = new List<CardDTO>();
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
-            CardDTO card = new CardDTO();
+            var card = new CardDTO();
             List<BCardDTO> bcards = new List<BCardDTO>();
             DaoFactory.BCardDao.Clean();
             string line;
             int counter = 0;
             bool itemAreaBegin = false;
 
-            using (StreamReader npcIdLangStream = new StreamReader(fileCardLang, Encoding.GetEncoding(1252)))
+            using (var npcIdLangStream = new StreamReader(fileCardLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = npcIdLangStream.ReadLine()) != null)
                 {
@@ -445,10 +457,11 @@ namespace NosSharp.Parser
                         dictionaryIdLang.Add(linesave[0], linesave[1]);
                     }
                 }
+
                 npcIdLangStream.Close();
             }
 
-            using (StreamReader npcIdStream = new StreamReader(fileCardDat, Encoding.GetEncoding(1252)))
+            using (var npcIdStream = new StreamReader(fileCardDat, Encoding.GetEncoding(1252)))
             {
                 while ((line = npcIdStream.ReadLine()) != null)
                 {
@@ -472,6 +485,7 @@ namespace NosSharp.Parser
                         {
                             continue;
                         }
+
                         card.Level = Convert.ToByte(currentLine[3]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "EFFECT")
@@ -498,6 +512,7 @@ namespace NosSharp.Parser
                                 {
                                     continue;
                                 }
+
                                 int first = int.Parse(currentLine[i * 6 + 6]);
                                 bcard = new BCardDTO
                                 {
@@ -508,7 +523,7 @@ namespace NosSharp.Parser
                                     SecondData = int.Parse(currentLine[7 + i * 6]) / 4,
                                     ThirdData = int.Parse(currentLine[5 + i * 6]),
                                     IsLevelScaled = Convert.ToBoolean(first % 4),
-                                    IsLevelDivided = Math.Abs(first % 4) == 2,
+                                    IsLevelDivided = Math.Abs(first % 4) == 2
                                 };
                                 bcards.Add(bcard);
                             }
@@ -521,6 +536,7 @@ namespace NosSharp.Parser
                                 {
                                     continue;
                                 }
+
                                 int first = int.Parse(currentLine[i * 6 + 6]);
                                 bcard = new BCardDTO
                                 {
@@ -531,7 +547,7 @@ namespace NosSharp.Parser
                                     SecondData = int.Parse(currentLine[7 + i * 6]) / 4,
                                     ThirdData = int.Parse(currentLine[5 + i * 6]),
                                     IsLevelScaled = Convert.ToBoolean(first % 4),
-                                    IsLevelDivided = (first % 4) == 2,
+                                    IsLevelDivided = (first % 4) == 2
                                 };
                                 bcards.Add(bcard);
                             }
@@ -547,10 +563,12 @@ namespace NosSharp.Parser
                                 cards.Add(card);
                                 counter++;
                             }
+
                             itemAreaBegin = false;
                         }
                     }
                 }
+
                 DaoFactory.CardDao.Insert(cards);
                 DaoFactory.BCardDao.Insert(bcards);
 
@@ -585,6 +603,7 @@ namespace NosSharp.Parser
                 {
                     continue;
                 }
+
                 if (!npcMvPacketsList.Contains(Convert.ToInt32(currentPacket[2])))
                 {
                     npcMvPacketsList.Add(Convert.ToInt32(currentPacket[2]));
@@ -597,6 +616,7 @@ namespace NosSharp.Parser
                 {
                     continue;
                 }
+
                 if (!effPacketsDictionary.ContainsKey(Convert.ToInt32(currentPacket[2])))
                 {
                     effPacketsDictionary.Add(Convert.ToInt32(currentPacket[2]), Convert.ToInt16(currentPacket[3]));
@@ -610,11 +630,13 @@ namespace NosSharp.Parser
                     map = short.Parse(currentPacket[2]);
                     continue;
                 }
+
                 if (currentPacket.Length <= 7 || currentPacket[0] != "in" || currentPacket[1] != "2")
                 {
                     continue;
                 }
-                MapNpcDTO npctest = new MapNpcDTO
+
+                var npctest = new MapNpcDTO
                 {
                     MapX = short.Parse(currentPacket[4]),
                     MapY = short.Parse(currentPacket[5]),
@@ -625,11 +647,13 @@ namespace NosSharp.Parser
                 {
                     continue;
                 }
+
                 npctest.MapNpcId = short.Parse(currentPacket[3]);
                 if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
                 {
                     npctest.Effect = (short)(npctest.NpcVNum == 453 /*Lod*/ ? 855 : effPacketsDictionary[npctest.MapNpcId]);
                 }
+
                 npctest.EffectDelay = 4750;
                 npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);
                 npctest.Position = byte.Parse(currentPacket[6]);
@@ -645,6 +669,7 @@ namespace NosSharp.Parser
                 npcs.Add(npctest);
                 npcCounter++;
             }
+
             DaoFactory.MapNpcDao.Insert(npcs);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
@@ -661,7 +686,7 @@ namespace NosSharp.Parser
 
             string line;
             int i = 0;
-            using (StreamReader mapIdStream = new StreamReader(fileMapIdDat, Encoding.GetEncoding(1252)))
+            using (var mapIdStream = new StreamReader(fileMapIdDat, Encoding.GetEncoding(1252)))
             {
                 while ((line = mapIdStream.ReadLine()) != null)
                 {
@@ -670,19 +695,22 @@ namespace NosSharp.Parser
                     {
                         continue;
                     }
+
                     if (!int.TryParse(linesave[0], out int mapid))
                     {
                         continue;
                     }
+
                     if (!dictionaryId.ContainsKey(mapid))
                     {
                         dictionaryId.Add(mapid, linesave[4]);
                     }
                 }
+
                 mapIdStream.Close();
             }
 
-            using (StreamReader mapIdLangStream = new StreamReader(fileMapIdLang, Encoding.GetEncoding(1252)))
+            using (var mapIdLangStream = new StreamReader(fileMapIdLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = mapIdLangStream.ReadLine()) != null)
                 {
@@ -691,8 +719,10 @@ namespace NosSharp.Parser
                     {
                         continue;
                     }
+
                     dictionaryIdLang.Add(linesave[0], linesave[1]);
                 }
+
                 mapIdLangStream.Close();
             }
 
@@ -702,10 +732,12 @@ namespace NosSharp.Parser
                 {
                     continue;
                 }
+
                 if (dictionaryMusic.ContainsKey(int.Parse(linesave[2])))
                 {
                     continue;
                 }
+
                 dictionaryMusic.Add(int.Parse(linesave[2]), int.Parse(linesave[7]));
             }
 
@@ -718,11 +750,13 @@ namespace NosSharp.Parser
                 {
                     name = dictionaryIdLang[dictionaryId[int.Parse(file.Name)]];
                 }
+
                 if (dictionaryMusic.ContainsKey(int.Parse(file.Name)))
                 {
                     music = dictionaryMusic[int.Parse(file.Name)];
                 }
-                MapDTO map = new MapDTO
+
+                var map = new MapDTO
                 {
                     Name = name,
                     Music = music,
@@ -734,9 +768,11 @@ namespace NosSharp.Parser
                 {
                     continue; // Map already exists in list
                 }
+
                 maps.Add(map);
                 i++;
             }
+
             DaoFactory.MapDao.Insert(maps);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
         }
@@ -744,7 +780,7 @@ namespace NosSharp.Parser
         public void ImportMapType()
         {
             List<MapTypeDTO> list = DaoFactory.MapTypeDao.LoadAll().ToList();
-            MapTypeDTO mt1 = new MapTypeDTO
+            var mt1 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act1,
                 MapTypeName = "Act1",
@@ -756,7 +792,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt1);
             }
-            MapTypeDTO mt2 = new MapTypeDTO
+
+            var mt2 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act2,
                 MapTypeName = "Act2",
@@ -768,7 +805,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt2);
             }
-            MapTypeDTO mt3 = new MapTypeDTO
+
+            var mt3 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act3,
                 MapTypeName = "Act3",
@@ -780,7 +818,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt3);
             }
-            MapTypeDTO mt4 = new MapTypeDTO
+
+            var mt4 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act4,
                 MapTypeName = "Act4",
@@ -790,7 +829,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt4);
             }
-            MapTypeDTO mt5 = new MapTypeDTO
+
+            var mt5 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act51,
                 MapTypeName = "Act5.1",
@@ -802,7 +842,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt5);
             }
-            MapTypeDTO mt6 = new MapTypeDTO
+
+            var mt6 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act52,
                 MapTypeName = "Act5.2",
@@ -814,7 +855,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt6);
             }
-            MapTypeDTO mt7 = new MapTypeDTO
+
+            var mt7 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act61,
                 MapTypeName = "Act6.1",
@@ -826,7 +868,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt7);
             }
-            MapTypeDTO mt8 = new MapTypeDTO
+
+            var mt8 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act62,
                 MapTypeName = "Act6.2",
@@ -838,7 +881,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt8);
             }
-            MapTypeDTO mt9 = new MapTypeDTO
+
+            var mt9 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act61A,
                 MapTypeName = "Act6.1a", // angel camp
@@ -850,7 +894,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt9);
             }
-            MapTypeDTO mt10 = new MapTypeDTO
+
+            var mt10 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act61D,
                 MapTypeName = "Act6.1d", // demon camp
@@ -862,7 +907,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt10);
             }
-            MapTypeDTO mt11 = new MapTypeDTO
+
+            var mt11 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.CometPlain,
                 MapTypeName = "CometPlain",
@@ -874,7 +920,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt11);
             }
-            MapTypeDTO mt12 = new MapTypeDTO
+
+            var mt12 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Mine1,
                 MapTypeName = "Mine1",
@@ -886,7 +933,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt12);
             }
-            MapTypeDTO mt13 = new MapTypeDTO
+
+            var mt13 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Mine2,
                 MapTypeName = "Mine2",
@@ -898,7 +946,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt13);
             }
-            MapTypeDTO mt14 = new MapTypeDTO
+
+            var mt14 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.MeadowOfMine,
                 MapTypeName = "MeadownOfPlain",
@@ -910,7 +959,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt14);
             }
-            MapTypeDTO mt15 = new MapTypeDTO
+
+            var mt15 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.SunnyPlain,
                 MapTypeName = "SunnyPlain",
@@ -922,7 +972,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt15);
             }
-            MapTypeDTO mt16 = new MapTypeDTO
+
+            var mt16 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Fernon,
                 MapTypeName = "Fernon",
@@ -934,7 +985,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt16);
             }
-            MapTypeDTO mt17 = new MapTypeDTO
+
+            var mt17 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.FernonF,
                 MapTypeName = "FernonF",
@@ -946,7 +998,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt17);
             }
-            MapTypeDTO mt18 = new MapTypeDTO
+
+            var mt18 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Cliff,
                 MapTypeName = "Cliff",
@@ -958,7 +1011,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt18);
             }
-            MapTypeDTO mt19 = new MapTypeDTO
+
+            var mt19 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.LandOfTheDead,
                 MapTypeName = "LandOfTheDead",
@@ -968,7 +1022,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt19);
             }
-            MapTypeDTO mt20 = new MapTypeDTO
+
+            var mt20 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act32,
                 MapTypeName = "Act 3.2",
@@ -978,7 +1033,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt20);
             }
-            MapTypeDTO mt21 = new MapTypeDTO
+
+            var mt21 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.CleftOfDarkness,
                 MapTypeName = "Cleft of Darkness",
@@ -988,7 +1044,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt21);
             }
-            MapTypeDTO mt23 = new MapTypeDTO
+
+            var mt23 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.CitadelAngel,
                 MapTypeName = "AngelCitadel",
@@ -998,7 +1055,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt23);
             }
-            MapTypeDTO mt24 = new MapTypeDTO
+
+            var mt24 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.CitadelDemon,
                 MapTypeName = "DemonCitadel",
@@ -1008,7 +1066,8 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt24);
             }
-            MapTypeDTO mt25 = new MapTypeDTO
+
+            var mt25 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Oasis,
                 MapTypeName = "Oasis",
@@ -1020,17 +1079,19 @@ namespace NosSharp.Parser
             {
                 DaoFactory.MapTypeDao.Insert(ref mt25);
             }
-            MapTypeDTO mt26 = new MapTypeDTO
-             {
-                 MapTypeId = (short)MapTypeEnum.Act42,
-                 MapTypeName = "Act42",
-                 PotionDelay = 5000,
-             };
+
+            var mt26 = new MapTypeDTO
+            {
+                MapTypeId = (short)MapTypeEnum.Act42,
+                MapTypeName = "Act42",
+                PotionDelay = 5000
+            };
             if (list.All(s => s.MapTypeId != mt26.MapTypeId))
             {
                 DaoFactory.MapTypeDao.Insert(ref mt26);
             }
-                Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
+
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
         }
 
         public void ImportMapTypeMap()
@@ -1180,7 +1241,7 @@ namespace NosSharp.Parser
                 }
                 else if (i == 131)
                 {
-                    mapTypeId = (short) MapTypeEnum.CitadelDemon;
+                    mapTypeId = (short)MapTypeEnum.CitadelDemon;
                     objectset = true;
                 }
 
@@ -1190,6 +1251,7 @@ namespace NosSharp.Parser
                     maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = mapTypeId });
                 }
             }
+
             DaoFactory.MapTypeMapDao.Insert(maptypemaps);
         }
 
@@ -1215,11 +1277,13 @@ namespace NosSharp.Parser
                     map = short.Parse(currentPacket[2]);
                     continue;
                 }
+
                 if (currentPacket.Length <= 7 || currentPacket[0] != "in" || currentPacket[1] != "3")
                 {
                     continue;
                 }
-                MapMonsterDTO monster = new MapMonsterDTO
+
+                var monster = new MapMonsterDTO
                 {
                     MapId = map,
                     MonsterVNum = short.Parse(currentPacket[2]),
@@ -1231,7 +1295,8 @@ namespace NosSharp.Parser
                 };
                 monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
 
-                if (DaoFactory.NpcMonsterDao.LoadByVNum(monster.MonsterVNum) == null || DaoFactory.MapMonsterDao.LoadById(monster.MapMonsterId) != null || monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0 || monster.MonsterVNum == 860 /* remove Broken Red Plate for quests*/)
+                if (DaoFactory.NpcMonsterDao.LoadByVNum(monster.MonsterVNum) == null || DaoFactory.MapMonsterDao.LoadById(monster.MapMonsterId) != null ||
+                    monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0 || monster.MonsterVNum == 860 /* remove Broken Red Plate for quests*/)
                 {
                     continue;
                 }
@@ -1252,11 +1317,13 @@ namespace NosSharp.Parser
                 {
                     continue;
                 }
+
                 NpcMonsterDTO npcMonster = DaoFactory.NpcMonsterDao.LoadByVNum(short.Parse(currentPacket[2]));
                 if (npcMonster == null)
                 {
                     continue;
                 }
+
                 npcMonster.AttackClass = byte.Parse(currentPacket[5]);
                 npcMonster.AttackUpgrade = byte.Parse(currentPacket[7]);
                 npcMonster.DamageMinimum = short.Parse(currentPacket[8]);
@@ -1274,7 +1341,7 @@ namespace NosSharp.Parser
                 npcMonster.WaterResistance = sbyte.Parse(currentPacket[20]);
                 npcMonster.LightResistance = sbyte.Parse(currentPacket[21]);
                 npcMonster.DarkResistance = sbyte.Parse(currentPacket[22]);
-                    
+
                 DaoFactory.NpcMonsterDao.InsertOrUpdate(ref npcMonster);
             }
         }
@@ -1301,10 +1368,12 @@ namespace NosSharp.Parser
                     baseHp = 1765;
                     HPbasup = 65;
                 }
+
                 if (i < 41)
                 {
                     continue;
                 }
+
                 if (((99 - i) % 8) == 0)
                 {
                     HPbasup++;
@@ -1323,11 +1392,12 @@ namespace NosSharp.Parser
 
             for (int i = 3; i < 100; i++)
             {
-                if (i % 10 == 1)
+                if ((i % 10) == 1)
                 {
                     basicPrimaryMp[i] += basicPrimaryMp[i - 1] + primaryBasup * 2;
                     continue;
                 }
+
                 if (!isStable)
                 {
                     primaryBasup++;
@@ -1336,21 +1406,34 @@ namespace NosSharp.Parser
                     if (count == 2)
                     {
                         if (isDouble)
-                        { isDouble = false; }
+                        {
+                            isDouble = false;
+                        }
                         else
-                        { isStable = true; isDouble = true; count = 0; }
+                        {
+                            isStable = true;
+                            isDouble = true;
+                            count = 0;
+                        }
                     }
 
                     if (count == 4)
-                    { isStable = true; count = 0; }
+                    {
+                        isStable = true;
+                        count = 0;
+                    }
                 }
                 else
                 {
                     count++;
                     if (count == 2)
-                    { isStable = false; count = 0; }
+                    {
+                        isStable = false;
+                        count = 0;
+                    }
                 }
-                basicPrimaryMp[i] = basicPrimaryMp[i - (i % 10 == 2 ? 2 : 1)] + primaryBasup;
+
+                basicPrimaryMp[i] = basicPrimaryMp[i - ((i % 10) == 2 ? 2 : 1)] + primaryBasup;
             }
 
             // Race == 2
@@ -1363,18 +1446,24 @@ namespace NosSharp.Parser
 
             for (int i = 3; i < 100; i++)
             {
-                if (i % 10 == 1)
+                if ((i % 10) == 1)
                 {
                     basicSecondaryMp[i] += basicSecondaryMp[i - 1] + i + 10;
                     continue;
                 }
 
                 if (boostup)
-                { secondaryBasup += 3; boostup = false; }
+                {
+                    secondaryBasup += 3;
+                    boostup = false;
+                }
                 else
-                { secondaryBasup++; boostup = true; }
+                {
+                    secondaryBasup++;
+                    boostup = true;
+                }
 
-                basicSecondaryMp[i] = basicSecondaryMp[i - (i % 10 == 2 ? 2 : 1)] + secondaryBasup;
+                basicSecondaryMp[i] = basicSecondaryMp[i - ((i % 10) == 2 ? 2 : 1)] + secondaryBasup;
             }
 
             // basicXPLoad
@@ -1395,7 +1484,7 @@ namespace NosSharp.Parser
 
             // Store like this: (vnum, (name, level))
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
-            NpcMonsterDTO npc = new NpcMonsterDTO();
+            var npc = new NpcMonsterDTO();
             List<DropDTO> drops = new List<DropDTO>();
             List<BCardDTO> monstercards = new List<BCardDTO>();
             List<NpcMonsterSkillDTO> skills = new List<NpcMonsterSkillDTO>();
@@ -1403,7 +1492,7 @@ namespace NosSharp.Parser
             bool itemAreaBegin = false;
             int counter = 0;
             long unknownData = 0;
-            using (StreamReader npcIdLangStream = new StreamReader(fileNpcLang, Encoding.GetEncoding(1252)))
+            using (var npcIdLangStream = new StreamReader(fileNpcLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = npcIdLangStream.ReadLine()) != null)
                 {
@@ -1413,9 +1502,11 @@ namespace NosSharp.Parser
                         dictionaryIdLang.Add(linesave[0], linesave[1]);
                     }
                 }
+
                 npcIdLangStream.Close();
             }
-            using (StreamReader npcIdStream = new StreamReader(fileNpcId, Encoding.GetEncoding(1252)))
+
+            using (var npcIdStream = new StreamReader(fileNpcId, Encoding.GetEncoding(1252)))
             {
                 while ((line = npcIdStream.ReadLine()) != null)
                 {
@@ -1440,6 +1531,7 @@ namespace NosSharp.Parser
                         {
                             continue;
                         }
+
                         npc.Level = Convert.ToByte(currentLine[2]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "RACE")
@@ -1459,7 +1551,7 @@ namespace NosSharp.Parser
                     else if (currentLine.Length > 3 && currentLine[1] == "HP/MP")
                     {
                         npc.MaxHP = Convert.ToInt32(currentLine[2]) + basicHp[npc.Level];
-                        npc.MaxMP = Convert.ToInt32(currentLine[3]) + npc.Race == 0 ? basicPrimaryMp[npc.Level] : basicSecondaryMp[npc.Level];
+                        npc.MaxMP = (Convert.ToInt32(currentLine[3]) + npc.Race) == 0 ? basicPrimaryMp[npc.Level] : basicSecondaryMp[npc.Level];
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EXP")
                     {
@@ -1631,9 +1723,9 @@ namespace NosSharp.Parser
                                 npc.HeroXp = 3756;
                                 break;
 
-                                /*
-                                 * percent damage monsters
-                                 */
+                            /*
+                             * percent damage monsters
+                             */
                             case 2309: // Foxy
                                 npc.IsPercent = true;
                                 npc.TakeDamages = 193;
@@ -1742,8 +1834,10 @@ namespace NosSharp.Parser
                         switch (currentLine[3])
                         {
                             case "1":
-                                npc.DamageMinimum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 4 + 32 + Convert.ToInt16(currentLine[4]) + Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
-                                npc.DamageMaximum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 6 + 40 + Convert.ToInt16(currentLine[5]) - Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
+                                npc.DamageMinimum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 4 + 32 + Convert.ToInt16(currentLine[4]) +
+                                    Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
+                                npc.DamageMaximum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 6 + 40 + Convert.ToInt16(currentLine[5]) -
+                                    Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
                                 npc.Concentrate = Convert.ToInt16((Convert.ToInt16(currentLine[2]) - 1) * 5 + 27 + Convert.ToInt16(currentLine[6]));
                                 npc.CriticalChance = Convert.ToByte(4 + Convert.ToInt16(currentLine[7]));
                                 npc.CriticalRate = Convert.ToInt16(70 + Convert.ToInt16(currentLine[8]));
@@ -1782,8 +1876,10 @@ namespace NosSharp.Parser
                                 {
                                     npc.NoAggresiveIcon = false;
                                 }
+
                                 break;
                         }
+
                         if (npc.NpcMonsterVNum >= 588 && npc.NpcMonsterVNum <= 607)
                         {
                             npc.MonsterType = MonsterType.Elite;
@@ -1795,15 +1891,17 @@ namespace NosSharp.Parser
                         {
                             continue;
                         }
+
                         npc.VNumRequired = Convert.ToInt16(currentLine[4]);
                         npc.AmountRequired = 1;
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "PETINFO")
                     {
-                        if (npc.VNumRequired != 0 || (unknownData != -2147481593 && unknownData != -2147481599 && unknownData != -1610610681))
+                        if (npc.VNumRequired != 0 || unknownData != -2147481593 && unknownData != -2147481599 && unknownData != -1610610681)
                         {
                             continue;
                         }
+
                         npc.VNumRequired = Convert.ToInt16(currentLine[2]);
                         npc.AmountRequired = Convert.ToByte(currentLine[3]);
                     }
@@ -1835,10 +1933,12 @@ namespace NosSharp.Parser
                             {
                                 break;
                             }
+
                             if (DaoFactory.SkillDao.LoadById(vnum) == null || DaoFactory.NpcMonsterSkillDao.LoadByNpcMonster(npc.NpcMonsterVNum).Count(s => s.SkillVNum == vnum) != 0)
                             {
                                 continue;
                             }
+
                             skills.Add(new NpcMonsterSkillDTO
                             {
                                 SkillVNum = vnum,
@@ -1856,8 +1956,9 @@ namespace NosSharp.Parser
                             {
                                 continue;
                             }
+
                             int first = int.Parse(currentLine[5 * i + 3]);
-                            BCardDTO itemCard = new BCardDTO
+                            var itemCard = new BCardDTO
                             {
                                 NpcMonsterVNum = npc.NpcMonsterVNum,
                                 Type = type,
@@ -1866,7 +1967,7 @@ namespace NosSharp.Parser
                                 IsLevelDivided = (first % 4) == 2,
                                 FirstData = (short)((first > 0 ? first : -first) / 4),
                                 SecondData = (short)(int.Parse(currentLine[5 * i + 4]) / 4),
-                                ThirdData = (short)(int.Parse(currentLine[5 * i + 6]) / 4),
+                                ThirdData = (short)(int.Parse(currentLine[5 * i + 6]) / 4)
                             };
                             monstercards.Add(itemCard);
                         }
@@ -1880,15 +1981,16 @@ namespace NosSharp.Parser
                             {
                                 continue;
                             }
+
                             int first = int.Parse(currentLine[5 * i + 5]);
-                            BCardDTO itemCard = new BCardDTO
+                            var itemCard = new BCardDTO
                             {
                                 NpcMonsterVNum = npc.NpcMonsterVNum,
                                 Type = type,
-                                SubType = (byte) ((int.Parse(currentLine[5 * i + 6]) + 1) * 10 + 1 + (first > 0 ? 0 : 1)),
-                                FirstData = (short) ((first > 0 ? first : -first) / 4),
-                                SecondData = (short) (int.Parse(currentLine[5 * i + 4]) / 4),
-                                ThirdData = (short) (int.Parse(currentLine[5 * i + 3]) / 4),
+                                SubType = (byte)((int.Parse(currentLine[5 * i + 6]) + 1) * 10 + 1 + (first > 0 ? 0 : 1)),
+                                FirstData = (short)((first > 0 ? first : -first) / 4),
+                                SecondData = (short)(int.Parse(currentLine[5 * i + 4]) / 4),
+                                ThirdData = (short)(int.Parse(currentLine[5 * i + 3]) / 4),
                                 CastType = 1,
                                 IsLevelScaled = false,
                                 IsLevelDivided = false
@@ -1903,6 +2005,7 @@ namespace NosSharp.Parser
                             npcs.Add(npc);
                             counter++;
                         }
+
                         for (int i = 2; i < currentLine.Length - 3; i += 3)
                         {
                             short vnum = Convert.ToInt16(currentLine[i]);
@@ -1910,10 +2013,12 @@ namespace NosSharp.Parser
                             {
                                 break;
                             }
+
                             if (DaoFactory.DropDao.LoadByMonster(npc.NpcMonsterVNum).Count(s => s.ItemVNum == vnum) != 0)
                             {
                                 continue;
                             }
+
                             drops.Add(new DropDTO
                             {
                                 ItemVNum = vnum,
@@ -1922,9 +2027,11 @@ namespace NosSharp.Parser
                                 DropChance = Convert.ToInt32(currentLine[i + 1])
                             });
                         }
+
                         itemAreaBegin = false;
                     }
                 }
+
                 DaoFactory.NpcMonsterDao.Insert(npcs);
                 DaoFactory.NpcMonsterSkillDao.Insert(skills);
                 DaoFactory.BCardDao.Insert(monstercards);
@@ -2445,7 +2552,7 @@ namespace NosSharp.Parser
         public void ImportPackets()
         {
             string filePacket = $"{_folder}\\packet.txt";
-            using (StreamReader packetTxtStream = new StreamReader(filePacket, Encoding.GetEncoding(1252)))
+            using (var packetTxtStream = new StreamReader(filePacket, Encoding.GetEncoding(1252)))
             {
                 string line;
                 while ((line = packetTxtStream.ReadLine()) != null)
@@ -2462,7 +2569,7 @@ namespace NosSharp.Parser
             List<PortalDTO> listPortals2 = new List<PortalDTO>();
             short map = 0;
 
-            PortalDTO lodPortal = new PortalDTO
+            var lodPortal = new PortalDTO
             {
                 SourceMapId = 150,
                 SourceX = 172,
@@ -2475,7 +2582,7 @@ namespace NosSharp.Parser
             };
             DaoFactory.PortalDao.Insert(lodPortal);
 
-            PortalDTO minilandPortal = new PortalDTO
+            var minilandPortal = new PortalDTO
             {
                 SourceMapId = 20001,
                 SourceX = 3,
@@ -2488,7 +2595,7 @@ namespace NosSharp.Parser
             };
             DaoFactory.PortalDao.Insert(minilandPortal);
 
-            PortalDTO weddingPortal = new PortalDTO
+            var weddingPortal = new PortalDTO
             {
                 SourceMapId = 2586,
                 SourceX = 34,
@@ -2501,7 +2608,7 @@ namespace NosSharp.Parser
             };
             DaoFactory.PortalDao.Insert(weddingPortal);
 
-            PortalDTO glacerusCavernPortal = new PortalDTO
+            var glacerusCavernPortal = new PortalDTO
             {
                 SourceMapId = 2587,
                 SourceX = 42,
@@ -2521,9 +2628,10 @@ namespace NosSharp.Parser
                     map = short.Parse(currentPacket[2]);
                     continue;
                 }
+
                 if (currentPacket.Length > 4 && currentPacket[0] == "gp")
                 {
-                    PortalDTO portal = new PortalDTO
+                    var portal = new PortalDTO
                     {
                         SourceMapId = map,
                         SourceX = short.Parse(currentPacket[1]),
@@ -2535,7 +2643,8 @@ namespace NosSharp.Parser
                         IsDisabled = false
                     };
 
-                    if (listPortals1.Any(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) || _maps.All(s => s.MapId != portal.SourceMapId) || _maps.All(s => s.MapId != portal.DestinationMapId))
+                    if (listPortals1.Any(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) ||
+                        _maps.All(s => s.MapId != portal.SourceMapId) || _maps.All(s => s.MapId != portal.DestinationMapId))
                     {
                         // Portal already in list
                         continue;
@@ -2789,11 +2898,13 @@ namespace NosSharp.Parser
             {
                 DaoFactory.RecipeDao.Insert(recipe);
             }
+
             recipe = DaoFactory.RecipeDao.LoadByItemVNum(itemVNum);
             if (recipeItems == null || recipe == null)
             {
                 return;
             }
+
             for (int i = 0; i < recipeItems.Length; i += 2)
             {
                 var recipeItem = new RecipeItemDTO
@@ -2823,6 +2934,7 @@ namespace NosSharp.Parser
                     int.TryParse(currentPacket[4], out mapnpcid);
                     continue;
                 }
+
                 if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && (currentPacket[1] == "2" || currentPacket[1] == "4"))
                 {
                     for (int i = 2; i < currentPacket.Length - 1; i++)
@@ -2831,6 +2943,7 @@ namespace NosSharp.Parser
                         {
                             continue;
                         }
+
                         recipe = new RecipeDTO
                         {
                             ItemVNum = short.Parse(currentPacket[i]),
@@ -2840,16 +2953,20 @@ namespace NosSharp.Parser
                         {
                             continue;
                         }
+
                         DaoFactory.RecipeDao.Insert(recipe);
                         count++;
                     }
+
                     continue;
                 }
+
                 if (currentPacket.Length > 2 && currentPacket[0] == "pdtse")
                 {
                     item = short.Parse(currentPacket[2]);
                     continue;
                 }
+
                 if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && (currentPacket[1] == "3" || currentPacket[1] == "5"))
                 {
                     for (int i = 3; i < currentPacket.Length - 1; i += 2)
@@ -2864,7 +2981,7 @@ namespace NosSharp.Parser
                             {
                                 short recipeId = recipedto.RecipeId;
 
-                                RecipeItemDTO recipeitem = new RecipeItemDTO
+                                var recipeitem = new RecipeItemDTO
                                 {
                                     ItemVNum = short.Parse(currentPacket[i]),
                                     Amount = byte.Parse(currentPacket[i + 1]),
@@ -2878,9 +2995,11 @@ namespace NosSharp.Parser
                             }
                         }
                     }
+
                     item = -1;
                 }
             }
+
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
         }
 
@@ -2929,7 +3048,7 @@ namespace NosSharp.Parser
                     DefaultY = 102,
                     Name = "DefaultAct6"
                 },
-                 new RespawnMapTypeDTO
+                new RespawnMapTypeDTO
                 {
                     RespawnMapTypeId = (long)RespawnType.DefaultAct62,
                     DefaultMapId = 228,
@@ -2937,7 +3056,7 @@ namespace NosSharp.Parser
                     DefaultY = 102,
                     Name = "DefaultAct62"
                 },
-                    new RespawnMapTypeDTO
+                new RespawnMapTypeDTO
                 {
                     RespawnMapTypeId = (long)RespawnType.DefaultOasis,
                     DefaultMapId = 261,
@@ -2963,6 +3082,7 @@ namespace NosSharp.Parser
                     {
                         continue;
                     }
+
                     for (int i = 5; i < currentPacket.Length; i++)
                     {
                         string[] item = currentPacket[i].Split('.');
@@ -2991,7 +3111,8 @@ namespace NosSharp.Parser
                             };
                         }
 
-                        if (sitem == null || shopitems.Any(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) || DaoFactory.ShopItemDao.LoadByShopId(sitem.ShopId).Any(s => s.ItemVNum.Equals(sitem.ItemVNum)))
+                        if (sitem == null || shopitems.Any(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) ||
+                            DaoFactory.ShopItemDao.LoadByShopId(sitem.ShopId).Any(s => s.ItemVNum.Equals(sitem.ItemVNum)))
                         {
                             continue;
                         }
@@ -3024,14 +3145,16 @@ namespace NosSharp.Parser
                 {
                     continue;
                 }
+
                 string name = string.Empty;
                 for (int j = 6; j < currentPacket.Length; j++)
                 {
                     name += $"{currentPacket[j]} ";
                 }
+
                 name = name.Trim();
 
-                ShopDTO shop = new ShopDTO
+                var shop = new ShopDTO
                 {
                     Name = name,
                     MapNpcId = npc.MapNpcId,
@@ -3074,7 +3197,8 @@ namespace NosSharp.Parser
                                     SkillVNum = short.Parse(currentPacket[i])
                                 };
 
-                                if (shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) || DaoFactory.ShopSkillDao.LoadByShopId(sskill.ShopId).Any(s => s.SkillVNum.Equals(sskill.SkillVNum)))
+                                if (shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) ||
+                                    DaoFactory.ShopSkillDao.LoadByShopId(sskill.ShopId).Any(s => s.SkillVNum.Equals(sskill.SkillVNum)))
                                 {
                                     continue;
                                 }
@@ -3106,12 +3230,12 @@ namespace NosSharp.Parser
             List<SkillDTO> skills = new List<SkillDTO>();
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
-            SkillDTO skill = new SkillDTO();
+            var skill = new SkillDTO();
             List<ComboDTO> combo = new List<ComboDTO>();
             List<BCardDTO> skillCards = new List<BCardDTO>();
             string line;
             int counter = 0;
-            using (StreamReader skillIdLangStream = new StreamReader(fileSkillLang, Encoding.GetEncoding(1252)))
+            using (var skillIdLangStream = new StreamReader(fileSkillLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = skillIdLangStream.ReadLine()) != null)
                 {
@@ -3121,10 +3245,11 @@ namespace NosSharp.Parser
                         dictionaryIdLang.Add(linesave[0], linesave[1]);
                     }
                 }
+
                 skillIdLangStream.Close();
             }
 
-            using (StreamReader skillIdStream = new StreamReader(fileSkillId, Encoding.GetEncoding(1252)))
+            using (var skillIdStream = new StreamReader(fileSkillId, Encoding.GetEncoding(1252)))
             {
                 while ((line = skillIdStream.ReadLine()) != null)
                 {
@@ -3153,7 +3278,7 @@ namespace NosSharp.Parser
                     {
                         for (int i = 3; i < currentLine.Length - 4; i += 3)
                         {
-                            ComboDTO comb = new ComboDTO
+                            var comb = new ComboDTO
                             {
                                 SkillVNum = skill.SkillVNum,
                                 Hit = short.Parse(currentLine[i]),
@@ -3165,6 +3290,7 @@ namespace NosSharp.Parser
                             {
                                 continue;
                             }
+
                             if (!DaoFactory.ComboDao.LoadByVNumHitAndEffect(comb.SkillVNum, comb.Hit, comb.Effect).Any())
                             {
                                 combo.Add(comb);
@@ -3201,6 +3327,7 @@ namespace NosSharp.Parser
                                                 skill.LevelMinimum = 0;
                                                 break;
                                         }
+
                                         break;
 
                                     case 9:
@@ -3230,6 +3357,7 @@ namespace NosSharp.Parser
                                                 skill.LevelMinimum = 0;
                                                 break;
                                         }
+
                                         break;
 
                                     case 16:
@@ -3259,6 +3387,7 @@ namespace NosSharp.Parser
                                                 skill.LevelMinimum = 0;
                                                 break;
                                         }
+
                                         break;
 
                                     default:
@@ -3288,10 +3417,12 @@ namespace NosSharp.Parser
                                                 skill.LevelMinimum = 0;
                                                 break;
                                         }
+
                                         break;
                                 }
                             }
                         }
+
                         skill.MinimumAdventurerLevel = currentLine[3] != "-1" ? byte.Parse(currentLine[3]) : (byte)0;
                         skill.MinimumSwordmanLevel = currentLine[4] != "-1" ? byte.Parse(currentLine[4]) : (byte)0;
                         skill.MinimumArcherLevel = currentLine[5] != "-1" ? byte.Parse(currentLine[5]) : (byte)0;
@@ -3327,17 +3458,18 @@ namespace NosSharp.Parser
                         {
                             continue;
                         }
+
                         int first = int.Parse(currentLine[5]);
-                        BCardDTO itemCard = new BCardDTO
+                        var itemCard = new BCardDTO
                         {
                             SkillVNum = skill.SkillVNum,
                             Type = type,
-                            SubType = (byte)((int.Parse(currentLine[4]) + 1 )* 10 + 1 + (first < 0 ? 1 : 0)),
+                            SubType = (byte)((int.Parse(currentLine[4]) + 1) * 10 + 1 + (first < 0 ? 1 : 0)),
                             IsLevelScaled = Convert.ToBoolean(first % 4),
                             IsLevelDivided = (first % 4) == 2,
                             FirstData = (short)((first > 0 ? first : -first) / 4),
                             SecondData = (short)(int.Parse(currentLine[6]) / 4),
-                            ThirdData = (short)(int.Parse(currentLine[7]) / 4),
+                            ThirdData = (short)(int.Parse(currentLine[7]) / 4)
                         };
                         skillCards.Add(itemCard);
                     }
@@ -3376,10 +3508,12 @@ namespace NosSharp.Parser
                         {
                             continue;
                         }
+
                         skills.Add(skill);
                         counter++;
                     }
                 }
+
                 DaoFactory.SkillDao.Insert(skills);
                 DaoFactory.ComboDao.Insert(combo);
                 DaoFactory.BCardDao.Insert(skillCards);
@@ -3393,7 +3527,9 @@ namespace NosSharp.Parser
         {
             int teleporterCounter = 0;
             TeleporterDTO teleporter = null;
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26") || o[1].Equals("45") || o[1].Equals("301") || o[1].Equals("132") || o[1].Equals("5002") || o[1].Equals("5012"))))
+            foreach (string[] currentPacket in _packetList.Where(o =>
+                o[0].Equals("at") || o[0].Equals("n_run") &&
+                (o[1].Equals("16") || o[1].Equals("26") || o[1].Equals("45") || o[1].Equals("301") || o[1].Equals("132") || o[1].Equals("5002") || o[1].Equals("5012"))))
             {
                 if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {
@@ -3401,6 +3537,7 @@ namespace NosSharp.Parser
                     {
                         continue;
                     }
+
                     teleporter = new TeleporterDTO
                     {
                         MapNpcId = int.Parse(currentPacket[4]),
@@ -3408,12 +3545,14 @@ namespace NosSharp.Parser
                     };
                     continue;
                 }
+
                 if (currentPacket.Length > 5 && currentPacket[0] == "at")
                 {
                     if (teleporter == null)
                     {
                         continue;
                     }
+
                     teleporter.MapId = short.Parse(currentPacket[2]);
                     teleporter.MapX = short.Parse(currentPacket[3]);
                     teleporter.MapY = short.Parse(currentPacket[4]);
@@ -3422,6 +3561,7 @@ namespace NosSharp.Parser
                     {
                         continue;
                     }
+
                     DaoFactory.TeleporterDao.Insert(teleporter);
                     teleporterCounter++;
                     teleporter = null;
@@ -3444,13 +3584,14 @@ namespace NosSharp.Parser
                     bddlist = DaoFactory.ScriptedInstanceDao.LoadByMap(map).ToList();
                     continue;
                 }
+
                 if (currentPacket.Length > 6 && currentPacket[0] == "wp")
                 {
-                    ScriptedInstanceDTO ts = new ScriptedInstanceDTO
+                    var ts = new ScriptedInstanceDTO
                     {
                         PositionX = short.Parse(currentPacket[1]),
                         PositionY = short.Parse(currentPacket[2]),
-                        MapId = map,
+                        MapId = map
                     };
 
                     if (!bddlist.Concat(listtimespace).Any(s => s.MapId == ts.MapId && s.PositionX == ts.PositionX && s.PositionY == ts.PositionY))
@@ -3463,14 +3604,14 @@ namespace NosSharp.Parser
                     switch (currentPacket[0])
                     {
                         case "gp":
-                            if (sbyte.Parse(currentPacket[4]) == (byte) PortalType.Raid)
+                            if (sbyte.Parse(currentPacket[4]) == (byte)PortalType.Raid)
                             {
-                                ScriptedInstanceDTO ts = new ScriptedInstanceDTO
+                                var ts = new ScriptedInstanceDTO
                                 {
                                     PositionX = short.Parse(currentPacket[1]),
                                     PositionY = short.Parse(currentPacket[2]),
                                     MapId = map,
-                                    Type = ScriptedInstanceType.Raid,
+                                    Type = ScriptedInstanceType.Raid
                                 };
 
                                 if (!bddlist.Concat(listtimespace).Any(s => s.MapId == ts.MapId && s.PositionX == ts.PositionX && s.PositionY == ts.PositionY))
@@ -3478,6 +3619,7 @@ namespace NosSharp.Parser
                                     listtimespace.Add(ts);
                                 }
                             }
+
                             break;
                         case "rbr":
                             //someinfo
@@ -3572,6 +3714,7 @@ namespace NosSharp.Parser
             {
                 listtimespace.Add(calvinaRaid);
             }
+
             DaoFactory.ScriptedInstanceDao.Insert(listtimespace);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TIMESPACES_PARSED"), listtimespace.Count));
         }
@@ -3589,7 +3732,7 @@ namespace NosSharp.Parser
             string line;
             List<ItemDTO> items = new List<ItemDTO>();
             List<BCardDTO> itemCards = new List<BCardDTO>();
-            using (StreamReader mapIdLangStream = new StreamReader(fileLang, Encoding.GetEncoding(1252)))
+            using (var mapIdLangStream = new StreamReader(fileLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = mapIdLangStream.ReadLine()) != null)
                 {
@@ -3598,14 +3741,16 @@ namespace NosSharp.Parser
                     {
                         continue;
                     }
+
                     dictionaryName.Add(linesave[0], linesave[1]);
                 }
+
                 mapIdLangStream.Close();
             }
 
-            using (StreamReader npcIdStream = new StreamReader(fileId, Encoding.GetEncoding(1252)))
+            using (var npcIdStream = new StreamReader(fileId, Encoding.GetEncoding(1252)))
             {
-                ItemDTO item = new ItemDTO();
+                var item = new ItemDTO();
                 bool itemAreaBegin = false;
                 int itemCounter = 0;
 
@@ -3625,11 +3770,13 @@ namespace NosSharp.Parser
                         {
                             continue;
                         }
+
                         if (DaoFactory.ItemDao.LoadById(item.VNum) == null)
                         {
                             items.Add(item);
                             itemCounter++;
                         }
+
                         item = new ItemDTO();
                         itemAreaBegin = false;
                     }
@@ -3661,6 +3808,7 @@ namespace NosSharp.Parser
                                 item.Type = (InventoryType)Enum.Parse(typeof(InventoryType), currentLine[2]);
                                 break;
                         }
+
                         item.ItemType = currentLine[3] != "-1" ? (ItemType)Enum.Parse(typeof(ItemType), $"{(short)item.Type}{currentLine[3]}") : ItemType.Weapon;
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = (EquipmentType)Enum.Parse(typeof(EquipmentType), currentLine[5] != "-1" ? currentLine[5] : "0");
@@ -4040,6 +4188,7 @@ namespace NosSharp.Parser
                                 {
                                     item.Morph = Convert.ToInt16(currentLine[7]);
                                 }
+
                                 break;
                         }
                     }
@@ -4062,17 +4211,18 @@ namespace NosSharp.Parser
                         item.Flag4 = currentLine[14] == "1";
                         item.Flag5 = currentLine[15] == "1";
                         item.IsColored = currentLine[16] == "1";
-                        item.Sex = currentLine[18] == "1" ? (byte)1 : currentLine[17] == "1" ? (byte)2 : (byte)0;
+                        item.Sex = currentLine[18] == "1" ? (byte)1 :
+                            currentLine[17] == "1" ? (byte)2 : (byte)0;
                         //not used item.Flag6 = currentLine[19] == "1";
                         item.Flag6 = currentLine[20] == "1";
                         if (currentLine[21] == "1")
                         {
                             item.ReputPrice = item.Price;
                         }
+
                         item.IsHeroic = currentLine[22] == "1";
                         item.Flag7 = currentLine[23] == "1";
                         item.Flag8 = currentLine[24] == "1";
-
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "DATA")
                     {
@@ -4139,6 +4289,7 @@ namespace NosSharp.Parser
                                         item.LevelMinimum = Convert.ToByte(currentLine[4]);
                                         break;
                                 }
+
                                 break;
 
                             case ItemType.Fashion:
@@ -4151,6 +4302,7 @@ namespace NosSharp.Parser
                                 {
                                     item.ItemValidTime = Convert.ToInt32(currentLine[13]) * 3600;
                                 }
+
                                 break;
 
                             case ItemType.Food:
@@ -4177,6 +4329,7 @@ namespace NosSharp.Parser
                                         {
                                             item.ItemValidTime = Convert.ToInt32(currentLine[3]) / 10;
                                         }
+
                                         break;
                                     case EquipmentType.Fairy:
                                         item.Element = Convert.ToByte(currentLine[2]);
@@ -4222,6 +4375,7 @@ namespace NosSharp.Parser
                                                 item.MaxElementRate = 80;
                                             }
                                         }
+
                                         break;
                                     default:
                                         item.LevelMinimum = Convert.ToByte(currentLine[2]);
@@ -4229,6 +4383,7 @@ namespace NosSharp.Parser
                                         item.MaxCellon = Convert.ToByte(currentLine[4]);
                                         break;
                                 }
+
                                 break;
 
                             case ItemType.Event:
@@ -4359,6 +4514,7 @@ namespace NosSharp.Parser
                                         item.EffectValue = Convert.ToInt16(currentLine[7]);
                                         break;
                                 }
+
                                 break;
 
                             case ItemType.Special:
@@ -4494,7 +4650,7 @@ namespace NosSharp.Parser
                                     case 1902:
                                     case 1903:
                                         item.Effect = 789;
-                                        item.EffectValue = item.VNum + 2152; 
+                                        item.EffectValue = item.VNum + 2152;
                                         break;
 
                                     case 4046:
@@ -4531,8 +4687,10 @@ namespace NosSharp.Parser
                                         {
                                             item.Effect = Convert.ToInt16(currentLine[2]);
                                         }
+
                                         break;
                                 }
+
                                 switch (item.Effect)
                                 {
                                     case 150:
@@ -4553,6 +4711,7 @@ namespace NosSharp.Parser
                                         {
                                             item.EffectValue = Convert.ToInt32(currentLine[4]);
                                         }
+
                                         break;
 
                                     case 204:
@@ -4568,6 +4727,7 @@ namespace NosSharp.Parser
                                         item.EffectValue = item.EffectValue == 0 ? Convert.ToInt32(currentLine[4]) : item.EffectValue;
                                         break;
                                 }
+
                                 item.WaitDelay = 5000;
                                 break;
 
@@ -4580,6 +4740,7 @@ namespace NosSharp.Parser
                                 {
                                     item.Effect = Convert.ToInt16(currentLine[2]);
                                 }
+
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
@@ -4605,14 +4766,17 @@ namespace NosSharp.Parser
                                 {
                                     elementdic.Add(1, item.FireResistance);
                                 }
+
                                 if (item.WaterResistance != 0)
                                 {
                                     elementdic.Add(2, item.WaterResistance);
                                 }
+
                                 if (item.LightResistance != 0)
                                 {
                                     elementdic.Add(3, item.LightResistance);
                                 }
+
                                 if (item.DarkResistance != 0)
                                 {
                                     elementdic.Add(4, item.DarkResistance);
@@ -4643,6 +4807,7 @@ namespace NosSharp.Parser
                                         item.Element = 3;
                                         break;
                                 }
+
                                 break;
 
                             case ItemType.Shell:
@@ -4694,6 +4859,7 @@ namespace NosSharp.Parser
                                         item.EffectValue = Convert.ToInt32(currentLine[4]);
                                         break;
                                 }
+
                                 break;
 
                             case ItemType.Production:
@@ -4761,6 +4927,7 @@ namespace NosSharp.Parser
                         {
                             continue;
                         }
+
                         item.FireResistance = Convert.ToByte(currentLine[7]);
                         item.WaterResistance = Convert.ToByte(currentLine[8]);
                         item.LightResistance = Convert.ToByte(currentLine[9]);
@@ -4775,8 +4942,9 @@ namespace NosSharp.Parser
                             {
                                 continue;
                             }
+
                             int first = int.Parse(currentLine[3 + 5 * i]);
-                            BCardDTO itemCard = new BCardDTO
+                            var itemCard = new BCardDTO
                             {
                                 ItemVNum = item.VNum,
                                 Type = type,
@@ -4785,7 +4953,7 @@ namespace NosSharp.Parser
                                 IsLevelDivided = (first % 4) == 2,
                                 FirstData = (short)((first > 0 ? first : -first) / 4),
                                 SecondData = (short)(int.Parse(currentLine[4 + 5 * i]) / 4),
-                                ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4),
+                                ThirdData = (short)(int.Parse(currentLine[6 + 5 * i]) / 4)
                             };
                             itemCards.Add(itemCard);
                         }

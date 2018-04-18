@@ -87,7 +87,7 @@ namespace OpenNos.DAL.EF.Entities
         public int Price { get; set; }
 
         public byte Range { get; set; }
-        
+
         public virtual ICollection<ShopSkill> ShopSkill { get; set; }
 
         public byte SkillType { get; set; }

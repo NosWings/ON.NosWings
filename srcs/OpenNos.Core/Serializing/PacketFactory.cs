@@ -24,12 +24,12 @@ namespace OpenNos.Core.Serializing
         #region Methods
 
         /// <summary>
-        /// Deserializes a string into a PacketDefinition
+        ///     Deserializes a string into a PacketDefinition
         /// </summary>
         /// <param name="packetContent">The content to deseralize</param>
         /// <param name="packetType">The type of the packet to deserialize to</param>
         /// <param name="includesKeepAliveIdentity">
-        /// Include the keep alive identity or exclude it
+        ///     Include the keep alive identity or exclude it
         /// </param>
         /// <returns>The deserialized packet.</returns>
         public static PacketDefinition Deserialize(string packetContent, Type packetType, bool includesKeepAliveIdentity = false)
@@ -50,11 +50,11 @@ namespace OpenNos.Core.Serializing
         }
 
         /// <summary>
-        /// Deserializes a string into a PacketDefinition
+        ///     Deserializes a string into a PacketDefinition
         /// </summary>
         /// <param name="packetContent">The content to deseralize</param>
         /// <param name="includesKeepAliveIdentity">
-        /// Include the keep alive identity or exclude it
+        ///     Include the keep alive identity or exclude it
         /// </param>
         /// <returns>The deserialized packet.</returns>
         public static TPacket Deserialize<TPacket>(string packetContent, bool includesKeepAliveIdentity = false)
@@ -63,7 +63,7 @@ namespace OpenNos.Core.Serializing
             try
             {
                 KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformation = GetSerializationInformation(typeof(TPacket));
-                TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); // reflection is bad, improve?
+                var deserializedPacket = Activator.CreateInstance<TPacket>(); // reflection is bad, improve?
                 SetDeserializationInformations(deserializedPacket, packetContent, serializationInformation.Key.Item2);
 
                 deserializedPacket = (TPacket)Deserialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
@@ -78,8 +78,8 @@ namespace OpenNos.Core.Serializing
         }
 
         /// <summary>
-        /// Initializes the PacketFactory and generates the serialization informations based on the
-        /// given BaseType.
+        ///     Initializes the PacketFactory and generates the serialization informations based on the
+        ///     given BaseType.
         /// </summary>
         /// <typeparam name="TBaseType">The BaseType to generate serialization informations</typeparam>
         public static void Initialize<TBaseType>() where TBaseType : PacketDefinition
@@ -94,7 +94,7 @@ namespace OpenNos.Core.Serializing
         }
 
         /// <summary>
-        /// Serializes a PacketDefinition to string.
+        ///     Serializes a PacketDefinition to string.
         /// </summary>
         /// <typeparam name="TPacket">The type of the PacketDefinition</typeparam>
         /// <param name="packet">The object reference of the PacketDefinition</param>
@@ -191,12 +191,17 @@ namespace OpenNos.Core.Serializing
             return deserializedPacket;
         }
 
-        /// <summary> Converts for instance -1.12.1.8.-1.-1.-1.-1.-1 to eg. List<byte?> </summary>
-        /// <param name="currentValues">String to convert</param> <param name="genericListType">Type
-        /// of the property to convert</param> <returns>The string as converted List</returns>
+        /// <summary>
+        ///     Converts for instance -1.12.1.8.-1.-1.-1.-1.-1 to eg. List<byte?> </summary>
+        /// <param name="currentValues">String to convert</param>
+        /// <param name="genericListType">
+        ///     Type
+        ///     of the property to convert
+        /// </param>
+        /// <returns>The string as converted List</returns>
         private static IList DeserializeSimpleList(string currentValues, Type genericListType)
         {
-            IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(genericListType), genericListType);
+            var subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(genericListType), genericListType);
             IEnumerable<string> splittedValues = currentValues.Split('.');
 
             foreach (string currentValue in splittedValues)
@@ -225,12 +230,17 @@ namespace OpenNos.Core.Serializing
             return newSubpacket;
         }
 
-        /// <summary> Converts a Sublist of Packets, For instance 0.4903.5.0.0 2.340.0.0.0
-        /// 3.720.0.0.0 5.4912.6.0.0 9.227.0.0.0 10.803.0.0.0 to</summary>
+        /// <summary>
+        ///     Converts a Sublist of Packets, For instance 0.4903.5.0.0 2.340.0.0.0
+        ///     3.720.0.0.0 5.4912.6.0.0 9.227.0.0.0 10.803.0.0.0 to
+        /// </summary>
         /// <param name="currentValue">The value as String</param>
         /// <param name="packetBasePropertyType">Type of the Property to convert to</param>
-        /// <param name="shouldRemoveSeparator"></param> <param name="packetMatchCollections"></param>
-        /// <param name="currentIndex"></param> <param name="includesKeepAliveIdentity"></param> <returns></returns>
+        /// <param name="shouldRemoveSeparator"></param>
+        /// <param name="packetMatchCollections"></param>
+        /// <param name="currentIndex"></param>
+        /// <param name="includesKeepAliveIdentity"></param>
+        /// <returns></returns>
         private static IList DeserializeSubpackets(string currentValue, Type packetBasePropertyType, bool shouldRemoveSeparator, MatchCollection packetMatchCollections, int? currentIndex,
             bool includesKeepAliveIdentity)
         {
@@ -238,7 +248,7 @@ namespace OpenNos.Core.Serializing
             List<string> splittedSubpackets = currentValue.Split(' ').ToList();
 
             // generate new list
-            IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(packetBasePropertyType), packetBasePropertyType);
+            var subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(packetBasePropertyType), packetBasePropertyType);
 
             Type subPacketType = packetBasePropertyType.GetGenericArguments()[0];
             KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> subpacketSerializationInfo = GetSerializationInformation(subPacketType);
@@ -258,8 +268,8 @@ namespace OpenNos.Core.Serializing
                 int subPacketTypePropertiesCount = subpacketSerializationInfo.Value.Count;
 
                 // check if the amount of properties can be serialized properly
-                if ((splittedSubpacketParts.Count + (includesKeepAliveIdentity ? 1 : 0))
-                    % subPacketTypePropertiesCount == 0) // amount of properties per subpacket does match the given value amount in %
+                if (((splittedSubpacketParts.Count + (includesKeepAliveIdentity ? 1 : 0))
+                    % subPacketTypePropertiesCount) == 0) // amount of properties per subpacket does match the given value amount in %
                 {
                     for (int i = currentIndex.Value + 1 + (includesKeepAliveIdentity ? 1 : 0); i < splittedSubpacketParts.Count; i++)
                     {
@@ -414,9 +424,18 @@ namespace OpenNos.Core.Serializing
                 : GenerateSerializationInformations(serializationType); // generic runtime serialization parameter generation
         }
 
-        /// <summary> Converts for instance List<byte?> to -1.12.1.8.-1.-1.-1.-1.-1 </summary> <param
-        /// name="listValues">Values in List of simple type.</param> <param name="propertyType">The
-        /// simple type.</param> <returns></returns>
+        /// <summary>
+        ///     Converts for instance List<byte?> to -1.12.1.8.-1.-1.-1.-1.-1
+        /// </summary>
+        /// <param
+        ///     name="listValues">
+        ///     Values in List of simple type.
+        /// </param>
+        /// <param name="propertyType">
+        ///     The
+        ///     simple type.
+        /// </param>
+        /// <returns></returns>
         private static string SerializeSimpleList(IList listValues, Type propertyType)
         {
             string resultListPacket = string.Empty;

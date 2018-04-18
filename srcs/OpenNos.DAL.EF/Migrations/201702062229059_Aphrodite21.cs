@@ -8,7 +8,7 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Down()
         {
-            AddColumn("dbo.MinilandObject", "MinilandObjectVNum", c => c.Short(nullable: false));
+            AddColumn("dbo.MinilandObject", "MinilandObjectVNum", c => c.Short(false));
             DropForeignKey("dbo.MinilandObject", "ItemInstanceId", "dbo.ItemInstance");
             DropIndex("dbo.MinilandObject", new[] { "ItemInstanceId" });
             DropColumn("dbo.MinilandObject", "ItemInstanceId");

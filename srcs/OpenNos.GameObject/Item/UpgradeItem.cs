@@ -70,9 +70,9 @@ namespace OpenNos.GameObject.Item
                         switch (inv.ItemVNum)
                         {
                             case 1219:
-                                WearableInstance equip =
+                                var equip =
                                     session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slotEquip,
-                                        (InventoryType) typeEquip);
+                                        (InventoryType)typeEquip);
                                 if (equip != null && equip.IsFixed)
                                 {
                                     equip.IsFixed = false;
@@ -89,9 +89,9 @@ namespace OpenNos.GameObject.Item
 
                             case 1365:
                             case 9039:
-                                SpecialistInstance specialist =
+                                var specialist =
                                     session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slotEquip,
-                                        (InventoryType) typeEquip);
+                                        (InventoryType)typeEquip);
                                 if (specialist != null && specialist.Rare == -2)
                                 {
                                     specialist.Rare = 0;
@@ -129,7 +129,7 @@ namespace OpenNos.GameObject.Item
                     else
                     {
                         session.SendPacket(
-                            $"qna #u_i^1^{session.Character.CharacterId}^{(byte) inv.Type}^{inv.Slot}^0^1^{typeEquip}^{slotEquip} {Language.Instance.GetMessageFromKey("QNA_ITEM")}");
+                            $"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^0^1^{typeEquip}^{slotEquip} {Language.Instance.GetMessageFromKey("QNA_ITEM")}");
                     }
                 }
             }

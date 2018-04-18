@@ -21,10 +21,7 @@ namespace OpenNos.Handler
     {
         #region Instantiation
 
-        public VipPacketHandler(ClientSession session)
-        {
-            Session = session;
-        }
+        public VipPacketHandler(ClientSession session) => Session = session;
 
         #endregion
 
@@ -33,7 +30,5 @@ namespace OpenNos.Handler
         private ClientSession Session { get; }
 
         #endregion
-
-
     }
 }

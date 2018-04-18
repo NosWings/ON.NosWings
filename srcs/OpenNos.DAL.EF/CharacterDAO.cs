@@ -12,18 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
 
 namespace OpenNos.DAL.EF
 {
@@ -44,6 +43,7 @@ namespace OpenNos.DAL.EF
                     {
                         return DeleteResult.Deleted;
                     }
+
                     character.State = (byte)CharacterState.Inactive;
                     Update(character, _mapper.Map<CharacterDTO>(character), context);
 
@@ -58,44 +58,47 @@ namespace OpenNos.DAL.EF
         }
 
         /// <summary>
-        /// Returns first 30 occurences of highest Compliment
+        ///     Returns first 30 occurences of highest Compliment
         /// </summary>
         /// <returns></returns>
         public List<CharacterDTO> GetTopCompliment()
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                return context.Character.Where(c => c.Account.Authority <= AuthorityType.Moderator).OrderByDescending(c => c.Compliment).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority <= AuthorityType.Moderator).OrderByDescending(c => c.Compliment).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c))
+                    .ToList();
             }
         }
 
         /// <summary>
-        /// Returns first 30 occurences of highest Act4Points
+        ///     Returns first 30 occurences of highest Act4Points
         /// </summary>
         /// <returns></returns>
         public List<CharacterDTO> GetTopPoints()
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                return context.Character.Where(c => c.Account.Authority <= AuthorityType.Moderator).OrderByDescending(c => c.Act4Points).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority <= AuthorityType.Moderator).OrderByDescending(c => c.Act4Points).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c))
+                    .ToList();
             }
         }
 
         /// <summary>
-        /// Returns first 30 occurences of highest Reputation
+        ///     Returns first 30 occurences of highest Reputation
         /// </summary>
         /// <returns></returns>
         public List<CharacterDTO> GetTopReputation()
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                return context.Character.Where(c => c.Account.Authority <= AuthorityType.Moderator).OrderByDescending(c => c.Reput).Take(43).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority <= AuthorityType.Moderator).OrderByDescending(c => c.Reput).Take(43).ToList().Select(c => _mapper.Map<CharacterDTO>(c))
+                    .ToList();
             }
         }
 
         public SaveResult InsertOrUpdate(ref CharacterDTO character)
         {
-            var contextref = DataAccessHelper.CreateContext();
+            OpenNosContext contextref = DataAccessHelper.CreateContext();
             return InsertOrUpdate(ref character, ref contextref);
         }
 
@@ -111,6 +114,7 @@ namespace OpenNos.DAL.EF
                     character = Insert(character, context);
                     return SaveResult.Inserted;
                 }
+
                 character = Update(entity, character, context);
                 return SaveResult.Updated;
             }
@@ -137,14 +141,14 @@ namespace OpenNos.DAL.EF
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                return context.Character.Where(c => c.AccountId.Equals(accountId) && c.State.Equals((byte)CharacterState.Active)).OrderByDescending(c => c.Slot).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.AccountId.Equals(accountId) && c.State.Equals((byte)CharacterState.Active)).OrderByDescending(c => c.Slot).ToList()
+                    .Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
             }
         }
 
         public IEnumerable<CharacterDTO> LoadAllCharactersByAccount(long accountId, OpenNosContext context)
         {
-
-                return context.Character.Where(c => c.AccountId.Equals(accountId)).OrderByDescending(c => c.Slot).ToList().Select(c => _mapper.Map<CharacterDTO>(c));
+            return context.Character.Where(c => c.AccountId.Equals(accountId)).OrderByDescending(c => c.Slot).ToList().Select(c => _mapper.Map<CharacterDTO>(c));
         }
 
         public IEnumerable<CharacterDTO> LoadAllCharactersByAccount(long accountId)
@@ -182,6 +186,7 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
             }
+
             return null;
         }
 
@@ -215,6 +220,7 @@ namespace OpenNos.DAL.EF
             {
                 return null;
             }
+
             _mapper.Map(character, entity);
             context.SaveChanges();
 

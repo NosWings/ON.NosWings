@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.DAL;
 using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject.Helpers
@@ -100,7 +99,7 @@ namespace OpenNos.GameObject.Helpers
             for (int i = 1; i < Concentrate.GetLength(1); i++)
             {
                 Concentrate[0, i] = baseConcentrate;
-                baseConcentrate += (short) (i % 5 == 2 ? 5 : baseUp);
+                baseConcentrate += (short)((i % 5) == 2 ? 5 : baseUp);
             }
 
             baseConcentrate = 70;
@@ -146,7 +145,7 @@ namespace OpenNos.GameObject.Helpers
             for (int i = 1; i < MinDamageData.GetLength(1); i++)
             {
                 MinDamageData[0, i] = baseDamage;
-                baseDamage += (short) (i % 5 == 0 ? 5 : baseUp);
+                baseDamage += (short)((i % 5) == 0 ? 5 : baseUp);
             }
 
             baseDamage = 23;
@@ -157,8 +156,8 @@ namespace OpenNos.GameObject.Helpers
             for (int i = 1; i < MinDamageData.GetLength(1); i++)
             {
                 MinDamageData[1, i] = baseDamage;
-                baseDamage += (short) (i % 5 == 0 ? 5 : baseUp);
-                baseDamage += (short) (i % 2 == 0 ? 1 : 0);
+                baseDamage += (short)((i % 5) == 0 ? 5 : baseUp);
+                baseDamage += (short)((i % 2) == 0 ? 1 : 0);
             }
         }
 
@@ -174,7 +173,7 @@ namespace OpenNos.GameObject.Helpers
             for (int i = 1; i < MaxDamageData.GetLength(1); i++)
             {
                 MaxDamageData[0, i] = baseDamage;
-                baseDamage += (short) (i % 5 == 0 ? 5 : baseUp);
+                baseDamage += (short)((i % 5) == 0 ? 5 : baseUp);
             }
 
             MaxDamageData[1, 0] = baseDamage;
@@ -185,7 +184,7 @@ namespace OpenNos.GameObject.Helpers
             for (int i = 1; i < MaxDamageData.GetLength(1); i++)
             {
                 MaxDamageData[1, i] = baseDamage;
-                baseDamage += (short) (i % 5 == 0 ? 5 : baseUp);
+                baseDamage += (short)((i % 5) == 0 ? 5 : baseUp);
             }
         }
 
@@ -209,17 +208,17 @@ namespace OpenNos.GameObject.Helpers
         {
             MateBuffs = new Dictionary<int, int>
             {
-                {178, 108}, // LUCKY PIG 
-                {670, 374}, // FIBI 
-                {830, 377}, // RUDY LOUBARD 
-                {836, 381}, // PADBRA
-                {838, 385}, // RATUFU NAVY 
-                {840, 442}, // LEO LE LACHE 
-                {841, 394}, // RATUFU NINJA 
-                {842, 399}, // RATUFU INDIEN 
-                {843, 403}, // RATUFU VIKING 
-                {844, 391}, // RATUFU COWBOY 
-                {2105, 383} // INFERNO 
+                { 178, 108 }, // LUCKY PIG 
+                { 670, 374 }, // FIBI 
+                { 830, 377 }, // RUDY LOUBARD 
+                { 836, 381 }, // PADBRA
+                { 838, 385 }, // RATUFU NAVY 
+                { 840, 442 }, // LEO LE LACHE 
+                { 841, 394 }, // RATUFU NINJA 
+                { 842, 399 }, // RATUFU INDIEN 
+                { 843, 403 }, // RATUFU VIKING 
+                { 844, 391 }, // RATUFU COWBOY 
+                { 2105, 383 } // INFERNO 
             };
         }
 
@@ -241,7 +240,7 @@ namespace OpenNos.GameObject.Helpers
 
             for (int i = 3; i < PrimaryMpData.Length; i++)
             {
-                if (i % 10 == 1)
+                if ((i % 10) == 1)
                 {
                     PrimaryMpData[i] += PrimaryMpData[i - 1] + baseUp * 2;
                     continue;
@@ -282,7 +281,7 @@ namespace OpenNos.GameObject.Helpers
                     }
                 }
 
-                PrimaryMpData[i] = PrimaryMpData[i - (i % 10 == 2 ? 2 : 1)] + baseUp;
+                PrimaryMpData[i] = PrimaryMpData[i - ((i % 10) == 2 ? 2 : 1)] + baseUp;
             }
         }
 
@@ -298,7 +297,7 @@ namespace OpenNos.GameObject.Helpers
 
             for (int i = 3; i < SecondaryMpData.Length; i++)
             {
-                if (i % 10 == 1)
+                if ((i % 10) == 1)
                 {
                     SecondaryMpData[i] += SecondaryMpData[i - 1] + i + 10;
                     continue;
@@ -315,7 +314,7 @@ namespace OpenNos.GameObject.Helpers
                     boostUp = true;
                 }
 
-                SecondaryMpData[i] = SecondaryMpData[i - (i % 10 == 2 ? 2 : 1)] + baseUp;
+                SecondaryMpData[i] = SecondaryMpData[i - ((i % 10) == 2 ? 2 : 1)] + baseUp;
             }
         }
 
@@ -387,10 +386,7 @@ namespace OpenNos.GameObject.Helpers
 
         private static MateHelper _instance;
 
-        public static MateHelper Instance
-        {
-            get { return _instance ?? (_instance = new MateHelper()); }
-        }
+        public static MateHelper Instance => _instance ?? (_instance = new MateHelper());
 
         #endregion
     }

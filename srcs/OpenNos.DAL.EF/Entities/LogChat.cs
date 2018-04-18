@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.Entities
 
         [MaxLength(255)]
         public string ChatMessage { get; set; }
-        
+
         [MaxLength(255)]
         public string IpAddress { get; set; }
 

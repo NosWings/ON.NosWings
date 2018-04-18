@@ -25,8 +25,6 @@ using OpenNos.Core.Handling;
 using OpenNos.Core.Networking;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Serializing;
-using OpenNos.Data;
-using OpenNos.DAL;
 using OpenNos.GameObject.Map;
 using OpenNos.Master.Library.Client;
 
@@ -34,23 +32,6 @@ namespace OpenNos.GameObject.Networking
 {
     public class ClientSession
     {
-        #region Members
-
-        private static EncryptionBase _encryptor;
-        private Character _character;
-        private readonly INetworkClient _client;
-        private IDictionary<string, HandlerMethodReference> _handlerMethods;
-        private readonly ConcurrentQueue<byte[]> _receiveQueue;
-        private readonly IList<string> _waitForPacketList = new List<string>();
-
-        // Packetwait Packets
-        private int? _waitForPacketsAmount;
-
-        // private byte countPacketReceived;
-        private long _lastPacketReceive;
-
-        #endregion
-
         #region Instantiation
 
         public ClientSession(INetworkClient client)
@@ -59,7 +40,7 @@ namespace OpenNos.GameObject.Networking
             _lastPacketReceive = DateTime.Now.Ticks;
 
             // lag mode
-            new Random((int) client.ClientId);
+            new Random((int)client.ClientId);
 
             // initialize lagging mode
             bool isLagMode = ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
@@ -77,6 +58,23 @@ namespace OpenNos.GameObject.Networking
             _receiveQueue = new ConcurrentQueue<byte[]>();
             Observable.Interval(new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10)).Subscribe(x => HandlePackets());
         }
+
+        #endregion
+
+        #region Members
+
+        private static EncryptionBase _encryptor;
+        private Character _character;
+        private readonly INetworkClient _client;
+        private IDictionary<string, HandlerMethodReference> _handlerMethods;
+        private readonly ConcurrentQueue<byte[]> _receiveQueue;
+        private readonly IList<string> _waitForPacketList = new List<string>();
+
+        // Packetwait Packets
+        private int? _waitForPacketsAmount;
+
+        // private byte countPacketReceived;
+        private long _lastPacketReceive;
 
         #endregion
 
@@ -318,7 +316,7 @@ namespace OpenNos.GameObject.Networking
             // iterate thru each type in the given assembly
             foreach (Type handlerType in handlerTypes)
             {
-                var handler = (IPacketHandler) Activator.CreateInstance(handlerType, this);
+                var handler = (IPacketHandler)Activator.CreateInstance(handlerType, this);
 
                 // include PacketDefinition
                 foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x =>
@@ -352,7 +350,7 @@ namespace OpenNos.GameObject.Networking
         }
 
         /// <summary>
-        /// Handle the packet received by the Client.
+        ///     Handle the packet received by the Client.
         /// </summary>
         private void HandlePackets()
         {
@@ -400,7 +398,7 @@ namespace OpenNos.GameObject.Networking
 
                 string packetConcatenated = _encryptor.Decrypt(packetData, SessionId);
 
-                foreach (string packet in packetConcatenated.Split(new[] {(char) 0xFF},
+                foreach (string packet in packetConcatenated.Split(new[] { (char)0xFF },
                     StringSplitOptions.RemoveEmptyEntries))
                 {
                     string packetstring = packet.Replace('^', ' ');
@@ -411,7 +409,7 @@ namespace OpenNos.GameObject.Networking
                         // keep alive
                         string nextKeepAliveRaw = packetsplit[0];
                         if (!int.TryParse(nextKeepAliveRaw, out int nextKeepaliveIdentity) &&
-                            nextKeepaliveIdentity != LastKeepAliveIdentity + 1)
+                            nextKeepaliveIdentity != (LastKeepAliveIdentity + 1))
                         {
                             Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"),
                                 _client.ClientId);
@@ -493,7 +491,7 @@ namespace OpenNos.GameObject.Networking
         }
 
         /// <summary>
-        /// This will be triggered when the underlying NetworkClient receives a packet.
+        ///     This will be triggered when the underlying NetworkClient receives a packet.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -514,7 +512,7 @@ namespace OpenNos.GameObject.Networking
 
         private void OnOtherCharacterConnected(object sender, EventArgs e)
         {
-            Tuple<long, string> loggedInCharacter = (Tuple<long, string>) sender;
+            Tuple<long, string> loggedInCharacter = (Tuple<long, string>)sender;
 
             if (Character.IsFriendOfCharacter(loggedInCharacter.Item1))
             {
@@ -540,7 +538,7 @@ namespace OpenNos.GameObject.Networking
 
         private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
-            Tuple<long, string> loggedOutCharacter = (Tuple<long, string>) sender;
+            Tuple<long, string> loggedOutCharacter = (Tuple<long, string>)sender;
             if (!Character.IsFriendOfCharacter(loggedOutCharacter.Item1))
             {
                 return;
@@ -566,7 +564,6 @@ namespace OpenNos.GameObject.Networking
 
             if (!IsDisposing)
             {
-
                 if (!HandlerMethods.TryGetValue(packetHeader, out HandlerMethodReference methodReference))
                 {
                     Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
@@ -595,7 +592,7 @@ namespace OpenNos.GameObject.Networking
                     if (methodReference.PacketDefinitionParameterType != null)
                     {
                         //check for the correct authority
-                        if (IsAuthenticated && (byte) methodReference.Authority > (byte) Account.Authority)
+                        if (IsAuthenticated && (byte)methodReference.Authority > (byte)Account.Authority)
                         {
                             return;
                         }

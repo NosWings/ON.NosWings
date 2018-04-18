@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using System.Collections.Generic;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
@@ -23,14 +23,14 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         /// <summary>
-        /// Inserts new object to database context
+        ///     Inserts new object to database context
         /// </summary>
         /// <param name="staticBonus"></param>
         /// <returns></returns>
         SaveResult InsertOrUpdate(ref StaticBuffDTO staticBuff);
 
         /// <summary>
-        /// Loads staticBonus by characterid
+        ///     Loads staticBonus by characterid
         /// </summary>
         /// <param name="characterId"></param>
         /// <returns></returns>

@@ -29,6 +29,6 @@ namespace NosSharp.Enums
         PetWarehouse = 12,
         FirstPartnerInventory = 13,
         SecondPartnerInventory = 14,
-        ThirdPartnerInventory = 15,
+        ThirdPartnerInventory = 15
     }
 }

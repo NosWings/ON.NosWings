@@ -42,10 +42,7 @@ namespace OpenNos.Handler
     {
         #region Instantiation
 
-        public CommandPacketHandler(ClientSession session)
-        {
-            Session = session;
-        }
+        public CommandPacketHandler(ClientSession session) => Session = session;
 
         #endregion
 
@@ -80,9 +77,11 @@ namespace OpenNos.Handler
                             session.Character.Save();
                             CommunicationServiceClient.Instance.KickSession(session.Account.AccountId, session.SessionId);
                         }
+
                         CommunicationServiceClient.Instance.SetMaintenanceState(true);
                         return;
                     }
+
                     ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE_MINUTES"), value));
                     Observable.Timer(TimeSpan.FromMinutes(value)).Subscribe(o =>
                     {
@@ -98,7 +97,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Act6Percent
+        ///     $Act6Percent
         /// </summary>
         /// <param name="packet"></param>
         public void Act6Percent(Act6RaidPacket packet)
@@ -110,6 +109,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("(Percent is optionnal)", 11));
                 return;
             }
+
             switch (packet.Name)
             {
                 case "Erenia":
@@ -128,7 +128,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Act4Percent
+        ///     $Act4Percent
         /// </summary>
         /// <param name="packet"></param>
         public void Act4Percentage(Act4PercentagePacket packet)
@@ -138,10 +138,12 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             if (packet?.Faction.Value < 0 || packet.Faction.Value > 1)
             {
                 return;
             }
+
             switch (packet.Faction)
             {
                 case 0:
@@ -156,7 +158,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Bank
+        ///     $Bank
         /// </summary>
         /// <param name="packet"></param>
         public void ManageBankAccount(BankCommandPacket packet)
@@ -173,6 +175,7 @@ namespace OpenNos.Handler
                 Session.SendPacket($"s_memo 6 {Language.Instance.GetMessageFromKey("WELCOME_KFCBANK")}");
                 return;
             }
+
             long amount;
             switch (packet.Subcommand)
             {
@@ -292,11 +295,12 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay("==================================", 11));
                     break;
             }
+
             LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, packet, Session.IpAddress);
         }
 
         /// <summary>
-        /// $AddQuest
+        ///     $AddQuest
         /// </summary>
         /// <param name="addQuestPacket"></param>
         public void AddQuest(AddQuestPacket addQuestPacket)
@@ -312,7 +316,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $StuffPack
+        ///     $StuffPack
         /// </summary>
         /// <param name="stuffPackPacket"></param>
         public void StuffPack(StuffPackPacket stuffPackPacket)
@@ -379,11 +383,12 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay("Use : \"Archer\", \"Sword\" \"Mage\" or \"Mount\"", 10));
                     break;
             }
+
             LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, stuffPackPacket, Session.IpAddress);
         }
 
         /// <summary>
-        /// $Character
+        ///     $Character
         /// </summary>
         /// <param name="characterPacket"></param>
         public void CharacterUpdater(CharacterPacket characterPacket)
@@ -403,6 +408,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WEAKEST_AUTHORITY"), characterPacket.Name), 0));
                     return;
                 }
+
                 switch (characterPacket.Property)
                 {
                     case "-h":
@@ -529,7 +535,6 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="session"></param>
         /// <param name="gold"></param>
@@ -559,7 +564,6 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="session"></param>
         /// <param name="level"></param>
@@ -636,24 +640,24 @@ namespace OpenNos.Handler
 
                     break;
                 case 3:
-                    {
-                        session.Character.HeroLevel = level;
-                        session.Character.HeroXp = 0;
-                        Session.SendPacket(
-                            UserInterfaceHelper.Instance.GenerateMsg(
-                                Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
-                        session.SendPacket(session.Character.GenerateLev());
-                        session.SendPacket(session.Character.GenerateStatInfo());
-                        session.SendPacket(session.Character.GenerateStatChar());
-                        session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
-                            ReceiverType.AllExceptMe);
-                        session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
-                            ReceiverType.AllExceptMe);
-                        session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX,
-                            Session.Character.PositionY);
-                        session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198),
-                            Session.Character.PositionX, Session.Character.PositionY);
-                    }
+                {
+                    session.Character.HeroLevel = level;
+                    session.Character.HeroXp = 0;
+                    Session.SendPacket(
+                        UserInterfaceHelper.Instance.GenerateMsg(
+                            Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
+                    session.SendPacket(session.Character.GenerateLev());
+                    session.SendPacket(session.Character.GenerateStatInfo());
+                    session.SendPacket(session.Character.GenerateStatChar());
+                    session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
+                        ReceiverType.AllExceptMe);
+                    session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
+                        ReceiverType.AllExceptMe);
+                    session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX,
+                        Session.Character.PositionY);
+                    session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198),
+                        Session.Character.PositionX, Session.Character.PositionY);
+                }
                     break;
             }
         }
@@ -856,12 +860,13 @@ namespace OpenNos.Handler
                 CharacterDTO character = DaoFactory.CharacterDao.LoadByName(banPacket.CharacterName);
                 if (character != null)
                 {
-                    var targetAccount = DaoFactory.AccountDao.LoadById(character.AccountId);
+                    AccountDTO targetAccount = DaoFactory.AccountDao.LoadById(character.AccountId);
                     if (targetAccount != null && targetAccount.Authority > Session.Account.Authority)
                     {
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WEAKEST_AUTHORITY"), character.Name), 0));
                         return;
                     }
+
                     LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, banPacket, Session.IpAddress);
                     ServerManager.Instance.Kick(banPacket.CharacterName);
                     var log = new PenaltyLogDTO
@@ -1652,7 +1657,8 @@ namespace OpenNos.Handler
                             session.Account.Authority -= 1;
                             session.Character.Authority -= 1;
                             ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-                            DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Demotion, $"by: {Session.Character.Name}");
+                            DaoFactory.AccountDao.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, GeneralLogType.Demotion,
+                                $"by: {Session.Character.Name}");
                         }
                         else
                         {
@@ -1985,7 +1991,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        ///  $Lobby Command
+        ///     $Lobby Command
         /// </summary>
         /// <param name="lobbyPacket"></param>
         public void Lobby(LobbyPacket lobbyPacket)
@@ -1997,7 +2003,8 @@ namespace OpenNos.Handler
 
         /// <summary>
         ///     $Kick Command
-        /// </summary>(
+        /// </summary>
+        /// (
         /// <param name="kickPacket"></param>
         public void Kick(KickPacket kickPacket)
         {
@@ -2029,12 +2036,15 @@ namespace OpenNos.Handler
                     kickSessionPacket.AccountName = string.Empty;
                 }
 
-                var targetAccount = DaoFactory.AccountDao.LoadByName(kickSessionPacket.AccountName);
+                AccountDTO targetAccount = DaoFactory.AccountDao.LoadByName(kickSessionPacket.AccountName);
                 if (targetAccount != null && targetAccount.Authority > Session.Account.Authority)
                 {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WEAKEST_AUTHORITY"), ServerManager.Instance.Sessions.FirstOrDefault(s => s.Account.Name == kickSessionPacket.AccountName)?.Character.Name), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                        string.Format(Language.Instance.GetMessageFromKey("WEAKEST_AUTHORITY"),
+                            ServerManager.Instance.Sessions.FirstOrDefault(s => s.Account.Name == kickSessionPacket.AccountName)?.Character.Name), 0));
                     return;
                 }
+
                 ServerManager.Instance.Sessions.FirstOrDefault(s => s.Account.Name == kickSessionPacket.AccountName)?.Disconnect();
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, kickSessionPacket, Session.IpAddress);
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -2210,12 +2220,13 @@ namespace OpenNos.Handler
                     mutePacket.Duration = 60;
                 }
 
-                var targetAccount = DaoFactory.AccountDao.LoadById(DaoFactory.CharacterDao.LoadByName(mutePacket.CharacterName).AccountId);
+                AccountDTO targetAccount = DaoFactory.AccountDao.LoadById(DaoFactory.CharacterDao.LoadByName(mutePacket.CharacterName).AccountId);
                 if (targetAccount != null && targetAccount.Authority > Session.Account.Authority)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("WEAKEST_AUTHORITY"), mutePacket.CharacterName), 0));
                     return;
                 }
+
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, mutePacket, Session.IpAddress);
                 mutePacket.Reason = mutePacket.Reason?.Trim();
                 MuteMethod(mutePacket.CharacterName, mutePacket.Reason, mutePacket.Duration);
@@ -2236,6 +2247,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             Session.CurrentMapInstance.IsMute = !Session.CurrentMapInstance.IsMute;
         }
 
@@ -3328,6 +3340,7 @@ namespace OpenNos.Handler
             Process.Start("ON.NW.World.exe");
             Environment.Exit(0);
         }
+
         #endregion
     }
 }

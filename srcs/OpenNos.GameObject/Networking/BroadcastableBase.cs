@@ -20,26 +20,13 @@ using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.Core.Serializing;
-using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Battle;
+using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.GameObject.Networking
 {
     public abstract class BroadcastableBase : IDisposable
     {
-        #region Members
-
-        /// <summary>
-        /// List of all connected clients.
-        /// </summary>
-        private readonly ConcurrentDictionary<long, ClientSession> _sessions;
-
-        internal readonly ConcurrentDictionary<Tuple<SessionType, long>, IBattleEntity> _battleEntities;
-
-        private bool _disposed;
-
-        #endregion
-
         #region Instantiation
 
         protected BroadcastableBase()
@@ -48,6 +35,19 @@ namespace OpenNos.GameObject.Networking
             _sessions = new ConcurrentDictionary<long, ClientSession>();
             _battleEntities = new ConcurrentDictionary<Tuple<SessionType, long>, IBattleEntity>();
         }
+
+        #endregion
+
+        #region Members
+
+        /// <summary>
+        ///     List of all connected clients.
+        /// </summary>
+        private readonly ConcurrentDictionary<long, ClientSession> _sessions;
+
+        internal readonly ConcurrentDictionary<Tuple<SessionType, long>, IBattleEntity> _battleEntities;
+
+        private bool _disposed;
 
         #endregion
 
@@ -130,14 +130,11 @@ namespace OpenNos.GameObject.Networking
             }
         }
 
-        public ClientSession GetSessionByCharacterId(long characterId)
-        {
-            return _sessions.ContainsKey(characterId) ? _sessions[characterId] : null;
-        }
+        public ClientSession GetSessionByCharacterId(long characterId) => _sessions.ContainsKey(characterId) ? _sessions[characterId] : null;
 
         public Mate GetMateByMateTransportId(long mateTransportId)
         {
-            return (Mate) _battleEntities.Values
+            return (Mate)_battleEntities.Values
                 .FirstOrDefault(b => b is Mate m && m.MateTransportId == mateTransportId).GetSession();
         }
 
@@ -315,7 +312,7 @@ namespace OpenNos.GameObject.Networking
                     foreach (ClientSession session in Sessions.Where(s =>
                         s.SessionId != sentPacket.Sender.SessionId &&
                         (s.Character?.Group == null ||
-                         s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId)))
+                            s.Character?.Group?.GroupId != sentPacket.Sender?.Character?.Group?.GroupId)))
                     {
                         if (!session.HasSelectedCharacter)
                         {

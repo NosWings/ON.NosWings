@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$Backpack", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class BackpackPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$Backpack";
-        }
+        public static string ReturnHelp() => "$Backpack";
     }
 }

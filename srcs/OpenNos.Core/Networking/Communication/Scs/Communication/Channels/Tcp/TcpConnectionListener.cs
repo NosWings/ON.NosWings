@@ -12,56 +12,56 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {
     /// <summary>
-    /// This class is used to listen and accept incoming TCP connection requests on a TCP port.
+    ///     This class is used to listen and accept incoming TCP connection requests on a TCP port.
     /// </summary>
     public class TcpConnectionListener : ConnectionListenerBase
     {
-        #region Members
-
-        /// <summary>
-        /// The endpoint address of the server to listen incoming connections.
-        /// </summary>
-        private readonly ScsTcpEndPoint _endPoint;
-
-        /// <summary>
-        /// Server socket to listen incoming connection requests.
-        /// </summary>
-        private TcpListener _listenerSocket;
-
-        /// <summary>
-        /// A flag to control thread's running
-        /// </summary>
-        private volatile bool _running;
-
-        /// <summary>
-        /// The thread to listen socket
-        /// </summary>
-        private Thread _thread;
-
-        #endregion
-
         #region Instantiation
 
         /// <summary>
-        /// Creates a new TcpConnectionListener for given endpoint.
+        ///     Creates a new TcpConnectionListener for given endpoint.
         /// </summary>
         /// <param name="endPoint">The endpoint address of the server to listen incoming connections</param>
         public TcpConnectionListener(ScsTcpEndPoint endPoint) => _endPoint = endPoint;
 
         #endregion
 
+        #region Members
+
+        /// <summary>
+        ///     The endpoint address of the server to listen incoming connections.
+        /// </summary>
+        private readonly ScsTcpEndPoint _endPoint;
+
+        /// <summary>
+        ///     Server socket to listen incoming connection requests.
+        /// </summary>
+        private TcpListener _listenerSocket;
+
+        /// <summary>
+        ///     A flag to control thread's running
+        /// </summary>
+        private volatile bool _running;
+
+        /// <summary>
+        ///     The thread to listen socket
+        /// </summary>
+        private Thread _thread;
+
+        #endregion
+
         #region Methods
 
         /// <summary>
-        /// Starts listening incoming connections.
+        ///     Starts listening incoming connections.
         /// </summary>
         public override void Start()
         {
@@ -72,7 +72,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
-        /// Stops listening incoming connections.
+        ///     Stops listening incoming connections.
         /// </summary>
         public override void Stop()
         {
@@ -81,7 +81,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
-        /// Entrance point of the thread. This method is used by the thread to listen incoming requests.
+        ///     Entrance point of the thread. This method is used by the thread to listen incoming requests.
         /// </summary>
         private void doListenAsThread()
         {
@@ -104,6 +104,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                     {
                         return;
                     }
+
                     try
                     {
                         startSocket();
@@ -116,7 +117,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
-        /// Starts listening socket.
+        ///     Starts listening socket.
         /// </summary>
         private void startSocket()
         {
@@ -125,7 +126,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
-        /// Stops listening socket.
+        ///     Stops listening socket.
         /// </summary>
         private void stopSocket()
         {

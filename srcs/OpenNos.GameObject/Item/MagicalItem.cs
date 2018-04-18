@@ -18,7 +18,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core;
-using OpenNos.Core.Extensions;
 using OpenNos.Data;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Item.Instance;
@@ -62,7 +61,7 @@ namespace OpenNos.GameObject.Item
                     // APPLY SHELL ON EQUIPMENT
                     if (inv.Item.ItemType == ItemType.Shell)
                     {
-                        if (!((WearableInstance) inv).EquipmentOptions.Any())
+                        if (!((WearableInstance)inv).EquipmentOptions.Any())
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
                                 Language.Instance.GetMessageFromKey("SHELL_MUST_BE_IDENTIFIED"), 0));
@@ -91,8 +90,8 @@ namespace OpenNos.GameObject.Item
                             return;
                         }
 
-                        WearableInstance shell = (WearableInstance) inv;
-                        WearableInstance eq =
+                        var shell = (WearableInstance)inv;
+                        var eq =
                             session.Character.Inventory.LoadBySlotAndType<WearableInstance>(eqSlot, eqType);
 
                         if (eq == null)
@@ -123,8 +122,8 @@ namespace OpenNos.GameObject.Item
                         {
                             case 0:
                                 session.SendPacket(eq.EquipmentOptions.Any()
-                                    ? $"qna #u_i^1^{session.Character.CharacterId}^{(short) inv.Type}^{inv.Slot}^1^1^{(short) eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF_NOT_EMPTY")}"
-                                    : $"qna #u_i^1^{session.Character.CharacterId}^{(short) inv.Type}^{inv.Slot}^1^1^{(short) eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF")}");
+                                    ? $"qna #u_i^1^{session.Character.CharacterId}^{(short)inv.Type}^{inv.Slot}^1^1^{(short)eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF_NOT_EMPTY")}"
+                                    : $"qna #u_i^1^{session.Character.CharacterId}^{(short)inv.Type}^{inv.Slot}^1^1^{(short)eqType}^{eqSlot} {Language.Instance.GetMessageFromKey("ADD_OPTION_ON_STUFF")}");
                                 break;
                             case 1:
                                 if (shell.EquipmentOptions == null)
@@ -205,10 +204,10 @@ namespace OpenNos.GameObject.Item
                         return;
                     }
 
-                    if (packetsplit != null && int.TryParse(packetsplit[2], out var type) &&
-                        int.TryParse(packetsplit[3], out var secondaryType) &&
-                        int.TryParse(packetsplit[4], out var inventoryType) &&
-                        int.TryParse(packetsplit[5], out var slot))
+                    if (packetsplit != null && int.TryParse(packetsplit[2], out int type) &&
+                        int.TryParse(packetsplit[3], out int secondaryType) &&
+                        int.TryParse(packetsplit[4], out int inventoryType) &&
+                        int.TryParse(packetsplit[5], out int slot))
                     {
                         int packetType;
                         switch (EffectValue)
@@ -244,10 +243,10 @@ namespace OpenNos.GameObject.Item
                                                 {
                                                     ServerManager.Instance.ChangeMap(session.Character.CharacterId,
                                                         respawn.DefaultMapId,
-                                                        (short) (respawn.DefaultX +
-                                                                 ServerManager.Instance.RandomNumber(-5, 5)),
-                                                        (short) (respawn.DefaultY +
-                                                                 ServerManager.Instance.RandomNumber(-5, 5)));
+                                                        (short)(respawn.DefaultX +
+                                                            ServerManager.Instance.RandomNumber(-5, 5)),
+                                                        (short)(respawn.DefaultY +
+                                                            ServerManager.Instance.RandomNumber(-5, 5)));
                                                 }
 
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -260,10 +259,10 @@ namespace OpenNos.GameObject.Item
                                                 {
                                                     ServerManager.Instance.ChangeMap(session.Character.CharacterId,
                                                         respawnObj.DefaultMapId,
-                                                        (short) (respawnObj.DefaultX +
-                                                                 ServerManager.Instance.RandomNumber(-5, 5)),
-                                                        (short) (respawnObj.DefaultY +
-                                                                 ServerManager.Instance.RandomNumber(-5, 5)));
+                                                        (short)(respawnObj.DefaultX +
+                                                            ServerManager.Instance.RandomNumber(-5, 5)),
+                                                        (short)(respawnObj.DefaultY +
+                                                            ServerManager.Instance.RandomNumber(-5, 5)));
                                                 }
 
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -335,6 +334,7 @@ namespace OpenNos.GameObject.Item
                                     ServerManager.Instance.ChangeMap(session.Character.CharacterId, 98, 10, 30);
                                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                 }
+
                                 break;
                         }
                     }
@@ -350,29 +350,29 @@ namespace OpenNos.GameObject.Item
                         {
                             if (EffectValue == 99)
                             {
-                                byte nextValue = (byte) ServerManager.Instance.RandomNumber(0, 127);
+                                byte nextValue = (byte)ServerManager.Instance.RandomNumber(0, 127);
                                 session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), nextValue)
-                                    ? (HairColorType) nextValue
+                                    ? (HairColorType)nextValue
                                     : 0;
                             }
                             else
                             {
-                                session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), (byte) EffectValue)
-                                    ? (HairColorType) EffectValue
+                                session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), (byte)EffectValue)
+                                    ? (HairColorType)EffectValue
                                     : 0;
                             }
                         }
                         else
                         {
-                            if (session.Character.Class == (byte) ClassType.Adventurer && EffectValue > 1)
+                            if (session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
                             {
                                 session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
                                     Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
                                 return;
                             }
 
-                            session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), (byte) EffectValue)
-                                ? (HairStyleType) EffectValue
+                            session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), (byte)EffectValue)
+                                ? (HairStyleType)EffectValue
                                 : 0;
                         }
 
@@ -396,7 +396,7 @@ namespace OpenNos.GameObject.Item
                         }
 
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff(49 - (byte) session.Character.Faction));
+                        session.SendPacket(session.Character.GenerateEff(49 - (byte)session.Character.Faction));
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(),
                             ReceiverType.AllExceptMe);
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(),
@@ -407,7 +407,7 @@ namespace OpenNos.GameObject.Item
                     {
                         session.Character.Dignity = 100;
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff(49 - (byte) session.Character.Faction));
+                        session.SendPacket(session.Character.GenerateEff(49 - (byte)session.Character.Faction));
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(),
                             ReceiverType.AllExceptMe);
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(),
@@ -447,12 +447,12 @@ namespace OpenNos.GameObject.Item
                 case 30:
                     if (!session.Character.IsVehicled)
                     {
-                        WearableInstance wig =
-                            session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Hat,
+                        var wig =
+                            session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat,
                                 InventoryType.Wear);
                         if (wig != null)
                         {
-                            wig.Design = (byte) ServerManager.Instance.RandomNumber(0, 15);
+                            wig.Design = (byte)ServerManager.Instance.RandomNumber(0, 15);
                             session.SendPacket(session.Character.GenerateEq());
                             session.SendPacket(session.Character.GenerateEquipment());
                             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn());
@@ -473,7 +473,7 @@ namespace OpenNos.GameObject.Item
                 case 300:
                     if (session.Character.Group != null && session.Character.Group.GroupType != GroupType.Group &&
                         session.Character.Group.IsLeader(session) &&
-                        session.CurrentMapInstance.Portals.Any(s => s.Type == (short) PortalType.Raid))
+                        session.CurrentMapInstance.Portals.Any(s => s.Type == (short)PortalType.Raid))
                     {
                         Parallel.ForEach(
                             session.Character.Group.Characters.Where(s =>

@@ -8,16 +8,11 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$ShutdownAll", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ShutdownAllPacket : PacketDefinition
     {
-        [PacketIndex(0)] public string WorldGroup { get; set; }
+        [PacketIndex(0)]
+        public string WorldGroup { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$ShutdownAll WORLDGROUP(*)";
-        }
+        public static string ReturnHelp() => "$ShutdownAll WORLDGROUP(*)";
 
-        public override string ToString()
-        {
-            return $"ShutdownAll Command WorldGroup: {WorldGroup}";
-        }
+        public override string ToString() => $"ShutdownAll Command WorldGroup: {WorldGroup}";
     }
 }

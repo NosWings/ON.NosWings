@@ -19,16 +19,16 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.BazaarItem",
-                c => new
-                {
-                    BazaarItemId = c.Long(nullable: false, identity: true),
-                    DateStart = c.DateTime(nullable: false),
-                    Duration = c.Short(nullable: false),
-                    ItemInstanceId = c.Guid(nullable: false),
-                    Price = c.Long(nullable: false),
-                    SellerId = c.Long(nullable: false)
-                })
+                    "dbo.BazaarItem",
+                    c => new
+                    {
+                        BazaarItemId = c.Long(false, true),
+                        DateStart = c.DateTime(false),
+                        Duration = c.Short(false),
+                        ItemInstanceId = c.Guid(false),
+                        Price = c.Long(false),
+                        SellerId = c.Long(false)
+                    })
                 .PrimaryKey(t => t.BazaarItemId)
                 .ForeignKey("dbo.Character", t => t.SellerId)
                 .ForeignKey("dbo.ItemInstance", t => t.ItemInstanceId)

@@ -10,12 +10,10 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public int Music { get; set; }
+        [PacketIndex(0)]
+        public int Music { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Music BGM";
-        }
+        public static string ReturnHelp() => "$Music BGM";
 
         #endregion
     }

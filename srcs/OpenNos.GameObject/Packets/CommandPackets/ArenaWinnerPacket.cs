@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$ArenaWinner", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ArenaWinner : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$ArenaWinner";
-        }
+        public static string ReturnHelp() => "$ArenaWinner";
     }
 }

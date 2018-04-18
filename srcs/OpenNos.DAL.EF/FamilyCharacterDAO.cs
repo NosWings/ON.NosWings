@@ -12,18 +12,18 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using NosSharp.Enums;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -123,7 +123,7 @@ namespace OpenNos.DAL.EF
 
         private FamilyCharacterDTO Insert(FamilyCharacterDTO character, OpenNosContext context)
         {
-            FamilyCharacter entity = _mapper.Map<FamilyCharacter>(character);
+            var entity = _mapper.Map<FamilyCharacter>(character);
             context.FamilyCharacter.Add(entity);
             context.SaveChanges();
             return _mapper.Map<FamilyCharacterDTO>(entity);

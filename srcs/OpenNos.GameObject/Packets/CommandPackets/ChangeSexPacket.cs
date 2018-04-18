@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$ChangeSex", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ChangeSexPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$ChangeSex";
-        }
+        public static string ReturnHelp() => "$ChangeSex";
     }
 }

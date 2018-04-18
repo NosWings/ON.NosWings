@@ -10,11 +10,14 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public string Property { get; set; }
+        [PacketIndex(0)]
+        public string Property { get; set; }
 
-        [PacketIndex(1)] public string Value { get; set; }
+        [PacketIndex(1)]
+        public string Value { get; set; }
 
-        [PacketIndex(2)] public string Name { get; set; }
+        [PacketIndex(2)]
+        public string Name { get; set; }
 
         #endregion
     }

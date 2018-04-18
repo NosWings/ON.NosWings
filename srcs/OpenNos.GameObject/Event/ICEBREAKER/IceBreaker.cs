@@ -13,6 +13,8 @@ namespace OpenNos.GameObject.Event.ICEBREAKER
 {
     public class IceBreaker
     {
+        public const int MaxAllowedPlayers = 50;
+
         private static readonly int[] GoldRewards =
         {
             100,
@@ -32,9 +34,6 @@ namespace OpenNos.GameObject.Event.ICEBREAKER
             new Tuple<int, int>(65, 85),
             new Tuple<int, int>(80, 99)
         };
-
-
-        public const int MaxAllowedPlayers = 50;
 
 
         private static int _currentBracket;
@@ -120,8 +119,8 @@ namespace OpenNos.GameObject.Event.ICEBREAKER
             ServerManager.Instance.IceBreakerInWaiting = true;
             ServerManager.Instance.Sessions
                 .Where(x => x.Character.Level >= LevelBrackets[_currentBracket].Item1 &&
-                            x.Character.Level <= LevelBrackets[_currentBracket].Item2 &&
-                            x.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance).ToList()
+                    x.Character.Level <= LevelBrackets[_currentBracket].Item2 &&
+                    x.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance).ToList()
                 .ForEach(x =>
                     x.SendPacket(
                         $"qnaml 2 #guri^501 {string.Format(Language.Instance.GetMessageFromKey("ICEBREAKER_ASK"), 500)}"));

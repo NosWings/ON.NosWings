@@ -18,6 +18,6 @@ namespace NosSharp.Enums
     {
         Good = 0,
         Neutral = 1,
-        Bad = 2,
+        Bad = 2
     }
 }

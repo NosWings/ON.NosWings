@@ -25,7 +25,7 @@ namespace OpenNos.Data
         public int RemainingTime { get; set; }
 
         public long StaticBuffId { get; set; }
-      
+
         public short CardId { get; set; }
 
         #endregion

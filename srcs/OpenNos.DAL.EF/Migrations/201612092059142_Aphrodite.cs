@@ -143,79 +143,79 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.Account",
-                c => new
-                {
-                    AccountId = c.Long(nullable: false, identity: true),
-                    Authority = c.Short(nullable: false),
-                    Email = c.String(maxLength: 255),
-                    LastCompliment = c.DateTime(nullable: false),
-                    LastSession = c.Int(nullable: false),
-                    Name = c.String(maxLength: 255),
-                    Password = c.String(maxLength: 255, unicode: false),
-                    RegistrationIP = c.String(maxLength: 45),
-                    VerificationToken = c.String(maxLength: 32)
-                })
+                    "dbo.Account",
+                    c => new
+                    {
+                        AccountId = c.Long(false, true),
+                        Authority = c.Short(false),
+                        Email = c.String(maxLength: 255),
+                        LastCompliment = c.DateTime(false),
+                        LastSession = c.Int(false),
+                        Name = c.String(maxLength: 255),
+                        Password = c.String(maxLength: 255, unicode: false),
+                        RegistrationIP = c.String(maxLength: 45),
+                        VerificationToken = c.String(maxLength: 32)
+                    })
                 .PrimaryKey(t => t.AccountId);
 
             CreateTable(
-                "dbo.Character",
-                c => new
-                {
-                    CharacterId = c.Long(nullable: false, identity: true),
-                    AccountId = c.Long(nullable: false),
-                    Act4Dead = c.Int(nullable: false),
-                    Act4Kill = c.Int(nullable: false),
-                    Act4Points = c.Int(nullable: false),
-                    ArenaWinner = c.Int(nullable: false),
-                    Backpack = c.Int(nullable: false),
-                    Biography = c.String(maxLength: 255),
-                    BuffBlocked = c.Boolean(nullable: false),
-                    Class = c.Byte(nullable: false),
-                    Compliment = c.Short(nullable: false),
-                    Dignity = c.Single(nullable: false),
-                    EmoticonsBlocked = c.Boolean(nullable: false),
-                    ExchangeBlocked = c.Boolean(nullable: false),
-                    Faction = c.Int(nullable: false),
-                    FamilyCharacterId = c.Long(),
-                    FamilyRequestBlocked = c.Boolean(nullable: false),
-                    FriendRequestBlocked = c.Boolean(nullable: false),
-                    Gender = c.Byte(nullable: false),
-                    Gold = c.Long(nullable: false),
-                    GroupRequestBlocked = c.Boolean(nullable: false),
-                    HairColor = c.Byte(nullable: false),
-                    HairStyle = c.Byte(nullable: false),
-                    HeroChatBlocked = c.Boolean(nullable: false),
-                    HeroLevel = c.Byte(nullable: false),
-                    HeroXp = c.Long(nullable: false),
-                    Hp = c.Int(nullable: false),
-                    HpBlocked = c.Boolean(nullable: false),
-                    JobLevel = c.Byte(nullable: false),
-                    JobLevelXp = c.Long(nullable: false),
-                    LastLogin = c.DateTime(nullable: false),
-                    Level = c.Byte(nullable: false),
-                    LevelXp = c.Long(nullable: false),
-                    MapId = c.Short(nullable: false),
-                    MapX = c.Short(nullable: false),
-                    MapY = c.Short(nullable: false),
-                    MasterPoints = c.Int(nullable: false),
-                    MasterTicket = c.Int(nullable: false),
-                    MinilandInviteBlocked = c.Boolean(nullable: false),
-                    MouseAimLock = c.Boolean(nullable: false),
-                    Mp = c.Int(nullable: false),
-                    Name = c.String(maxLength: 255, unicode: false),
-                    QuickGetUp = c.Boolean(nullable: false),
-                    RagePoint = c.Long(nullable: false),
-                    Reput = c.Long(nullable: false),
-                    Slot = c.Byte(nullable: false),
-                    SpAdditionPoint = c.Int(nullable: false),
-                    SpPoint = c.Int(nullable: false),
-                    State = c.Byte(nullable: false),
-                    TalentLose = c.Int(nullable: false),
-                    TalentSurrender = c.Int(nullable: false),
-                    TalentWin = c.Int(nullable: false),
-                    WhisperBlocked = c.Boolean(nullable: false)
-                })
+                    "dbo.Character",
+                    c => new
+                    {
+                        CharacterId = c.Long(false, true),
+                        AccountId = c.Long(false),
+                        Act4Dead = c.Int(false),
+                        Act4Kill = c.Int(false),
+                        Act4Points = c.Int(false),
+                        ArenaWinner = c.Int(false),
+                        Backpack = c.Int(false),
+                        Biography = c.String(maxLength: 255),
+                        BuffBlocked = c.Boolean(false),
+                        Class = c.Byte(false),
+                        Compliment = c.Short(false),
+                        Dignity = c.Single(false),
+                        EmoticonsBlocked = c.Boolean(false),
+                        ExchangeBlocked = c.Boolean(false),
+                        Faction = c.Int(false),
+                        FamilyCharacterId = c.Long(),
+                        FamilyRequestBlocked = c.Boolean(false),
+                        FriendRequestBlocked = c.Boolean(false),
+                        Gender = c.Byte(false),
+                        Gold = c.Long(false),
+                        GroupRequestBlocked = c.Boolean(false),
+                        HairColor = c.Byte(false),
+                        HairStyle = c.Byte(false),
+                        HeroChatBlocked = c.Boolean(false),
+                        HeroLevel = c.Byte(false),
+                        HeroXp = c.Long(false),
+                        Hp = c.Int(false),
+                        HpBlocked = c.Boolean(false),
+                        JobLevel = c.Byte(false),
+                        JobLevelXp = c.Long(false),
+                        LastLogin = c.DateTime(false),
+                        Level = c.Byte(false),
+                        LevelXp = c.Long(false),
+                        MapId = c.Short(false),
+                        MapX = c.Short(false),
+                        MapY = c.Short(false),
+                        MasterPoints = c.Int(false),
+                        MasterTicket = c.Int(false),
+                        MinilandInviteBlocked = c.Boolean(false),
+                        MouseAimLock = c.Boolean(false),
+                        Mp = c.Int(false),
+                        Name = c.String(maxLength: 255, unicode: false),
+                        QuickGetUp = c.Boolean(false),
+                        RagePoint = c.Long(false),
+                        Reput = c.Long(false),
+                        Slot = c.Byte(false),
+                        SpAdditionPoint = c.Int(false),
+                        SpPoint = c.Int(false),
+                        State = c.Byte(false),
+                        TalentLose = c.Int(false),
+                        TalentSurrender = c.Int(false),
+                        TalentWin = c.Int(false),
+                        WhisperBlocked = c.Boolean(false)
+                    })
                 .PrimaryKey(t => t.CharacterId)
                 .ForeignKey("dbo.Map", t => t.MapId)
                 .ForeignKey("dbo.FamilyCharacter", t => t.FamilyCharacterId)
@@ -225,13 +225,13 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.MapId);
 
             CreateTable(
-                "dbo.CharacterSkill",
-                c => new
-                {
-                    Id = c.Guid(nullable: false),
-                    CharacterId = c.Long(nullable: false),
-                    SkillVNum = c.Short(nullable: false)
-                })
+                    "dbo.CharacterSkill",
+                    c => new
+                    {
+                        Id = c.Guid(false),
+                        CharacterId = c.Long(false),
+                        SkillVNum = c.Short(false)
+                    })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Skill", t => t.SkillVNum)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
@@ -239,70 +239,70 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.SkillVNum);
 
             CreateTable(
-                "dbo.Skill",
-                c => new
-                {
-                    SkillVNum = c.Short(nullable: false),
-                    AttackAnimation = c.Short(nullable: false),
-                    BuffId = c.Short(nullable: false),
-                    CastAnimation = c.Short(nullable: false),
-                    CastEffect = c.Short(nullable: false),
-                    CastId = c.Short(nullable: false),
-                    CastTime = c.Short(nullable: false),
-                    Class = c.Byte(nullable: false),
-                    Cooldown = c.Short(nullable: false),
-                    CPCost = c.Byte(nullable: false),
-                    Damage = c.Short(nullable: false),
-                    Duration = c.Short(nullable: false),
-                    Effect = c.Short(nullable: false),
-                    Element = c.Byte(nullable: false),
-                    ElementalDamage = c.Short(nullable: false),
-                    HitType = c.Byte(nullable: false),
-                    ItemVNum = c.Short(nullable: false),
-                    Level = c.Byte(nullable: false),
-                    LevelMinimum = c.Byte(nullable: false),
-                    MinimumAdventurerLevel = c.Byte(nullable: false),
-                    MinimumArcherLevel = c.Byte(nullable: false),
-                    MinimumMagicianLevel = c.Byte(nullable: false),
-                    MinimumSwordmanLevel = c.Byte(nullable: false),
-                    MpCost = c.Short(nullable: false),
-                    Name = c.String(maxLength: 255),
-                    Price = c.Int(nullable: false),
-                    Range = c.Byte(nullable: false),
-                    SecondarySkillVNum = c.Short(nullable: false),
-                    SkillChance = c.Short(nullable: false),
-                    SkillType = c.Byte(nullable: false),
-                    TargetRange = c.Byte(nullable: false),
-                    TargetType = c.Byte(nullable: false),
-                    Type = c.Byte(nullable: false),
-                    UpgradeSkill = c.Short(nullable: false),
-                    UpgradeType = c.Short(nullable: false)
-                })
+                    "dbo.Skill",
+                    c => new
+                    {
+                        SkillVNum = c.Short(false),
+                        AttackAnimation = c.Short(false),
+                        BuffId = c.Short(false),
+                        CastAnimation = c.Short(false),
+                        CastEffect = c.Short(false),
+                        CastId = c.Short(false),
+                        CastTime = c.Short(false),
+                        Class = c.Byte(false),
+                        Cooldown = c.Short(false),
+                        CPCost = c.Byte(false),
+                        Damage = c.Short(false),
+                        Duration = c.Short(false),
+                        Effect = c.Short(false),
+                        Element = c.Byte(false),
+                        ElementalDamage = c.Short(false),
+                        HitType = c.Byte(false),
+                        ItemVNum = c.Short(false),
+                        Level = c.Byte(false),
+                        LevelMinimum = c.Byte(false),
+                        MinimumAdventurerLevel = c.Byte(false),
+                        MinimumArcherLevel = c.Byte(false),
+                        MinimumMagicianLevel = c.Byte(false),
+                        MinimumSwordmanLevel = c.Byte(false),
+                        MpCost = c.Short(false),
+                        Name = c.String(maxLength: 255),
+                        Price = c.Int(false),
+                        Range = c.Byte(false),
+                        SecondarySkillVNum = c.Short(false),
+                        SkillChance = c.Short(false),
+                        SkillType = c.Byte(false),
+                        TargetRange = c.Byte(false),
+                        TargetType = c.Byte(false),
+                        Type = c.Byte(false),
+                        UpgradeSkill = c.Short(false),
+                        UpgradeType = c.Short(false)
+                    })
                 .PrimaryKey(t => t.SkillVNum);
 
             CreateTable(
-                "dbo.Combo",
-                c => new
-                {
-                    ComboId = c.Int(nullable: false, identity: true),
-                    Animation = c.Short(nullable: false),
-                    Effect = c.Short(nullable: false),
-                    Hit = c.Short(nullable: false),
-                    SkillVNum = c.Short(nullable: false)
-                })
+                    "dbo.Combo",
+                    c => new
+                    {
+                        ComboId = c.Int(false, true),
+                        Animation = c.Short(false),
+                        Effect = c.Short(false),
+                        Hit = c.Short(false),
+                        SkillVNum = c.Short(false)
+                    })
                 .PrimaryKey(t => t.ComboId)
                 .ForeignKey("dbo.Skill", t => t.SkillVNum)
                 .Index(t => t.SkillVNum);
 
             CreateTable(
-                "dbo.NpcMonsterSkill",
-                c => new
-                {
-                    NpcMonsterSkillId = c.Long(nullable: false, identity: true),
-                    NpcMonsterVNum = c.Short(nullable: false),
-                    Rate = c.Short(nullable: false),
-                    SkillVNum = c.Short(nullable: false)
-                })
+                    "dbo.NpcMonsterSkill",
+                    c => new
+                    {
+                        NpcMonsterSkillId = c.Long(false, true),
+                        NpcMonsterVNum = c.Short(false),
+                        Rate = c.Short(false),
+                        SkillVNum = c.Short(false)
+                    })
                 .PrimaryKey(t => t.NpcMonsterSkillId)
                 .ForeignKey("dbo.NpcMonster", t => t.NpcMonsterVNum)
                 .ForeignKey("dbo.Skill", t => t.SkillVNum)
@@ -310,64 +310,64 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.SkillVNum);
 
             CreateTable(
-                "dbo.NpcMonster",
-                c => new
-                {
-                    NpcMonsterVNum = c.Short(nullable: false),
-                    AmountRequired = c.Byte(nullable: false),
-                    AttackClass = c.Byte(nullable: false),
-                    AttackUpgrade = c.Byte(nullable: false),
-                    BasicArea = c.Byte(nullable: false),
-                    BasicCooldown = c.Short(nullable: false),
-                    BasicRange = c.Byte(nullable: false),
-                    BasicSkill = c.Short(nullable: false),
-                    CloseDefence = c.Short(nullable: false),
-                    Concentrate = c.Short(nullable: false),
-                    CriticalChance = c.Byte(nullable: false),
-                    CriticalRate = c.Short(nullable: false),
-                    DamageMaximum = c.Short(nullable: false),
-                    DamageMinimum = c.Short(nullable: false),
-                    DarkResistance = c.Short(nullable: false),
-                    DefenceDodge = c.Short(nullable: false),
-                    DefenceUpgrade = c.Byte(nullable: false),
-                    DistanceDefence = c.Short(nullable: false),
-                    DistanceDefenceDodge = c.Short(nullable: false),
-                    Element = c.Byte(nullable: false),
-                    ElementRate = c.Short(nullable: false),
-                    FireResistance = c.Short(nullable: false),
-                    HeroLevel = c.Byte(nullable: false),
-                    IsHostile = c.Boolean(nullable: false),
-                    JobXP = c.Int(nullable: false),
-                    Level = c.Byte(nullable: false),
-                    LightResistance = c.Short(nullable: false),
-                    MagicDefence = c.Short(nullable: false),
-                    MaxHP = c.Int(nullable: false),
-                    MaxMP = c.Int(nullable: false),
-                    MonsterType = c.Byte(nullable: false),
-                    Name = c.String(maxLength: 255),
-                    NoAggresiveIcon = c.Boolean(nullable: false),
-                    NoticeRange = c.Byte(nullable: false),
-                    Race = c.Byte(nullable: false),
-                    RaceType = c.Byte(nullable: false),
-                    RespawnTime = c.Int(nullable: false),
-                    Speed = c.Byte(nullable: false),
-                    VNumRequired = c.Short(nullable: false),
-                    WaterResistance = c.Short(nullable: false),
-                    XP = c.Int(nullable: false)
-                })
+                    "dbo.NpcMonster",
+                    c => new
+                    {
+                        NpcMonsterVNum = c.Short(false),
+                        AmountRequired = c.Byte(false),
+                        AttackClass = c.Byte(false),
+                        AttackUpgrade = c.Byte(false),
+                        BasicArea = c.Byte(false),
+                        BasicCooldown = c.Short(false),
+                        BasicRange = c.Byte(false),
+                        BasicSkill = c.Short(false),
+                        CloseDefence = c.Short(false),
+                        Concentrate = c.Short(false),
+                        CriticalChance = c.Byte(false),
+                        CriticalRate = c.Short(false),
+                        DamageMaximum = c.Short(false),
+                        DamageMinimum = c.Short(false),
+                        DarkResistance = c.Short(false),
+                        DefenceDodge = c.Short(false),
+                        DefenceUpgrade = c.Byte(false),
+                        DistanceDefence = c.Short(false),
+                        DistanceDefenceDodge = c.Short(false),
+                        Element = c.Byte(false),
+                        ElementRate = c.Short(false),
+                        FireResistance = c.Short(false),
+                        HeroLevel = c.Byte(false),
+                        IsHostile = c.Boolean(false),
+                        JobXP = c.Int(false),
+                        Level = c.Byte(false),
+                        LightResistance = c.Short(false),
+                        MagicDefence = c.Short(false),
+                        MaxHP = c.Int(false),
+                        MaxMP = c.Int(false),
+                        MonsterType = c.Byte(false),
+                        Name = c.String(maxLength: 255),
+                        NoAggresiveIcon = c.Boolean(false),
+                        NoticeRange = c.Byte(false),
+                        Race = c.Byte(false),
+                        RaceType = c.Byte(false),
+                        RespawnTime = c.Int(false),
+                        Speed = c.Byte(false),
+                        VNumRequired = c.Short(false),
+                        WaterResistance = c.Short(false),
+                        XP = c.Int(false)
+                    })
                 .PrimaryKey(t => t.NpcMonsterVNum);
 
             CreateTable(
-                "dbo.Drop",
-                c => new
-                {
-                    DropId = c.Short(nullable: false, identity: true),
-                    Amount = c.Int(nullable: false),
-                    DropChance = c.Int(nullable: false),
-                    ItemVNum = c.Short(nullable: false),
-                    MapTypeId = c.Short(),
-                    MonsterVNum = c.Short()
-                })
+                    "dbo.Drop",
+                    c => new
+                    {
+                        DropId = c.Short(false, true),
+                        Amount = c.Int(false),
+                        DropChance = c.Int(false),
+                        ItemVNum = c.Short(false),
+                        MapTypeId = c.Short(),
+                        MonsterVNum = c.Short()
+                    })
                 .PrimaryKey(t => t.DropId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
                 .ForeignKey("dbo.MapType", t => t.MapTypeId)
@@ -377,188 +377,188 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.MonsterVNum);
 
             CreateTable(
-                "dbo.Item",
-                c => new
-                {
-                    VNum = c.Short(nullable: false),
-                    BasicUpgrade = c.Byte(nullable: false),
-                    CellonLvl = c.Byte(nullable: false),
-                    Class = c.Byte(nullable: false),
-                    CloseDefence = c.Short(nullable: false),
-                    Color = c.Byte(nullable: false),
-                    Concentrate = c.Short(nullable: false),
-                    CriticalLuckRate = c.Byte(nullable: false),
-                    CriticalRate = c.Short(nullable: false),
-                    DamageMaximum = c.Short(nullable: false),
-                    DamageMinimum = c.Short(nullable: false),
-                    DarkElement = c.Byte(nullable: false),
-                    DarkResistance = c.Short(nullable: false),
-                    DefenceDodge = c.Short(nullable: false),
-                    DistanceDefence = c.Short(nullable: false),
-                    DistanceDefenceDodge = c.Short(nullable: false),
-                    Effect = c.Short(nullable: false),
-                    EffectValue = c.Int(nullable: false),
-                    Element = c.Byte(nullable: false),
-                    ElementRate = c.Short(nullable: false),
-                    EquipmentSlot = c.Byte(nullable: false),
-                    FireElement = c.Byte(nullable: false),
-                    FireResistance = c.Short(nullable: false),
-                    HitRate = c.Short(nullable: false),
-                    Hp = c.Short(nullable: false),
-                    HpRegeneration = c.Short(nullable: false),
-                    IsBlocked = c.Boolean(nullable: false),
-                    IsColored = c.Boolean(nullable: false),
-                    IsConsumable = c.Boolean(nullable: false),
-                    IsDroppable = c.Boolean(nullable: false),
-                    IsHeroic = c.Boolean(nullable: false),
-                    IsHolder = c.Boolean(nullable: false),
-                    IsMinilandObject = c.Boolean(nullable: false),
-                    IsSoldable = c.Boolean(nullable: false),
-                    IsTradable = c.Boolean(nullable: false),
-                    ItemSubType = c.Byte(nullable: false),
-                    ItemType = c.Byte(nullable: false),
-                    ItemValidTime = c.Long(nullable: false),
-                    LevelJobMinimum = c.Byte(nullable: false),
-                    LevelMinimum = c.Byte(nullable: false),
-                    LightElement = c.Byte(nullable: false),
-                    LightResistance = c.Short(nullable: false),
-                    MagicDefence = c.Short(nullable: false),
-                    MaxCellon = c.Byte(nullable: false),
-                    MaxCellonLvl = c.Byte(nullable: false),
-                    MaxElementRate = c.Short(nullable: false),
-                    MaximumAmmo = c.Byte(nullable: false),
-                    MoreHp = c.Short(nullable: false),
-                    MoreMp = c.Short(nullable: false),
-                    Morph = c.Short(nullable: false),
-                    Mp = c.Short(nullable: false),
-                    MpRegeneration = c.Short(nullable: false),
-                    Name = c.String(maxLength: 255),
-                    Price = c.Long(nullable: false),
-                    PvpDefence = c.Short(nullable: false),
-                    PvpStrength = c.Byte(nullable: false),
-                    ReduceOposantResistance = c.Short(nullable: false),
-                    ReputationMinimum = c.Byte(nullable: false),
-                    ReputPrice = c.Long(nullable: false),
-                    SecondaryElement = c.Byte(nullable: false),
-                    Sex = c.Byte(nullable: false),
-                    Speed = c.Byte(nullable: false),
-                    SpType = c.Byte(nullable: false),
-                    Type = c.Byte(nullable: false),
-                    WaitDelay = c.Short(nullable: false),
-                    WaterElement = c.Byte(nullable: false),
-                    WaterResistance = c.Short(nullable: false)
-                })
+                    "dbo.Item",
+                    c => new
+                    {
+                        VNum = c.Short(false),
+                        BasicUpgrade = c.Byte(false),
+                        CellonLvl = c.Byte(false),
+                        Class = c.Byte(false),
+                        CloseDefence = c.Short(false),
+                        Color = c.Byte(false),
+                        Concentrate = c.Short(false),
+                        CriticalLuckRate = c.Byte(false),
+                        CriticalRate = c.Short(false),
+                        DamageMaximum = c.Short(false),
+                        DamageMinimum = c.Short(false),
+                        DarkElement = c.Byte(false),
+                        DarkResistance = c.Short(false),
+                        DefenceDodge = c.Short(false),
+                        DistanceDefence = c.Short(false),
+                        DistanceDefenceDodge = c.Short(false),
+                        Effect = c.Short(false),
+                        EffectValue = c.Int(false),
+                        Element = c.Byte(false),
+                        ElementRate = c.Short(false),
+                        EquipmentSlot = c.Byte(false),
+                        FireElement = c.Byte(false),
+                        FireResistance = c.Short(false),
+                        HitRate = c.Short(false),
+                        Hp = c.Short(false),
+                        HpRegeneration = c.Short(false),
+                        IsBlocked = c.Boolean(false),
+                        IsColored = c.Boolean(false),
+                        IsConsumable = c.Boolean(false),
+                        IsDroppable = c.Boolean(false),
+                        IsHeroic = c.Boolean(false),
+                        IsHolder = c.Boolean(false),
+                        IsMinilandObject = c.Boolean(false),
+                        IsSoldable = c.Boolean(false),
+                        IsTradable = c.Boolean(false),
+                        ItemSubType = c.Byte(false),
+                        ItemType = c.Byte(false),
+                        ItemValidTime = c.Long(false),
+                        LevelJobMinimum = c.Byte(false),
+                        LevelMinimum = c.Byte(false),
+                        LightElement = c.Byte(false),
+                        LightResistance = c.Short(false),
+                        MagicDefence = c.Short(false),
+                        MaxCellon = c.Byte(false),
+                        MaxCellonLvl = c.Byte(false),
+                        MaxElementRate = c.Short(false),
+                        MaximumAmmo = c.Byte(false),
+                        MoreHp = c.Short(false),
+                        MoreMp = c.Short(false),
+                        Morph = c.Short(false),
+                        Mp = c.Short(false),
+                        MpRegeneration = c.Short(false),
+                        Name = c.String(maxLength: 255),
+                        Price = c.Long(false),
+                        PvpDefence = c.Short(false),
+                        PvpStrength = c.Byte(false),
+                        ReduceOposantResistance = c.Short(false),
+                        ReputationMinimum = c.Byte(false),
+                        ReputPrice = c.Long(false),
+                        SecondaryElement = c.Byte(false),
+                        Sex = c.Byte(false),
+                        Speed = c.Byte(false),
+                        SpType = c.Byte(false),
+                        Type = c.Byte(false),
+                        WaitDelay = c.Short(false),
+                        WaterElement = c.Byte(false),
+                        WaterResistance = c.Short(false)
+                    })
                 .PrimaryKey(t => t.VNum);
 
             CreateTable(
-                "dbo.ItemInstance",
-                c => new
-                {
-                    Id = c.Guid(nullable: false),
-                    Amount = c.Int(nullable: false),
-                    BoundCharacterId = c.Long(),
-                    CharacterId = c.Long(nullable: false),
-                    Design = c.Short(nullable: false),
-                    DurabilityPoint = c.Int(nullable: false),
-                    ItemDeleteTime = c.DateTime(),
-                    ItemVNum = c.Short(nullable: false),
-                    Rare = c.Short(nullable: false),
-                    Slot = c.Short(nullable: false),
-                    Type = c.Byte(nullable: false),
-                    Upgrade = c.Byte(nullable: false),
-                    HP = c.Short(),
-                    MP = c.Short(),
-                    Ammo = c.Byte(),
-                    Cellon = c.Byte(),
-                    CellonOptionId = c.Guid(),
-                    CloseDefence = c.Short(),
-                    Concentrate = c.Short(),
-                    CriticalDodge = c.Short(),
-                    CriticalLuckRate = c.Byte(),
-                    CriticalRate = c.Short(),
-                    DamageMaximum = c.Short(),
-                    DamageMinimum = c.Short(),
-                    DarkElement = c.Byte(),
-                    DarkResistance = c.Short(),
-                    DefenceDodge = c.Short(),
-                    DistanceDefence = c.Short(),
-                    DistanceDefenceDodge = c.Short(),
-                    ElementRate = c.Short(),
-                    FireElement = c.Byte(),
-                    FireResistance = c.Short(),
-                    HitRate = c.Short(),
-                    HP1 = c.Short(),
-                    IsEmpty = c.Boolean(),
-                    IsFixed = c.Boolean(),
-                    LightElement = c.Byte(),
-                    LightResistance = c.Short(),
-                    MagicDefence = c.Short(),
-                    MaxElementRate = c.Short(),
-                    MP1 = c.Short(),
-                    WaterElement = c.Byte(),
-                    WaterResistance = c.Short(),
-                    XP = c.Long(),
-                    SlDamage = c.Short(),
-                    SlDefence = c.Short(),
-                    SlElement = c.Short(),
-                    SlHP = c.Short(),
-                    SpDamage = c.Byte(),
-                    SpDark = c.Byte(),
-                    SpDefence = c.Byte(),
-                    SpElement = c.Byte(),
-                    SpFire = c.Byte(),
-                    SpHP = c.Byte(),
-                    SpLevel = c.Byte(),
-                    SpLight = c.Byte(),
-                    SpStoneUpgrade = c.Byte(),
-                    SpWater = c.Byte(),
-                    Discriminator = c.String(nullable: false, maxLength: 128)
-                })
+                    "dbo.ItemInstance",
+                    c => new
+                    {
+                        Id = c.Guid(false),
+                        Amount = c.Int(false),
+                        BoundCharacterId = c.Long(),
+                        CharacterId = c.Long(false),
+                        Design = c.Short(false),
+                        DurabilityPoint = c.Int(false),
+                        ItemDeleteTime = c.DateTime(),
+                        ItemVNum = c.Short(false),
+                        Rare = c.Short(false),
+                        Slot = c.Short(false),
+                        Type = c.Byte(false),
+                        Upgrade = c.Byte(false),
+                        HP = c.Short(),
+                        MP = c.Short(),
+                        Ammo = c.Byte(),
+                        Cellon = c.Byte(),
+                        CellonOptionId = c.Guid(),
+                        CloseDefence = c.Short(),
+                        Concentrate = c.Short(),
+                        CriticalDodge = c.Short(),
+                        CriticalLuckRate = c.Byte(),
+                        CriticalRate = c.Short(),
+                        DamageMaximum = c.Short(),
+                        DamageMinimum = c.Short(),
+                        DarkElement = c.Byte(),
+                        DarkResistance = c.Short(),
+                        DefenceDodge = c.Short(),
+                        DistanceDefence = c.Short(),
+                        DistanceDefenceDodge = c.Short(),
+                        ElementRate = c.Short(),
+                        FireElement = c.Byte(),
+                        FireResistance = c.Short(),
+                        HitRate = c.Short(),
+                        HP1 = c.Short(),
+                        IsEmpty = c.Boolean(),
+                        IsFixed = c.Boolean(),
+                        LightElement = c.Byte(),
+                        LightResistance = c.Short(),
+                        MagicDefence = c.Short(),
+                        MaxElementRate = c.Short(),
+                        MP1 = c.Short(),
+                        WaterElement = c.Byte(),
+                        WaterResistance = c.Short(),
+                        XP = c.Long(),
+                        SlDamage = c.Short(),
+                        SlDefence = c.Short(),
+                        SlElement = c.Short(),
+                        SlHP = c.Short(),
+                        SpDamage = c.Byte(),
+                        SpDark = c.Byte(),
+                        SpDefence = c.Byte(),
+                        SpElement = c.Byte(),
+                        SpFire = c.Byte(),
+                        SpHP = c.Byte(),
+                        SpLevel = c.Byte(),
+                        SpLight = c.Byte(),
+                        SpStoneUpgrade = c.Byte(),
+                        SpWater = c.Byte(),
+                        Discriminator = c.String(false, 128)
+                    })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Character", t => t.BoundCharacterId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
                 .Index(t => t.BoundCharacterId)
-                .Index(t => new { t.CharacterId, t.Slot, t.Type }, name: "IX_SlotAndType")
+                .Index(t => new { t.CharacterId, t.Slot, t.Type }, "IX_SlotAndType")
                 .Index(t => t.ItemVNum);
 
             CreateTable(
-                "dbo.CellonOption",
-                c => new
-                {
-                    Id = c.Guid(nullable: false),
-                    Level = c.Byte(nullable: false),
-                    Type = c.Byte(nullable: false),
-                    Value = c.Int(nullable: false),
-                    WearableInstanceId = c.Guid(nullable: false)
-                })
+                    "dbo.CellonOption",
+                    c => new
+                    {
+                        Id = c.Guid(false),
+                        Level = c.Byte(false),
+                        Type = c.Byte(false),
+                        Value = c.Int(false),
+                        WearableInstanceId = c.Guid(false)
+                    })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.ItemInstance", t => t.WearableInstanceId, cascadeDelete: true)
+                .ForeignKey("dbo.ItemInstance", t => t.WearableInstanceId, true)
                 .Index(t => t.WearableInstanceId);
 
             CreateTable(
-                "dbo.Mail",
-                c => new
-                {
-                    MailId = c.Long(nullable: false, identity: true),
-                    AttachmentAmount = c.Byte(nullable: false),
-                    AttachmentRarity = c.Byte(nullable: false),
-                    AttachmentUpgrade = c.Byte(nullable: false),
-                    AttachmentVNum = c.Short(),
-                    Date = c.DateTime(nullable: false),
-                    EqPacket = c.String(maxLength: 255),
-                    IsOpened = c.Boolean(nullable: false),
-                    IsSenderCopy = c.Boolean(nullable: false),
-                    Message = c.String(maxLength: 255),
-                    ReceiverId = c.Long(nullable: false),
-                    SenderClass = c.Byte(nullable: false),
-                    SenderGender = c.Byte(nullable: false),
-                    SenderHairColor = c.Byte(nullable: false),
-                    SenderHairStyle = c.Byte(nullable: false),
-                    SenderId = c.Long(nullable: false),
-                    SenderMorphId = c.Short(nullable: false),
-                    Title = c.String(maxLength: 255)
-                })
+                    "dbo.Mail",
+                    c => new
+                    {
+                        MailId = c.Long(false, true),
+                        AttachmentAmount = c.Byte(false),
+                        AttachmentRarity = c.Byte(false),
+                        AttachmentUpgrade = c.Byte(false),
+                        AttachmentVNum = c.Short(),
+                        Date = c.DateTime(false),
+                        EqPacket = c.String(maxLength: 255),
+                        IsOpened = c.Boolean(false),
+                        IsSenderCopy = c.Boolean(false),
+                        Message = c.String(maxLength: 255),
+                        ReceiverId = c.Long(false),
+                        SenderClass = c.Byte(false),
+                        SenderGender = c.Byte(false),
+                        SenderHairColor = c.Byte(false),
+                        SenderHairStyle = c.Byte(false),
+                        SenderId = c.Long(false),
+                        SenderMorphId = c.Short(false),
+                        Title = c.String(maxLength: 255)
+                    })
                 .PrimaryKey(t => t.MailId)
                 .ForeignKey("dbo.Item", t => t.AttachmentVNum)
                 .ForeignKey("dbo.Character", t => t.SenderId)
@@ -568,14 +568,14 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.SenderId);
 
             CreateTable(
-                "dbo.Recipe",
-                c => new
-                {
-                    RecipeId = c.Short(nullable: false, identity: true),
-                    Amount = c.Byte(nullable: false),
-                    ItemVNum = c.Short(nullable: false),
-                    MapNpcId = c.Int(nullable: false)
-                })
+                    "dbo.Recipe",
+                    c => new
+                    {
+                        RecipeId = c.Short(false, true),
+                        Amount = c.Byte(false),
+                        ItemVNum = c.Short(false),
+                        MapNpcId = c.Int(false)
+                    })
                 .PrimaryKey(t => t.RecipeId)
                 .ForeignKey("dbo.MapNpc", t => t.MapNpcId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
@@ -583,22 +583,22 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.MapNpcId);
 
             CreateTable(
-                "dbo.MapNpc",
-                c => new
-                {
-                    MapNpcId = c.Int(nullable: false),
-                    Dialog = c.Short(nullable: false),
-                    Effect = c.Short(nullable: false),
-                    EffectDelay = c.Short(nullable: false),
-                    IsDisabled = c.Boolean(nullable: false),
-                    IsMoving = c.Boolean(nullable: false),
-                    IsSitting = c.Boolean(nullable: false),
-                    MapId = c.Short(nullable: false),
-                    MapX = c.Short(nullable: false),
-                    MapY = c.Short(nullable: false),
-                    NpcVNum = c.Short(nullable: false),
-                    Position = c.Byte(nullable: false)
-                })
+                    "dbo.MapNpc",
+                    c => new
+                    {
+                        MapNpcId = c.Int(false),
+                        Dialog = c.Short(false),
+                        Effect = c.Short(false),
+                        EffectDelay = c.Short(false),
+                        IsDisabled = c.Boolean(false),
+                        IsMoving = c.Boolean(false),
+                        IsSitting = c.Boolean(false),
+                        MapId = c.Short(false),
+                        MapX = c.Short(false),
+                        MapY = c.Short(false),
+                        NpcVNum = c.Short(false),
+                        Position = c.Byte(false)
+                    })
                 .PrimaryKey(t => t.MapNpcId)
                 .ForeignKey("dbo.Map", t => t.MapId)
                 .ForeignKey("dbo.NpcMonster", t => t.NpcVNum)
@@ -606,30 +606,30 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.NpcVNum);
 
             CreateTable(
-                "dbo.Map",
-                c => new
-                {
-                    MapId = c.Short(nullable: false),
-                    Data = c.Binary(),
-                    Music = c.Int(nullable: false),
-                    Name = c.String(maxLength: 255),
-                    ShopAllowed = c.Boolean(nullable: false)
-                })
+                    "dbo.Map",
+                    c => new
+                    {
+                        MapId = c.Short(false),
+                        Data = c.Binary(),
+                        Music = c.Int(false),
+                        Name = c.String(maxLength: 255),
+                        ShopAllowed = c.Boolean(false)
+                    })
                 .PrimaryKey(t => t.MapId);
 
             CreateTable(
-                "dbo.MapMonster",
-                c => new
-                {
-                    MapMonsterId = c.Int(nullable: false),
-                    IsDisabled = c.Boolean(nullable: false),
-                    IsMoving = c.Boolean(nullable: false),
-                    MapId = c.Short(nullable: false),
-                    MapX = c.Short(nullable: false),
-                    MapY = c.Short(nullable: false),
-                    MonsterVNum = c.Short(nullable: false),
-                    Position = c.Byte(nullable: false)
-                })
+                    "dbo.MapMonster",
+                    c => new
+                    {
+                        MapMonsterId = c.Int(false),
+                        IsDisabled = c.Boolean(false),
+                        IsMoving = c.Boolean(false),
+                        MapId = c.Short(false),
+                        MapX = c.Short(false),
+                        MapY = c.Short(false),
+                        MonsterVNum = c.Short(false),
+                        Position = c.Byte(false)
+                    })
                 .PrimaryKey(t => t.MapMonsterId)
                 .ForeignKey("dbo.Map", t => t.MapId)
                 .ForeignKey("dbo.NpcMonster", t => t.MonsterVNum)
@@ -637,12 +637,12 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.MonsterVNum);
 
             CreateTable(
-                "dbo.MapTypeMap",
-                c => new
-                {
-                    MapId = c.Short(nullable: false),
-                    MapTypeId = c.Short(nullable: false)
-                })
+                    "dbo.MapTypeMap",
+                    c => new
+                    {
+                        MapId = c.Short(false),
+                        MapTypeId = c.Short(false)
+                    })
                 .PrimaryKey(t => new { t.MapId, t.MapTypeId })
                 .ForeignKey("dbo.Map", t => t.MapId)
                 .ForeignKey("dbo.MapType", t => t.MapTypeId)
@@ -650,15 +650,15 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.MapTypeId);
 
             CreateTable(
-                "dbo.MapType",
-                c => new
-                {
-                    MapTypeId = c.Short(nullable: false, identity: true),
-                    MapTypeName = c.String(),
-                    PotionDelay = c.Short(nullable: false),
-                    RespawnMapTypeId = c.Long(),
-                    ReturnMapTypeId = c.Long()
-                })
+                    "dbo.MapType",
+                    c => new
+                    {
+                        MapTypeId = c.Short(false, true),
+                        MapTypeName = c.String(),
+                        PotionDelay = c.Short(false),
+                        RespawnMapTypeId = c.Long(),
+                        ReturnMapTypeId = c.Long()
+                    })
                 .PrimaryKey(t => t.MapTypeId)
                 .ForeignKey("dbo.RespawnMapType", t => t.RespawnMapTypeId)
                 .ForeignKey("dbo.RespawnMapType", t => t.ReturnMapTypeId)
@@ -666,30 +666,30 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.ReturnMapTypeId);
 
             CreateTable(
-                "dbo.RespawnMapType",
-                c => new
-                {
-                    RespawnMapTypeId = c.Long(nullable: false),
-                    DefaultMapId = c.Short(nullable: false),
-                    DefaultX = c.Short(nullable: false),
-                    DefaultY = c.Short(nullable: false),
-                    Name = c.String(maxLength: 255)
-                })
+                    "dbo.RespawnMapType",
+                    c => new
+                    {
+                        RespawnMapTypeId = c.Long(false),
+                        DefaultMapId = c.Short(false),
+                        DefaultX = c.Short(false),
+                        DefaultY = c.Short(false),
+                        Name = c.String(maxLength: 255)
+                    })
                 .PrimaryKey(t => t.RespawnMapTypeId)
                 .ForeignKey("dbo.Map", t => t.DefaultMapId)
                 .Index(t => t.DefaultMapId);
 
             CreateTable(
-                "dbo.Respawn",
-                c => new
-                {
-                    RespawnId = c.Long(nullable: false, identity: true),
-                    CharacterId = c.Long(nullable: false),
-                    MapId = c.Short(nullable: false),
-                    RespawnMapTypeId = c.Long(nullable: false),
-                    X = c.Short(nullable: false),
-                    Y = c.Short(nullable: false)
-                })
+                    "dbo.Respawn",
+                    c => new
+                    {
+                        RespawnId = c.Long(false, true),
+                        CharacterId = c.Long(false),
+                        MapId = c.Short(false),
+                        RespawnMapTypeId = c.Long(false),
+                        X = c.Short(false),
+                        Y = c.Short(false)
+                    })
                 .PrimaryKey(t => t.RespawnId)
                 .ForeignKey("dbo.Map", t => t.MapId)
                 .ForeignKey("dbo.RespawnMapType", t => t.RespawnMapTypeId)
@@ -699,19 +699,19 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.RespawnMapTypeId);
 
             CreateTable(
-                "dbo.Portal",
-                c => new
-                {
-                    PortalId = c.Int(nullable: false, identity: true),
-                    DestinationMapId = c.Short(nullable: false),
-                    DestinationX = c.Short(nullable: false),
-                    DestinationY = c.Short(nullable: false),
-                    IsDisabled = c.Boolean(nullable: false),
-                    SourceMapId = c.Short(nullable: false),
-                    SourceX = c.Short(nullable: false),
-                    SourceY = c.Short(nullable: false),
-                    Type = c.Short(nullable: false)
-                })
+                    "dbo.Portal",
+                    c => new
+                    {
+                        PortalId = c.Int(false, true),
+                        DestinationMapId = c.Short(false),
+                        DestinationX = c.Short(false),
+                        DestinationY = c.Short(false),
+                        IsDisabled = c.Boolean(false),
+                        SourceMapId = c.Short(false),
+                        SourceX = c.Short(false),
+                        SourceY = c.Short(false),
+                        Type = c.Short(false)
+                    })
                 .PrimaryKey(t => t.PortalId)
                 .ForeignKey("dbo.Map", t => t.DestinationMapId)
                 .ForeignKey("dbo.Map", t => t.SourceMapId)
@@ -719,16 +719,16 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.SourceMapId);
 
             CreateTable(
-                "dbo.Teleporter",
-                c => new
-                {
-                    TeleporterId = c.Short(nullable: false, identity: true),
-                    Index = c.Short(nullable: false),
-                    MapId = c.Short(nullable: false),
-                    MapNpcId = c.Int(nullable: false),
-                    MapX = c.Short(nullable: false),
-                    MapY = c.Short(nullable: false)
-                })
+                    "dbo.Teleporter",
+                    c => new
+                    {
+                        TeleporterId = c.Short(false, true),
+                        Index = c.Short(false),
+                        MapId = c.Short(false),
+                        MapNpcId = c.Int(false),
+                        MapX = c.Short(false),
+                        MapY = c.Short(false)
+                    })
                 .PrimaryKey(t => t.TeleporterId)
                 .ForeignKey("dbo.Map", t => t.MapId)
                 .ForeignKey("dbo.MapNpc", t => t.MapNpcId)
@@ -736,32 +736,32 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.MapNpcId);
 
             CreateTable(
-                "dbo.Shop",
-                c => new
-                {
-                    ShopId = c.Int(nullable: false, identity: true),
-                    MapNpcId = c.Int(nullable: false),
-                    MenuType = c.Byte(nullable: false),
-                    Name = c.String(maxLength: 255),
-                    ShopType = c.Byte(nullable: false)
-                })
+                    "dbo.Shop",
+                    c => new
+                    {
+                        ShopId = c.Int(false, true),
+                        MapNpcId = c.Int(false),
+                        MenuType = c.Byte(false),
+                        Name = c.String(maxLength: 255),
+                        ShopType = c.Byte(false)
+                    })
                 .PrimaryKey(t => t.ShopId)
                 .ForeignKey("dbo.MapNpc", t => t.MapNpcId)
                 .Index(t => t.MapNpcId);
 
             CreateTable(
-                "dbo.ShopItem",
-                c => new
-                {
-                    ShopItemId = c.Int(nullable: false, identity: true),
-                    Color = c.Byte(nullable: false),
-                    ItemVNum = c.Short(nullable: false),
-                    Rare = c.Short(nullable: false),
-                    ShopId = c.Int(nullable: false),
-                    Slot = c.Byte(nullable: false),
-                    Type = c.Byte(nullable: false),
-                    Upgrade = c.Byte(nullable: false)
-                })
+                    "dbo.ShopItem",
+                    c => new
+                    {
+                        ShopItemId = c.Int(false, true),
+                        Color = c.Byte(false),
+                        ItemVNum = c.Short(false),
+                        Rare = c.Short(false),
+                        ShopId = c.Int(false),
+                        Slot = c.Byte(false),
+                        Type = c.Byte(false),
+                        Upgrade = c.Byte(false)
+                    })
                 .PrimaryKey(t => t.ShopItemId)
                 .ForeignKey("dbo.Shop", t => t.ShopId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
@@ -769,15 +769,15 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.ShopId);
 
             CreateTable(
-                "dbo.ShopSkill",
-                c => new
-                {
-                    ShopSkillId = c.Int(nullable: false, identity: true),
-                    ShopId = c.Int(nullable: false),
-                    SkillVNum = c.Short(nullable: false),
-                    Slot = c.Byte(nullable: false),
-                    Type = c.Byte(nullable: false)
-                })
+                    "dbo.ShopSkill",
+                    c => new
+                    {
+                        ShopSkillId = c.Int(false, true),
+                        ShopId = c.Int(false),
+                        SkillVNum = c.Short(false),
+                        Slot = c.Byte(false),
+                        Type = c.Byte(false)
+                    })
                 .PrimaryKey(t => t.ShopSkillId)
                 .ForeignKey("dbo.Shop", t => t.ShopId)
                 .ForeignKey("dbo.Skill", t => t.SkillVNum)
@@ -785,14 +785,14 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.SkillVNum);
 
             CreateTable(
-                "dbo.RecipeItem",
-                c => new
-                {
-                    RecipeItemId = c.Short(nullable: false, identity: true),
-                    Amount = c.Byte(nullable: false),
-                    ItemVNum = c.Short(nullable: false),
-                    RecipeId = c.Short(nullable: false)
-                })
+                    "dbo.RecipeItem",
+                    c => new
+                    {
+                        RecipeItemId = c.Short(false, true),
+                        Amount = c.Byte(false),
+                        ItemVNum = c.Short(false),
+                        RecipeId = c.Short(false)
+                    })
                 .PrimaryKey(t => t.RecipeItemId)
                 .ForeignKey("dbo.Recipe", t => t.RecipeId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
@@ -800,58 +800,58 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.RecipeId);
 
             CreateTable(
-                "dbo.FamilyCharacter",
-                c => new
-                {
-                    FamilyCharacterId = c.Long(nullable: false, identity: true),
-                    Authority = c.Byte(nullable: false),
-                    DailyMessage = c.String(maxLength: 255),
-                    Experience = c.Int(nullable: false),
-                    FamilyId = c.Long(nullable: false),
-                    JoinDate = c.DateTime(nullable: false),
-                    Rank = c.Byte(nullable: false)
-                })
+                    "dbo.FamilyCharacter",
+                    c => new
+                    {
+                        FamilyCharacterId = c.Long(false, true),
+                        Authority = c.Byte(false),
+                        DailyMessage = c.String(maxLength: 255),
+                        Experience = c.Int(false),
+                        FamilyId = c.Long(false),
+                        JoinDate = c.DateTime(false),
+                        Rank = c.Byte(false)
+                    })
                 .PrimaryKey(t => t.FamilyCharacterId)
                 .ForeignKey("dbo.Family", t => t.FamilyId)
                 .Index(t => t.FamilyId);
 
             CreateTable(
-                "dbo.Family",
-                c => new
-                {
-                    FamilyId = c.Long(nullable: false, identity: true),
-                    FamilyExperience = c.Int(nullable: false),
-                    FamilyLevel = c.Byte(nullable: false),
-                    FamilyMessage = c.String(maxLength: 255),
-                    MaxSize = c.Byte(nullable: false),
-                    Name = c.String(maxLength: 255),
-                    Size = c.Byte(nullable: false)
-                })
+                    "dbo.Family",
+                    c => new
+                    {
+                        FamilyId = c.Long(false, true),
+                        FamilyExperience = c.Int(false),
+                        FamilyLevel = c.Byte(false),
+                        FamilyMessage = c.String(maxLength: 255),
+                        MaxSize = c.Byte(false),
+                        Name = c.String(maxLength: 255),
+                        Size = c.Byte(false)
+                    })
                 .PrimaryKey(t => t.FamilyId);
 
             CreateTable(
-                "dbo.FamilyLog",
-                c => new
-                {
-                    FamilyLogId = c.Long(nullable: false, identity: true),
-                    FamilyId = c.Long(nullable: false)
-                })
+                    "dbo.FamilyLog",
+                    c => new
+                    {
+                        FamilyLogId = c.Long(false, true),
+                        FamilyId = c.Long(false)
+                    })
                 .PrimaryKey(t => t.FamilyLogId)
                 .ForeignKey("dbo.Family", t => t.FamilyId)
                 .Index(t => t.FamilyId);
 
             CreateTable(
-                "dbo.GeneralLog",
-                c => new
-                {
-                    LogId = c.Long(nullable: false, identity: true),
-                    AccountId = c.Long(nullable: false),
-                    CharacterId = c.Long(),
-                    IpAddress = c.String(maxLength: 255),
-                    LogData = c.String(maxLength: 255),
-                    LogType = c.String(),
-                    Timestamp = c.DateTime(nullable: false)
-                })
+                    "dbo.GeneralLog",
+                    c => new
+                    {
+                        LogId = c.Long(false, true),
+                        AccountId = c.Long(false),
+                        CharacterId = c.Long(),
+                        IpAddress = c.String(maxLength: 255),
+                        LogData = c.String(maxLength: 255),
+                        LogType = c.String(),
+                        Timestamp = c.DateTime(false)
+                    })
                 .PrimaryKey(t => t.LogId)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
                 .ForeignKey("dbo.Account", t => t.AccountId)
@@ -859,34 +859,34 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.CharacterId);
 
             CreateTable(
-                "dbo.QuicklistEntry",
-                c => new
-                {
-                    Id = c.Guid(nullable: false),
-                    CharacterId = c.Long(nullable: false),
-                    Morph = c.Short(nullable: false),
-                    Pos = c.Short(nullable: false),
-                    Q1 = c.Short(nullable: false),
-                    Q2 = c.Short(nullable: false),
-                    Slot = c.Short(nullable: false),
-                    Type = c.Short(nullable: false)
-                })
+                    "dbo.QuicklistEntry",
+                    c => new
+                    {
+                        Id = c.Guid(false),
+                        CharacterId = c.Long(false),
+                        Morph = c.Short(false),
+                        Pos = c.Short(false),
+                        Q1 = c.Short(false),
+                        Q2 = c.Short(false),
+                        Slot = c.Short(false),
+                        Type = c.Short(false)
+                    })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
                 .Index(t => t.CharacterId);
 
             CreateTable(
-                "dbo.PenaltyLog",
-                c => new
-                {
-                    PenaltyLogId = c.Int(nullable: false, identity: true),
-                    AccountId = c.Long(nullable: false),
-                    AdminName = c.String(),
-                    DateEnd = c.DateTime(nullable: false),
-                    DateStart = c.DateTime(nullable: false),
-                    Penalty = c.Byte(nullable: false),
-                    Reason = c.String(maxLength: 255)
-                })
+                    "dbo.PenaltyLog",
+                    c => new
+                    {
+                        PenaltyLogId = c.Int(false, true),
+                        AccountId = c.Long(false),
+                        AdminName = c.String(),
+                        DateEnd = c.DateTime(false),
+                        DateStart = c.DateTime(false),
+                        Penalty = c.Byte(false),
+                        Reason = c.String(maxLength: 255)
+                    })
                 .PrimaryKey(t => t.PenaltyLogId)
                 .ForeignKey("dbo.Account", t => t.AccountId)
                 .Index(t => t.AccountId);

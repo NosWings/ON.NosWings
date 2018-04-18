@@ -9,11 +9,14 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public string Ip { get; set; }
+        [PacketIndex(0)]
+        public string Ip { get; set; }
 
-        [PacketIndex(1)] public short Port { get; set; }
+        [PacketIndex(1)]
+        public short Port { get; set; }
 
-        [PacketIndex(2)] public byte Slot { get; set; }
+        [PacketIndex(2)]
+        public byte Slot { get; set; }
 
         #endregion
     }

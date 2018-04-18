@@ -17,35 +17,35 @@ namespace OpenNos.GameObject.Helpers
 
         private BCard CellonToBcard(EquipmentOptionDTO option, short itemVnum)
         {
-            BCard bcard = new BCard();
+            var bcard = new BCard();
             switch (option.Type)
             {
-                case (byte) CellonType.Hp:
-                    bcard.Type = (byte) BCardType.CardType.MaxHPMP;
-                    bcard.SubType = (byte) AdditionalTypes.MaxHPMP.MaximumHPIncreased;
+                case (byte)CellonType.Hp:
+                    bcard.Type = (byte)BCardType.CardType.MaxHPMP;
+                    bcard.SubType = (byte)AdditionalTypes.MaxHPMP.MaximumHPIncreased;
                     bcard.FirstData = option.Value;
                     break;
-                case (byte) CellonType.Mp:
-                    bcard.Type = (byte) BCardType.CardType.MaxHPMP;
-                    bcard.SubType = (byte) AdditionalTypes.MaxHPMP.MaximumMPIncreased;
+                case (byte)CellonType.Mp:
+                    bcard.Type = (byte)BCardType.CardType.MaxHPMP;
+                    bcard.SubType = (byte)AdditionalTypes.MaxHPMP.MaximumMPIncreased;
                     bcard.FirstData = option.Value;
                     break;
-                case (byte) CellonType.HpRecovery:
-                    bcard.Type = (byte) BCardType.CardType.Recovery;
-                    bcard.SubType = (byte) AdditionalTypes.Recovery.HPRecoveryIncreased;
+                case (byte)CellonType.HpRecovery:
+                    bcard.Type = (byte)BCardType.CardType.Recovery;
+                    bcard.SubType = (byte)AdditionalTypes.Recovery.HPRecoveryIncreased;
                     bcard.FirstData = option.Value;
                     break;
-                case (byte) CellonType.MpRecovery:
-                    bcard.Type = (byte) BCardType.CardType.Recovery;
-                    bcard.SubType = (byte) AdditionalTypes.Recovery.MPRecoveryIncreased;
+                case (byte)CellonType.MpRecovery:
+                    bcard.Type = (byte)BCardType.CardType.Recovery;
+                    bcard.SubType = (byte)AdditionalTypes.Recovery.MPRecoveryIncreased;
                     bcard.FirstData = option.Value;
                     break;
-                case (byte) CellonType.MpConsumption:
+                case (byte)CellonType.MpConsumption:
                     //TODO FIND Correct Bcard or settle in the code.
                     break;
-                case (byte) CellonType.CriticalDamageDecrease:
-                    bcard.Type = (byte) BCardType.CardType.Critical;
-                    bcard.SubType = (byte) AdditionalTypes.Critical.DamageFromCriticalDecreased;
+                case (byte)CellonType.CriticalDamageDecrease:
+                    bcard.Type = (byte)BCardType.CardType.Critical;
+                    bcard.SubType = (byte)AdditionalTypes.Critical.DamageFromCriticalDecreased;
                     bcard.FirstData = option.Value;
                     break;
             }
@@ -65,19 +65,19 @@ namespace OpenNos.GameObject.Helpers
 
         public BCard ShellToBCards(EquipmentOptionDTO option, short itemVNum)
         {
-            BCard bCard = new BCard();
+            var bCard = new BCard();
             bCard.ItemVNum = itemVNum;
 
-            switch ((ShellOptionType) option.Type)
+            switch ((ShellOptionType)option.Type)
             {
                 case ShellOptionType.IncreaseDamage:
-                    bCard.Type = (byte) BCardType.CardType.MultAttack;
-                    bCard.SubType = (byte) AdditionalTypes.MultAttack.AllAttackIncreased;
+                    bCard.Type = (byte)BCardType.CardType.MultAttack;
+                    bCard.SubType = (byte)AdditionalTypes.MultAttack.AllAttackIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.SDamagePercentage:
-                    bCard.Type = (byte) BCardType.CardType.Damage;
-                    bCard.SubType = (byte) AdditionalTypes.Damage.DamageIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Damage;
+                    bCard.SubType = (byte)AdditionalTypes.Damage.DamageIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.MinorBleeding:
@@ -117,43 +117,43 @@ namespace OpenNos.GameObject.Helpers
                     /* TO BE DONE */
                     break;
                 case ShellOptionType.IncreaseCritChance:
-                    bCard.Type = (byte) BCardType.CardType.Critical;
-                    bCard.SubType = (byte) AdditionalTypes.Critical.InflictingIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Critical;
+                    bCard.SubType = (byte)AdditionalTypes.Critical.InflictingIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.IncreaseCritDamages:
-                    bCard.Type = (byte) BCardType.CardType.Critical;
-                    bCard.SubType = (byte) AdditionalTypes.Critical.DamageFromCriticalIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Critical;
+                    bCard.SubType = (byte)AdditionalTypes.Critical.DamageFromCriticalIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.ProtectWandSkillInterruption:
-                    bCard.Type = (byte) BCardType.CardType.Casting;
-                    bCard.SubType = (byte) AdditionalTypes.Casting.InterruptCastingNegated;
+                    bCard.Type = (byte)BCardType.CardType.Casting;
+                    bCard.SubType = (byte)AdditionalTypes.Casting.InterruptCastingNegated;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.IncreaseFireElement:
-                    bCard.Type = (byte) BCardType.CardType.Element;
-                    bCard.SubType = (byte) AdditionalTypes.Element.FireIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Element;
+                    bCard.SubType = (byte)AdditionalTypes.Element.FireIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.IncreaseWaterElement:
-                    bCard.Type = (byte) BCardType.CardType.Element;
-                    bCard.SubType = (byte) AdditionalTypes.Element.WaterIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Element;
+                    bCard.SubType = (byte)AdditionalTypes.Element.WaterIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.IncreaseLightElement:
-                    bCard.Type = (byte) BCardType.CardType.Element;
-                    bCard.SubType = (byte) AdditionalTypes.Element.LightIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Element;
+                    bCard.SubType = (byte)AdditionalTypes.Element.LightIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.IncreaseDarknessElement:
-                    bCard.Type = (byte) BCardType.CardType.Element;
-                    bCard.SubType = (byte) AdditionalTypes.Element.DarkIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Element;
+                    bCard.SubType = (byte)AdditionalTypes.Element.DarkIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.SIncreaseAllElements:
-                    bCard.Type = (byte) BCardType.CardType.Element;
-                    bCard.SubType = (byte) AdditionalTypes.Element.AllIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Element;
+                    bCard.SubType = (byte)AdditionalTypes.Element.AllIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.ReduceMpConsumption:
@@ -163,48 +163,48 @@ namespace OpenNos.GameObject.Helpers
                      */
                     break;
                 case ShellOptionType.HpRegenerationOnKill:
-                    bCard.Type = (byte) BCardType.CardType.RecoveryAndDamagePercent;
-                    bCard.SubType = (byte) AdditionalTypes.RecoveryAndDamagePercent.HPRecovered;
+                    bCard.Type = (byte)BCardType.CardType.RecoveryAndDamagePercent;
+                    bCard.SubType = (byte)AdditionalTypes.RecoveryAndDamagePercent.HPRecovered;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.MpRegenerationOnKill:
-                    bCard.Type = (byte) BCardType.CardType.RecoveryAndDamagePercent;
-                    bCard.SubType = (byte) AdditionalTypes.RecoveryAndDamagePercent.MPRecovered;
+                    bCard.Type = (byte)BCardType.CardType.RecoveryAndDamagePercent;
+                    bCard.SubType = (byte)AdditionalTypes.RecoveryAndDamagePercent.MPRecovered;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.AttackSl:
-                    bCard.Type = (byte) BCardType.CardType.SPSL;
-                    bCard.SubType = (byte) AdditionalTypes.SPSL.Attack;
+                    bCard.Type = (byte)BCardType.CardType.SPSL;
+                    bCard.SubType = (byte)AdditionalTypes.SPSL.Attack;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.DefenseSl:
-                    bCard.Type = (byte) BCardType.CardType.SPSL;
-                    bCard.SubType = (byte) AdditionalTypes.SPSL.Defense;
+                    bCard.Type = (byte)BCardType.CardType.SPSL;
+                    bCard.SubType = (byte)AdditionalTypes.SPSL.Defense;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.ElementSl:
-                    bCard.Type = (byte) BCardType.CardType.SPSL;
-                    bCard.SubType = (byte) AdditionalTypes.SPSL.Element;
+                    bCard.Type = (byte)BCardType.CardType.SPSL;
+                    bCard.SubType = (byte)AdditionalTypes.SPSL.Element;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.HpMpSl:
-                    bCard.Type = (byte) BCardType.CardType.SPSL;
-                    bCard.SubType = (byte) AdditionalTypes.SPSL.HPMP;
+                    bCard.Type = (byte)BCardType.CardType.SPSL;
+                    bCard.SubType = (byte)AdditionalTypes.SPSL.HPMP;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.SGlobalSl:
-                    bCard.Type = (byte) BCardType.CardType.SPSL;
-                    bCard.SubType = (byte) AdditionalTypes.SPSL.All;
+                    bCard.Type = (byte)BCardType.CardType.SPSL;
+                    bCard.SubType = (byte)AdditionalTypes.SPSL.All;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.GoldPercentage:
-                    bCard.Type = (byte) BCardType.CardType.Item;
-                    bCard.SubType = (byte) AdditionalTypes.Item.IncreaseEarnedGold;
+                    bCard.Type = (byte)BCardType.CardType.Item;
+                    bCard.SubType = (byte)AdditionalTypes.Item.IncreaseEarnedGold;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.XpPercentage:
-                    bCard.Type = (byte) BCardType.CardType.Item;
-                    bCard.SubType = (byte) AdditionalTypes.Item.EXPIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Item;
+                    bCard.SubType = (byte)AdditionalTypes.Item.EXPIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.JobXpPercentage:
@@ -214,8 +214,8 @@ namespace OpenNos.GameObject.Helpers
                      */
                     break;
                 case ShellOptionType.PvpDamagePercentage:
-                    bCard.Type = (byte) BCardType.CardType.SpecialisationBuffResistance;
-                    bCard.SubType = (byte) AdditionalTypes.SpecialisationBuffResistance.IncreaseDamageInPVP;
+                    bCard.Type = (byte)BCardType.CardType.SpecialisationBuffResistance;
+                    bCard.SubType = (byte)AdditionalTypes.SpecialisationBuffResistance.IncreaseDamageInPVP;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.PvpEnemyDefenseDecreased:
@@ -261,33 +261,33 @@ namespace OpenNos.GameObject.Helpers
                     /* TO BE DONE */
                     break;
                 case ShellOptionType.IncreasePrecision:
-                    bCard.Type = (byte) BCardType.CardType.Target;
-                    bCard.SubType = (byte) AdditionalTypes.Target.AllHitRateIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Target;
+                    bCard.SubType = (byte)AdditionalTypes.Target.AllHitRateIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.IncreaseConcentration:
-                    bCard.Type = (byte) BCardType.CardType.Target;
-                    bCard.SubType = (byte) AdditionalTypes.Target.MagicalConcentrationIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Target;
+                    bCard.SubType = (byte)AdditionalTypes.Target.MagicalConcentrationIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.CloseCombatDefense:
-                    bCard.Type = (byte) BCardType.CardType.MultDefence;
-                    bCard.SubType = (byte) AdditionalTypes.MultDefence.MeleeDefenceIncreased;
+                    bCard.Type = (byte)BCardType.CardType.MultDefence;
+                    bCard.SubType = (byte)AdditionalTypes.MultDefence.MeleeDefenceIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.LongRangeDefense:
-                    bCard.Type = (byte) BCardType.CardType.MultDefence;
-                    bCard.SubType = (byte) AdditionalTypes.MultDefence.RangedDefenceIncreased;
+                    bCard.Type = (byte)BCardType.CardType.MultDefence;
+                    bCard.SubType = (byte)AdditionalTypes.MultDefence.RangedDefenceIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.MagicalDefense:
-                    bCard.Type = (byte) BCardType.CardType.MultDefence;
-                    bCard.SubType = (byte) AdditionalTypes.MultDefence.MagicalDefenceIncreased;
+                    bCard.Type = (byte)BCardType.CardType.MultDefence;
+                    bCard.SubType = (byte)AdditionalTypes.MultDefence.MagicalDefenceIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.SDefenseAllPercentage:
-                    bCard.Type = (byte) BCardType.CardType.Defence;
-                    bCard.SubType = (byte) AdditionalTypes.MultDefence.AllDefenceIncreased;
+                    bCard.Type = (byte)BCardType.CardType.Defence;
+                    bCard.SubType = (byte)AdditionalTypes.MultDefence.AllDefenceIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.ReducedMinorBleeding:
@@ -348,28 +348,28 @@ namespace OpenNos.GameObject.Helpers
                     /* TO BE DONE */
                     break;
                 case ShellOptionType.FireResistanceIncrease:
-                    bCard.Type = (byte) BCardType.CardType.ElementResistance;
-                    bCard.SubType = (byte) AdditionalTypes.ElementResistance.FireIncreased;
+                    bCard.Type = (byte)BCardType.CardType.ElementResistance;
+                    bCard.SubType = (byte)AdditionalTypes.ElementResistance.FireIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.WaterResistanceIncrease:
-                    bCard.Type = (byte) BCardType.CardType.ElementResistance;
-                    bCard.SubType = (byte) AdditionalTypes.ElementResistance.WaterIncreased;
+                    bCard.Type = (byte)BCardType.CardType.ElementResistance;
+                    bCard.SubType = (byte)AdditionalTypes.ElementResistance.WaterIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.LightResistanceIncrease:
-                    bCard.Type = (byte) BCardType.CardType.ElementResistance;
-                    bCard.SubType = (byte) AdditionalTypes.ElementResistance.LightIncreased;
+                    bCard.Type = (byte)BCardType.CardType.ElementResistance;
+                    bCard.SubType = (byte)AdditionalTypes.ElementResistance.LightIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.DarkResistanceIncrease:
-                    bCard.Type = (byte) BCardType.CardType.ElementResistance;
-                    bCard.SubType = (byte) AdditionalTypes.ElementResistance.DarkIncreased;
+                    bCard.Type = (byte)BCardType.CardType.ElementResistance;
+                    bCard.SubType = (byte)AdditionalTypes.ElementResistance.DarkIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.SIncreaseAllResistance:
-                    bCard.Type = (byte) BCardType.CardType.ElementResistance;
-                    bCard.SubType = (byte) AdditionalTypes.ElementResistance.AllIncreased;
+                    bCard.Type = (byte)BCardType.CardType.ElementResistance;
+                    bCard.SubType = (byte)AdditionalTypes.ElementResistance.AllIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.DignityLossReduced:
@@ -385,26 +385,26 @@ namespace OpenNos.GameObject.Helpers
                     /* TO BE DONE */
                     break;
                 case ShellOptionType.PvpDefensePercentage:
-                    bCard.Type = (byte) BCardType.CardType.SpecialisationBuffResistance;
-                    bCard.SubType = (byte) AdditionalTypes.SpecialisationBuffResistance.DecreaseDamageInPVP;
+                    bCard.Type = (byte)BCardType.CardType.SpecialisationBuffResistance;
+                    bCard.SubType = (byte)AdditionalTypes.SpecialisationBuffResistance.DecreaseDamageInPVP;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.PvpDodgeClose:
-                    bCard.Type = (byte) BCardType.CardType.DodgeAndDefencePercent;
-                    bCard.SubType = (byte) AdditionalTypes.DodgeAndDefencePercent.DodgingMeleeIncreased;
+                    bCard.Type = (byte)BCardType.CardType.DodgeAndDefencePercent;
+                    bCard.SubType = (byte)AdditionalTypes.DodgeAndDefencePercent.DodgingMeleeIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.PvpDodgeRanged:
-                    bCard.Type = (byte) BCardType.CardType.DodgeAndDefencePercent;
-                    bCard.SubType = (byte) AdditionalTypes.DodgeAndDefencePercent.DodgingRangedIncreased;
+                    bCard.Type = (byte)BCardType.CardType.DodgeAndDefencePercent;
+                    bCard.SubType = (byte)AdditionalTypes.DodgeAndDefencePercent.DodgingRangedIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.PvpDodgeMagic:
                     /* TO BE DONE */
                     break;
                 case ShellOptionType.SPvpDodgeAll:
-                    bCard.Type = (byte) BCardType.CardType.DodgeAndDefencePercent;
-                    bCard.SubType = (byte) AdditionalTypes.DodgeAndDefencePercent.DodgeIncreased;
+                    bCard.Type = (byte)BCardType.CardType.DodgeAndDefencePercent;
+                    bCard.SubType = (byte)AdditionalTypes.DodgeAndDefencePercent.DodgeIncreased;
                     bCard.FirstData = option.Value;
                     break;
                 case ShellOptionType.PvpMpProtect:
@@ -445,10 +445,7 @@ namespace OpenNos.GameObject.Helpers
 
         private static EquipmentOptionHelper _instance;
 
-        public static EquipmentOptionHelper Instance
-        {
-            get { return _instance ?? (_instance = new EquipmentOptionHelper()); }
-        }
+        public static EquipmentOptionHelper Instance => _instance ?? (_instance = new EquipmentOptionHelper());
 
         #endregion
     }

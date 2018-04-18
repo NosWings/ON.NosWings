@@ -42,30 +42,31 @@ namespace NosSharp.Parser
             {
                 RegisterMappings();
             }
-            ConsoleKeyInfo key = new ConsoleKeyInfo();
+
+            var key = new ConsoleKeyInfo();
             Logger.Log.Warn(Language.Instance.GetMessageFromKey("NEED_TREE"));
-            System.Console.BackgroundColor = ConsoleColor.Blue;
-            System.Console.WriteLine(@"Root");
-            System.Console.ResetColor();
-            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Card.txt");
-            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Item.txt");
-            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_MapIDData.txt");
-            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_monster.txt");
-            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Skill.txt");
-            System.Console.WriteLine(@"-----packet.txt");
-            System.Console.WriteLine(@"-----Card.dat");
-            System.Console.WriteLine(@"-----Item.dat");
-            System.Console.WriteLine(@"-----MapIDData.dat");
-            System.Console.WriteLine(@"-----monster.dat");
-            System.Console.WriteLine(@"-----Skill.dat");
-            System.Console.WriteLine(@"-----quest.dat");
-            System.Console.WriteLine(@"-----qstprize.dat");
-            System.Console.BackgroundColor = ConsoleColor.Blue;
-            System.Console.WriteLine(@"-----map");
-            System.Console.ResetColor();
-            System.Console.WriteLine(@"----------0");
-            System.Console.WriteLine(@"----------1");
-            System.Console.WriteLine(@"----------...");
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.WriteLine(@"Root");
+            Console.ResetColor();
+            Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Card.txt");
+            Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Item.txt");
+            Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_MapIDData.txt");
+            Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_monster.txt");
+            Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Skill.txt");
+            Console.WriteLine(@"-----packet.txt");
+            Console.WriteLine(@"-----Card.dat");
+            Console.WriteLine(@"-----Item.dat");
+            Console.WriteLine(@"-----MapIDData.dat");
+            Console.WriteLine(@"-----monster.dat");
+            Console.WriteLine(@"-----Skill.dat");
+            Console.WriteLine(@"-----quest.dat");
+            Console.WriteLine(@"-----qstprize.dat");
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.WriteLine(@"-----map");
+            Console.ResetColor();
+            Console.WriteLine(@"----------0");
+            Console.WriteLine(@"----------1");
+            Console.WriteLine(@"----------...");
 
             try
             {
@@ -81,7 +82,8 @@ namespace NosSharp.Parser
                 {
                     folder = args.Aggregate(folder, (current, str) => current + str + " ");
                 }
-                ImportFactory factory = new ImportFactory(folder);
+
+                var factory = new ImportFactory(folder);
                 factory.ImportPackets();
 
                 if (key.KeyChar != 'n')
@@ -182,7 +184,7 @@ namespace NosSharp.Parser
                     {
                         factory.ImportSkills();
                     }
-                    
+
                     Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_MAPNPCS")} [Y/n]");
                     key = Console.ReadKey(true);
                     if (key.KeyChar != 'n')
@@ -231,19 +233,22 @@ namespace NosSharp.Parser
                     {
                         factory.ImportRecipe();
                     }
+
                     Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_HARDCODED_RECIPES")} [Y/n]");
                     key = Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportHardcodedItemRecipes();
                     }
-                    System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_QUESTS")} [Y/n]");
-                    key = System.Console.ReadKey(true);
+
+                    Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_QUESTS")} [Y/n]");
+                    key = Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportQuests();
                     }
                 }
+
                 Console.WriteLine($@"{Language.Instance.GetMessageFromKey("DONE")}");
                 Thread.Sleep(5000);
             }

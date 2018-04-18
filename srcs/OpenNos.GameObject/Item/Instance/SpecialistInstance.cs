@@ -36,10 +36,7 @@ namespace OpenNos.GameObject.Item.Instance
 
         #region Instantiation
 
-        public SpecialistInstance()
-        {
-            _random = new Random();
-        }
+        public SpecialistInstance() => _random = new Random();
 
         public SpecialistInstance(Guid id)
         {
@@ -116,12 +113,8 @@ namespace OpenNos.GameObject.Item.Instance
 
         #region Methods
 
-        public string GeneratePslInfo()
-        {
-            // 1235.3 1237.4 1239.5 <= skills SkillVNum.Grade
-            return
-                $"pslinfo {Item.VNum} {Item.Element} {Item.ElementRate} {Item.LevelJobMinimum} {Item.Speed} {Item.FireResistance} {Item.WaterResistance} {Item.LightResistance} {Item.DarkResistance} 0.0 0.0 0.0";
-        }
+        public string GeneratePslInfo() =>
+            $"pslinfo {Item.VNum} {Item.Element} {Item.ElementRate} {Item.LevelJobMinimum} {Item.Speed} {Item.FireResistance} {Item.WaterResistance} {Item.LightResistance} {Item.DarkResistance} 0.0 0.0 0.0";
 
         public void RestorePoints(ClientSession session, SpecialistInstance specialistInstance)
         {
@@ -604,9 +597,9 @@ namespace OpenNos.GameObject.Item.Instance
             }
 
             slHit += session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                         (byte) AdditionalTypes.SPSL.Attack) +
-                     session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                         (byte) AdditionalTypes.SPSL.All);
+                    (byte)AdditionalTypes.SPSL.Attack) +
+                session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
+                    (byte)AdditionalTypes.SPSL.All);
 
             slHit = slHit > 100 ? 100 : slHit;
 
@@ -625,8 +618,8 @@ namespace OpenNos.GameObject.Item.Instance
 
             slDefence +=
                 session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                    (byte) AdditionalTypes.SPSL.Defense) +
-                session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.All);
+                    (byte)AdditionalTypes.SPSL.Defense) +
+                session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
             slDefence = slDefence > 100 ? 100 : slDefence;
 
@@ -645,8 +638,8 @@ namespace OpenNos.GameObject.Item.Instance
 
             slElement +=
                 session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                    (byte) AdditionalTypes.SPSL.Element) +
-                session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte) AdditionalTypes.SPSL.All);
+                    (byte)AdditionalTypes.SPSL.Element) +
+                session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL, (byte)AdditionalTypes.SPSL.All);
 
             slElement = slElement > 100 ? 100 : slElement;
 
@@ -664,9 +657,9 @@ namespace OpenNos.GameObject.Item.Instance
             }
 
             slHp += session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                        (byte) AdditionalTypes.SPSL.HPMP) +
-                    session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                        (byte) AdditionalTypes.SPSL.All);
+                    (byte)AdditionalTypes.SPSL.HPMP) +
+                session.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
+                    (byte)AdditionalTypes.SPSL.All);
 
             slHp = slHp > 100 ? 100 : slHp;
 
@@ -676,7 +669,7 @@ namespace OpenNos.GameObject.Item.Instance
         public string GenerateSlInfo()
         {
             int freepoint = CharacterHelper.Instance.SpPoint(SpLevel, Upgrade) - SlDamage - SlHP - SlElement -
-                            SlDefence;
+                SlDefence;
 
             int slHit = CharacterHelper.Instance.SlPoint(SlDamage, 0);
             int slDefence = CharacterHelper.Instance.SlPoint(SlDefence, 1);
@@ -691,30 +684,30 @@ namespace OpenNos.GameObject.Item.Instance
             if (CharacterSession != null)
             {
                 shellHit = CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                               (byte) AdditionalTypes.SPSL.Attack) +
-                           CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                               (byte) AdditionalTypes.SPSL.All);
+                        (byte)AdditionalTypes.SPSL.Attack) +
+                    CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
+                        (byte)AdditionalTypes.SPSL.All);
 
                 shellDefense = CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                                   (byte) AdditionalTypes.SPSL.Defense) +
-                               CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                                   (byte) AdditionalTypes.SPSL.All);
+                        (byte)AdditionalTypes.SPSL.Defense) +
+                    CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
+                        (byte)AdditionalTypes.SPSL.All);
 
                 shellElement = CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                                   (byte) AdditionalTypes.SPSL.Element) +
-                               CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                                   (byte) AdditionalTypes.SPSL.All);
+                        (byte)AdditionalTypes.SPSL.Element) +
+                    CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
+                        (byte)AdditionalTypes.SPSL.All);
 
                 shellHp = CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                              (byte) AdditionalTypes.SPSL.HPMP) +
-                          CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
-                              (byte) AdditionalTypes.SPSL.All);
+                        (byte)AdditionalTypes.SPSL.HPMP) +
+                    CharacterSession.Character.GetMostValueEquipmentBuff(BCardType.CardType.SPSL,
+                        (byte)AdditionalTypes.SPSL.All);
             }
 
             string skill = string.Empty;
             List<CharacterSkill> skillsSp = ServerManager.Instance.GetAllSkill()
-                .Where(ski => ski.Class == Item.Morph + 31 && ski.LevelMinimum <= SpLevel)
-                .Select(ski => new CharacterSkill {SkillVNum = ski.SkillVNum, CharacterId = CharacterId}).ToList();
+                .Where(ski => ski.Class == (Item.Morph + 31) && ski.LevelMinimum <= SpLevel)
+                .Select(ski => new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = CharacterId }).ToList();
             byte spdestroyed = 0;
             if (Rare == -2)
             {
@@ -753,10 +746,10 @@ namespace OpenNos.GameObject.Item.Instance
 
         public void PerfectSp()
         {
-            short[] upsuccess = {50, 40, 30, 20, 10};
+            short[] upsuccess = { 50, 40, 30, 20, 10 };
 
-            int[] goldprice = {5000, 10000, 20000, 50000, 100000};
-            short[] stoneprice = {1, 2, 3, 4, 5};
+            int[] goldprice = { 5000, 10000, 20000, 50000, 100000 };
+            short[] stoneprice = { 1, 2, 3, 4, 5 };
             short stonevnum;
             byte upmode = 1;
 
@@ -903,7 +896,7 @@ namespace OpenNos.GameObject.Item.Instance
                 return;
             }
 
-            SpecialistInstance specialist =
+            var specialist =
                 CharacterSession.Character.Inventory.LoadByItemInstance<SpecialistInstance>(Id);
 
             if (specialist == null)
@@ -914,7 +907,7 @@ namespace OpenNos.GameObject.Item.Instance
             int rnd = ServerManager.Instance.RandomNumber();
             if (rnd < upsuccess[upmode - 1])
             {
-                byte type = (byte) ServerManager.Instance.RandomNumber(0, 16), count = 1;
+                byte type = (byte)ServerManager.Instance.RandomNumber(0, 16), count = 1;
                 if (upmode == 4)
                 {
                     count = 2;
@@ -922,7 +915,7 @@ namespace OpenNos.GameObject.Item.Instance
 
                 if (upmode == 5)
                 {
-                    count = (byte) ServerManager.Instance.RandomNumber(3, 6);
+                    count = (byte)ServerManager.Instance.RandomNumber(3, 6);
                 }
 
                 CharacterSession.CurrentMapInstance.Broadcast(CharacterSession.Character.GenerateEff(3005),
@@ -1047,17 +1040,17 @@ namespace OpenNos.GameObject.Item.Instance
                 return;
             }
 
-            short[] upfail = {20, 25, 30, 40, 50, 60, 65, 70, 75, 80, 90, 93, 95, 97, 99};
-            short[] destroy = {0, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70};
+            short[] upfail = { 20, 25, 30, 40, 50, 60, 65, 70, 75, 80, 90, 93, 95, 97, 99 };
+            short[] destroy = { 0, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70 };
 
             int[] goldprice =
             {
                 200000, 200000, 200000, 200000, 200000, 500000, 500000, 500000, 500000, 500000, 1000000, 1000000,
                 1000000, 1000000, 1000000
             };
-            short[] feather = {3, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70};
-            short[] fullmoon = {1, 3, 5, 7, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30};
-            short[] soul = {2, 4, 6, 8, 10, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5};
+            short[] feather = { 3, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70 };
+            short[] fullmoon = { 1, 3, 5, 7, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
+            short[] soul = { 2, 4, 6, 8, 10, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
             const short featherVnum = 2282;
             const short fullmoonVnum = 1030;
             const short greenSoulVnum = 2283;
@@ -1308,7 +1301,7 @@ namespace OpenNos.GameObject.Item.Instance
             CharacterSession.Character.Inventory.RemoveItemAmount(featherVnum, feather[Upgrade]);
             CharacterSession.Character.Inventory.RemoveItemAmount(fullmoonVnum, fullmoon[Upgrade]);
 
-            WearableInstance wearable = CharacterSession.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
+            var wearable = CharacterSession.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
             ItemInstance inventory = CharacterSession.Character.Inventory.GetItemInstanceById(Id);
             int rnd = ServerManager.Instance.RandomNumber();
             if (rnd < destroy[Upgrade])

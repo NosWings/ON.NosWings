@@ -12,13 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using System.Collections.Generic;
+using System.Collections.Concurrent;
+using OpenNos.GameObject.Battle;
 using OpenNos.GameObject.Event;
 using OpenNos.GameObject.Map;
-using OpenNos.GameObject.Battle;
-using System.Collections.Concurrent;
-using System;
-
 
 namespace OpenNos.GameObject
 {
@@ -37,7 +34,7 @@ namespace OpenNos.GameObject
             IsBonusOrProtected = isBonusOrProtected;
             IsBossOrMate = isBossOrMate;
             IsHostile = isHostile;
-            SummonChance = (byte) (summonChance == 0 ? 100 : summonChance);
+            SummonChance = (byte)(summonChance == 0 ? 100 : summonChance);
             DeathEvents = new ConcurrentBag<EventContainer>();
             NoticingEvents = new ConcurrentBag<EventContainer>();
         }

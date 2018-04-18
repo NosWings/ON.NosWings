@@ -1,14 +1,13 @@
-﻿using OpenNos.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Entities;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using System;
-using System.Collections.Generic;
-using OpenNos.DAL.EF.DB;
-using System.Linq;
-using OpenNos.Data.Enums;
-using OpenNos.DAL.EF.Base;
-using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
@@ -22,7 +21,7 @@ namespace OpenNos.DAL.EF
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    foreach (var q in quests)
+                    foreach (QuestDTO q in quests)
                     {
                         if (context.Quest.Any(s => s.InfoId == q.InfoId))
                         {
@@ -36,6 +35,7 @@ namespace OpenNos.DAL.EF
                             Insert(q);
                         }
                     }
+
                     context.SaveChanges();
                 }
             }
@@ -54,9 +54,10 @@ namespace OpenNos.DAL.EF
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (QuestDTO quest in quests)
                     {
-                        Quest entity = _mapper.Map<Quest>(quest);
+                        var entity = _mapper.Map<Quest>(quest);
                         context.Quest.Add(entity);
                     }
+
                     context.Configuration.AutoDetectChangesEnabled = true;
                     context.SaveChanges();
                 }
@@ -74,6 +75,7 @@ namespace OpenNos.DAL.EF
                 _mapper.Map(newQuest, quest);
                 context.SaveChanges();
             }
+
             return _mapper.Map<QuestDTO>(quest);
         }
 
@@ -83,7 +85,7 @@ namespace OpenNos.DAL.EF
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    Quest entity = _mapper.Map<Quest>(quest);
+                    var entity = _mapper.Map<Quest>(quest);
                     context.Quest.Add(entity);
                     context.SaveChanges();
                     return _mapper.Map<QuestDTO>(quest);

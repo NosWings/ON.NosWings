@@ -60,7 +60,7 @@ namespace OpenNos.GameObject.Item
                     }
 
                     short slot = inv.Slot;
-                    InventoryType equipment = InventoryType.Wear;
+                    var equipment = InventoryType.Wear;
                     switch (option)
                     {
                         case 1:
@@ -101,11 +101,11 @@ namespace OpenNos.GameObject.Item
 
                         if (!delay &&
                             (EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80) ||
-                             EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit ||
-                             EquipmentSlot == EquipmentType.WeaponSkin))
+                                EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit ||
+                                EquipmentSlot == EquipmentType.WeaponSkin))
                         {
                             session.SendPacket(
-                                $"qna #u_i^1^{session.Character.CharacterId}^{(byte) itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
+                                $"qna #u_i^1^{session.Character.CharacterId}^{(byte)itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
                         }
 
@@ -131,21 +131,21 @@ namespace OpenNos.GameObject.Item
                     {
                         if (EquipmentSlot == EquipmentType.Sp &&
                             timeSpanSinceLastSpUsage <= session.Character.SpCooldown &&
-                            session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp,
+                            session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
                                 InventoryType.Specialist) != null)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
                                 string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"),
-                                    session.Character.SpCooldown - (int) Math.Round(timeSpanSinceLastSpUsage)), 0));
+                                    session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage)), 0));
                             return;
                         }
 
                         if (ItemType != ItemType.Weapon && ItemType != ItemType.Armor && ItemType != ItemType.Fashion &&
                             ItemType != ItemType.Jewelery && ItemType != ItemType.Specialist ||
                             LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) ||
-                            Sex != 0 && Sex != (byte) session.Character.Gender + 1
+                            Sex != 0 && Sex != ((byte)session.Character.Gender + 1)
                             || ItemType != ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots &&
-                            EquipmentSlot != EquipmentType.Gloves && (Class >> (byte) session.Character.Class & 1) != 1)
+                            EquipmentSlot != EquipmentType.Gloves && (Class >> (byte)session.Character.Class & 1) != 1)
                         {
                             session.SendPacket(
                                 session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"),
@@ -155,9 +155,9 @@ namespace OpenNos.GameObject.Item
 
                         if (session.Character.UseSp)
                         {
-                            SpecialistInstance sp =
+                            var sp =
                                 session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(
-                                    (byte) EquipmentType.Sp, equipment);
+                                    (byte)EquipmentType.Sp, equipment);
 
                             if (sp != null && sp.Item.Element != 0 && EquipmentSlot == EquipmentType.Fairy &&
                                 Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
@@ -257,7 +257,7 @@ namespace OpenNos.GameObject.Item
                     }
 
                     ItemInstance currentlyEquippedItem =
-                        session.Character.Inventory.LoadBySlotAndType((short) EquipmentSlot, equipment);
+                        session.Character.Inventory.LoadBySlotAndType((short)EquipmentSlot, equipment);
 
                     if (currentlyEquippedItem == null)
                     {
@@ -280,8 +280,8 @@ namespace OpenNos.GameObject.Item
 
                     if (inv is WearableInstance wearableInstance)
                     {
-                        SpecialistInstance specialistInstance =
-                            session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp,
+                        var specialistInstance =
+                            session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
                                 InventoryType.Wear);
 
                         if (wearableInstance.EquipmentOptions != null)
@@ -293,14 +293,14 @@ namespace OpenNos.GameObject.Item
                                 case ItemType.Jewelery:
                                     switch (wearableInstance.Slot)
                                     {
-                                        case (byte) EquipmentType.Armor:
+                                        case (byte)EquipmentType.Armor:
                                             session.Character.Inventory.Armor = wearableInstance;
                                             EquipmentOptionHelper.Instance
                                                 .ShellToBCards(wearableInstance.EquipmentOptions,
                                                     wearableInstance.ItemVNum)
                                                 .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
                                             break;
-                                        case (byte) EquipmentType.MainWeapon:
+                                        case (byte)EquipmentType.MainWeapon:
                                             session.Character.Inventory.PrimaryWeapon = wearableInstance;
                                             EquipmentOptionHelper.Instance
                                                 .ShellToBCards(wearableInstance.EquipmentOptions,
@@ -308,7 +308,7 @@ namespace OpenNos.GameObject.Item
                                                 .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
                                             specialistInstance?.RestorePoints(session, specialistInstance);
                                             break;
-                                        case (byte) EquipmentType.SecondaryWeapon:
+                                        case (byte)EquipmentType.SecondaryWeapon:
                                             session.Character.Inventory.SecondaryWeapon = wearableInstance;
                                             EquipmentOptionHelper.Instance
                                                 .ShellToBCards(wearableInstance.EquipmentOptions,
@@ -316,9 +316,9 @@ namespace OpenNos.GameObject.Item
                                                 .ForEach(s => session.Character.BattleEntity.StaticBcards.Add(s));
                                             specialistInstance?.RestorePoints(session, specialistInstance);
                                             break;
-                                        case (byte) EquipmentType.Ring:
-                                        case (byte) EquipmentType.Necklace:
-                                        case (byte) EquipmentType.Bracelet:
+                                        case (byte)EquipmentType.Ring:
+                                        case (byte)EquipmentType.Necklace:
+                                        case (byte)EquipmentType.Bracelet:
                                             EquipmentOptionHelper.Instance
                                                 .CellonToBCards(wearableInstance.EquipmentOptions,
                                                     wearableInstance.ItemVNum)
@@ -341,9 +341,9 @@ namespace OpenNos.GameObject.Item
                         switch (EquipmentSlot)
                         {
                             case EquipmentType.Fairy:
-                                WearableInstance fairy =
+                                var fairy =
                                     session.Character.Inventory.LoadBySlotAndType<WearableInstance>(
-                                        (byte) EquipmentType.Fairy, equipment);
+                                        (byte)EquipmentType.Fairy, equipment);
                                 session.SendPacket(session.Character.GenerateSay(
                                     string.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP,
                                         CharacterHelper.LoadFairyXpData(fairy.ElementRate + fairy.Item.ElementRate)),

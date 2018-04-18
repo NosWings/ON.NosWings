@@ -12,22 +12,22 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
-using System;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 {
     /// <summary>
-    /// Represents a communication channel. A communication channel is used to communicate
-    /// (send/receive messages) with a remote application.
+    ///     Represents a communication channel. A communication channel is used to communicate
+    ///     (send/receive messages) with a remote application.
     /// </summary>
     public interface ICommunicationChannel : IMessenger
     {
         #region Events
 
         /// <summary>
-        /// This event is raised when client disconnected from server.
+        ///     This event is raised when client disconnected from server.
         /// </summary>
         event EventHandler Disconnected;
 
@@ -36,12 +36,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         #region Properties
 
         /// <summary>
-        /// Gets the current communication state.
+        ///     Gets the current communication state.
         /// </summary>
         CommunicationStates CommunicationState { get; }
 
         /// <summary>
-        /// Gets endpoint of remote application.
+        ///     Gets endpoint of remote application.
         /// </summary>
         ScsEndPoint RemoteEndPoint { get; }
 
@@ -50,12 +50,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         #region Methods
 
         /// <summary>
-        /// Closes messenger.
+        ///     Closes messenger.
         /// </summary>
         void Disconnect();
 
         /// <summary>
-        /// Starts the communication with remote application.
+        ///     Starts the communication with remote application.
         /// </summary>
         void Start();
 

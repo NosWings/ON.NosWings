@@ -12,15 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Master.Library.Client;
-using OpenNos.Master.Library.Data;
 using System;
 using System.Collections.Generic;
 using NosSharp.Enums;
+using OpenNos.Data;
+using OpenNos.DAL;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
+using OpenNos.Master.Library.Client;
+using OpenNos.Master.Library.Data;
 
 namespace OpenNos.GameObject
 {
@@ -28,10 +28,7 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public Family()
-        {
-            FamilyCharacters = new List<FamilyCharacter>();
-        }
+        public Family() => FamilyCharacters = new List<FamilyCharacter>();
 
         #endregion
 
@@ -93,7 +90,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case FamilyLogType.AuthorityChanged:
-                    value = $"{characterName}|{(byte) authority}|{characterName2}";
+                    value = $"{characterName}|{(byte)authority}|{characterName2}";
                     break;
 
                 case FamilyLogType.FamilyManaged:
@@ -105,7 +102,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case FamilyLogType.RightChanged:
-                    value = $"{characterName}|{(byte) authority}|{righttype}|{rightvalue}";
+                    value = $"{characterName}|{(byte)authority}|{righttype}|{rightvalue}";
                     break;
 
                 case FamilyLogType.WareHouseAdded:
@@ -114,7 +111,7 @@ namespace OpenNos.GameObject
                     break;
             }
 
-            FamilyLogDTO log = new FamilyLogDTO
+            var log = new FamilyLogDTO
             {
                 FamilyId = FamilyId,
                 FamilyLogData = value,
@@ -123,7 +120,7 @@ namespace OpenNos.GameObject
             };
             DaoFactory.FamilyLogDao.InsertOrUpdate(ref log);
             ServerManager.Instance.FamilyRefresh(FamilyId);
-            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage()
+            CommunicationServiceClient.Instance.SendMessageToCharacter(new SCSCharacterMessage
             {
                 DestinationCharacterId = FamilyId,
                 SourceCharacterId = 0,
@@ -135,7 +132,7 @@ namespace OpenNos.GameObject
 
         internal Family DeepCopy()
         {
-            Family clonedCharacter = (Family) MemberwiseClone();
+            var clonedCharacter = (Family)MemberwiseClone();
             return clonedCharacter;
         }
 

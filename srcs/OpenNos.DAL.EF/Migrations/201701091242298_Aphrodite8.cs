@@ -15,9 +15,9 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Up()
         {
-            AddColumn("dbo.BazaarItem", "MedalUsed", c => c.Boolean(nullable: false));
-            AddColumn("dbo.BazaarItem", "IsPackage", c => c.Boolean(nullable: false));
-            AddColumn("dbo.BazaarItem", "Amount", c => c.Byte(nullable: false));
+            AddColumn("dbo.BazaarItem", "MedalUsed", c => c.Boolean(false));
+            AddColumn("dbo.BazaarItem", "IsPackage", c => c.Boolean(false));
+            AddColumn("dbo.BazaarItem", "Amount", c => c.Byte(false));
         }
 
         #endregion

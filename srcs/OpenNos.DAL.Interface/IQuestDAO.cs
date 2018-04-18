@@ -1,5 +1,5 @@
-﻿using OpenNos.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenNos.Data;
 
 namespace OpenNos.DAL.Interface
 {

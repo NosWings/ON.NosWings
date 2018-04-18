@@ -20,7 +20,7 @@ using NosSharp.Enums;
 namespace OpenNos.DAL.EF.Entities
 {
     /// <summary>
-    /// Do Not forget to change Mapping in Item GO when changing this class
+    ///     Do Not forget to change Mapping in Item GO when changing this class
     /// </summary>
     public class Item
     {

@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$MapDance", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class MapDancePacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$MapDance";
-        }
+        public static string ReturnHelp() => "$MapDance";
     }
 }

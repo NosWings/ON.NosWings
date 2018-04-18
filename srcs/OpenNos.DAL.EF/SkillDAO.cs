@@ -12,16 +12,16 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -38,9 +38,10 @@ namespace OpenNos.DAL.EF
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (SkillDTO skill in skills)
                     {
-                        Skill entity = _mapper.Map<Skill>(skill);
+                        var entity = _mapper.Map<Skill>(skill);
                         context.Skill.Add(entity);
                     }
+
                     context.Configuration.AutoDetectChangesEnabled = true;
                     context.SaveChanges();
                 }
@@ -57,7 +58,7 @@ namespace OpenNos.DAL.EF
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    Skill entity = _mapper.Map<Skill>(skill);
+                    var entity = _mapper.Map<Skill>(skill);
                     context.Skill.Add(entity);
                     context.SaveChanges();
                     return _mapper.Map<SkillDTO>(entity);

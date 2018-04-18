@@ -48,15 +48,9 @@ namespace OpenNos.GameObject.Map
 
         #region Methods
 
-        public string GenerateIn()
-        {
-            return $"in 9 {(State ? EnabledVNum : DisabledVNum)} {MapButtonId} {PositionX} {PositionY} 1 0 0 0";
-        }
+        public string GenerateIn() => $"in 9 {(State ? EnabledVNum : DisabledVNum)} {MapButtonId} {PositionX} {PositionY} 1 0 0 0";
 
-        public string GenerateOut()
-        {
-            return $"out 9 {MapButtonId}";
-        }
+        public string GenerateOut() => $"out 9 {MapButtonId}";
 
         public void RunAction()
         {

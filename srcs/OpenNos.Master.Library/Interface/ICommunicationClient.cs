@@ -6,7 +6,6 @@ namespace OpenNos.Master.Library.Interface
 {
     public interface ICommunicationClient
     {
-
         void UpdateBazaar(long bazaarItemId);
 
         void CharacterConnected(long characterId);

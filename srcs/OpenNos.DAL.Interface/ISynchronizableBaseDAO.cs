@@ -1,13 +1,12 @@
-﻿using OpenNos.Data;
-using OpenNos.Data.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using OpenNos.Data.Base;
+using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.Interface
 {
     public interface ISynchronizableBaseDAO<TDTO> : IMappingBaseDAO
-        where TDTO : SynchronizableBaseDTO
+    where TDTO : SynchronizableBaseDTO
     {
         #region Methods
 

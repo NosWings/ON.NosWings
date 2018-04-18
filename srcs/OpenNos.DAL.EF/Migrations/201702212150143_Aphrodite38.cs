@@ -15,9 +15,9 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Up()
         {
-            AddColumn("dbo.Mate", "MapX", c => c.Short(nullable: false));
-            AddColumn("dbo.Mate", "MapY", c => c.Short(nullable: false));
-            AddColumn("dbo.Mate", "Direction", c => c.Byte(nullable: false));
+            AddColumn("dbo.Mate", "MapX", c => c.Short(false));
+            AddColumn("dbo.Mate", "MapY", c => c.Short(false));
+            AddColumn("dbo.Mate", "Direction", c => c.Byte(false));
         }
 
         #endregion

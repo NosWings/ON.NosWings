@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$Position", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class PositionPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$Position";
-        }
+        public static string ReturnHelp() => "$Position";
     }
 }

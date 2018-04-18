@@ -10,12 +10,10 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public short FairyLevel { get; set; }
+        [PacketIndex(0)]
+        public short FairyLevel { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$FLvl FAIRYLEVEL";
-        }
+        public static string ReturnHelp() => "$FLvl FAIRYLEVEL";
 
         #endregion
     }

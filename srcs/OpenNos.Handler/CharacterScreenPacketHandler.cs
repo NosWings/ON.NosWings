@@ -12,13 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Core.Handling;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using OpenNos.GameObject;
-using OpenNos.Master.Library.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,11 +20,17 @@ using System.Text.RegularExpressions;
 using log4net;
 using NosSharp.Enums;
 using ON.NW.Customisation.NewCharCustomisation;
+using OpenNos.Core;
+using OpenNos.Core.Handling;
 using OpenNos.Core.Utilities;
+using OpenNos.Data;
+using OpenNos.DAL;
+using OpenNos.GameObject;
 using OpenNos.GameObject.Item.Instance;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
 using OpenNos.GameObject.Packets.ClientPackets;
+using OpenNos.Master.Library.Client;
 
 namespace OpenNos.Handler
 {
@@ -39,10 +38,7 @@ namespace OpenNos.Handler
     {
         #region Instantiation
 
-        public CharacterScreenPacketHandler(ClientSession session)
-        {
-            Session = session;
-        }
+        public CharacterScreenPacketHandler(ClientSession session) => Session = session;
 
         #endregion
 
@@ -56,7 +52,7 @@ namespace OpenNos.Handler
         #region Methods
 
         /// <summary>
-        /// Char_NEW character creation character
+        ///     Char_NEW character creation character
         /// </summary>
         /// <param name="characterCreatePacket"></param>
         public void CreateCharacter(CharacterCreatePacket characterCreatePacket)
@@ -65,6 +61,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             // TODO: Hold Account Information in Authorized object
             long accountId = Session.Account.AccountId;
             byte slot = characterCreatePacket.Slot;
@@ -73,10 +70,12 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             if (characterName.Length <= 3 || characterName.Length >= 15)
             {
                 return;
             }
+
             var rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B\u002E]*$");
             if (rg.Matches(characterName).Count == 1)
             {
@@ -127,7 +126,7 @@ namespace OpenNos.Handler
                     }
 
                     // init inventory
-                    var inventory = new Inventory((Character) newCharacter);
+                    var inventory = new Inventory((Character)newCharacter);
                     var startupInventory = DependencyContainer.Instance.Get<BaseInventory>();
                     if (startupInventory != null)
                     {
@@ -156,16 +155,16 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// Char_DEL packet
+        ///     Char_DEL packet
         /// </summary>
         /// <param name="characterDeletePacket"></param>
         public void DeleteCharacter(CharacterDeletePacket characterDeletePacket)
         {
-
             if (Session.HasCurrentMapInstance)
             {
                 return;
             }
+
             AccountDTO account = DaoFactory.AccountDao.LoadById(Session.Account.AccountId);
             if (account == null)
             {
@@ -179,6 +178,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
+
                 DaoFactory.GeneralLogDao.SetCharIdNull(Convert.ToInt64(character.CharacterId));
                 DaoFactory.CharacterDao.DeleteByPrimaryKey(account.AccountId, characterDeletePacket.Slot);
 
@@ -188,6 +188,7 @@ namespace OpenNos.Handler
                     LoadCharacters(string.Empty);
                     return;
                 }
+
                 // REMOVE FROM FAMILY
                 DaoFactory.FamilyCharacterDao.Delete(character.Name);
                 ServerManager.Instance.FamilyRefresh(familyCharacter.FamilyId);
@@ -199,7 +200,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// Load Characters, this is the Entrypoint for the Client, Wait for 3 Packets.
+        ///     Load Characters, this is the Entrypoint for the Client, Wait for 3 Packets.
         /// </summary>
         /// <param name="packet"></param>
         /// <returns></returns>
@@ -207,7 +208,7 @@ namespace OpenNos.Handler
         public void LoadCharacters(string packet)
         {
             string[] loginPacketParts = packet.Split(' ');
-            
+
             // Load account by given SessionId
             bool isCrossServerLogin = false;
             if (Session.Account == null)
@@ -226,6 +227,7 @@ namespace OpenNos.Handler
                         account = DaoFactory.AccountDao.LoadByName(loginPacketParts[4]);
                     }
                 }
+
                 try
                 {
                     if (account != null)
@@ -241,6 +243,7 @@ namespace OpenNos.Handler
                     Session.Disconnect();
                     return;
                 }
+
                 if (loginPacketParts.Length > 4 && hasRegisteredAccountLogin)
                 {
                     if (account != null)
@@ -255,6 +258,7 @@ namespace OpenNos.Handler
                                 Session.Disconnect();
                                 return;
                             }
+
                             // TODO MAINTENANCE MODE
                             if (ServerManager.Instance.Sessions.Count() >= ServerManager.Instance.AccountLimit)
                             {
@@ -264,6 +268,7 @@ namespace OpenNos.Handler
                                     return;
                                 }
                             }
+
                             var accountobject = new Account
                             {
                                 AccountId = account.AccountId,
@@ -304,11 +309,12 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
             if (isCrossServerLogin)
             {
                 if (byte.TryParse(loginPacketParts[6], out byte slot))
                 {
-                    SelectCharacter(new SelectPacket {Slot = slot});
+                    SelectCharacter(new SelectPacket { Slot = slot });
                 }
             }
             else
@@ -327,8 +333,9 @@ namespace OpenNos.Handler
                     {
                         // explicit load of iteminstance
                         var currentInstance = equipmentEntry as WearableInstance;
-                        equipment[(short) currentInstance.Item.EquipmentSlot] = currentInstance;
+                        equipment[(short)currentInstance.Item.EquipmentSlot] = currentInstance;
                     }
+
                     string petlist = string.Empty;
                     List<MateDTO> mates = DaoFactory.MateDao.LoadByCharacterId(character.CharacterId).ToList();
                     for (int i = 0; i < 26; i++)
@@ -338,14 +345,16 @@ namespace OpenNos.Handler
                     }
 
                     // 1 1 before long string of -1.-1 = act completion
-                    Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte) character.Gender} {(byte) character.HairStyle} {(byte) character.HairColor} 0 {(byte) character.Class} {character.Level} {character.HeroLevel} {equipment[(byte) EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte) EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte) EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte) EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 {petlist} {(equipment[(byte) EquipmentType.Hat] != null && equipment[(byte) EquipmentType.Hat].Item.IsColored ? equipment[(byte) EquipmentType.Hat].Design : 0)} 0");
+                    Session.SendPacket(
+                        $"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {equipment[(byte)EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte)EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte)EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 {petlist} {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
                 }
+
                 Session.SendPacket("clist_end");
             }
         }
 
         /// <summary>
-        /// select packet
+        ///     select packet
         /// </summary>
         /// <param name="selectPacket"></param>
         public void SelectCharacter(SelectPacket selectPacket)
@@ -356,10 +365,12 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
+
                 if (!(DaoFactory.CharacterDao.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) is Character character))
                 {
                     return;
                 }
+
                 character.GeneralLogs = DaoFactory.GeneralLogDao.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
                 character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(character.MapId);
                 Map currentMap = ServerManager.Instance.GetMapInstance(character.MapInstanceId)?.Map;
@@ -374,6 +385,7 @@ namespace OpenNos.Handler
                     character.PositionX = character.MapX;
                     character.PositionY = character.MapY;
                 }
+
                 character.Authority = Session.Account.Authority;
                 Session.SetCharacter(character);
                 if (!Session.Character.GeneralLogs.Any(s => s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == "Connection"))
@@ -381,14 +393,17 @@ namespace OpenNos.Handler
                     Session.Character.SpAdditionPoint += Session.Character.SpPoint;
                     Session.Character.SpPoint = 10000;
                 }
+
                 if (Session.Character.Hp > Session.Character.HpLoad())
                 {
                     Session.Character.Hp = (int)Session.Character.HpLoad();
                 }
+
                 if (Session.Character.Mp > Session.Character.MpLoad())
                 {
                     Session.Character.Mp = (int)Session.Character.MpLoad();
                 }
+
                 Session.Character.Respawns = DaoFactory.RespawnDao.LoadByCharacter(Session.Character.CharacterId).ToList();
                 Session.Character.StaticBonusList = DaoFactory.StaticBonusDao.LoadByCharacterId(Session.Character.CharacterId).ToList();
                 Session.Character.LoadInventory();
@@ -399,6 +414,7 @@ namespace OpenNos.Handler
                     var firstQuest = new CharacterQuestDTO { CharacterId = Session.Character.CharacterId, QuestId = 1997, IsMainQuest = true };
                     DaoFactory.CharacterQuestDao.InsertOrUpdate(firstQuest);
                 }
+
                 DaoFactory.CharacterQuestDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(q => Session.Character.Quests.Add(q as CharacterQuest));
                 DaoFactory.MateDao.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
                 {
@@ -413,12 +429,17 @@ namespace OpenNos.Handler
                         mate.MapY = ServerManager.Instance.MinilandRandomPos().Y;
                     }
                 });
-                Session.Character.Life = Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+                Session.Character.Life = Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x => { Session?.Character?.CharacterLife(); });
+                Session.Character.GeneralLogs.Add(new GeneralLogDTO
                 {
-                    Session?.Character?.CharacterLife();
+                    AccountId = Session.Account.AccountId,
+                    CharacterId = Session.Character.CharacterId,
+                    IpAddress = Session.IpAddress,
+                    LogData = "World",
+                    LogType = "Connection",
+                    Timestamp = DateTime.Now
                 });
-                Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Connection", Timestamp = DateTime.Now });
-                        
+
                 Session.SendPacket("OK");
 
                 // Inform everyone about connected character

@@ -16,13 +16,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using NosSharp.Enums;
 using OpenNos.Core;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Map;
 using OpenNos.GameObject.Networking;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject.Event.INSTANTBATTLE
 {
@@ -30,7 +29,7 @@ namespace OpenNos.GameObject.Event.INSTANTBATTLE
     {
         #region Methods
 
-        public async static void GenerateInstantBattle(bool useTimer = true)
+        public static async void GenerateInstantBattle(bool useTimer = true)
         {
             if (useTimer)
             {

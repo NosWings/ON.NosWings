@@ -3,13 +3,11 @@
 
 using System;
 using System.Linq;
-using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
-using OpenNos.DAL.EF.Helpers;
 
 namespace OpenNos.DAL.EF
 {
@@ -17,8 +15,8 @@ namespace OpenNos.DAL.EF
     {
         public SaveResult InsertOrUpdate(ref CharacterHomeDto dto)
         {
-            OpenNosContext context = new OpenNosContext();
-            var tmp = InsertOrUpdate(ref dto, ref context);
+            var context = new OpenNosContext();
+            SaveResult tmp = InsertOrUpdate(ref dto, ref context);
             context.SaveChanges();
             return tmp;
         }

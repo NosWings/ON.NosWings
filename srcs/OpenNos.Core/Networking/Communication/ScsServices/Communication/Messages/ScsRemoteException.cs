@@ -18,8 +18,8 @@ using System.Runtime.Serialization;
 namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messages
 {
     /// <summary>
-    /// Represents a SCS Remote Exception. This exception is used to send an exception from an
-    /// application to another application.
+    ///     Represents a SCS Remote Exception. This exception is used to send an exception from an
+    ///     application to another application.
     /// </summary>
     [Serializable]
     public class ScsRemoteException : Exception
@@ -27,14 +27,14 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
         #region Instantiation
 
         /// <summary>
-        /// Contstructor.
+        ///     Contstructor.
         /// </summary>
         public ScsRemoteException()
         {
         }
 
         /// <summary>
-        /// Contstructor.
+        ///     Contstructor.
         /// </summary>
         /// <param name="serializationInfo"></param>
         /// <param name="context"></param>
@@ -43,7 +43,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
         }
 
         /// <summary>
-        /// Contstructor.
+        ///     Contstructor.
         /// </summary>
         /// <param name="message">Exception message</param>
         public ScsRemoteException(string message) : base(message)
@@ -51,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
         }
 
         /// <summary>
-        /// Contstructor.
+        ///     Contstructor.
         /// </summary>
         /// <param name="message">Exception message</param>
         /// <param name="innerException">Inner exception</param>

@@ -54,6 +54,7 @@ namespace OpenNos.DAL.EF.Entities
         public bool IsLevelScaled { get; set; }
 
         public bool IsLevelDivided { get; set; }
+
         #endregion
     }
 }

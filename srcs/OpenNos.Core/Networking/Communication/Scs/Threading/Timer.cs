@@ -18,29 +18,38 @@ using System.Threading;
 namespace OpenNos.Core.Threading
 {
     /// <summary>
-    /// This class is a timer that performs some tasks periodically.
+    ///     This class is a timer that performs some tasks periodically.
     /// </summary>
     public class Timer : IDisposable
     {
+        #region Events
+
+        /// <summary>
+        ///     This event is raised periodically according to Period of Timer.
+        /// </summary>
+        public event EventHandler Elapsed;
+
+        #endregion
+
         #region Members
 
         private readonly object _lock = new object();
 
         /// <summary>
-        /// This timer is used to perfom the task at spesified intervals.
+        ///     This timer is used to perfom the task at spesified intervals.
         /// </summary>
         private readonly System.Threading.Timer _taskTimer;
 
         private bool _disposed;
 
         /// <summary>
-        /// Indicates that whether performing the task or _taskTimer is in sleep mode. This field is
-        /// used to wait executing tasks when stopping Timer.
+        ///     Indicates that whether performing the task or _taskTimer is in sleep mode. This field is
+        ///     used to wait executing tasks when stopping Timer.
         /// </summary>
         private volatile bool _performingTasks;
 
         /// <summary>
-        /// Indicates that whether timer is running or stopped.
+        ///     Indicates that whether timer is running or stopped.
         /// </summary>
         private volatile bool _running;
 
@@ -49,7 +58,7 @@ namespace OpenNos.Core.Threading
         #region Instantiation
 
         /// <summary>
-        /// Creates a new Timer.
+        ///     Creates a new Timer.
         /// </summary>
         /// <param name="period">Task period of timer (as milliseconds)</param>
         public Timer(int period) : this(period, false)
@@ -57,11 +66,11 @@ namespace OpenNos.Core.Threading
         }
 
         /// <summary>
-        /// Creates a new Timer.
+        ///     Creates a new Timer.
         /// </summary>
         /// <param name="period">Task period of timer (as milliseconds)</param>
         /// <param name="runOnStart">
-        /// Indicates whether timer raises Elapsed event on Start method of Timer for once
+        ///     Indicates whether timer raises Elapsed event on Start method of Timer for once
         /// </param>
         public Timer(int period, bool runOnStart)
         {
@@ -72,25 +81,16 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Events
-
-        /// <summary>
-        /// This event is raised periodically according to Period of Timer.
-        /// </summary>
-        public event EventHandler Elapsed;
-
-        #endregion
-
         #region Properties
 
         /// <summary>
-        /// Task period of timer (as milliseconds).
+        ///     Task period of timer (as milliseconds).
         /// </summary>
         public int Period { get; set; }
 
         /// <summary>
-        /// Indicates whether timer raises Elapsed event on Start method of Timer for once.
-        /// Default: False.
+        ///     Indicates whether timer raises Elapsed event on Start method of Timer for once.
+        ///     Default: False.
         /// </summary>
         public bool RunOnStart { get; set; }
 
@@ -109,7 +109,7 @@ namespace OpenNos.Core.Threading
         }
 
         /// <summary>
-        /// Starts the timer.
+        ///     Starts the timer.
         /// </summary>
         public void Start()
         {
@@ -118,11 +118,11 @@ namespace OpenNos.Core.Threading
         }
 
         /// <summary>
-        /// Stops the timer.
+        ///     Stops the timer.
         /// </summary>
         public void Stop()
         {
-            lock (_lock)
+            lock(_lock)
             {
                 _running = false;
                 _taskTimer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -130,11 +130,11 @@ namespace OpenNos.Core.Threading
         }
 
         /// <summary>
-        /// Waits the service to stop.
+        ///     Waits the service to stop.
         /// </summary>
         public void WaitToStop()
         {
-            lock (_lock)
+            lock(_lock)
             {
                 while (_performingTasks)
                 {
@@ -153,12 +153,12 @@ namespace OpenNos.Core.Threading
         }
 
         /// <summary>
-        /// This method is called by _taskTimer.
+        ///     This method is called by _taskTimer.
         /// </summary>
         /// <param name="state">Not used argument</param>
         private void timerCallBack(object state)
         {
-            lock (_lock)
+            lock(_lock)
             {
                 if (!_running || _performingTasks)
                 {
@@ -175,7 +175,7 @@ namespace OpenNos.Core.Threading
             }
             finally
             {
-                lock (_lock)
+                lock(_lock)
                 {
                     _performingTasks = false;
                     if (_running)

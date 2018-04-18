@@ -8,28 +8,24 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$Mute", PassNonParseablePacket = true, Authority = AuthorityType.Moderator)]
     public class MutePacket : PacketDefinition
     {
+        #region Methods
+
+        public override string ToString() => $"Mute Command CharacterName: {CharacterName} Duration: {Duration} Reason: {Reason}";
+
+        #endregion
+
         #region Properties
 
-        [PacketIndex(0)] public string CharacterName { get; set; }
+        [PacketIndex(0)]
+        public string CharacterName { get; set; }
 
-        [PacketIndex(1)] public int Duration { get; set; }
+        [PacketIndex(1)]
+        public int Duration { get; set; }
 
         [PacketIndex(2, SerializeToEnd = true)]
         public string Reason { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Mute CHARACTERNAME DURATION(MINUTES) REASON";
-        }
-
-        #endregion
-
-        #region Methods
-
-        public override string ToString()
-        {
-            return $"Mute Command CharacterName: {CharacterName} Duration: {Duration} Reason: {Reason}";
-        }
+        public static string ReturnHelp() => "$Mute CHARACTERNAME DURATION(MINUTES) REASON";
 
         #endregion
     }

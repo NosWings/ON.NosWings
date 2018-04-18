@@ -23,28 +23,19 @@ using OpenNos.Core.Networking.Communication.Scs.Server;
 namespace OpenNos.GameObject.Networking
 {
     public class NetworkManager<TEncryptorT> : SessionManager
-        where TEncryptorT : EncryptionBase
+    where TEncryptorT : EncryptionBase
     {
-        #region Members
-
-        private IDictionary<string, DateTime> _connectionLog;
-        private readonly TEncryptorT _encryptor;
-        private readonly EncryptionBase _fallbackEncryptor;
-        private readonly IScsServer _server;
-
-        #endregion
-
         #region Instantiation
 
         public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor,
             bool isWorldServer) : base(packetHandler, isWorldServer)
         {
-            _encryptor = (TEncryptorT) Activator.CreateInstance(typeof(TEncryptorT));
+            _encryptor = (TEncryptorT)Activator.CreateInstance(typeof(TEncryptorT));
 
             if (fallbackEncryptor != null)
             {
                 _fallbackEncryptor =
-                    (EncryptionBase) Activator.CreateInstance(fallbackEncryptor); // reflection, TODO: optimize.
+                    (EncryptionBase)Activator.CreateInstance(fallbackEncryptor); // reflection, TODO: optimize.
             }
 
             _server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
@@ -64,10 +55,16 @@ namespace OpenNos.GameObject.Networking
 
         #region Properties
 
-        private IDictionary<string, DateTime> ConnectionLog
-        {
-            get { return _connectionLog ?? (_connectionLog = new Dictionary<string, DateTime>()); }
-        }
+        private IDictionary<string, DateTime> ConnectionLog => _connectionLog ?? (_connectionLog = new Dictionary<string, DateTime>());
+
+        #endregion
+
+        #region Members
+
+        private IDictionary<string, DateTime> _connectionLog;
+        private readonly TEncryptorT _encryptor;
+        private readonly EncryptionBase _fallbackEncryptor;
+        private readonly IScsServer _server;
 
         #endregion
 
@@ -91,7 +88,7 @@ namespace OpenNos.GameObject.Networking
                 return null;
             }
 
-            ClientSession session = new ClientSession(client);
+            var session = new ClientSession(client);
             session.Initialize(_encryptor, PacketHandler, IsWorldServer);
 
             return session;

@@ -10,16 +10,16 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public byte Type { get; set; }
+        [PacketIndex(0)]
+        public byte Type { get; set; }
 
-        [PacketIndex(1)] public byte Argument { get; set; }
+        [PacketIndex(1)]
+        public byte Argument { get; set; }
 
-        [PacketIndex(2)] public int Value { get; set; }
+        [PacketIndex(2)]
+        public int Value { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Guri TYPE ARGUMENT VALUE";
-        }
+        public static string ReturnHelp() => "$Guri TYPE ARGUMENT VALUE";
 
         #endregion
     }

@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -50,9 +50,10 @@ namespace OpenNos.DAL.EF
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (NpcMonsterDTO Item in npcs)
                     {
-                        NpcMonster entity = _mapper.Map<NpcMonster>(Item);
+                        var entity = _mapper.Map<NpcMonster>(Item);
                         context.NpcMonster.Add(entity);
                     }
+
                     context.Configuration.AutoDetectChangesEnabled = true;
                     context.SaveChanges();
                 }
@@ -69,7 +70,7 @@ namespace OpenNos.DAL.EF
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    NpcMonster entity = _mapper.Map<NpcMonster>(npc);
+                    var entity = _mapper.Map<NpcMonster>(npc);
                     context.NpcMonster.Add(entity);
                     context.SaveChanges();
                     return _mapper.Map<NpcMonsterDTO>(entity);
@@ -137,7 +138,7 @@ namespace OpenNos.DAL.EF
 
         private NpcMonsterDTO Insert(NpcMonsterDTO npcMonster, OpenNosContext context)
         {
-            NpcMonster entity = _mapper.Map<NpcMonster>(npcMonster);
+            var entity = _mapper.Map<NpcMonster>(npcMonster);
             context.NpcMonster.Add(entity);
             context.SaveChanges();
             return _mapper.Map<NpcMonsterDTO>(entity);
@@ -150,6 +151,7 @@ namespace OpenNos.DAL.EF
                 _mapper.Map(npcMonster, entity);
                 context.SaveChanges();
             }
+
             return _mapper.Map<NpcMonsterDTO>(entity);
         }
 

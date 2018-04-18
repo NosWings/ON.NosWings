@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using NosSharp.Enums;
-using OpenNos.Core;
 using OpenNos.Core.Serializing;
 using OpenNos.Data;
 using OpenNos.DAL;
-using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -19,14 +17,6 @@ namespace OpenNos.GameObject.Helpers
             ChatLogList = new List<LogChatDTO>();
         }
 
-        #region Properties
-        
-        public List<QuestLogDTO> QuestLogList;
-        public List<RaidLogDTO> RaidLogList;
-        public List<LogCommandsDTO> LogCommandsList;
-        public List<LogChatDTO> ChatLogList;
-        #endregion
-
         public void FlushLogs(bool forceFlush = false)
         {
             if (forceFlush)
@@ -37,6 +27,7 @@ namespace OpenNos.GameObject.Helpers
                 DaoFactory.LogChatDao.InsertOrUpdateList(ref ChatLogList);
                 return;
             }
+
             if (LogCommandsList.Count >= 500)
             {
                 DaoFactory.LogCommandsDao.InsertOrUpdateList(ref LogCommandsList);
@@ -71,7 +62,7 @@ namespace OpenNos.GameObject.Helpers
                 withoutHeaderpacket += $" {packet[i]}";
             }
 
-            LogCommandsDTO command = new LogCommandsDTO
+            var command = new LogCommandsDTO
             {
                 CharacterId = characterId,
                 Command = commandPacket.OriginalHeader,
@@ -84,12 +75,12 @@ namespace OpenNos.GameObject.Helpers
 
         public void InsertChatLog(ChatType type, long characterId, string message, string ipAddress)
         {
-            LogChatDTO log = new LogChatDTO
+            var log = new LogChatDTO
             {
                 CharacterId = characterId,
                 ChatMessage = message,
                 IpAddress = ipAddress,
-                ChatType = (byte) type,
+                ChatType = (byte)type,
                 Timestamp = DateTime.Now
             };
             ChatLogList.Add(log);
@@ -129,14 +120,20 @@ namespace OpenNos.GameObject.Helpers
             RaidLogList.Add(log);
         }
 
+        #region Properties
+
+        public List<QuestLogDTO> QuestLogList;
+        public List<RaidLogDTO> RaidLogList;
+        public List<LogCommandsDTO> LogCommandsList;
+        public List<LogChatDTO> ChatLogList;
+
+        #endregion
+
         #region Singleton
 
         private static LogHelper _instance;
 
-        public static LogHelper Instance
-        {
-            get { return _instance ?? (_instance = new LogHelper()); }
-        }
+        public static LogHelper Instance => _instance ?? (_instance = new LogHelper());
 
         #endregion
     }

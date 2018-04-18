@@ -10,12 +10,13 @@ namespace OpenNos.GameObject.Logs.Classes
         {
         }
 
+        public TradeCharacter FirstCharacter { get; set; }
+
+        public TradeCharacter SecondCharacter { get; set; }
+
         internal class TradeCharacter
         {
-            internal TradeCharacter(CharacterLog character)
-            {
-                Character = character;
-            }
+            internal TradeCharacter(CharacterLog character) => Character = character;
 
             public CharacterLog Character { get; }
 
@@ -23,9 +24,5 @@ namespace OpenNos.GameObject.Logs.Classes
 
             public IEnumerable<ItemInstance> Items { get; set; }
         }
-
-        public TradeCharacter FirstCharacter { get; set; }
-
-        public TradeCharacter SecondCharacter { get; set; }
     }
 }

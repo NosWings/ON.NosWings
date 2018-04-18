@@ -30,10 +30,7 @@ namespace OpenNos.GameObject.Item.Instance
 
         #region Instantiation
 
-        public ItemInstance()
-        {
-            _random = new Random();
-        }
+        public ItemInstance() => _random = new Random();
 
         public ItemInstance(short vNum, ushort amount)
         {
@@ -47,24 +44,11 @@ namespace OpenNos.GameObject.Item.Instance
 
         #region Properties
 
-        public bool IsBound
-        {
-            get
-            {
-                return BoundCharacterId.HasValue && Item.ItemType != ItemType.Armor && Item.ItemType != ItemType.Weapon;
-            }
-        }
+        public bool IsBound => BoundCharacterId.HasValue && Item.ItemType != ItemType.Armor && Item.ItemType != ItemType.Weapon;
 
-        public Item Item
-        {
-            get { return _item ?? (_item = ServerManager.Instance.GetItem(ItemVNum)); }
-        }
+        public Item Item => _item ?? (_item = ServerManager.Instance.GetItem(ItemVNum));
 
-        public ClientSession CharacterSession
-        {
-            // TODO REVIEW THAT
-            get { return ServerManager.Instance.GetSessionByCharacterId(CharacterId); }
-        }
+        public ClientSession CharacterSession => ServerManager.Instance.GetSessionByCharacterId(CharacterId);
 
         #endregion
 
@@ -72,15 +56,9 @@ namespace OpenNos.GameObject.Item.Instance
 
         #region Methods
 
-        public ItemInstance DeepCopy()
-        {
-            return (ItemInstance) MemberwiseClone();
-        }
+        public ItemInstance DeepCopy() => (ItemInstance)MemberwiseClone();
 
-        public string GenerateFStash()
-        {
-            return $"f_stash {GenerateStashPacket()}";
-        }
+        public string GenerateFStash() => $"f_stash {GenerateStashPacket()}";
 
         public string GenerateInventoryAdd()
         {
@@ -108,26 +86,20 @@ namespace OpenNos.GameObject.Item.Instance
             return string.Empty;
         }
 
-        public string GeneratePStash()
-        {
-            return $"pstash {GenerateStashPacket()}";
-        }
+        public string GeneratePStash() => $"pstash {GenerateStashPacket()}";
 
-        public string GenerateStash()
-        {
-            return $"stash {GenerateStashPacket()}";
-        }
+        public string GenerateStash() => $"stash {GenerateStashPacket()}";
 
         public string GenerateStashPacket()
         {
-            string packet = $"{Slot}.{ItemVNum}.{(byte) Item.Type}";
+            string packet = $"{Slot}.{ItemVNum}.{(byte)Item.Type}";
             switch (Item.Type)
             {
                 case InventoryType.Equipment:
                     return packet + $".{Amount}.{Rare}.{Upgrade}";
 
                 case InventoryType.Specialist:
-                    SpecialistInstance sp = this as SpecialistInstance;
+                    var sp = this as SpecialistInstance;
                     return packet + $".{Upgrade}.{sp?.SpStoneUpgrade ?? 0}.0";
 
                 default:

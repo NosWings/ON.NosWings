@@ -13,7 +13,7 @@ namespace OpenNos.DAL.EF.Migrations
 
         public override void Up()
         {
-            AddColumn("dbo.FamilyCharacter", "CharacterId", c => c.Long(nullable: false));
+            AddColumn("dbo.FamilyCharacter", "CharacterId", c => c.Long(false));
         }
 
         #endregion

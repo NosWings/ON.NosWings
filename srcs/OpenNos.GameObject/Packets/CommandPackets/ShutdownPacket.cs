@@ -8,9 +8,6 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     [PacketHeader("$Shutdown", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ShutdownPacket : PacketDefinition
     {
-        public static string ReturnHelp()
-        {
-            return "$Shutdown";
-        }
+        public static string ReturnHelp() => "$Shutdown";
     }
 }

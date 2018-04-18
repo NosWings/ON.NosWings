@@ -10,9 +10,9 @@ namespace ON.NW.Master.Controllers
     public class MailController : ApiController
     {
         // POST /mail 
-        public void Post([FromBody]MailPostParameter mail)
+        public void Post([FromBody] MailPostParameter mail)
         {
-            MailDTO mail2 = new MailDTO
+            var mail2 = new MailDTO
             {
                 AttachmentAmount = mail.Amount,
                 IsOpened = false,
@@ -23,11 +23,10 @@ namespace ON.NW.Master.Controllers
                 AttachmentUpgrade = mail.Upgrade,
                 IsSenderCopy = false,
                 Title = mail.IsNosmall ? "NOSMALL" : mail.Title,
-                AttachmentVNum = mail.VNum,
+                AttachmentVNum = mail.VNum
             };
             Logger.Log.Info($"[{(mail.IsNosmall ? "NOSMALL" : "MAIL")}] Receiver ID : {mail2.ReceiverId}");
             CommunicationServiceClient.Instance.SendMail(mail.WorldGroup, mail2);
         }
     }
-
 }

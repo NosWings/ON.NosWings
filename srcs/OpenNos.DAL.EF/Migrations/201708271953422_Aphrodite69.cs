@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System.Data.Entity.Migrations;
-    
     public partial class Aphrodite69 : DbMigration
     {
         public override void Up()
@@ -9,16 +9,16 @@ namespace OpenNos.DAL.EF.Migrations
             DropForeignKey("dbo.Drop", "MapTypeId", "dbo.MapType");
             DropForeignKey("dbo.MapTypeMap", "MapTypeId", "dbo.MapType");
             DropPrimaryKey("dbo.MapType");
-            AddColumn("dbo.MapType", "MapTypeId", c => c.Short(nullable: false));
+            AddColumn("dbo.MapType", "MapTypeId", c => c.Short(false));
             AddPrimaryKey("dbo.MapType", "MapTypeId");
             AddForeignKey("dbo.Drop", "MapTypeId", "dbo.MapType", "MapTypeId");
             AddForeignKey("dbo.MapTypeMap", "MapTypeId", "dbo.MapType", "MapTypeId");
             DropColumn("dbo.MapType", "MapTypeId2");
         }
-        
+
         public override void Down()
         {
-            AddColumn("dbo.MapType", "MapTypeId2", c => c.Short(nullable: false));
+            AddColumn("dbo.MapType", "MapTypeId2", c => c.Short(false));
             DropForeignKey("dbo.MapTypeMap", "MapTypeId", "dbo.MapType");
             DropForeignKey("dbo.Drop", "MapTypeId", "dbo.MapType");
             DropPrimaryKey("dbo.MapType");

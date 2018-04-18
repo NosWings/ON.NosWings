@@ -28,6 +28,7 @@ namespace OpenNos.Core
             {
                 text += @"\";
             }
+
             return text;
         }
 

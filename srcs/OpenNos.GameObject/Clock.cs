@@ -1,8 +1,8 @@
-﻿using OpenNos.GameObject.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using OpenNos.GameObject.Event;
+using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.GameObject
 {
@@ -47,10 +47,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public string GetClock()
-        {
-            return $"evnt {Type} {(Enabled ? 0 : Type != 3 ? -1 : 1)} {DeciSecondRemaining} {BasesSecondRemaining}";
-        }
+        public string GetClock() => $"evnt {Type} {(Enabled ? 0 : Type != 3 ? -1 : 1)} {DeciSecondRemaining} {BasesSecondRemaining}";
 
         public void StartClock()
         {

@@ -9,14 +9,13 @@ namespace OpenNos.GameObject.Packets.ClientPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public byte Slot { get; set; }
+        [PacketIndex(0)]
+        public byte Slot { get; set; }
 
-        [PacketIndex(1)] public string Password { get; set; }
+        [PacketIndex(1)]
+        public string Password { get; set; }
 
-        public override string ToString()
-        {
-            return $"Delete Character Slot {Slot}";
-        }
+        public override string ToString() => $"Delete Character Slot {Slot}";
 
         #endregion
     }

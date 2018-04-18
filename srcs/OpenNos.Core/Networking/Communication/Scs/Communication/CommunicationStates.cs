@@ -15,17 +15,17 @@
 namespace OpenNos.Core.Networking.Communication.Scs.Communication
 {
     /// <summary>
-    /// Communication states.
+    ///     Communication states.
     /// </summary>
     public enum CommunicationStates
     {
         /// <summary>
-        /// Connected.
+        ///     Connected.
         /// </summary>
         Connected,
 
         /// <summary>
-        /// Disconnected.
+        ///     Disconnected.
         /// </summary>
         Disconnected
     }

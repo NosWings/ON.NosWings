@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
@@ -32,8 +32,8 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult DeleteById(long mailId)
         {
-                var contextRef = DataAccessHelper.CreateContext();
-                return DeleteById(ref contextRef, mailId);
+            OpenNosContext contextRef = DataAccessHelper.CreateContext();
+            return DeleteById(ref contextRef, mailId);
         }
 
         public DeleteResult DeleteById(ref OpenNosContext context, long mailId)
@@ -46,6 +46,7 @@ namespace OpenNos.DAL.EF
                 {
                     return DeleteResult.Deleted;
                 }
+
                 context.Mail.Remove(mail);
 
                 return DeleteResult.Deleted;
@@ -59,8 +60,8 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MailDTO mail)
         {
-                var contextRef = DataAccessHelper.CreateContext();
-                return InsertOrUpdate(ref contextRef, ref mail);
+            OpenNosContext contextRef = DataAccessHelper.CreateContext();
+            return InsertOrUpdate(ref contextRef, ref mail);
         }
 
         public SaveResult InsertOrUpdate(ref OpenNosContext context, ref MailDTO mail)
@@ -91,7 +92,7 @@ namespace OpenNos.DAL.EF
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                foreach (Mail mail in context.Mail.Where(s => (!s.IsSenderCopy && s.ReceiverId == characterId) || (s.IsSenderCopy && s.SenderId == characterId)))
+                foreach (Mail mail in context.Mail.Where(s => !s.IsSenderCopy && s.ReceiverId == characterId || s.IsSenderCopy && s.SenderId == characterId))
                 {
                     yield return _mapper.Map<MailDTO>(mail);
                 }
@@ -129,7 +130,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                Mail entity = _mapper.Map<Mail>(mail);
+                var entity = _mapper.Map<Mail>(mail);
                 context.Mail.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<MailDTO>(entity);
@@ -148,6 +149,7 @@ namespace OpenNos.DAL.EF
                 _mapper.Map(respawn, entity);
                 context.SaveChanges();
             }
+
             return _mapper.Map<MailDTO>(entity);
         }
 

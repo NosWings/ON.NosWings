@@ -10,18 +10,19 @@ namespace OpenNos.GameObject.Packets.CommandPackets
     {
         #region Properties
 
-        [PacketIndex(0)] public short MorphId { get; set; }
+        [PacketIndex(0)]
+        public short MorphId { get; set; }
 
-        [PacketIndex(1)] public byte Upgrade { get; set; }
+        [PacketIndex(1)]
+        public byte Upgrade { get; set; }
 
-        [PacketIndex(2)] public byte MorphDesign { get; set; }
+        [PacketIndex(2)]
+        public byte MorphDesign { get; set; }
 
-        [PacketIndex(3)] public int ArenaWinner { get; set; }
+        [PacketIndex(3)]
+        public int ArenaWinner { get; set; }
 
-        public static string ReturnHelp()
-        {
-            return "$Morph MORPHID UPGRADE WINGS ARENA";
-        }
+        public static string ReturnHelp() => "$Morph MORPHID UPGRADE WINGS ARENA";
 
         #endregion
     }

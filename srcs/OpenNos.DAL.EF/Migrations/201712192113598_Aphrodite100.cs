@@ -1,26 +1,25 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class Aphrodite100 : DbMigration
     {
         public override void Up()
         {
             CreateTable(
-                "dbo.QuestObjective",
-                c => new
+                    "dbo.QuestObjective",
+                    c => new
                     {
-                        QuestObjectiveId = c.Int(nullable: false, identity: true),
-                        QuestId = c.Int(nullable: false),
+                        QuestObjectiveId = c.Int(false, true),
+                        QuestId = c.Int(false),
                         Data = c.Int(),
                         Objective = c.Int(),
                         SpecialData = c.Int(),
                         DropRate = c.Int(),
-                        ObjectiveIndex = c.Byte(nullable: false),
+                        ObjectiveIndex = c.Byte(false)
                     })
                 .PrimaryKey(t => t.QuestObjectiveId);
-            
+
             DropColumn("dbo.Quest", "FirstData");
             DropColumn("dbo.Quest", "FirstObjective");
             DropColumn("dbo.Quest", "FirstSpecialData");
@@ -38,7 +37,7 @@ namespace OpenNos.DAL.EF.Migrations
             DropColumn("dbo.Quest", "FifthSpecialData");
             DropColumn("dbo.Quest", "SpecialData");
         }
-        
+
         public override void Down()
         {
             AddColumn("dbo.Quest", "SpecialData", c => c.Int());
@@ -55,8 +54,8 @@ namespace OpenNos.DAL.EF.Migrations
             AddColumn("dbo.Quest", "SecondObjective", c => c.Int());
             AddColumn("dbo.Quest", "SecondData", c => c.Int());
             AddColumn("dbo.Quest", "FirstSpecialData", c => c.Int());
-            AddColumn("dbo.Quest", "FirstObjective", c => c.Int(nullable: false));
-            AddColumn("dbo.Quest", "FirstData", c => c.Int(nullable: false));
+            AddColumn("dbo.Quest", "FirstObjective", c => c.Int(false));
+            AddColumn("dbo.Quest", "FirstData", c => c.Int(false));
             DropTable("dbo.QuestObjective");
         }
     }

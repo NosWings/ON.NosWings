@@ -20,10 +20,7 @@ namespace OpenNos.DAL.EF.Entities
     {
         #region Instantiation
 
-        public Recipe()
-        {
-            RecipeItem = new HashSet<RecipeItem>();
-        }
+        public Recipe() => RecipeItem = new HashSet<RecipeItem>();
 
         #endregion
 

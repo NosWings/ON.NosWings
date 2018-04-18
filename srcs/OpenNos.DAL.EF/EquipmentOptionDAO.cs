@@ -12,24 +12,23 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
+using OpenNos.Data;
 using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
     public class EquipmentOptionDAO : SynchronizableBaseDAO<EquipmentOption, EquipmentOptionDTO>, IEquipmentOptionDAO
     {
         #region Methods
-        
+
         public SaveResult InsertOrUpdate(ref EquipmentOptionDTO equipmentOption)
         {
             try
@@ -44,6 +43,7 @@ namespace OpenNos.DAL.EF
                         equipmentOption = Insert(equipmentOption, context);
                         return SaveResult.Inserted;
                     }
+
                     equipmentOption = Update(entity, equipmentOption, context);
                     context.SaveChanges();
                     return SaveResult.Updated;
@@ -57,8 +57,8 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult DeleteByWearableInstanceId(Guid wearableInstanceId)
         {
-                var contextRef = DataAccessHelper.CreateContext();
-                return DeleteByWearableInstanceId(ref contextRef, wearableInstanceId);
+            OpenNosContext contextRef = DataAccessHelper.CreateContext();
+            return DeleteByWearableInstanceId(ref contextRef, wearableInstanceId);
         }
 
         public DeleteResult DeleteByWearableInstanceId(ref OpenNosContext context, Guid wearableInstanceId)
@@ -73,6 +73,7 @@ namespace OpenNos.DAL.EF
                         context.EquipmentOption.Remove(equipmentOption);
                     }
                 }
+
                 return DeleteResult.Deleted;
             }
             catch (Exception)

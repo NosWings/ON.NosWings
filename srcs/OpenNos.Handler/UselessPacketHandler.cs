@@ -22,28 +22,17 @@ namespace OpenNos.Handler
     {
         #region Members
 
-        private readonly ClientSession _session;
-
         #endregion
 
         #region Instantiation
 
-        public UselessPacketHandler(ClientSession session)
-        {
-            _session = session;
-        }
+        public UselessPacketHandler(ClientSession session) => Session = session;
 
         #endregion
 
         #region Properties
 
-        public ClientSession Session
-        {
-            get
-            {
-                return _session;
-            }
-        }
+        public ClientSession Session { get; }
 
         #endregion
 
@@ -78,7 +67,6 @@ namespace OpenNos.Handler
         {
             // Not needed for now. (pictures)
         }
-
 
         #endregion
     }
