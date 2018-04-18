@@ -19,8 +19,8 @@ namespace OpenNos.DAL.EF.Base
 
         public virtual DeleteResult Delete(IEnumerable<Guid> ids)
         {
-            OpenNosContext contextRef = DataAccessHelper.CreateContext();
-            return Delete(ref contextRef, ids);
+            OpenNosContext context = DataAccessHelper.CreateContext();
+            return Delete(ref context, ids);
         }
 
         public virtual DeleteResult Delete(ref OpenNosContext context, IEnumerable<Guid> ids)
