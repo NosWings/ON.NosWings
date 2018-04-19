@@ -64,16 +64,20 @@ namespace OpenNos.DAL.EF
             }
         }
 
-
-        public IEnumerable<Guid> LoadKeysByCharacterId(long characterId, OpenNosContext context)
-        {
-            return context.CharacterSkill.Where(i => i.CharacterId == characterId).Select(c => c.Id);
-        }
-
         public IEnumerable<Guid> LoadKeysByCharacterId(long characterId)
         {
-            OpenNosContext context = DataAccessHelper.CreateContext();
-            return LoadKeysByCharacterId(characterId, context);
+            try
+            {
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    return context.CharacterSkill.Where(i => i.CharacterId == characterId).Select(c => c.Id).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
         }
 
         protected override CharacterSkill MapEntity(CharacterSkillDTO dto)

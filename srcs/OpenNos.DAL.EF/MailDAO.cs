@@ -32,24 +32,21 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult DeleteById(long mailId)
         {
-            OpenNosContext contextRef = DataAccessHelper.CreateContext();
-            return DeleteById(ref contextRef, mailId);
-        }
-
-        public DeleteResult DeleteById(ref OpenNosContext context, long mailId)
-        {
             try
             {
-                Mail mail = context.Mail.First(i => i.MailId.Equals(mailId));
-
-                if (mail == null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
+                    Mail mail = context.Mail.First(i => i.MailId.Equals(mailId));
+
+                    if (mail == null)
+                    {
+                        return DeleteResult.Deleted;
+                    }
+                    context.Mail.Remove(mail);
+                    context.SaveChanges();
+
                     return DeleteResult.Deleted;
                 }
-
-                context.Mail.Remove(mail);
-
-                return DeleteResult.Deleted;
             }
             catch (Exception e)
             {
@@ -60,26 +57,23 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MailDTO mail)
         {
-            OpenNosContext contextRef = DataAccessHelper.CreateContext();
-            return InsertOrUpdate(ref contextRef, ref mail);
-        }
-
-        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref MailDTO mail)
-        {
             try
             {
-                long mailId = mail.MailId;
-                Mail entity = context.Mail.FirstOrDefault(c => c.MailId.Equals(mailId));
-
-                if (entity == null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    mail = Insert(mail, context);
-                    return SaveResult.Inserted;
-                }
+                    long mailId = mail.MailId;
+                    Mail entity = context.Mail.FirstOrDefault(c => c.MailId.Equals(mailId));
 
-                mail.MailId = entity.MailId;
-                mail = Update(entity, mail, context);
-                return SaveResult.Updated;
+                    if (entity == null)
+                    {
+                        mail = Insert(mail, context);
+                        return SaveResult.Inserted;
+                    }
+
+                    mail.MailId = entity.MailId;
+                    mail = Update(entity, mail, context);
+                    return SaveResult.Updated;
+                }
             }
             catch (Exception e)
             {

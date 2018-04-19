@@ -12,30 +12,28 @@ using OpenNos.DAL.Interface;
 namespace OpenNos.DAL.EF.Base
 {
     public abstract class SynchronizableBaseDAO<TEntity, TDTO> : MappingBaseDao<TEntity, TDTO>, ISynchronizableBaseDAO<TDTO>
-    where TDTO : SynchronizableBaseDTO
-    where TEntity : SynchronizableBaseEntity
+        where TDTO : SynchronizableBaseDTO
+        where TEntity : SynchronizableBaseEntity
     {
         #region Methods
 
+
         public virtual DeleteResult Delete(IEnumerable<Guid> ids)
         {
-            OpenNosContext context = DataAccessHelper.CreateContext();
-            return Delete(ref context, ids);
-        }
-
-        public virtual DeleteResult Delete(ref OpenNosContext context, IEnumerable<Guid> ids)
-        {
-            context.Configuration.AutoDetectChangesEnabled = false;
-            foreach (Guid id in ids)
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
-                if (entity != null)
-                {
-                    context.Set<TEntity>().Remove(entity);
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (Guid id in ids)
+                { 
+                    TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
+                    if (entity != null)
+                    {
+                        context.Set<TEntity>().Remove(entity);
+                    }
                 }
+                context.SaveChanges();
+                return DeleteResult.Deleted;
             }
-
-            return DeleteResult.Deleted;
         }
 
         public virtual DeleteResult Delete(Guid id)
@@ -47,7 +45,6 @@ namespace OpenNos.DAL.EF.Base
                 {
                     return DeleteResult.Deleted;
                 }
-
                 context.Set<TEntity>().Remove(entity);
                 context.SaveChanges();
 
@@ -59,13 +56,14 @@ namespace OpenNos.DAL.EF.Base
         {
             try
             {
-                OpenNosContext context = DataAccessHelper.CreateContext();
                 IList<TDTO> results = new List<TDTO>();
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (TDTO dto in dtos)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    TDTO dtoRef = dto;
-                    results.Add(InsertOrUpdate(ref context, ref dtoRef));
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (TDTO dto in dtos)
+                    {
+                        results.Add(InsertOrUpdate(context, dto));
+                    }
                 }
 
                 return results;
@@ -81,8 +79,10 @@ namespace OpenNos.DAL.EF.Base
         {
             try
             {
-                OpenNosContext context = DataAccessHelper.CreateContext();
-                return InsertOrUpdate(ref context, ref dto);
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    return InsertOrUpdate(context, dto);
+                }
             }
             catch (Exception e)
             {
@@ -107,7 +107,7 @@ namespace OpenNos.DAL.EF.Base
             return _mapper.Map<TDTO>(entity);
         }
 
-        public virtual TDTO InsertOrUpdate(ref OpenNosContext context, ref TDTO dto)
+        protected virtual TDTO InsertOrUpdate(OpenNosContext context, TDTO dto)
         {
             Guid primaryKey = dto.Id;
             TEntity entity = context.Set<TEntity>().FirstOrDefault(c => c.Id == primaryKey);

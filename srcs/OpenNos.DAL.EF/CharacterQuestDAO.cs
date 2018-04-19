@@ -18,21 +18,18 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult Delete(long characterId, long questId)
         {
-            OpenNosContext contextRef = DataAccessHelper.CreateContext();
-            return Delete(ref contextRef, characterId, questId);
-        }
-
-        public DeleteResult Delete(ref OpenNosContext context, long characterId, long questId)
-        {
             try
             {
-                CharacterQuest charQuest = context.CharacterQuest.FirstOrDefault(i => i.CharacterId == characterId && i.QuestId == questId);
-                if (charQuest != null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    context.CharacterQuest.Remove(charQuest);
+                    CharacterQuest charQuest = context.CharacterQuest.FirstOrDefault(i => i.CharacterId == characterId && i.QuestId == questId);
+                    if (charQuest != null)
+                    {
+                        context.CharacterQuest.Remove(charQuest);
+                        context.SaveChanges();
+                    }
+                    return DeleteResult.Deleted;
                 }
-
-                return DeleteResult.Deleted;
             }
             catch (Exception e)
             {

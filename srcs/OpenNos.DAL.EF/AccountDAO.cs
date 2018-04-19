@@ -23,10 +23,11 @@ using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
 using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class AccountDAO : MappingBaseDao<Account, AccountDTO>
+    public class AccountDAO : MappingBaseDao<Account, AccountDTO>, IAccountDAO
     {
         #region Methods
 
@@ -73,25 +74,22 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref AccountDTO account)
         {
-            OpenNosContext context = DataAccessHelper.CreateContext();
-            return InsertOrUpdate(ref account, ref context);
-        }
-
-        public SaveResult InsertOrUpdate(ref AccountDTO account, ref OpenNosContext context)
-        {
             try
             {
-                long accountId = account.AccountId;
-                Account entity = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
-
-                if (entity == null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    account = Insert(account, context);
-                    return SaveResult.Inserted;
-                }
+                    long accountId = account.AccountId;
+                    Account entity = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
 
-                account = Update(entity, account, context);
-                return SaveResult.Updated;
+                    if (entity == null)
+                    {
+                        account = Insert(account, context);
+                        return SaveResult.Inserted;
+                    }
+
+                    account = Update(entity, account, context);
+                    return SaveResult.Updated;
+                }
             }
             catch (Exception e)
             {

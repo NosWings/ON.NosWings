@@ -33,19 +33,18 @@ namespace OpenNos.DAL.EF
 
         public void Delete(short bonusToDelete, long characterId)
         {
-            OpenNosContext contextRef = DataAccessHelper.CreateContext();
-            Delete(ref contextRef, bonusToDelete, characterId);
-        }
-
-        public void Delete(ref OpenNosContext context, short bonusToDelete, long characterId)
-        {
             try
             {
-                StaticBonus bon = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType == (StaticBonusType)bonusToDelete && c.CharacterId == characterId);
-
-                if (bon != null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    context.StaticBonus.Remove(bon);
+                    StaticBonus bon = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType == (StaticBonusType)bonusToDelete && c.CharacterId == characterId);
+
+                    if (bon != null)
+                    {
+                        context.StaticBonus.Remove(bon);
+                        context.SaveChanges();
+                    }
+                    
                 }
             }
             catch (Exception e)
@@ -56,27 +55,23 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus)
         {
-            OpenNosContext contextRef = DataAccessHelper.CreateContext();
-            return InsertOrUpdate(ref contextRef, ref staticBonus);
-        }
-
-        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref StaticBonusDTO staticBonus)
-        {
             try
             {
-                long id = staticBonus.CharacterId;
-                StaticBonusType cardid = staticBonus.StaticBonusType;
-                StaticBonus entity = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType == cardid && c.CharacterId == id);
-
-                if (entity == null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    staticBonus = Insert(staticBonus, context);
-                    return SaveResult.Inserted;
-                }
+                    long id = staticBonus.CharacterId;
+                    StaticBonusType cardid = staticBonus.StaticBonusType;
+                    StaticBonus entity = context.StaticBonus.FirstOrDefault(c => c.StaticBonusType == cardid && c.CharacterId == id);
 
-                staticBonus.StaticBonusId = entity.StaticBonusId;
-                staticBonus = Update(entity, staticBonus, context);
-                return SaveResult.Updated;
+                    if (entity == null)
+                    {
+                        staticBonus = Insert(staticBonus, context);
+                        return SaveResult.Inserted;
+                    }
+                    staticBonus.StaticBonusId = entity.StaticBonusId;
+                    staticBonus = Update(entity, staticBonus, context);
+                    return SaveResult.Updated;
+                }
             }
             catch (Exception e)
             {

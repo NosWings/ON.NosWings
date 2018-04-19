@@ -32,26 +32,20 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult DeleteById(long id)
         {
-            OpenNosContext context = DataAccessHelper.CreateContext();
-            MinilandObject item = context.MinilandObject.First(i => i.MinilandObjectId.Equals(id));
-
-            DeleteById(ref context, id);
-            return DeleteResult.Deleted;
-        }
-
-        public DeleteResult DeleteById(ref OpenNosContext context, long id)
-        {
             try
             {
-                MinilandObject item = context.MinilandObject.First(i => i.MinilandObjectId.Equals(id));
-
-                if (item != null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    context.MinilandObject.Remove(item);
-                    context.SaveChanges();
-                }
+                    MinilandObject item = context.MinilandObject.First(i => i.MinilandObjectId.Equals(id));
 
-                return DeleteResult.Deleted;
+                    if (item != null)
+                    {
+                        context.MinilandObject.Remove(item);
+                        context.SaveChanges();
+                    }
+
+                    return DeleteResult.Deleted;
+                }
             }
             catch (Exception e)
             {
@@ -62,26 +56,23 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MinilandObjectDTO obj)
         {
-            OpenNosContext contextRef = DataAccessHelper.CreateContext();
-            return InsertOrUpdate(ref contextRef, ref obj);
-        }
-
-        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref MinilandObjectDTO obj)
-        {
             try
             {
-                long id = obj.MinilandObjectId;
-                MinilandObject entity = context.MinilandObject.FirstOrDefault(c => c.MinilandObjectId.Equals(id));
-
-                if (entity == null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    obj = Insert(obj, context);
-                    return SaveResult.Inserted;
-                }
+                    long id = obj.MinilandObjectId;
+                    MinilandObject entity = context.MinilandObject.FirstOrDefault(c => c.MinilandObjectId.Equals(id));
 
-                obj.MinilandObjectId = entity.MinilandObjectId;
-                obj = Update(entity, obj, context);
-                return SaveResult.Updated;
+                    if (entity == null)
+                    {
+                        obj = Insert(obj, context);
+                        return SaveResult.Inserted;
+                    }
+
+                    obj.MinilandObjectId = entity.MinilandObjectId;
+                    obj = Update(entity, obj, context);
+                    return SaveResult.Updated;
+                }
             }
             catch (Exception e)
             {
@@ -90,18 +81,15 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<MinilandObjectDTO> LoadByCharacterId(long characterId, OpenNosContext context)
-        {
-            foreach (MinilandObject obj in context.MinilandObject.Where(s => s.CharacterId == characterId))
-            {
-                yield return _mapper.Map<MinilandObjectDTO>(obj);
-            }
-        }
-
         public IEnumerable<MinilandObjectDTO> LoadByCharacterId(long characterId)
         {
-            OpenNosContext context = DataAccessHelper.CreateContext();
-            return LoadByCharacterId(characterId, context);
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                foreach (MinilandObject obj in context.MinilandObject.Where(s => s.CharacterId == characterId))
+                {
+                    yield return _mapper.Map<MinilandObjectDTO>(obj);
+                }
+            }
         }
 
         private MinilandObjectDTO Insert(MinilandObjectDTO obj, OpenNosContext context)

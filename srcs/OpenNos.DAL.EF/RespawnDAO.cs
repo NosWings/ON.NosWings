@@ -32,27 +32,24 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref RespawnDTO respawn)
         {
-            OpenNosContext contextRef = DataAccessHelper.CreateContext();
-            return InsertOrUpdate(ref contextRef, ref respawn);
-        }
-
-        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref RespawnDTO respawn)
-        {
             try
             {
-                long characterId = respawn.CharacterId;
-                long respawnMapTypeId = respawn.RespawnMapTypeId;
-                Respawn entity = context.Respawn.FirstOrDefault(c => c.RespawnMapTypeId.Equals(respawnMapTypeId) && c.CharacterId.Equals(characterId));
-
-                if (entity == null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    respawn = Insert(respawn, context);
-                    return SaveResult.Inserted;
-                }
+                    long CharacterId = respawn.CharacterId;
+                    long RespawnMapTypeId = respawn.RespawnMapTypeId;
+                    Respawn entity = context.Respawn.FirstOrDefault(c => c.RespawnMapTypeId.Equals(RespawnMapTypeId) && c.CharacterId.Equals(CharacterId));
 
-                respawn.RespawnId = entity.RespawnId;
-                respawn = Update(entity, respawn, context);
-                return SaveResult.Updated;
+                    if (entity == null)
+                    {
+                        respawn = Insert(respawn, context);
+                        return SaveResult.Inserted;
+                    }
+
+                    respawn.RespawnId = entity.RespawnId;
+                    respawn = Update(entity, respawn, context);
+                    return SaveResult.Updated;
+                }
             }
             catch (Exception e)
             {

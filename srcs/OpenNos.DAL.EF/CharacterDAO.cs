@@ -23,10 +23,11 @@ using OpenNos.DAL.EF.Base;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Entities;
 using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class CharacterDAO : MappingBaseDao<Character, CharacterDTO>
+    public class CharacterDAO : MappingBaseDao<Character, CharacterDTO>, ICharacterDAO
     {
         #region Methods
 
@@ -98,25 +99,21 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref CharacterDTO character)
         {
-            OpenNosContext contextref = DataAccessHelper.CreateContext();
-            return InsertOrUpdate(ref character, ref contextref);
-        }
-
-        public SaveResult InsertOrUpdate(ref CharacterDTO character, ref OpenNosContext context)
-        {
             try
             {
-                long characterId = character.CharacterId;
-                Character entity = context.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId));
-
-                if (entity == null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    character = Insert(character, context);
-                    return SaveResult.Inserted;
-                }
+                    long characterId = character.CharacterId;
+                    Character entity = context.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId));
 
-                character = Update(entity, character, context);
-                return SaveResult.Updated;
+                    if (entity == null)
+                    {
+                        character = Insert(character, context);
+                        return SaveResult.Inserted;
+                    }
+                    character = Update(entity, character, context);
+                    return SaveResult.Updated;
+                }
             }
             catch (Exception e)
             {
@@ -146,15 +143,12 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<CharacterDTO> LoadAllCharactersByAccount(long accountId, OpenNosContext context)
-        {
-            return context.Character.Where(c => c.AccountId.Equals(accountId)).OrderByDescending(c => c.Slot).ToList().Select(c => _mapper.Map<CharacterDTO>(c));
-        }
-
         public IEnumerable<CharacterDTO> LoadAllCharactersByAccount(long accountId)
         {
-            OpenNosContext context = DataAccessHelper.CreateContext();
-            return LoadAllCharactersByAccount(accountId, context);
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                return context.Character.Where(c => c.AccountId.Equals(accountId)).OrderByDescending(c => c.Slot).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+            }
         }
 
         public CharacterDTO LoadById(long characterId)

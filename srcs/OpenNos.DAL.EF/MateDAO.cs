@@ -32,21 +32,19 @@ namespace OpenNos.DAL.EF
 
         public DeleteResult Delete(long id)
         {
-            OpenNosContext contextRef = DataAccessHelper.CreateContext();
-            return Delete(ref contextRef, id);
-        }
-
-        public DeleteResult Delete(ref OpenNosContext context, long id)
-        {
             try
             {
-                Mate mate = context.Mate.FirstOrDefault(c => c.MateId.Equals(id));
-                if (mate != null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    context.Mate.Remove(mate);
-                }
+                    Mate mate = context.Mate.FirstOrDefault(c => c.MateId.Equals(id));
+                    if (mate != null)
+                    {
+                        context.Mate.Remove(mate);
+                        context.SaveChanges();
+                    }
 
-                return DeleteResult.Deleted;
+                    return DeleteResult.Deleted;
+                }
             }
             catch (Exception e)
             {
@@ -57,25 +55,22 @@ namespace OpenNos.DAL.EF
 
         public SaveResult InsertOrUpdate(ref MateDTO mate)
         {
-            OpenNosContext contextRef = DataAccessHelper.CreateContext();
-            return InsertOrUpdate(ref contextRef, ref mate);
-        }
-
-        public SaveResult InsertOrUpdate(ref OpenNosContext context, ref MateDTO mate)
-        {
             try
             {
-                long MateId = mate.MateId;
-                Mate entity = context.Mate.FirstOrDefault(c => c.MateId.Equals(MateId));
-
-                if (entity == null)
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    mate = Insert(mate, context);
-                    return SaveResult.Inserted;
-                }
+                    long MateId = mate.MateId;
+                    Mate entity = context.Mate.FirstOrDefault(c => c.MateId.Equals(MateId));
 
-                mate = Update(entity, mate, context);
-                return SaveResult.Updated;
+                    if (entity == null)
+                    {
+                        mate = Insert(mate, context);
+                        return SaveResult.Inserted;
+                    }
+
+                    mate = Update(entity, mate, context);
+                    return SaveResult.Updated;
+                }
             }
             catch (Exception e)
             {

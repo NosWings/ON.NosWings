@@ -4148,15 +4148,71 @@ namespace OpenNos.GameObject
         {
             try
             {
-                // Base context
-                OpenNosContext context = DataAccessHelper.CreateContext();
-                //context.Configuration.AutoDetectChangesEnabled = false;
+                /*
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    DAL.EF.Entities.Account acc = context.Account.First(s => s.AccountId == AccountId);
+                    acc.BankMoney = Session.Account.BankMoney;
+                    acc.Authority = Session.Account.Authority;
+
+                    DAL.EF.Entities.Character charac = context.Character.FirstOrDefault(s => s.CharacterId == CharacterId);
+                    if (charac != null)
+                    {
+                        charac = this.ToEntity();
+                    }
+                    if (Inventory != null)
+                    {
+                        // be sure that noone tries to edit while saving is currently editing
+                        lock (Inventory)
+                        {
+                            // load and concat inventory with equipment
+                            IEnumerable<ItemInstance> inventories = Inventory.Select(s => s.Value);
+                            IEnumerable<Guid> currentlySavedInventoryIds = DaoFactory.IteminstanceDao.LoadSlotAndTypeByCharacterId(CharacterId);
+                            IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadByAccount(Session.Account.AccountId);
+                            currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId).Aggregate(currentlySavedInventoryIds,(current, characteraccount) => current.Concat(DaoFactory.IteminstanceDao.LoadByCharacterId(characteraccount.CharacterId).Where(s => s.Type == InventoryType.Warehouse).Select(i => i.Id)));
+
+                            IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries = DaoFactory.MinilandObjectDao.LoadByCharacterId(CharacterId).ToList();
+                            foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Miniland.MapDesignObjects))
+                            {
+                                DaoFactory.MinilandObjectDao.DeleteById(mobjToDelete.MinilandObjectId);
+                            }
+
+                            // remove all which are saved but not in our current enumerable
+                            IEnumerable<ItemInstance> itemInstances = inventories as IList<ItemInstance> ?? inventories.ToList();
+                            DaoFactory.IteminstanceDao.Delete(currentlySavedInventoryIds.Except(itemInstances.Select(i => i.Id)));
+
+                            // create or update all which are new or do still exist
+                            foreach (ItemInstance itemInstance in itemInstances.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse))
+                            {
+                                DaoFactory.IteminstanceDao.InsertOrUpdate(itemInstance);
+                                if (!(itemInstance is WearableInstance instance))
+                                {
+                                    continue;
+                                }
+                                if (!instance.EquipmentOptions.Any())
+                                {
+                                    continue;
+                                }
+
+                                IEnumerable<EquipmentOption> options = instance.EquipmentOptions.Select(s =>
+                                {
+                                    s.WearableInstanceId = instance.Id;
+                                    return s.ToEntity();
+                                });
+                                context.EquipmentOption.RemoveRange(options);
+                            }
+                        }
+                    }
+
+                    context.SaveChanges();
+                }
+                */
 
                 AccountDTO account = Session.Account;
-                DaoFactory.AccountDao.InsertOrUpdate(ref account, ref context);
+                DaoFactory.AccountDao.InsertOrUpdate(ref account);
 
-                CharacterDTO character = this;
-                DaoFactory.CharacterDao.InsertOrUpdate(ref character, ref context);
+                CharacterDTO character = DeepCopy();
+                DaoFactory.CharacterDao.InsertOrUpdate(ref character);
 
                 if (Inventory != null)
                 {
@@ -4165,17 +4221,23 @@ namespace OpenNos.GameObject
                     {
                         // load and concat inventory with equipment
                         IEnumerable<ItemInstance> inventories = Inventory.Select(s => s.Value);
-                        IEnumerable<Guid> currentlySavedInventoryIds = DaoFactory.IteminstanceDao.LoadSlotAndTypeByCharacterId(CharacterId, context);
-                        IEnumerable<CharacterDTO> characters = DaoFactory.CharacterDao.LoadAllCharactersByAccount(Session.Account.AccountId, context);
-                        currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId).Aggregate(currentlySavedInventoryIds,
-                            (current, characteraccount) =>
-                                current.Concat(DaoFactory.IteminstanceDao.LoadByCharacterId(characteraccount.CharacterId, context).Where(s => s.Type == InventoryType.Warehouse).Select(i => i.Id)));
+                        IEnumerable<Guid> currentlySavedInventoryIds =
+                            DaoFactory.IteminstanceDao.LoadSlotAndTypeByCharacterId(CharacterId);
+                        IEnumerable<CharacterDTO> characters =
+                            DaoFactory.CharacterDao.LoadAllCharactersByAccount(Session.Account.AccountId);
+                        currentlySavedInventoryIds = characters.Where(s => s.CharacterId != CharacterId)
+                            .Aggregate(currentlySavedInventoryIds,
+                                (current, characteraccount) => current.Concat(DaoFactory.IteminstanceDao
+                                    .LoadByCharacterId(characteraccount.CharacterId)
+                                    .Where(s => s.Type == InventoryType.Warehouse)
+                                    .Select(i => i.Id).ToList()));
 
                         IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries =
                             DaoFactory.MinilandObjectDao.LoadByCharacterId(CharacterId).ToList();
-                        foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Miniland.MapDesignObjects))
+                        foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(
+                            Miniland.MapDesignObjects))
                         {
-                            DaoFactory.MinilandObjectDao.DeleteById(ref context, mobjToDelete.MinilandObjectId);
+                            DaoFactory.MinilandObjectDao.DeleteById(mobjToDelete.MinilandObjectId);
                         }
 
                         // remove all which are saved but not in our current enumerable
@@ -4186,8 +4248,7 @@ namespace OpenNos.GameObject
                         foreach (ItemInstance itemInstance in itemInstances.Where(s =>
                             s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse))
                         {
-                            var itemInstanceRef = (ItemInstanceDTO)itemInstance;
-                            DaoFactory.IteminstanceDao.InsertOrUpdate(ref context, ref itemInstanceRef);
+                            DaoFactory.IteminstanceDao.InsertOrUpdate(itemInstance);
                             if (!(itemInstance is WearableInstance instance))
                             {
                                 continue;
@@ -4198,11 +4259,11 @@ namespace OpenNos.GameObject
                                 continue;
                             }
 
-                            DaoFactory.EquipmentOptionDao.DeleteByWearableInstanceId(ref context, instance.Id);
+                            DaoFactory.EquipmentOptionDao.DeleteByWearableInstanceId(instance.Id);
                             instance.EquipmentOptions.ForEach(s =>
                             {
                                 s.WearableInstanceId = instance.Id;
-                                DaoFactory.EquipmentOptionDao.InsertOrUpdate(ref context, ref s);
+                                DaoFactory.EquipmentOptionDao.InsertOrUpdate(s);
                             });
                         }
                     }
@@ -4210,14 +4271,15 @@ namespace OpenNos.GameObject
 
                 if (Skills != null)
                 {
-                    IEnumerable<Guid> currentlySavedCharacterSkills = DaoFactory.CharacterSkillDao.LoadKeysByCharacterId(CharacterId, context);
+                    IEnumerable<Guid> currentlySavedCharacterSkills =
+                        DaoFactory.CharacterSkillDao.LoadKeysByCharacterId(CharacterId).ToList();
 
-                    DaoFactory.CharacterSkillDao.Delete(currentlySavedCharacterSkills.Except(Skills.Select(s => s.Value.Id)));
+                    DaoFactory.CharacterSkillDao.Delete(
+                        currentlySavedCharacterSkills.Except(Skills.Select(s => s.Value.Id)));
 
                     foreach (CharacterSkill characterSkill in Skills.Select(s => s.Value))
                     {
-                        var characterSkillRef = (CharacterSkillDTO)characterSkill;
-                        DaoFactory.CharacterSkillDao.InsertOrUpdate(ref context, ref characterSkillRef);
+                        DaoFactory.CharacterSkillDao.InsertOrUpdate(characterSkill);
                     }
                 }
 
@@ -4226,25 +4288,25 @@ namespace OpenNos.GameObject
 
                 foreach (long matesToDeleteId in currentlySavedMates.Except(Mates.Select(s => s.MateId)))
                 {
-                    DaoFactory.MateDao.Delete(ref context, matesToDeleteId);
+                    DaoFactory.MateDao.Delete(matesToDeleteId);
                 }
 
                 foreach (Mate mate in Mates)
                 {
                     MateDTO matesave = mate;
-                    DaoFactory.MateDao.InsertOrUpdate(ref context, ref matesave);
+                    DaoFactory.MateDao.InsertOrUpdate(ref matesave);
                 }
 
                 IEnumerable<QuicklistEntryDTO> quickListEntriesToInsertOrUpdate = QuicklistEntries.ToList();
 
                 IEnumerable<Guid> currentlySavedQuicklistEntries =
                     DaoFactory.QuicklistEntryDao.LoadKeysByCharacterId(CharacterId).ToList();
-                DaoFactory.QuicklistEntryDao.Delete(currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)));
+                DaoFactory.QuicklistEntryDao.Delete(
+                    currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)));
 
                 foreach (QuicklistEntryDTO quicklistEntry in quickListEntriesToInsertOrUpdate)
                 {
-                    QuicklistEntryDTO quicklistRef = quicklistEntry;
-                    DaoFactory.QuicklistEntryDao.InsertOrUpdate(ref context, ref quicklistRef);
+                    DaoFactory.QuicklistEntryDao.InsertOrUpdate(quicklistEntry);
                 }
 
                 IEnumerable<MailDTO> mailDtoToInsertOrUpdate = MailList.Values.ToList();
@@ -4254,13 +4316,13 @@ namespace OpenNos.GameObject
                 foreach (long maildtoEntryToDelete in currentlySavedMailistEntries.Except(
                     MailList.Values.Select(s => s.MailId)))
                 {
-                    DaoFactory.MailDao.DeleteById(ref context, maildtoEntryToDelete);
+                    DaoFactory.MailDao.DeleteById(maildtoEntryToDelete);
                 }
 
                 foreach (MailDTO mailEntry in mailDtoToInsertOrUpdate)
                 {
                     MailDTO save = mailEntry;
-                    DaoFactory.MailDao.InsertOrUpdate(ref context, ref save);
+                    DaoFactory.MailDao.InsertOrUpdate(ref save);
                 }
 
                 IEnumerable<MinilandObjectDTO> minilandobjectEntriesToInsertOrUpdate =
@@ -4269,35 +4331,31 @@ namespace OpenNos.GameObject
                 foreach (MinilandObjectDTO mobjEntry in minilandobjectEntriesToInsertOrUpdate)
                 {
                     MinilandObjectDTO mobj = mobjEntry;
-                    DaoFactory.MinilandObjectDao.InsertOrUpdate(ref context, ref mobj);
+                    DaoFactory.MinilandObjectDao.InsertOrUpdate(ref mobj);
                 }
 
                 IEnumerable<short> currentlySavedBonus = DaoFactory.StaticBonusDao.LoadTypeByCharacterId(CharacterId);
                 foreach (short bonusToDelete in currentlySavedBonus.Except(Buff.Select(s => s.Card.CardId)))
                 {
-                    DaoFactory.StaticBonusDao.Delete(ref context, bonusToDelete, CharacterId);
+                    DaoFactory.StaticBonusDao.Delete(bonusToDelete, CharacterId);
                 }
 
                 foreach (StaticBonusDTO bonus in StaticBonusList.ToArray())
                 {
                     StaticBonusDTO bonus2 = bonus;
-                    DaoFactory.StaticBonusDao.InsertOrUpdate(ref context, ref bonus2);
+                    DaoFactory.StaticBonusDao.InsertOrUpdate(ref bonus2);
                 }
 
                 IEnumerable<short> currentlySavedBuff = DaoFactory.StaticBuffDao.LoadByTypeCharacterId(CharacterId);
                 foreach (short bonusToDelete in currentlySavedBuff.Except(Buff.Select(s => s.Card.CardId)))
                 {
-                    DaoFactory.StaticBuffDao.Delete(ref context, bonusToDelete, CharacterId);
+                    DaoFactory.StaticBuffDao.Delete(bonusToDelete, CharacterId);
                 }
 
                 //Quest
                 DaoFactory.CharacterQuestDao.LoadByCharacterId(CharacterId).ToList()
-                    .ForEach(q => DaoFactory.CharacterQuestDao.Delete(ref context, CharacterId, q.QuestId));
-                foreach (CharacterQuest quest in Quests)
-                {
-                    var questRef = (CharacterQuestDTO)quest;
-                    DaoFactory.CharacterQuestDao.InsertOrUpdate(ref context, ref questRef);
-                }
+                    .ForEach(q => DaoFactory.CharacterQuestDao.Delete(CharacterId, q.QuestId));
+                Quests.ToList().ForEach(qst => DaoFactory.CharacterQuestDao.InsertOrUpdate(qst));
 
                 foreach (Buff.Buff buff in Buff.Where(s => s.StaticBuff).ToArray())
                 {
@@ -4307,13 +4365,13 @@ namespace OpenNos.GameObject
                         RemainingTime = (int)(buff.RemainingTime - (DateTime.Now - buff.Start).TotalSeconds),
                         CardId = buff.Card.CardId
                     };
-                    DaoFactory.StaticBuffDao.InsertOrUpdate(ref context, ref bf);
+                    DaoFactory.StaticBuffDao.InsertOrUpdate(ref bf);
                 }
 
                 foreach (StaticBonusDTO bonus in StaticBonusList.ToArray())
                 {
                     StaticBonusDTO bonus2 = bonus;
-                    DaoFactory.StaticBonusDao.InsertOrUpdate(ref context, ref bonus2);
+                    DaoFactory.StaticBonusDao.InsertOrUpdate(ref bonus2);
                 }
 
                 foreach (GeneralLogDTO general in GeneralLogs)
@@ -4329,12 +4387,10 @@ namespace OpenNos.GameObject
                     RespawnDTO res = resp;
                     if (resp.MapId != 0 && resp.X != 0 && resp.Y != 0)
                     {
-                        DaoFactory.RespawnDao.InsertOrUpdate(ref context, ref res);
+                        DaoFactory.RespawnDao.InsertOrUpdate(ref res);
                     }
                 }
 
-                LogHelper.Instance.FlushLogs();
-                context.SaveChanges();
                 Logger.Log.Info($"[DB] Successfully saved Character {Name}");
             }
             catch (Exception e)
