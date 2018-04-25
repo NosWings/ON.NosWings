@@ -2103,12 +2103,6 @@ namespace OpenNos.GameObject
 
                 #region item drop
 
-                if (monsterToAttack.MapInstance.Map.MapId == 1)
-                {
-                    // NOSVILLE DISABLE DROPS
-                    return;
-                }
-
                 int dropRate = ServerManager.Instance.DropRate * MapInstance.DropRate;
                 int x = 0;
                 foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
@@ -2132,7 +2126,7 @@ namespace OpenNos.GameObject
 
                     if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) ||
                         Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42) ||
-                        monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                        monsterToAttack.Monster.MonsterType == MonsterType.Elite || ServerManager.Instance.AutoLoot)
                     {
                         List<long> alreadyGifted = new List<long>();
                         foreach (IBattleEntity entity in monsterToAttack.DamageList.Keys)
@@ -2219,7 +2213,7 @@ namespace OpenNos.GameObject
                 };
                 if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) ||
                     Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42) ||
-                    monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                    monsterToAttack.Monster.MonsterType == MonsterType.Elite || ServerManager.Instance.AutoLoot)
                 {
                     List<long> alreadyGifted = new List<long>();
                     foreach (IBattleEntity entity in monsterToAttack.DamageList.Keys)

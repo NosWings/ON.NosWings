@@ -130,6 +130,8 @@ namespace OpenNos.GameObject.Networking
 
         public bool LodTimes { get; set; }
 
+        public bool AutoLoot { get; set; }
+
         public byte MinLodLevel { get; set; }
 
         public int QuestDropRate { get; set; }
@@ -1490,6 +1492,7 @@ namespace OpenNos.GameObject.Networking
             ReputOnMonsters = bool.Parse(ConfigurationManager.AppSettings["ReputOnMonster"]);
             SingleRaidPortal = bool.Parse(ConfigurationManager.AppSettings["SingleRaidPortal"]);
             LodTimes = bool.Parse(ConfigurationManager.AppSettings["LodTimes"]);
+            AutoLoot = bool.Parse(ConfigurationManager.AppSettings["AutoLoot"]); 
             MinLodLevel = byte.Parse(ConfigurationManager.AppSettings["MinLodLevel"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Act4RaidStart = DateTime.Now;
