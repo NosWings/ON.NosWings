@@ -2188,10 +2188,19 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            if (Session.HasCurrentMapInstance)
+                            if (!Session.HasCurrentMapInstance)
                             {
-                                Session.Character.GiftAdd(drop.ItemVNum, (byte)drop.Amount);
+                                continue;
                             }
+
+                            Session.Character.GiftAdd(drop.ItemVNum, (byte)drop.Amount);
+                            if (!Quests.Any(q => (q.Quest.QuestType == (int)QuestType.Collect4 || q.Quest.QuestType == (int)QuestType.Collect2) && q.Quest.QuestObjectives.Any(qst => qst.Data == drop.ItemVNum)))
+                            {
+                                continue;
+                            }
+
+                            IncrementQuests(QuestType.Collect4, drop.ItemVNum);
+                            IncrementQuests(QuestType.Collect2, drop.ItemVNum);
                         }
                     }
                 }
