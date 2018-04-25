@@ -2128,7 +2128,7 @@ namespace OpenNos.GameObject
 
                     if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) ||
                         Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42) ||
-                        monsterToAttack.Monster.MonsterType == MonsterType.Elite || ServerManager.Instance.AutoLoot)
+                        monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                     {
                         List<long> alreadyGifted = new List<long>();
                         foreach (IBattleEntity entity in monsterToAttack.DamageList.Keys)
@@ -2171,18 +2171,28 @@ namespace OpenNos.GameObject
                         }
 
                         long? owner = dropOwner;
-                        Observable.Timer(TimeSpan.FromMilliseconds(500)).Subscribe(o =>
+                        if (!ServerManager.Instance.AutoLoot)
+                        {
+                            Observable.Timer(TimeSpan.FromMilliseconds(500)).Subscribe(o =>
+                            {
+                                if (Session.HasCurrentMapInstance)
+                                {
+                                    Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX,
+                                        monsterToAttack.MapY,
+                                        Quests.Any(q =>
+                                            (q.Quest.QuestType == (int)QuestType.Collect4 ||
+                                                q.Quest.QuestType == (int)QuestType.Collect2) &&
+                                            q.Quest.QuestObjectives.Any(qst => qst.Data == drop.ItemVNum)));
+                                }
+                            });
+                        }
+                        else
                         {
                             if (Session.HasCurrentMapInstance)
                             {
-                                Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX,
-                                    monsterToAttack.MapY,
-                                    Quests.Any(q =>
-                                        (q.Quest.QuestType == (int)QuestType.Collect4 ||
-                                            q.Quest.QuestType == (int)QuestType.Collect2) &&
-                                        q.Quest.QuestObjectives.Any(qst => qst.Data == drop.ItemVNum)));
+                                Session.Character.GiftAdd(drop.ItemVNum, (byte)drop.Amount);
                             }
-                        });
+                        }
                     }
                 }
 
@@ -2215,7 +2225,7 @@ namespace OpenNos.GameObject
                 };
                 if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) ||
                     Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act42) ||
-                    monsterToAttack.Monster.MonsterType == MonsterType.Elite || ServerManager.Instance.AutoLoot)
+                    monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                 {
                     List<long> alreadyGifted = new List<long>();
                     foreach (IBattleEntity entity in monsterToAttack.DamageList.Keys)
@@ -2261,15 +2271,29 @@ namespace OpenNos.GameObject
                         }
                     }
 
-                    // delayed Drop
-                    Observable.Timer(TimeSpan.FromMilliseconds(500)).Subscribe(o =>
+                    if (!ServerManager.Instance.AutoLoot)
+                    {
+
+                        // delayed Drop
+                        Observable.Timer(TimeSpan.FromMilliseconds(500)).Subscribe(o =>
+                        {
+                            if (Session.HasCurrentMapInstance)
+                            {
+                                Session.CurrentMapInstance.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX,
+                                    monsterToAttack.MapY);
+                            }
+                        });
+                    }
+                    else
                     {
                         if (Session.HasCurrentMapInstance)
                         {
-                            Session.CurrentMapInstance.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX,
-                                monsterToAttack.MapY);
+                            Session?.Character.GetGold((int)(drop2.Amount *
+                                (1 + GetBuff(CardType.Item,
+                                        (byte)AdditionalTypes.Item.IncreaseEarnedGold)[0] /
+                                    100D)));
                         }
-                    });
+                    }
                 }
 
                 #endregion
