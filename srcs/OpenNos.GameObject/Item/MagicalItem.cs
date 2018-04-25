@@ -475,14 +475,10 @@ namespace OpenNos.GameObject.Item
                         session.Character.Group.IsLeader(session) &&
                         session.CurrentMapInstance.Portals.Any(s => s.Type == (short)PortalType.Raid))
                     {
-                        Parallel.ForEach(
-                            session.Character.Group.Characters.Where(s =>
-                                s.Character.Group?.GroupId == session.Character.Group?.GroupId),
-                            sess =>
-                            {
-                                ServerManager.Instance.TeleportOnRandomPlaceInMap(sess,
-                                    session.CurrentMapInstance.MapInstanceId);
-                            });
+                        foreach (ClientSession sess in session.Character.Group.Characters)
+                        {
+                            ServerManager.Instance.ChangeMap(sess.Character.CharacterId, session.Character.PositionX, session.Character.PositionY);
+                        }
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
 
