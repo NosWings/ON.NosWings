@@ -15,6 +15,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using NosSharp.Enums;
+using OpenNos.Core;
 using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject.Helpers
@@ -130,6 +131,9 @@ namespace OpenNos.GameObject.Helpers
                     break;
                 case 13:
                     session.Character.AddBuff(new Buff.Buff(444, isPermaBuff: true));
+                    break;
+                case 14:
+                    session.Character.AddBuff(new Buff.Buff(663, isPermaBuff: true));
                     break;
             }
         }
