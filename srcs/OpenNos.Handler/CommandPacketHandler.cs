@@ -2215,7 +2215,7 @@ namespace OpenNos.Handler
         {
             if (mutePacket != null)
             {
-                if (mutePacket.Duration == 0)
+                if (!mutePacket.Duration.HasValue)
                 {
                     mutePacket.Duration = 60;
                 }
@@ -2229,7 +2229,7 @@ namespace OpenNos.Handler
 
                 LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, mutePacket, Session.IpAddress);
                 mutePacket.Reason = mutePacket.Reason?.Trim();
-                MuteMethod(mutePacket.CharacterName, mutePacket.Reason, mutePacket.Duration);
+                MuteMethod(mutePacket.CharacterName, mutePacket.Reason, mutePacket.Duration.Value);
             }
             else
             {

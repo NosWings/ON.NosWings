@@ -20,7 +20,7 @@ namespace OpenNos.GameObject.Packets.CommandPackets
         public string CharacterName { get; set; }
 
         [PacketIndex(1)]
-        public int Duration { get; set; }
+        public int? Duration { get; set; }
 
         [PacketIndex(2, SerializeToEnd = true)]
         public string Reason { get; set; }
