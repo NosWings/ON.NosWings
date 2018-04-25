@@ -172,6 +172,29 @@ namespace OpenNos.GameObject.Battle
 
         #region Methods
 
+        public int RandomTimeBuffs(Buff.Buff indicator)
+        {
+            if (Session is Character character)
+            {
+                switch (indicator.Card.CardId)
+                {
+                    //SP2a invisibility
+                    case 85:
+                        return ServerManager.Instance.RandomNumber(50, 350);
+                    // SP6a invisibility
+                    case 559:
+                        return 350;
+                    // Speed booster
+                    case 336:
+                        return ServerManager.Instance.RandomNumber(30, 70);
+                    // Charge buff types
+                    case 0:
+                        return character.ChargeValue > 7000 ? 7000 : character.ChargeValue;
+                }
+            }
+            return -1;
+        }
+
         public void AddBuff(Buff.Buff indicator)
         {
             if (indicator?.Card == null || indicator.Card.BuffType == BuffType.Bad &&
@@ -182,26 +205,10 @@ namespace OpenNos.GameObject.Battle
 
             Buffs.RemoveWhere(s => !s.Card.CardId.Equals(indicator.Card.CardId), out ConcurrentBag<Buff.Buff> buffs);
             Buffs = buffs;
-            //TODO: Find a better way to do this
             int randomTime = 0;
             if (Session is Character character)
             {
-                if (indicator.Card.CardId == 85)
-                {
-                    randomTime = character.BuffRandomTime = ServerManager.Instance.RandomNumber(50, 350);
-                }
-                else if (indicator.Card.CardId == 559)
-                {
-                    randomTime = 350;
-                }
-                else if (indicator.Card.CardId == 336)
-                {
-                    randomTime = character.BuffRandomTime = ServerManager.Instance.RandomNumber(30, 70);
-                }
-                else if (indicator.Card.CardId == 0)
-                {
-                    character.BuffRandomTime = character.ChargeValue > 7000 ? 7000 : character.ChargeValue;
-                }
+                randomTime = RandomTimeBuffs(indicator);
 
                 if (!indicator.StaticBuff)
                 {
@@ -301,6 +308,12 @@ namespace OpenNos.GameObject.Battle
                 if (skill == null)
                 {
                     return 0;
+                }
+
+                if (character.Buff.Any(s => s.Card.CardId == 559))
+                {
+                    character.TriggerAmbush = true;
+                    RemoveBuff(559);
                 }
 
                 if (skill.SkillVNum == 1085) // pas de bcard ...
@@ -978,6 +991,13 @@ namespace OpenNos.GameObject.Battle
                     s.SubType.Equals((byte)AdditionalTypes.SpecialActions.Hide)) &&
                 indicator.Card.CardId != 559 && indicator.Card.CardId != 560)
             {
+                return;
+            }
+
+            if (indicator.Card.CardId == 559 && character.TriggerAmbush)
+            {
+                character.AddBuff(new Buff.Buff(560));
+                character.TriggerAmbush = false;
                 return;
             }
 

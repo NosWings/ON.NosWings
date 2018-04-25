@@ -957,14 +957,22 @@ namespace OpenNos.Handler
                                         case BuffType.Bad:
                                             bcard.ApplyBCards(mon, Session.Character);
                                             break;
-                                        case BuffType.Good:
-                                        case BuffType.Neutral:
-                                            bcard.ApplyBCards(Session.Character, Session.Character);
-                                            break;
                                     }
                                 }
 
                                 Session.Character.BattleEntity.TargetHit(mon, TargetHitType.ZoneHit, characterSkill.Skill, mapX: x, mapY: y);
+                            }
+                        }
+
+                        foreach (BCard bcard in characterSkill.Skill.BCards)
+                        {
+                            var bf = new Buff(bcard.SecondData);
+                            switch (bf.Card?.BuffType)
+                            {
+                                case BuffType.Good:
+                                case BuffType.Neutral:
+                                    bcard.ApplyBCards(Session.Character, Session.Character);
+                                    break;
                             }
                         }
 

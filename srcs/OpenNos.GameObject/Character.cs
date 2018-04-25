@@ -101,6 +101,8 @@ namespace OpenNos.GameObject
 
         #endregion
 
+        public bool TriggerAmbush { get; set; }
+
         public CharacterLog CharacterLog { get; }
 
         public DateTime LastSkillCombo { get; set; }
