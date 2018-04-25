@@ -3371,7 +3371,7 @@ namespace OpenNos.Handler
             {
                 Type = packet.Type ?? 0,
                 Level = 7,
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 Value = packet.Value ?? 0
             };
             switch (packet.ItemType)
