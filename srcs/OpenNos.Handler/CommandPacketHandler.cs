@@ -3341,6 +3341,62 @@ namespace OpenNos.Handler
             Environment.Exit(0);
         }
 
+        /// <summary>
+        ///     $GenerateShell packet
+        /// </summary>
+        public void GenerateShell(GenerateShellPacket packet)
+        {
+            if (packet == null)
+            {
+                return;
+            }
+
+            if (!packet.Value.HasValue || !packet.Type.HasValue)
+            {
+                Dictionary<short, string> shellTypes = new Dictionary<short, string>();
+                foreach (ShellOptionType type in Enum.GetValues(typeof(ShellOptionType)))
+                {
+                    shellTypes.Add((short)type, type.ToString());
+                }
+
+                foreach (KeyValuePair<short, string> entry in shellTypes)
+                {
+                    Session.SendPacket(Session.Character.GenerateSay($"{entry.Key} : {entry.Value}", 12));
+                }
+            }
+
+            WearableInstance itemType = null;
+            var option = new EquipmentOptionDTO
+            {
+                Type = packet.Type ?? 0,
+                Level = 7,
+                Id = new Guid(),
+                Value = packet.Value ?? 0
+            };
+            switch (packet.ItemType)
+            {
+                case "Weapon":
+                    itemType = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
+                    break;
+                case "SecondaryWeapon":
+                    itemType = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
+                    break;
+                case "Armor":
+                    itemType = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
+                    break;
+                default:
+                    Session.SendPacket(Session.Character.GenerateSay(packet.ToString(), 12));
+                    break;
+            }
+
+            if (itemType == null)
+            {
+                Logger.Log.Error("Cannot apply shell to non equiped stuff.");
+                return;
+            }
+            option.WearableInstanceId = itemType.Id;
+            itemType.EquipmentOptions.Add(option);
+        }
         #endregion
     }
 }

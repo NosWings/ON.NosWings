@@ -10387,8 +10387,8 @@ namespace OpenNos.GameObject.Helpers
         private int? GenerateOptionValue(int randomOptionId, int d, int shellLevel)
         {
             int optionLevel = (d % 4) == 0 ? 4 : d % 4;
-            int? minimum = (int?) ShellOptionType[randomOptionId][(optionLevel - 1) * 2];
-            int? maximum = (int?) ShellOptionType[randomOptionId][1 + (optionLevel - 1) * 2];
+            int? minimum = (int?)ShellOptionType[randomOptionId][(optionLevel - 1) * 2];
+            int? maximum = (int?)ShellOptionType[randomOptionId][1 + (optionLevel - 1) * 2];
 
             if (!minimum.HasValue || !maximum.HasValue)
             {
@@ -10396,7 +10396,7 @@ namespace OpenNos.GameObject.Helpers
             }
 
             int m = _rand.Next(minimum.Value, maximum.Value + 1);
-            int value = (int) Math.Round((double) m / 1000 * shellLevel);
+            int value = (int)Math.Round((double)m / 1000 * shellLevel);
 
             if (m != 0)
             {
@@ -10458,11 +10458,11 @@ namespace OpenNos.GameObject.Helpers
                     w = 176 + 7 * letterMultiplier - 8 + shellRarity;
                     break;
                 case 10:
-                    factor = new List<int> {1, 43, 85, 127};
+                    factor = new List<int> { 1, 43, 85, 127 };
                     w = factor[_rand.Next(factor.Count)] + 7 * letterMultiplier - 8 + shellRarity;
                     break;
                 case 11:
-                    factor = new List<int> {8, 50, 92, 134};
+                    factor = new List<int> { 8, 50, 92, 134 };
                     w = factor[_rand.Next(factor.Count)] + 7 * letterMultiplier - 8 + shellRarity;
                     break;
                 default:
@@ -10485,7 +10485,7 @@ namespace OpenNos.GameObject.Helpers
 
                 for (int i = 1; i <= 20; ++i)
                 {
-                    int? index = (int?) ShellType[w][g];
+                    int? index = (int?)ShellType[w][g];
                     if (index == null)
                     {
                         continue;
@@ -10515,15 +10515,15 @@ namespace OpenNos.GameObject.Helpers
 
                 object generatedOption = possibleOptions[_rand.Next(possibleOptions.Count)];
 
-                int? shellTyp = (int?) ShellType[w][g + 1];
+                int? shellTyp = (int?)ShellType[w][g + 1];
                 if (shellTyp.HasValue && shellTyp.Value != 1 && _rand.Next(2) != 0)
                 {
                     continue;
                 }
 
-                int? optionValue = GenerateOptionValue((int) generatedOption, (int) ShellType[w][g], shellLevel);
-                int optionType = (int) generatedOption;
-                int optionLevel = (int) ShellType[w][g];
+                int? optionValue = GenerateOptionValue((int)generatedOption, (int)ShellType[w][g], shellLevel);
+                int optionType = (int)generatedOption;
+                int optionLevel = (int)ShellType[w][g];
 
                 if (optionValue == null)
                 {
@@ -10533,9 +10533,9 @@ namespace OpenNos.GameObject.Helpers
                 optionsAlreadyOn.Add(generatedOption);
                 shellOptions.Add(new EquipmentOptionDTO
                 {
-                    Level = (byte) optionLevel,
-                    Type = (byte) optionType,
-                    Value = (int) optionValue
+                    Level = (byte)optionLevel,
+                    Type = (byte)optionType,
+                    Value = (int)optionValue
                 });
             }
 
