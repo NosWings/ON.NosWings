@@ -725,7 +725,8 @@ namespace OpenNos.Handler
                     MapX = Session.Character.PositionX,
                     MapId = Session.Character.MapInstance.Map.MapId,
                     Position = (byte)Session.Character.Direction,
-                    IsMoving = addMonsterPacket.IsMoving
+                    IsMoving = addMonsterPacket.IsMoving,
+                    MapMonsterId = Session.Character.MapInstance.GetNextId()
                 };
                 monst = DaoFactory.MapMonsterDao.Insert(monst);
                 if (DaoFactory.MapMonsterDao.LoadById(monst.MapMonsterId) is MapMonster monster)
