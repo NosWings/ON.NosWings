@@ -3395,7 +3395,6 @@ namespace OpenNos.Handler
                 Logger.Log.Error("Cannot apply shell to non equiped stuff.");
                 return;
             }
-            option.WearableInstanceId = itemType.Id;
             itemType.EquipmentOptions.Add(option);
         }
         #endregion

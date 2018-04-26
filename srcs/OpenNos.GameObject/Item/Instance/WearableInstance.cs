@@ -314,8 +314,7 @@ namespace OpenNos.GameObject.Item.Instance
 
             EquipmentOptions.Clear();
             int shellLevel = Item.LevelMinimum == 25 ? 101 : 106;
-            EquipmentOptions.AddRange(
-                ShellGeneratorHelper.Instance.GenerateShell(shellType, Rare == 8 ? 7 : Rare, shellLevel));
+            EquipmentOptions.AddRange(ShellGeneratorHelper.Instance.GenerateShell(shellType, Rare == 8 ? 7 : Rare, shellLevel));
         }
 
         public void RarifyItem(ClientSession session, RarifyMode mode, RarifyProtection protection,
