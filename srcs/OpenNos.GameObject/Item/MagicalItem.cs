@@ -477,7 +477,7 @@ namespace OpenNos.GameObject.Item
                     {
                         foreach (ClientSession sess in session.Character.Group.Characters)
                         {
-                            ServerManager.Instance.ChangeMap(sess.Character.CharacterId, session.Character.PositionX, session.Character.PositionY);
+                            ServerManager.Instance.ChangeMap(sess.Character.CharacterId, session.Character.MapId, session.Character.PositionX, session.Character.PositionY);
                         }
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
