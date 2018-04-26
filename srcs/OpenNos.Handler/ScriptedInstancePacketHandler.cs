@@ -300,13 +300,6 @@ namespace OpenNos.Handler
                     Session.Character.Group.Raid.LoadScript(MapInstanceType.RaidInstance);
                 }
 
-                if (Session.Character.Group.Raid.Id == 24 && ServerManager.Instance.Act6Erenia.Percentage < 100 ||
-                    Session.Character.Group.Raid.Id == 23 && ServerManager.Instance.Act6Zenas.Percentage < 100)
-                {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg("RAID_NOT_READY", 0));
-                    return;
-                }
-
                 if (Session.Character.Group.Raid.FirstMap == null)
                 {
                     return;
