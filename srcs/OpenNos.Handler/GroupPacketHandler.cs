@@ -348,6 +348,11 @@ namespace OpenNos.Handler
                             return;
                         }
 
+                        if (!targetSession.Character.GroupSentRequestCharacterIds.Contains(Session.Character.CharacterId))
+                        {
+                            return;
+                        }
+
                         targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
 
                         if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId) && ServerManager.Instance.IsCharacterMemberOfGroup(pjoinPacket.CharacterId))
