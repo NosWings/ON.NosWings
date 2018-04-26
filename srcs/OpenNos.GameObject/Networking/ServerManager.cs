@@ -752,7 +752,7 @@ namespace OpenNos.GameObject.Networking
                         {
                             session.Character.Hp = 1;
                             session.Character.Mp = 1;
-                            session.Character.Group?.Raid.End();
+                            session.Character.Group?.Raid?.End();
                             return;
                         }
 
