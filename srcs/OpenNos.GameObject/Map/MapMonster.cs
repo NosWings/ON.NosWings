@@ -213,24 +213,23 @@ namespace OpenNos.GameObject.Map
         /// </summary>
         public void StartLife()
         {
-            if (MapInstance == null || MapInstance.IsSleeping || Life == null)
+            if (MapInstance?.IsSleeping == false && Life == null)
             {
-                return;
-            }
-            Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
-            {
-                try
+                Life = Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
                 {
-                    if (Monster != null && MapInstance?.IsSleeping == false)
+                    try
                     {
-                        MonsterLife();
+                        if (MapInstance?.IsSleeping == false)
+                        {
+                            MonsterLife();
+                        }
                     }
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e);
-                }
-            });
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                });
+            }
         }
 
         public void StopLife()

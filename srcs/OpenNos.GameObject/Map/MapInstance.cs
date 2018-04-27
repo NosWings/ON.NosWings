@@ -142,6 +142,8 @@ namespace OpenNos.GameObject.Map
                 {
                     _isSleeping = false;
                     _isSleepingRequest = false;
+                    Parallel.ForEach(Monsters.Where(s => s.Life == null), m => { m.StartLife(); });
+                    Parallel.ForEach(Npcs.Where(s => s.Life == null), m => { m.StartLife(); });
                 }
             }
         }
@@ -615,6 +617,9 @@ namespace OpenNos.GameObject.Map
                         OnMapClean.ToList().ForEach(e => { EventHelper.Instance.RunEvent(e); });
                         OnMapClean.Clear();
                     }
+
+                    Parallel.ForEach(Monsters.Where(s => s.Life == null), m => { m.StartLife(); });
+                    Parallel.ForEach(Npcs.Where(s => s.Life == null), m => { m.StartLife(); });
                     RemoveMapItem();
                 }
                 catch (Exception e)
