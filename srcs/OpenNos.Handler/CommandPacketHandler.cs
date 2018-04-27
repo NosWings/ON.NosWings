@@ -729,7 +729,8 @@ namespace OpenNos.Handler
                     MapMonsterId = Session.Character.MapInstance.GetNextId()
                 };
                 monst = DaoFactory.MapMonsterDao.Insert(monst);
-                if (DaoFactory.MapMonsterDao.LoadById(monst.MapMonsterId) is MapMonster monster)
+                MapMonsterDTO monstDto = DaoFactory.MapMonsterDao.LoadById(monst.MapMonsterId);
+                if (monstDto != null && monstDto is MapMonster monster)
                 {
                     monster.Initialize(Session.CurrentMapInstance);
                     Session.CurrentMapInstance.AddMonster(monster);

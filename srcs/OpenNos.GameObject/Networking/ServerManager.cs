@@ -2315,6 +2315,15 @@ namespace OpenNos.GameObject.Networking
 
             Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x => { RemoveItemProcess(); });
 
+            Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x => 
+            {
+                Parallel.ForEach(Mapinstances, map =>
+                {
+                    Parallel.ForEach(map.Value.Monsters, monster => monster.StartLife());
+                    Parallel.ForEach(map.Value.Npcs, npc => npc.StartLife());
+                });
+            });
+
             foreach (Schedule schedule in Schedules)
             {
                 Observable
