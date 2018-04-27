@@ -3361,7 +3361,7 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val),
+            Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val * ServerManager.Instance.ReputRate),
                 11));
         }
 
