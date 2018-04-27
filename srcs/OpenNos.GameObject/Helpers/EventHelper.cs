@@ -544,9 +544,15 @@ namespace OpenNos.GameObject.Helpers
 
                                     foreach (Gift gift in grp.Raid.GiftItems)
                                     {
-                                        sbyte rare = (sbyte)(gift.IsRandomRare
-                                            ? ServerManager.Instance.RandomNumber(-2, 8)
-                                            : 0);
+                                        sbyte rare;
+                                        if (gift.IsHeroic)
+                                        {
+                                            rare = (sbyte)(gift.IsRandomRare ? ServerManager.Instance.RandomNumber(-2, 9) : 0);
+                                        }
+                                        else
+                                        {
+                                            rare = (sbyte)(gift.IsRandomRare ? ServerManager.Instance.RandomNumber(-2, 8) : 0);
+                                        }
 
                                         if (sess.Character.Level >= grp.Raid.LevelMinimum)
                                         {

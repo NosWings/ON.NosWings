@@ -208,10 +208,11 @@ namespace OpenNos.GameObject
 
                 foreach (XmlNode node in def.SelectSingleNode("GiftItems")?.ChildNodes)
                 {
+                    bool.TryParse(node.Attributes["IsHeroic"]?.Value, out bool isHeroic);
                     bool.TryParse(node.Attributes["IsRandomRare"]?.Value, out bool isRandomRare);
                     short.TryParse(node.Attributes["Design"]?.Value, out short design);
                     GiftItems.Add(new Gift(short.Parse(node.Attributes["VNum"].Value),
-                        byte.Parse(node.Attributes["Amount"].Value), design, isRandomRare));
+                        byte.Parse(node.Attributes["Amount"].Value), design, isRandomRare, isHeroic));
                 }
             }
         }

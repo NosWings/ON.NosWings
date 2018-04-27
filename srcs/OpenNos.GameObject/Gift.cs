@@ -23,12 +23,13 @@ namespace OpenNos.GameObject
             // do nothing
         }
 
-        public Gift(short vnum, byte amount, short design = 0, bool isRareRandom = true)
+        public Gift(short vnum, byte amount, short design = 0, bool isRareRandom = true, bool isHeroic = false)
         {
             VNum = vnum;
             Amount = amount;
             IsRandomRare = isRareRandom;
             Design = design;
+            IsHeroic = isHeroic;
         }
 
         #endregion
@@ -42,6 +43,8 @@ namespace OpenNos.GameObject
         public short VNum { get; set; }
 
         public bool IsRandomRare { get; set; }
+
+        public bool IsHeroic { get; set; }
 
         #endregion
     }
