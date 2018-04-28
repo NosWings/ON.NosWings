@@ -323,6 +323,7 @@ namespace OpenNos.GameObject.Battle
             // Percent Damage
             if (target.Session is MapMonster monster && monster.IsPercentage && monster.TakesDamage > 0)
             {
+                targetEntity.DealtDamage = monster.TakesDamage;
                 return (ushort)monster.TakesDamage;
             }
 
