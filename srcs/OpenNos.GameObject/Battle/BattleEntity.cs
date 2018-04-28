@@ -272,6 +272,44 @@ namespace OpenNos.GameObject.Battle
             }
         }
 
+        public double GetUpgradeValue(short value)
+        {
+            switch (Math.Abs(value))
+            {
+                case 1:
+                    return 0.1;
+
+                case 2:
+                    return 0.15;
+
+                case 3:
+                    return 0.22;
+
+                case 4:
+                    return 0.32;
+
+                case 5:
+                    return 0.43;
+
+                case 6:
+                    return 0.54;
+
+                case 7:
+                    return 0.65;
+
+                case 8:
+                    return 0.9;
+
+                case 9:
+                    return 1.2;
+
+                case 10:
+                    return 2;
+            }
+
+            return 0;
+        }
+
         public ushort GenerateDamage(IBattleEntity targetEntity, Skill skill, ref int hitmode, ref bool onyxEffect)
         {
             BattleEntity target = targetEntity?.BattleEntity;
@@ -359,8 +397,8 @@ namespace OpenNos.GameObject.Battle
             int targetDefence = target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllIncreased)[0]
                 - target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.AllDecreased)[0];
 
-            byte targetDefenseUpgrade =
-                (byte)(target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.DefenceLevelIncreased)[0]
+            sbyte targetDefenseUpgrade =
+                (sbyte)(target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.DefenceLevelIncreased)[0]
                     - target.GetBuff(CardType.Defence, (byte)AdditionalTypes.Defence.DefenceLevelDecreased)[0]);
 
             int targetDodge = target.GetBuff(CardType.DodgeAndDefencePercent,
@@ -429,8 +467,7 @@ namespace OpenNos.GameObject.Battle
 
             #endregion
 
-            upgrade -= (short)(target.DefenceUpgrade + targetDefenseUpgrade);
-
+            upgrade -= (short)((sbyte)target.DefenceUpgrade + targetDefenseUpgrade);
             #region Detailed Calculation
 
             #region Dodge
@@ -475,57 +512,35 @@ namespace OpenNos.GameObject.Battle
             int baseDamage = ServerManager.Instance.RandomNumber(minDmg, maxDmg < minDmg ? minDmg + 1 : maxDmg) +
                 morale - targetMorale;
 
-            double upgradeBonus = 0;
-            switch (Math.Abs(upgrade))
+            short rest = 0;
+            byte times = 0;
+            if (upgrade > 10)
             {
-                case 1:
-                    upgradeBonus = 0.1;
-                    break;
+                short upgradeCpy = upgrade;
 
-                case 2:
-                    upgradeBonus = 0.15;
-                    break;
+                while (upgradeCpy - 10 > 10)
+                {
+                    times += 1;
+                    upgradeCpy -= 10;
+                }
 
-                case 3:
-                    upgradeBonus = 0.22;
-                    break;
-
-                case 4:
-                    upgradeBonus = 0.32;
-                    break;
-
-                case 5:
-                    upgradeBonus = 0.43;
-                    break;
-
-                case 6:
-                    upgradeBonus = 0.54;
-                    break;
-
-                case 7:
-                    upgradeBonus = 0.65;
-                    break;
-
-                case 8:
-                    upgradeBonus = 0.9;
-                    break;
-
-                case 9:
-                    upgradeBonus = 1.2;
-                    break;
-
-                case 10:
-                    upgradeBonus = 2;
-                    break;
+                rest = (short)(upgradeCpy % 10);
             }
-
             if (upgrade < 0)
             {
-                targetDefence += (int)(targetDefence * upgradeBonus);
+                targetDefence += (int)(targetDefence * GetUpgradeValue(upgrade));
             }
             else
             {
-                baseDamage += (int)(baseDamage * upgradeBonus);
+                baseDamage += (int)(baseDamage * GetUpgradeValue((short)(upgrade > 10 ? 10 : upgrade)));
+                if (times > 0)
+                {
+                    baseDamage += baseDamage * times * 2;
+                }
+                if (rest > 0)
+                {
+                    baseDamage += (int)(baseDamage * (GetUpgradeValue(rest)));
+                }
             }
 
             baseDamage -=
