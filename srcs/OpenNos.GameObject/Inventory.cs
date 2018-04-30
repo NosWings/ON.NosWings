@@ -114,7 +114,7 @@ namespace OpenNos.GameObject
             invcopy.Id = Guid.NewGuid();
             if (inv.Item.Type == InventoryType.Equipment)
             {
-                for (short i = 0; i < 255; i++)
+                for (short i = 0; i < 999; i++)
                 {
                     if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) != null)
                     {
@@ -135,7 +135,7 @@ namespace OpenNos.GameObject
 
             if (amount >= inv.Amount)
             {
-                for (short i = 0; i < 255; i++)
+                for (short i = 0; i < 999; i++)
                 {
                     if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) != null)
                     {
@@ -157,7 +157,7 @@ namespace OpenNos.GameObject
             invcopy.Amount = amount;
             inv.Amount -= amount;
 
-            for (short i = 0; i < 255; i++)
+            for (short i = 0; i < 999; i++)
             {
                 if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) != null)
                 {

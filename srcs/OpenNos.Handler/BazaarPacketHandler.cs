@@ -94,7 +94,7 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        bzitemdto.Amount -= cBuyPacket.Amount;
+                        bzitemdto.Amount -= (ushort)cBuyPacket.Amount;
                         Session.Character.Gold -= price;
                         Session.SendPacket(Session.Character.GenerateGold());
                         DaoFactory.IteminstanceDao.InsertOrUpdate(bzitemdto);
@@ -102,7 +102,7 @@ namespace OpenNos.Handler
                         Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {cBuyPacket.Amount} {cBuyPacket.Price} 0 0 0");
                         ItemInstance newBz = bzcree.Item.DeepCopy();
                         newBz.Id = Guid.NewGuid();
-                        newBz.Amount = cBuyPacket.Amount;
+                        newBz.Amount = (ushort)cBuyPacket.Amount;
                         newBz.Type = newBz.Item.Type;
                         if (newBz is WearableInstance wear)
                         {
@@ -342,7 +342,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(cRegPacket.Inventory == 4 ? 0 : (InventoryType)cRegPacket.Inventory, cRegPacket.Slot, cRegPacket.Amount);
+            ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(cRegPacket.Inventory == 4 ? 0 : (InventoryType)cRegPacket.Inventory, cRegPacket.Slot, (ushort)cRegPacket.Amount);
             if (bazar == null)
             {
                 return;

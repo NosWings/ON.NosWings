@@ -33,7 +33,7 @@ namespace OpenNos.GameObject.Packets.ClientPackets
         public int IsPackage { get; set; }
 
         [PacketIndex(7)]
-        public byte Amount { get; set; }
+        public short Amount { get; set; }
 
         [PacketIndex(8)]
         public long Price { get; set; }

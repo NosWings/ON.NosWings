@@ -16,7 +16,7 @@ namespace OpenNos.GameObject.Packets.ClientPackets
         public short VNum { get; set; }
 
         [PacketIndex(2)]
-        public byte Amount { get; set; }
+        public short Amount { get; set; }
 
         [PacketIndex(3)]
         public long Price { get; set; }
