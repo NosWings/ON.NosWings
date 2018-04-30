@@ -145,20 +145,23 @@ namespace OpenNos.GameObject.Event.LOD
         private void RefreshLod(int remaining)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.InFamilyRefreshMode);
-            foreach (Family fam in ServerManager.Instance.FamilyList)
+            lock(ServerManager.Instance.FamilyList)
             {
-                if (fam.LandOfDeath == null)
+                foreach (Family fam in ServerManager.Instance.FamilyList)
                 {
-                    fam.LandOfDeath =
-                        ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
-                }
+                    if (fam.LandOfDeath == null)
+                    {
+                        fam.LandOfDeath =
+                            ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
+                    }
 
-                EventHelper.Instance.RunEvent(
-                    new EventContainer(fam.LandOfDeath, EventActionType.CLOCK, remaining * 10));
-                EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.STARTCLOCK,
-                    new Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>(
-                        new ConcurrentBag<EventContainer>(),
-                        new ConcurrentBag<EventContainer>())));
+                    EventHelper.Instance.RunEvent(
+                        new EventContainer(fam.LandOfDeath, EventActionType.CLOCK, remaining * 10));
+                    EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.STARTCLOCK,
+                        new Tuple<ConcurrentBag<EventContainer>, ConcurrentBag<EventContainer>>(
+                            new ConcurrentBag<EventContainer>(),
+                            new ConcurrentBag<EventContainer>())));
+                }
             }
         }
 
