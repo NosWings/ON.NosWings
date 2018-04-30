@@ -665,7 +665,6 @@ namespace OpenNos.Handler
         public void Unstuck(MoveCommandPacket move)
         {
             ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.MapInstanceId, Session.Character.PositionX, Session.Character.PositionY);
-            Session.SendPacket(Session.Character.GenerateRevive());
             LogHelper.Instance.InsertCommandLog(Session.Character.CharacterId, move, Session.IpAddress);
         }
 
