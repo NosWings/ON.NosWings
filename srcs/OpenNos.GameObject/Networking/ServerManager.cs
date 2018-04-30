@@ -329,10 +329,10 @@ namespace OpenNos.GameObject.Networking
                         switch (session.Character?.Faction)
                         {
                             case FactionType.Angel:
-                                Instance.Act4AngelStat.Percentage += 10000 / (GlacernonPercentRatePvp * 10);
+                                Instance.Act4AngelStat.Percentage += 10000 / (GlacernonPercentRatePvp * 100);
                                 break;
                             case FactionType.Demon:
-                                Instance.Act4DemonStat.Percentage += 10000 / (GlacernonPercentRatePvp * 10);
+                                Instance.Act4DemonStat.Percentage += 10000 / (GlacernonPercentRatePvp * 100);
                                 break;
                         }
                     }

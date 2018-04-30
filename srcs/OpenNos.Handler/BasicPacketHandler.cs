@@ -695,6 +695,10 @@ namespace OpenNos.Handler
                     case (sbyte)PortalType.ShopTeleport:
                         break;
                     case (sbyte)PortalType.Raid:
+                        if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.RaidInstance)
+                        {
+                            break;
+                        }
                         if (Session.Character.Group?.Raid != null)
                         {
                             Session.SendPacket(Session.Character.Group.IsLeader(Session)
