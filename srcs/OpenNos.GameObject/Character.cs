@@ -2070,10 +2070,10 @@ namespace OpenNos.GameObject
                         switch (Faction)
                         {
                             case FactionType.Angel:
-                                ServerManager.Instance.Act4AngelStat.Percentage += 5;
+                                ServerManager.Instance.Act4AngelStat.Percentage += 10000 / (ServerManager.Instance.GlacernonPercentRatePvm * 10);
                                 break;
                             case FactionType.Demon:
-                                ServerManager.Instance.Act4DemonStat.Percentage += 5;
+                                ServerManager.Instance.Act4DemonStat.Percentage += 10000 / (ServerManager.Instance.GlacernonPercentRatePvm * 10);
                                 break;
                         }
 
@@ -2088,7 +2088,7 @@ namespace OpenNos.GameObject
                 if (monsterToAttack.MapInstance.Map.MapId >= 229 && monsterToAttack.MapInstance.Map.MapId <= 232 &&
                     ServerManager.Instance.Act6Zenas.Mode == 0)
                 {
-                    ServerManager.Instance.Act6Zenas.Percentage++;
+                    ServerManager.Instance.Act6Zenas.Percentage += 1000 / (ServerManager.Instance.CylloanPercentRate * 10);
                     ServerManager.Instance.Act6Process();
                 }
 
@@ -2097,7 +2097,7 @@ namespace OpenNos.GameObject
                     monsterToAttack.MapInstance.Map.MapId == 2604 &&
                     ServerManager.Instance.Act6Erenia.Mode == 0)
                 {
-                    ServerManager.Instance.Act6Erenia.Percentage++;
+                    ServerManager.Instance.Act6Erenia.Percentage += 1000 / (ServerManager.Instance.CylloanPercentRate * 10);
                     ServerManager.Instance.Act6Process();
                 }
 

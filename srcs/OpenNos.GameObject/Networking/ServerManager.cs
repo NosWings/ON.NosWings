@@ -133,6 +133,11 @@ namespace OpenNos.GameObject.Networking
         public bool AutoLoot { get; set; }
 
         public byte MinLodLevel { get; set; }
+        public byte CylloanPercentRate { get; set; }
+
+        public byte GlacernonPercentRatePvp { get; set; }
+
+        public byte GlacernonPercentRatePvm { get; set; }
 
         public int QuestDropRate { get; set; }
 
@@ -324,10 +329,10 @@ namespace OpenNos.GameObject.Networking
                         switch (session.Character?.Faction)
                         {
                             case FactionType.Angel:
-                                Instance.Act4AngelStat.Percentage += 100;
+                                Instance.Act4AngelStat.Percentage += 10000 / (GlacernonPercentRatePvp * 10);
                                 break;
                             case FactionType.Demon:
-                                Instance.Act4DemonStat.Percentage += 100;
+                                Instance.Act4DemonStat.Percentage += 10000 / (GlacernonPercentRatePvp * 10);
                                 break;
                         }
                     }
@@ -1489,6 +1494,9 @@ namespace OpenNos.GameObject.Networking
             HeroicStartLevel = byte.Parse(ConfigurationManager.AppSettings["HeroicStartLevel"]);
             Act4MinChannels = byte.Parse(ConfigurationManager.AppSettings["ChannelsBeforeAct4"]);
             LobbySpeed = byte.Parse(ConfigurationManager.AppSettings["LobbySpeed"]);
+            GlacernonPercentRatePvm = byte.Parse(ConfigurationManager.AppSettings["GlacernonPercentRatePvp"]);
+            GlacernonPercentRatePvp = byte.Parse(ConfigurationManager.AppSettings["GlacernonPercentRatePvm"]);
+            CylloanPercentRate = byte.Parse(ConfigurationManager.AppSettings["CylloanPercentRate"]);
             ReputOnMonsters = bool.Parse(ConfigurationManager.AppSettings["ReputOnMonster"]);
             SingleRaidPortal = bool.Parse(ConfigurationManager.AppSettings["SingleRaidPortal"]);
             LodTimes = bool.Parse(ConfigurationManager.AppSettings["LodTimes"]);
