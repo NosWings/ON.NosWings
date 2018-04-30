@@ -572,13 +572,6 @@ namespace OpenNos.GameObject.Npc
                         break;
                     }
 
-                    if (session.Character?.Family?.LandOfDeath == null)
-                    {
-                        session.Character.Family.LandOfDeath =
-                            ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance,
-                                new InstanceBag());
-                    }
-
                     if (session.Character?.Family?.LandOfDeath != null)
                     {
                         ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId,

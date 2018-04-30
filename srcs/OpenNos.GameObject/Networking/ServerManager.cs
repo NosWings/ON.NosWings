@@ -2506,9 +2506,15 @@ namespace OpenNos.GameObject.Networking
                     }
                 }
 
+                if (family.LandOfDeath == null)
+                {
+                    family.LandOfDeath = GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
+                }
+
                 family.FamilyLogs = DaoFactory.FamilyLogDao.LoadByFamilyId(family.FamilyId).ToList();
                 families[family.FamilyId] = family;
             });
+            Logger.Log.Info("[LOD] LOD mapinstances initialized");
             FamilyList.AddRange(families.Select(s => s.Value));
         }
 
