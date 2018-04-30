@@ -3938,6 +3938,12 @@ namespace NosSharp.Parser
                                 item.WaitDelay = 3000;
                                 break;
 
+                            case 5834:
+                                item.Morph = 3693;
+                                item.Speed = 20;
+                                item.WaitDelay = 3000;
+                                break;
+
                             case 5332:
                                 item.Morph = 2930;
                                 item.Speed = 14;
