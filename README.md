@@ -10,20 +10,21 @@
 </div>
 <br/><br/>
 
+# [NosWings IS BACK](https://noswings.com)
+
+
 ON.NosWings is our old OpenNos fork to get NosWings server running.
 
 This project is not production ready nor maintained anymore.
 
-# We are back on Nostale Scene, with our new brand emulator, written from scratch with latest technologies and completely different from OpenNos !
-# [Our Website](https://noswings.com)
 
-# Follow our new project : [ChickenAPI](https://github.com/BlowaXD/ChickenAPI)
+### Follow our new project : [ChickenAPI](https://github.com/BlowaXD/ChickenAPI)
 
-## Who are we 
+### Who are we 
 
 We are a bunch of enthusiast who decided to make their own fork of OpenNos, modifying a lot of things designed for our needs.
 
-## Why don't we maintain OpenNos ?
+### Why don't we maintain OpenNos ?
 
 As we've already told numerous time, OpenNos has proven its capacity and its limitation.
 
